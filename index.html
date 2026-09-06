@@ -228,7 +228,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-06 15:40</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-06 16:18</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -643,12 +643,25 @@ function renderTG(cols,title,sub,note,single){
           +'<img src="'+urlImg+'" style="max-width:94vw;max-height:calc(100vh - 170px);width:auto;height:auto;object-fit:contain;border-radius:8px;background:#fff">'
           +'<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">'
           +(canSh?'<button data-a="share" style="'+bst+'">📤 Partager</button>':'')
+          +(window.CRMLINK?'<button data-a="crm" style="'+bst+';background:#059669;color:#fff">📲 Déposer dans le CRM</button>':'')
           +'<button data-a="dl" style="'+bst+'">⬇️ Télécharger</button>'
           +'<button data-a="close" style="'+bst+'">Fermer</button></div>';
         iv.addEventListener('click',async e=>{
           const a=e.target&&e.target.dataset&&e.target.dataset.a;
           if(e.target===iv||a==="close"){iv.remove();return;}
           if(a==="share"){try{await navigator.share({files:[fimg],title:'Tableau de garantie'});}catch(e3){}return;}
+          if(a==="crm"){
+            const bt=e.target; bt.disabled=true; bt.textContent="⏳ Dépôt…";
+            try{
+              const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);});
+              const PR2=typeof PRO!=="undefined"?PRO:{};
+              const resp=await fetch(window.CRMLINK.base+"/api/comparateur/depot",{method:"POST",headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({token:window.CRMLINK.token,kind:"image",filename:fname,mime:"image/png",data:b64,caption:"Tableau de garantie — "+[(PR2.civ||""),(PR2.nom||""),(PR2.prenom||"")].filter(Boolean).join(" ")})});
+              if(!resp.ok)throw new Error("HTTP "+resp.status);
+              bt.textContent="✅ Déposé dans la conversation";
+            }catch(e4){bt.disabled=false;bt.textContent="❌ Dépôt impossible — réessayer";}
+            return;
+          }
           if(a==="dl"){const a2=document.createElement('a');a2.href=URL.createObjectURL(blob);a2.download=fname;document.body.appendChild(a2);a2.click();a2.remove();return;}
         });
         document.body.appendChild(iv);
@@ -1117,7 +1130,10 @@ const urlImported=(function(){
   const rawAll=(location.hash||"").replace(/^#/,"")+"&"+(location.search||"").replace(/^\?/,"");
   // Hébergement CRM : la fiche complète peut arriver dans le lien (#fiche=...) → import 100 % automatique
   try{
-    const fp=new URLSearchParams(rawAll).get("fiche");
+    const qp=new URLSearchParams(rawAll);
+    // Lien venant du CRM : crm=<origine du CRM>&t=<jeton> → bouton « Déposer dans le CRM » sur les captures
+    if(qp.get("crm")&&qp.get("t")&&/^https:\/\//.test(qp.get("crm")))window.CRMLINK={base:qp.get("crm").replace(/\/+$/,""),token:qp.get("t")};
+    const fp=qp.get("fiche");
     if(fp){const parsed=parseFiche(fp);if(parsed)return applyImport(parsed);window.FICHE_KO=fp;}
   }catch(e){}
   return applyImport(rawAll);
