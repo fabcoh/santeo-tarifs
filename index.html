@@ -228,7 +228,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-06 15:24</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-06 15:40</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -992,7 +992,7 @@ function render(rows,warns){
       btn.addEventListener("click",ev=>{
         ev.stopPropagation();
         if(btn.dataset.adh!==undefined) withAdhGate(()=>showAdh(LASTROWS[+btn.dataset.adh]));
-        else if(btn.dataset.tg) showTG(btn.dataset.tg);
+        else if(btn.dataset.tg){ if(SENDSEL.size) showTGSel(); else showTG(btn.dataset.tg); } // formules cochées → tableau de la sélection (toutes gammes)
       });
     });
     tb.querySelectorAll(".sendchk").forEach(cb=>{
