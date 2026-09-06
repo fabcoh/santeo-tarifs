@@ -1099,7 +1099,7 @@ const urlImported=(function(){
   // Hébergement CRM : la fiche complète peut arriver dans le lien (#fiche=...) → import 100 % automatique
   try{
     const fp=new URLSearchParams(rawAll).get("fiche");
-    if(fp){const parsed=parseFiche(fp);if(parsed)return applyImport(parsed);}
+    if(fp){const parsed=parseFiche(fp);if(parsed)return applyImport(parsed);window.FICHE_KO=fp;}
   }catch(e){}
   return applyImport(rawAll);
 })();
@@ -1111,7 +1111,8 @@ var PRO=PRO||{}; // coordonnées importées (adhésion) : civ, nom, prenom, ddn,
 function parseFiche(t){
   for(const k in PRO)delete PRO[k];
   const out=new URLSearchParams();
-  const T=t.replace(/ /g," ");
+  // Dates ISO (1983-05-15, format base CRM) → 15/05/1983
+  const T=t.replace(/ /g," ").replace(/\b((?:19|20)\d{2})-(\d{2})-(\d{2})\b/g,"$3/$2/$1");
   const dates=[...T.matchAll(/\b\d{1,2}[\/\-.]\d{1,2}[\/\-.](19\d{2}|20[01]\d)\b/g)].map(m=>m[1]);
   const years=[...T.matchAll(/\b(19\d{2}|20[01]\d)\b/g)].map(m=>m[1]);
   const ys=dates.length?dates:years;
@@ -1308,6 +1309,8 @@ if(false){
     +'</div>';
   document.body.appendChild(ov);
   const ta=ov.querySelector("#stpaste"); ta.focus();
+  // Fiche reçue par le lien mais incomplète : on la montre, avec la raison, au lieu d'un écran muet
+  if(window.FICHE_KO){ta.value=window.FICHE_KO;ov.querySelector("#sterr").textContent="Fiche reçue du CRM mais incomplète — il faut au moins une date de naissance, un code postal, un téléphone ou un email. Complétez-la ci-dessus.";}
   let fired=false;
   const done=t=>{if(fired)return;fired=true;const parsed=parseFiche(t||"");
     if(parsed){ov.remove();applyImport(parsed);}
