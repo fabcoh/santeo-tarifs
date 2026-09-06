@@ -228,7 +228,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-06 14:14</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-06 15:24</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -532,19 +532,35 @@ function showDoc(name,url){
   ov.addEventListener("click",ev=>{if(ev.target===ov||ev.target.classList.contains("close"))ov.remove();});
   document.body.appendChild(ov);
 }
-function showTG(key){
+// Valeur d'une garantie pour une formule donnée (gamme key, indice fi)
+function tgVal(key,fi,src){
   const f=F[key], e=EX[key]||{};
-  let head='<tr><th></th>'+f.names.map(n=>'<th>'+n+'</th>').join('')+'</tr>';
-  let body=TGROWS.map(([lab,src])=>{
-    let vals;
-    if(src.startsWith("x:")){const k=src.slice(2);vals=f.names.map((_,i)=>(e[k]&&e[k][i]!==undefined)?e[k][i]:"—");}
-    else vals=f[src]||f.names.map(()=>"—");
-    return '<tr><td>'+lab+'</td>'+vals.map(v=>'<td>'+v+'</td>').join('')+'</tr>';
-  }).join('');
+  if(src.startsWith("x:")){const k=src.slice(2);return (e[k]&&e[k][fi]!==undefined)?e[k][fi]:"—";}
+  const arr=f[src];return (arr&&arr[fi]!==undefined)?arr[fi]:"—";
+}
+// Tableau de garantie d'une gamme (toutes ses formules)
+function showTG(key){
+  const f=F[key];
+  renderTG(f.names.map((_,i)=>({key:key,fi:i})),f.label+" — tableau de garantie",COMP[key],TGNOTE[key]||"",key);
+}
+// Tableau de garantie de la SÉLECTION (formules cochées, toutes gammes confondues)
+function showTGSel(){
+  const cols=LASTROWS.filter(r=>SENDSEL.has(r.key+"|"+r.fi)).map(r=>({key:r.key,fi:r.fi}));
+  if(!cols.length)return;
+  const keys=[...new Set(cols.map(c=>c.key))];
+  const notes=keys.map(k=>TGNOTE[k]?"<b>"+F[k].label+"</b> : "+TGNOTE[k]:"").filter(Boolean).join("<br>");
+  renderTG(cols,"Sélection — tableau de garantie",[...new Set(keys.map(k=>COMP[k]))].join(" · "),notes,null);
+}
+// cols = [{key,fi}] ; single = clé de gamme si tableau mono-gamme (sinon null)
+function renderTG(cols,title,sub,note,single){
+  const multi=cols.some(c=>c.key!==cols[0].key);
+  let head='<tr><th></th>'+cols.map(c=>'<th>'+(multi?'<span style="display:block;font-size:11px;opacity:.75">'+F[c.key].label+'</span>':'')+F[c.key].names[c.fi]+'</th>').join('')+'</tr>';
+  let body=TGROWS.map(([lab,src])=>'<tr><td>'+lab+'</td>'+cols.map(c=>'<td>'+tgVal(c.key,c.fi,src)+'</td>').join('')+'</tr>').join('');
   const ov=document.createElement('div');ov.id='tgov';
-  ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><button class="shot" data-t="1" style="float:right;margin-right:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;font:700 13px \'Archivo\',sans-serif">📷 Avec tarifs</button><button class="shot" data-t="0" style="float:right;margin-right:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;font:700 13px \'Archivo\',sans-serif">📷 Sans tarifs</button><h2>'+f.label+' — tableau de garantie</h2><div class="src">'+COMP[key]+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+(TGNOTE[key]||'')+'</div></div>';
+  ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><button class="shot" data-t="1" style="float:right;margin-right:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;font:700 13px \'Archivo\',sans-serif">📷 Avec tarifs</button><button class="shot" data-t="0" style="float:right;margin-right:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;font:700 13px \'Archivo\',sans-serif">📷 Sans tarifs</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+note+'</div></div>';
   ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
   document.body.appendChild(ov);
+  const key=single; const f={label:title.replace(/ — .*$/,"")};
   // Capture du tableau en image PNG : copiée dans le presse-papier (collez dans WhatsApp)
   ov.querySelectorAll('.shot').forEach(sbtn=>sbtn.addEventListener('click',async ev=>{
     const btn=ev.target; const old=btn.textContent; btn.textContent="⏳…";
@@ -578,7 +594,7 @@ function showTG(key){
       if(withPrices){
         box.querySelectorAll('thead th').forEach((th2,ix)=>{
           if(ix===0)return;
-          const r2=LASTROWS.find(x=>x.key===key&&x.fi===ix-1);
+          const c2=cols[ix-1]; const r2=c2&&LASTROWS.find(x=>x.key===c2.key&&x.fi===c2.fi);
           const d2=document.createElement('div');
           d2.textContent=r2?eur(r2.total)+" /mois":"—";
           d2.style.cssText="font:800 12.5px 'Archivo',sans-serif;color:var(--accent);margin-top:3px;text-transform:none";
@@ -591,9 +607,9 @@ function showTG(key){
       box.classList.add("capwide");
       if(wrap2)wrap2.style.overflowX="visible";
       // Si des formules sont cochées (envoi), la capture ne montre que leurs colonnes
-      const selFi=(typeof SENDSEL!=="undefined")?[...SENDSEL].filter(x=>x.split("|")[0]===key).map(x=>+x.split("|")[1]):[];
+      const selFi=(key&&typeof SENDSEL!=="undefined")?[...SENDSEL].filter(x=>x.split("|")[0]===key).map(x=>+x.split("|")[1]):[];
       const hidden=[];
-      if(selFi.length&&selFi.length<f.names.length){
+      if(key&&selFi.length&&selFi.length<cols.length){
         box.querySelectorAll('table tr').forEach(tr2=>{
           [...tr2.children].forEach((cell,ci)=>{
             if(ci>0&&!selFi.includes(ci-1)){hidden.push([cell,cell.style.display]);cell.style.display="none";}
@@ -925,10 +941,12 @@ function updateSendBar(){
     bar.id="sendbar";
     bar.style.cssText="position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:200;display:flex;gap:8px;align-items:center;background:var(--ink);color:var(--ground);border-radius:14px;padding:9px 14px;box-shadow:0 8px 26px rgba(0,0,0,.35);font:700 13.5px 'Archivo',sans-serif;max-width:96vw";
     bar.innerHTML='<span id="sbcount"></span>'
+      +'<button id="sbtg" title="Tableau de garantie des formules cochées (toutes gammes) — puis 📷 pour copier l\'image" style="border:0;border-radius:9px;background:var(--soft);color:var(--ink);padding:8px 11px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">📄 Garanties</button>'
       +'<button id="sbwa" style="border:0;border-radius:9px;background:#25D366;color:#fff;padding:8px 13px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">🟢 WhatsApp</button>'
       +'<button id="sbml" style="border:0;border-radius:9px;background:var(--accent);color:var(--accent-ink);padding:8px 13px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">✉️ Email</button>'
       +'<button id="sbx" style="border:0;background:transparent;color:inherit;font-size:16px;cursor:pointer;padding:2px 4px">✕</button>';
     document.body.appendChild(bar);
+    bar.querySelector("#sbtg").addEventListener("click",showTGSel);
     bar.querySelector("#sbwa").addEventListener("click",doWhatsApp);
     bar.querySelector("#sbml").addEventListener("click",doMail);
     bar.querySelector("#sbx").addEventListener("click",()=>{SENDSEL.clear();updateSendBar();calc();});
