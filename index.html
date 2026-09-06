@@ -228,7 +228,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-06 16:40</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-06 19:41</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1154,7 +1154,11 @@ const urlImported=(function(){
   try{
     const qp=new URLSearchParams(rawAll);
     // Lien venant du CRM : crm=<origine du CRM>&t=<jeton> → bouton « Déposer dans le CRM » sur les captures
-    if(qp.get("crm")&&qp.get("t")&&/^https:\/\//.test(qp.get("crm")))window.CRMLINK={base:qp.get("crm").replace(/\/+$/,""),token:qp.get("t")};
+    (function(){
+      let c=qp.get("crm")||qp.get("crmUrl")||qp.get("origin")||"", t=qp.get("t")||qp.get("token")||qp.get("depot")||"";
+      c=c.trim(); if(c&&!/^https?:\/\//i.test(c))c="https://"+c;
+      if(c&&t&&/^https:\/\/[^\s\/]+/i.test(c))window.CRMLINK={base:c.replace(/\/+$/,""),token:t.trim()};
+    })();
     const fp=qp.get("fiche");
     if(fp){const parsed=parseFiche(fp);if(parsed)return applyImport(parsed);window.FICHE_KO=fp;}
   }catch(e){}
