@@ -228,7 +228,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-06 16:18</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-06 16:40</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -655,10 +655,9 @@ function renderTG(cols,title,sub,note,single){
             try{
               const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);});
               const PR2=typeof PRO!=="undefined"?PRO:{};
-              const resp=await fetch(window.CRMLINK.base+"/api/comparateur/depot",{method:"POST",headers:{"Content-Type":"application/json"},
-                body:JSON.stringify({token:window.CRMLINK.token,kind:"image",filename:fname,mime:"image/png",data:b64,caption:"Tableau de garantie — "+[(PR2.civ||""),(PR2.nom||""),(PR2.prenom||"")].filter(Boolean).join(" ")})});
-              if(!resp.ok)throw new Error("HTTP "+resp.status);
+              await crmDepot({kind:"image",filename:fname,mime:"image/png",data:b64,caption:"Tableau de garantie — "+[(PR2.civ||""),(PR2.nom||""),(PR2.prenom||"")].filter(Boolean).join(" ")});
               bt.textContent="✅ Déposé dans la conversation";
+              const back=document.createElement("button");back.textContent="↩ Revenir au CRM";back.style.cssText=bst;back.addEventListener("click",crmBack);bt.after(back);
             }catch(e4){bt.disabled=false;bt.textContent="❌ Dépôt impossible — réessayer";}
             return;
           }
@@ -934,7 +933,29 @@ function sendIntro(){
 function sendText(){
   return sendIntro()+selRows().map(r=>offreTxt(r,true)).join("\n\n")+"\n\nLes documents contractuels seuls font foi.";
 }
+// Dépôt dans la conversation du CRM (lien venu du CRM avec jeton) — rien n'est envoyé au prospect
+async function crmDepot(payload){
+  const resp=await fetch(window.CRMLINK.base+"/api/comparateur/depot",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(Object.assign({token:window.CRMLINK.token},payload))});
+  if(!resp.ok)throw new Error("HTTP "+resp.status);
+  return true;
+}
+function crmBack(){ try{window.close();}catch(e){} setTimeout(()=>{alert("Fermez cet onglet pour revenir au CRM : la pièce est dans la conversation, prête à envoyer.");},400); }
+async function doDepotText(){
+  const bt=document.getElementById("sbwa"); if(!bt||bt.disabled)return;
+  const old=bt.textContent; bt.disabled=true; bt.textContent="⏳ Dépôt…";
+  try{
+    await crmDepot({kind:"text",text:sendText()});
+    bt.textContent="✅ Déposé";
+    let back=document.getElementById("sbback");
+    if(!back){back=document.createElement("button");back.id="sbback";back.textContent="↩ Revenir au CRM";
+      back.style.cssText="border:0;border-radius:9px;background:#fff;color:#12233d;padding:8px 11px;font:800 13px 'Archivo',sans-serif;cursor:pointer";
+      back.addEventListener("click",crmBack);bt.after(back);}
+    setTimeout(()=>{bt.disabled=false;bt.textContent=old;},4000);
+  }catch(e){bt.disabled=false;bt.textContent="❌ Réessayer";setTimeout(()=>{bt.textContent=old;},3000);}
+}
 function doWhatsApp(){
+  if(window.CRMLINK){doDepotText();return;}
   const t=sendText();
   try{navigator.clipboard.writeText(t)}catch(e){}
   window.open("https://wa.me/?text="+encodeURIComponent(t),"_blank","noopener");
@@ -965,6 +986,7 @@ function updateSendBar(){
     bar.querySelector("#sbx").addEventListener("click",()=>{SENDSEL.clear();updateSendBar();calc();});
   }
   bar.querySelector("#sbcount").textContent=SENDSEL.size+" formule"+(SENDSEL.size>1?"s":"");
+  if(window.CRMLINK){const w=bar.querySelector("#sbwa");if(!w.disabled&&!/Déposé|Dépôt|Réessayer/.test(w.textContent))w.textContent="📲 Déposer dans le CRM";}
 }
 function render(rows,warns){
   LASTROWS=rows;
