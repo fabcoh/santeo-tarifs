@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Test bouton € — Comparateur Santéo</title>
+<style>
+body{margin:0;font:16px system-ui,sans-serif;background:#f6f7f4;color:#1a2740;padding:24px}
+h1{font-size:20px;margin:0 0 6px}
+p{color:#5c6879;margin:0 0 18px;font-size:14px}
+button{display:block;width:100%;padding:16px;margin:10px 0;border:0;border-radius:12px;background:#059669;color:#fff;font:700 17px system-ui,sans-serif;cursor:pointer}
+button.alt{background:#0e6e8c}
+pre{background:#fff;border:1px solid #dde1da;border-radius:10px;padding:12px;font-size:13px;white-space:pre-wrap;word-break:break-all}
+#res{margin-top:14px;font-size:14px}
+</style>
+</head>
+<body>
+<h1>Test du bouton € (même mécanisme que le CRM)</h1>
+<p>Fiche de test envoyée dans le lien, exactement comme le CRM le fera :</p>
+<pre id="fiche">BERNARD Laura
+né(e) le 09/09/2001
+CP 78150
+Ville : ROCQUENCOURT
+Email : laurabernard236@gmail.com
+Tél : 07 81 90 16 48</pre>
+<button id="b1">€ Ouvrir dans un nouvel onglet (comme le CRM)</button>
+<button id="b2" class="alt">Ouvrir dans cet onglet</button>
+<div id="res"></div>
+<script>
+const fiche=document.getElementById('fiche').textContent;
+const url='https://fabcoh.github.io/santeo-tarifs/#fiche='+encodeURIComponent(fiche);
+document.getElementById('b1').addEventListener('click',()=>{
+  const w=window.open(url,'_blank','noopener');
+  document.getElementById('res').textContent=w===null?'Fenêtre bloquée par le navigateur — utilise le second bouton.':'Nouvel onglet ouvert.';
+});
+document.getElementById('b2').addEventListener('click',()=>{location.href=url;});
+</script>
+</body>
+</html>
