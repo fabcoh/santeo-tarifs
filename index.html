@@ -228,7 +228,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-07 14:58</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-07 15:07</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -321,6 +321,7 @@ const F = {
     dent:["100 %","200 %","250 %","400 %","500 %"],opt:["100 %","150 €","250 €","300 €","350 €"],
     ch:["—","50 €/j","55 €/j","65 €/j","70 €/j"],md:["10 €/s","20 €/s","30 €/s","40 €/s","50 €/s"]},
   LPSH:{label:"LPS HOSPI",resp:false,ins:"avenir",names:["LPS Hospi Santé"],
+    ij:["20 €/jour dès le 1er jour"],
     hospO:["100 %"],hospN:["100 %"],
     honoO:["—"],honoN:["—"],
     dent:["—"],opt:["—"],aud:["—"],ch:["40 €/j"],md:["—"]},
@@ -564,8 +565,10 @@ function showTGSel(){
 // cols = [{key,fi}] ; single = clé de gamme si tableau mono-gamme (sinon null)
 function renderTG(cols,title,sub,note,single){
   const multi=cols.some(c=>c.key!==cols[0].key);
+  // Indemnités journalières : ligne en tête, seulement si l'une des formules en verse
+  const ROWS=(cols.some(c=>{const v=tgVal(c.key,c.fi,"ij");return v&&v!=="—";})?[["Indemnités journalières hospitalisation","ij"]]:[]).concat(TGROWS);
   let head='<tr><th></th>'+cols.map(c=>'<th>'+(multi?'<span style="display:block;font-size:11px;opacity:.75">'+F[c.key].label+'</span>':'')+F[c.key].names[c.fi]+'</th>').join('')+'</tr>';
-  let body=TGROWS.map(([lab,src])=>'<tr><td>'+lab+'</td>'+cols.map(c=>'<td>'+tgVal(c.key,c.fi,src)+'</td>').join('')+'</tr>').join('');
+  let body=ROWS.map(([lab,src])=>'<tr><td>'+lab+'</td>'+cols.map(c=>'<td>'+tgVal(c.key,c.fi,src)+'</td>').join('')+'</tr>').join('');
   const ov=document.createElement('div');ov.id='tgov';
   ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><button class="shot" data-t="1" style="float:right;margin-right:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;font:700 13px \'Archivo\',sans-serif">📷 Avec tarifs</button><button class="shot" data-t="0" style="float:right;margin-right:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;font:700 13px \'Archivo\',sans-serif">📷 Sans tarifs</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+note+'</div></div>';
   ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
@@ -939,7 +942,7 @@ function offreTxt(r,full){
   let s=("• "+f.label+" "+r.formule).replace(/\b(\S+) \1\b/,"$1")+" : "+eur(r.total)+" par mois";
   if(full){
     const lines=[];
-    for(const [lab,src] of TGROWS){
+    for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
       let v;
       if(src.startsWith("x:")){const k2=src.slice(2);v=(e[k2]&&e[k2][r.fi]!==undefined)?e[k2][r.fi]:"—";}
       else v=(f[src]&&f[src][r.fi]!==undefined)?f[src][r.fi]:"—";
