@@ -228,7 +228,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-07 12:22</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-07 12:37</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -451,6 +451,8 @@ async function fillAdh(r,ov){
     const C=n=>{try{form.getCheckBox(n).check();}catch(e){}};
     const U=n=>{try{form.getCheckBox(n).uncheck();}catch(e){}};
     const S=(n,v)=>{try{form.getDropdown(n).select(v);}catch(e){}};
+    // Liste déroulante dont la valeur voulue n'est pas dans les options (formules CAP NR / TALIS)
+    const SOPT=(n,v)=>{try{const d=form.getDropdown(n);if(!d.getOptions().includes(v))d.addOptions([v]);d.select(v);}catch(e){}};
     const reg=document.getElementById("regime").value;
     T("NOM1",g("anom").toUpperCase());T("PRENOM1",g("apre"));T("NOM DE NAISSANCE",g("annais").toUpperCase());
     T("FULLNAME1",(g("anom")+" "+g("apre")).trim().toUpperCase());
@@ -462,8 +464,8 @@ async function fillAdh(r,ov){
     // gamme / formule (le formulaire 2026 arrive avec « EVO TNS » coché : on remet tout à zéro)
     ["EVO SAL","EVO TNS","EVO PRO","LPS HOSPI","CAP  NR","TALIS","TALIS +"].forEach(U);
     if(r.key==="CAPEVO"){C(reg==="TNS"||reg==="TNSRL"?"EVO TNS":"EVO SAL");S("OPTION CHOISIE LISTE",{0:"ACCÈS",1:"ÉQUILIBRE",2:"TRANQUILLITÉ",3:"SÉRÉNITÉ"}[r.fi]);}
-    else if(r.key==="CAPNR"){C("CAP  NR");T("BESOINS 1","Formule choisie : "+r.formule);}
-    else if(r.key==="TALIS"){C(r.fi===0?"TALIS":"TALIS +");C("TALIS ADHERENT");}
+    else if(r.key==="CAPNR"){C("CAP  NR");T("BESOINS 1","Formule choisie : "+r.formule);SOPT("OPTION CHOISIE LISTE",r.formule);}
+    else if(r.key==="TALIS"){C(r.fi===0?"TALIS":"TALIS +");C("TALIS ADHERENT");SOPT("OPTION CHOISIE LISTE",r.formule);}
     T("COTISATION MENS",r.total.toFixed(2).replace(".",","));
     const eff=g("aeff").split("/");
     if(eff.length===3){T("JOUR EFFET ADHESION",eff[0]);T("MOIS EFFET ADHESION",eff[1]);T("ANNEE EFFET ADHESION",eff[2]);}
