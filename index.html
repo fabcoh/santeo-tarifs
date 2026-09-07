@@ -228,7 +228,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-07 15:07</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-07 15:15</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -295,7 +295,7 @@ const F = {
   CAPEVO:{label:"CAP EVOLUTION",resp:true,ins:"avenir",names:["Accès","Équilibre","Tranquillité","Sérénité"],
     hospO:["100 %","130 %","160 %","200 %"],hospN:["100 %","110 %","140 %","180 %"],
     honoO:["100 %","130 %","160 %","200 %"],honoN:["100 %","110 %","140 %","180 %"],
-    dent:["100 %","130 %","160 %","200 %"],opt:["100 €","230 €","250 €","300 €"],aud:["200 €","200 €","1 000 €","1 000 €"],ch:["—","40 €/j","60 €/j","80 €/j"],md:["—","—","—","—"]},
+    dent:["100 %","130 %","160 %","200 %"],opt:["100 €","230 €","250 €","300 €"],aud:["200 €","200 €","1 000 €","1 000 €"],ch:["—","40 €/j","60 €/j","80 €/j"],md:["—","120 €/an","160 €/an","200 €/an"]},
   CAPNR:{label:"CAP NR",resp:false,ins:"avenir",names:["Cap Essentiel","Cap 100 NR","Cap 130 NR","Cap 160 NR","Cap 200 NR","Cap 300 NR","Cap 400 NR"],
     hospO:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],hospN:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],
     honoO:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],honoN:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],
@@ -394,7 +394,7 @@ const TGNOTE={
   LPSH:"Contrat NON responsable limit\u00e9 aux frais d\u2019hospitalisation : aucun remboursement en ville (consultations, pharmacie, dentaire, optique, audio). Inclus : frais de s\u00e9jour et honoraires 100 % BR (OPTAM et non OPTAM), forfait journalier 100 % FR, chambre particuli\u00e8re 40 \u20ac/jour, lit d\u2019accompagnant enfant de moins de 16 ans 15 \u20ac/nuit, indemnit\u00e9s journali\u00e8res 20 \u20ac/jour d\u00e8s le 1er jour, forfait patient urgence et participation actes lourds 100 % FR, transport 100 % BR, \u00ab Mon soutien psy \u00bb 100 % BR. Assistance RMA, t\u00e9l\u00e9consultation, No\u00e9 Sant\u00e9, deuxi\u00e8me avis. Pas de r\u00e9seau Kalixia. Forfait journalier et chambre particuli\u00e8re limit\u00e9s \u00e0 30 j la 1re ann\u00e9e, 60 j la 2e, 90 j ensuite ; long s\u00e9jour, maison de retraite et g\u00e9riatrie exclus. Adh\u00e9sion sans questionnaire m\u00e9dical, 16 \u00e0 100 ans, zonage AVENIR.",
   TALIS:"Surcompl\u00e9mentaire (non responsable) : intervient apr\u00e8s la S\u00e9cu ET une compl\u00e9mentaire principale. Carence 90 j dentaire/optique. Plafond dentaire 600/900 \u20ac/an. Chambre 90 j (30 j psy). Sans questionnaire de sant\u00e9."
 };
-const TGROWS=[["Hospitalisation Optam","hospO"],["Hospitalisation hors Optam","hospN"],["Chambre particulière","ch"],["Consult. spécialistes Optam","honoO"],["Consult. hors Optam","honoN"],["Dentaire — prothèses","dent"],["Implantologie","x:imp"],["Orthodontie remboursée","x:orthR"],["Orthodontie non remboursée","x:orthN"],["Optique (équipement)","opt"],["Lentilles acceptées","x:lentA"],["Lentilles refusées","x:lentR"],["Aides auditives","x:aud"],["Médecine douce","md"]];
+const TGROWS=[["Hospitalisation Optam","hospO"],["Hospitalisation hors Optam","hospN"],["Chambre particulière","ch"],["Consult. spécialistes Optam","honoO"],["Consult. hors Optam","honoN"],["Dentaire — prothèses","dent"],["Implantologie","x:imp"],["Orthodontie remboursée","x:orthR"],["Orthodontie non remboursée","x:orthN"],["Optique (équipement)","opt"],["Lentilles acceptées","x:lentA"],["Lentilles refusées","x:lentR"],["Aides auditives","x:aud"],["Médecine douce / bien-être","md"]];
 function showAdh(r){
   const fmtD=d=>("0"+d.getDate()).slice(-2)+"/"+("0"+(d.getMonth()+1)).slice(-2)+"/"+d.getFullYear();
   const reg=document.getElementById("regime").value;
