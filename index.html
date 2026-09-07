@@ -228,7 +228,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-06 19:41</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-07 09:01</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -408,7 +408,7 @@ function showAdh(r){
   F1("aeff","Date d\u2019effet (d\u00e9faut : demain)","jj/mm/aaaa",fmtD(new Date(Date.now()+86400000)))+F1("asig","Date de signature","",fmtD(new Date()))+
   '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Ancienne mutuelle (niveau)</label><select id="aanc" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option>OPTIONS</option><option>je n\u2019avais pas de mutuelle</option><option>hospitaliation seulement</option><option>100%</option><option>125% - 130%</option><option>150% - 160%</option><option>200% - 250%</option><option>300% - 400%</option><option>plus de 400%</option><option>ancienne mutuelle obligatoire</option></select></div>'+
   '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Motif de d\u00e9part</label><select id="amot" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option>MOTIFS DE DEPART</option><option>Mauvaise gestion</option><option>Probl\u00e8mes de remboursements</option><option>Augmentations des cotisations</option><option>Peu rembours\u00e9 </option><option>Plus adapt\u00e9 \u00e0 mes besoins</option><option>Motifs personnels</option><option>Cotisation trop \u00e9lev\u00e9e</option><option>Autres</option></select></div>'+
-  F1("aiban","IBAN","FR76 \u2026")+F1("abic","BIC")+
+  F1("aiban","IBAN (27 caract\u00e8res)","FR76 \u2026").replace('<div>','<div style="grid-column:span 2;min-width:0">').replace('style="width:100%;','style="width:100%;font-family:\'IBM Plex Mono\',ui-monospace,monospace;letter-spacing:.04em;')+F1("abic","BIC")+
   (nC?'<div style="grid-column:1/-1;font-weight:700;margin-top:4px">Conjoint</div>'+F1("cnom","Nom")+F1("cpre","Prénom")+F1("cddn","Naissance","jj/mm/"+((/^(19|20)\d\d$/.test(nC))?nC:""))+F1("css","N° SS"):"")+
   kidsHtml+
   (function(){
