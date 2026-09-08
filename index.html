@@ -157,6 +157,8 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox tbody tr:last-child td.reco{border-bottom:2px solid var(--warn)}
 #tgbox .recolbl{display:block;font:800 10.5px 'Archivo',sans-serif;letter-spacing:.03em;color:var(--warn);margin-bottom:2px;text-transform:none}
 #tgbox .rectip{font-size:11px;color:var(--muted);margin:-4px 0 8px}
+#tgbox .star{display:block;font-size:16px;line-height:1;color:var(--muted);opacity:.55;margin-bottom:2px}
+#tgbox th.pick:hover .star{opacity:1;color:var(--warn)}
 #tgbox.capwide .recolbl{font-size:13px}
 #tgbox.capwide{max-width:none;max-height:none;height:auto;overflow:visible;flex:0 0 auto;align-self:flex-start}
 #tgbox.capwide table{width:max-content}
@@ -236,7 +238,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-08 14:18</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-08 14:34</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -578,7 +580,8 @@ function renderTG(cols,title,sub,note,single){
   // Indemnités journalières : ligne en tête, seulement si l'une des formules en verse
   const ROWS=(cols.some(c=>{const v=tgVal(c.key,c.fi,"ij");return v&&v!=="—";})?[["Indemnités journalières hospitalisation","ij"]]:[]).concat(TGROWS);
   let head='<tr><th></th>'+cols.map((c,ci)=>'<th class="pick'+(isReco(c)?' reco':'')+'" data-ci="'+ci+'">'
-    +(isReco(c)?'<span class="recolbl">\u2b50 Je vous conseille</span>':'')
+    +(isReco(c)?'<span class="recolbl">\u2b50 Je vous conseille</span>'
+               :'<span class="star" title="Conseiller cette formule">\u2606</span>')
     +(multi?'<span style="display:block;font-size:11px;opacity:.75">'+F[c.key].label+'</span>':'')+F[c.key].names[c.fi]+'</th>').join('')+'</tr>';
   let body=ROWS.map(([lab,src])=>'<tr><td>'+lab+'</td>'+cols.map((c,ci)=>'<td'+(isReco(c)?' class="reco"':'')+'>'+tgVal(c.key,c.fi,src)+'</td>').join('')+'</tr>').join('');
   const ov=document.createElement('div');ov.id='tgov';
@@ -587,7 +590,7 @@ function renderTG(cols,title,sub,note,single){
   document.body.appendChild(ov);
   // Touchez le nom d'une formule pour la mettre en avant (et l'annoncer dans l'envoi)
   const tip=document.createElement('div');tip.className='rectip';
-  tip.textContent='Astuce : touchez le nom d\u2019une formule pour la conseiller au prospect (elle est encadrée dans l\u2019image).';
+  tip.textContent='Touchez l\u2019\u2606 d\u2019une formule pour la conseiller : elle est mise en avant dans l\u2019image et annoncée dans l\u2019envoi.';
   ov.querySelector('#tgbox .src').after(tip);
   ov.querySelectorAll('#tgbox thead th.pick').forEach(th=>th.addEventListener('click',()=>{
     const c=cols[+th.dataset.ci], id=c.key+"|"+c.fi;
@@ -655,7 +658,7 @@ function renderTG(cols,title,sub,note,single){
       box.style.width=(tbl2.offsetWidth+40)+"px";
       let canvas;
       try{
-        canvas=await html2canvas(box,{scale:2,backgroundColor:"#ffffff",ignoreElements:el=>el.classList&&(el.classList.contains('close')||el.classList.contains('shot')||el.classList.contains('rectip'))});
+        canvas=await html2canvas(box,{scale:2,backgroundColor:"#ffffff",ignoreElements:el=>el.classList&&(el.classList.contains('close')||el.classList.contains('shot')||el.classList.contains('rectip')||el.classList.contains('star'))});
       }finally{hdr.remove();thP.forEach(d2=>d2.remove());hidden.forEach(h2=>{h2[0].style.display=h2[1];});box.classList.remove("capwide");box.style.width="";if(wrap2)wrap2.style.cssText=savedWrap;}
       const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
       const fname='garanties_'+f.label.replace(/[^\wÀ-ÿ]+/g,'_')+'.png';
