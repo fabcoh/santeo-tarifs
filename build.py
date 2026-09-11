@@ -12,13 +12,8 @@ Produit dans dist/ :
                           bulletin PDF derrière un code d'accès (ADH_PASSWORD ci-dessous)
 """
 import base64, hashlib, pathlib, datetime
-# Horodatage affiche en bas de page : heure de Paris (les serveurs GitHub sont en UTC)
-try:
-    from zoneinfo import ZoneInfo
-    _now = datetime.datetime.now(ZoneInfo("Europe/Paris"))
-except Exception:
-    _now = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=2)
-BUILD = _now.strftime("%Y-%m-%d %H:%M")
+# Horodatage de construction : ISO en UTC, la page l'affiche dans l'heure locale du navigateur
+BUILD = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 # Code d'accès au bulletin d'adhésion sur GitHub Pages (seule son empreinte SHA-256 est publiée).
 # Pour le changer : modifier ici, relancer build.py, pousser dist/index.html sur santeo-tarifs.
