@@ -811,10 +811,14 @@ function showAdh(r){
   const F1=(id,lab,ph,val)=>'<div><label style="display:block;font-size:10px;text-transform:uppercase;color:var(--muted);margin:6px 0 2px">'+lab+'</label><input id="'+id+'" autocomplete="off" placeholder="'+(ph||"")+'" value="'+String(val||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;")+'" style="width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink);font:inherit"></div>';
   const P=typeof PRO!=="undefined"?PRO:{};
   const SEL=(id,lab,opts,def)=>'<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">'+lab+'</label><select id="'+id+'" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)">'+opts.map(o=>'<option'+(o===def?' selected':'')+'>'+o+'</option>').join('')+'</select></div>';
-  let kidsHtml="";
-  for(let i=0;i<Math.min(kids,4);i++) kidsHtml+='<div style="grid-column:1/-1;font-weight:700;margin-top:4px">Enfant '+(i+1)+'</div>'+F1("knom"+i,"Nom")+F1("kpre"+i,"Prénom")+F1("kddn"+i,"Naissance","jj/mm/aaaa")+F1("kss"+i,"N° SS (si propre)");
+  // Bénéficiaires : conjoint et enfants toujours proposés, remplir seulement ce qui est utile
+  const nKid=Math.max(2,Math.min(kids,4));
+  let kidsHtml='<div style="grid-column:1/-1;font-weight:800;margin-top:10px;border-top:1px solid var(--line);padding-top:8px">Bénéficiaires à rattacher <span style="font-weight:500;font-size:11px;color:var(--muted)">(laisser vide si sans objet)</span></div>'
+   +'<div style="grid-column:1/-1;font-weight:700;margin-top:2px">Conjoint</div>'
+   +F1("cnom","Nom")+F1("cpre","Prénom")+F1("cddn","Date de naissance","jj/mm/"+((/^(19|20)\d\d$/.test(nC))?nC:"aaaa"))+F1("css","N° Sécurité sociale");
+  for(let i=0;i<nKid;i++) kidsHtml+='<div style="grid-column:1/-1;font-weight:700;margin-top:4px">Enfant '+(i+1)+'</div>'+F1("knom"+i,"Nom")+F1("kpre"+i,"Prénom")+F1("kddn"+i,"Date de naissance","jj/mm/aaaa")+F1("kss"+i,"N° SS (si propre)");
   const ov=document.createElement("div");ov.id="tgov";
-  ov.innerHTML='<div id="tgbox" style="max-width:760px"><button class="close">Fermer ✕</button><h2>Adhésion — '+r.gamme+" "+r.formule+'</h2><div class="src">'+eur(r.total)+' /mois · le bulletin AVENIR MUTUELLE sera rempli et téléchargé</div>'+
+  ov.innerHTML='<div id="tgbox" style="max-width:760px"><button class="close">Fermer ✕</button><h2>Adhésion — '+r.gamme+" "+r.formule+'</h2><div class="src">'+eur(r.total)+' /mois · le bulletin '+(r.key==="MV"?"LA MUTUELLE VERTE":"AVENIR MUTUELLE")+' sera rempli et téléchargé</div>'+
   '<form autocomplete="off" onsubmit="return false" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:4px 12px">'+
   '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Civilité</label><select id="aciv" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option'+(P.civ!=="Mme"?" selected":"")+'>M.</option><option'+(P.civ==="Mme"?" selected":"")+'>Mme</option></select></div>'+
   F1("anom","Nom","",P.nom)+F1("apre","Prénom","",P.prenom)+F1("annais","Nom de naissance")+
@@ -827,7 +831,6 @@ function showAdh(r){
   '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Motif de d\u00e9part</label><select id="amot" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option>MOTIFS DE DEPART</option><option>Mauvaise gestion</option><option>Probl\u00e8mes de remboursements</option><option>Augmentations des cotisations</option><option>Peu rembours\u00e9 </option><option>Plus adapt\u00e9 \u00e0 mes besoins</option><option>Motifs personnels</option><option>Cotisation trop \u00e9lev\u00e9e</option><option>Autres</option></select></div>'+
   (HOSTED?docDropHTML():"")+
   F1("aiban","IBAN (27 caract\u00e8res)","FR76 \u2026").replace('<div>','<div style="grid-column:span 2;min-width:0">').replace('style="width:100%;','style="width:100%;font-family:\'IBM Plex Mono\',ui-monospace,monospace;letter-spacing:.04em;')+F1("abic","BIC")+
-  (nC?'<div style="grid-column:1/-1;font-weight:700;margin-top:4px">Conjoint</div>'+F1("cnom","Nom")+F1("cpre","Prénom")+F1("cddn","Naissance","jj/mm/"+((/^(19|20)\d\d$/.test(nC))?nC:""))+F1("css","N° SS"):"")+
   kidsHtml+
   (function(){
     const lvl=Math.min(5,Math.max(1,(r.fi||0)+2))+" / 5";
@@ -859,11 +862,132 @@ function showAdh(r){
   snapshotCoupon();
   document.getElementById("agen").addEventListener("click",()=>beforeGenerate(()=>fillAdh(r,ov)));
 }
+// ---- Bulletin LA MUTUELLE VERTE (pack CAPI FINANCE 2026) ----
+// Le PDF n'est pas embarqué (2,8 Mo) : il est chargé depuis le dépôt au moment de la génération.
+const MVBULLETIN=["docs/bulletin_mv_2026.pdf","https://fabcoh.github.io/santeo-tarifs/docs/bulletin_mv_2026.pdf"];
+async function loadMVBytes(){
+  let last;
+  for(const u of MVBULLETIN){
+    try{ const rp=await fetch(u,{cache:"force-cache"}); if(rp.ok) return new Uint8Array(await rp.arrayBuffer()); last="HTTP "+rp.status; }
+    catch(e){ last=e&&e.message||String(e); }
+  }
+  throw new Error("bulletin Mutuelle Verte introuvable ("+last+")");
+}
+async function fillAdhMV(r,st,g){
+  const bytes=await loadMVBytes();
+  const pdf=await PDFLib.PDFDocument.load(bytes);
+  const form=pdf.getForm();
+  const T=(n,v)=>{try{if(v!==""&&v!=null)form.getTextField(n).setText(String(v));}catch(e){}};
+  const C=n=>{try{form.getCheckBox(n).check();}catch(e){}};
+  const S=(n,v)=>{try{form.getDropdown(n).select(v);}catch(e){}};
+  const SOPT=(n,v)=>{try{const d=form.getDropdown(n);if(!d.getOptions().includes(v))d.addOptions([v]);d.select(v);}catch(e){}};
+  // découpe un texte en cases de largeurs données
+  const TF=(n,v)=>{try{form.getTextField(n).setText(String(v==null?"":v));}catch(e){}};
+  // écrit même une case vide : le PDF d'origine contient des restes (iban1/iban2 = « 1212 »)
+  const SPLIT=(names,sizes,val)=>{const v=String(val||"").replace(/\s+/g,"");let k=0;
+    names.forEach((n,i)=>{const part=v.slice(k,k+sizes[i]);k+=sizes[i];TF(n,part);});};
+  const D3=v=>{const m=String(v||"").match(/^(\d{2})\D(\d{2})\D(\d{4})$/);return m?[m[1],m[2],m[3]]:null;};
+  const EUR=v=>v==null?"":Number(v).toFixed(2).replace(".",",");
+  const civ=g("aciv")==="Mme";
+  // ---- Bulletin, page 2 : adhérent principal ----
+  const eff=D3(g("aeff"));
+  if(eff){T("01 jour adh",eff[0]);T("02 mois adh",eff[1]);T("03 année adh",eff[2]);}
+  SOPT("OPTION CHOISIE LISTE",r.formule);
+  T("montant",eff?eff[2]:String(new Date().getFullYear()));   // « cotisations mensuelles pour l’année »
+  T("04b cot adh",EUR(r.pA));
+  if(r.pC!=null&&r.pC!==undefined)T("04c cot conj",EUR(r.pC));
+  C(civ?"05 case":"06 case");
+  T("07 nom adhérent",g("anom").toUpperCase());T("08 prénom adhérent",g("apre"));
+  const dn=D3(g("addn")); if(dn){T("09 jour adh",dn[0]);T("10 mois adh",dn[1]);T("11 année adh",dn[2]);}
+  T("12 nom né adhérent",g("annais").toUpperCase());
+  T("13 adresse adhérent",g("aadr"));T("14 code postal adh",g("acp"));T("15 localité adhérent",g("avil"));T("16 pays adhérent","FRANCE");
+  T("18 mobile adh",g("atel"));T("19 mail adhérent",g("amail"));
+  SPLIT(["20 secu adh","21 secu adh","22 secu adh","23 secu adh","24 secu adh","25 secu adh","26 secu adh"],[1,2,2,2,3,3,2],g("ass"));
+  SPLIT(["27a affi","27b affi","28a affi","28b affi","28c affi","29a affi","29b affi","29c affi","29d affi"],[1,1,1,1,1,1,1,1,1],g("aorg"));
+  const iban=g("aiban").replace(/\s+/g,"").toUpperCase();
+  SPLIT(["30 iban adh","31 iban adh","32 iban adh","33 iban adh","34 iban adh","35 iban adh","36 iban adh"],[4,4,4,4,4,4,3],iban);
+  T("37 bic adh",g("abic").replace(/\s+/g,"").toUpperCase());
+  T("38 prof adh",g("asit"));
+  // ---- Conjoint ----
+  let nAss=1;
+  if(g("cnom")){
+    nAss++;
+    C("48 case"); C(civ?"52 case":"51 case");
+    T("53 nom ayant droit",g("cnom").toUpperCase());T("54 prénom ayant droit",g("cpre"));
+    const dc=D3(g("cddn")); if(dc){T("55 jour ad",dc[0]);T("56 mois ad",dc[1]);T("57 année ad",dc[2]);}
+    SPLIT(["58 secu ad","59 secu ad","60 secu ad","61 secu ad","62 secu ad","63 secu ad","64 secu ad"],[1,2,2,2,3,3,2],g("css"));
+  }
+  // ---- Enfants (deux premiers sur le bulletin nominatif, les suivants en cases 3 à 5) ----
+  const KID=[
+    {n:"87 nom enfant1",p:"88 prénom enfant1",j:"89 jour e1",m:"90 mois e1",a:"91 année e1",cot:"04d cot e1",rat:"99 case",
+     s:["92 secu e1","93 secu e1","94 secu e1","95 secu e1","96 secu e1","97 secu e1","98 secu e1"]},
+    {n:"103 nom enfant2",p:"104 prénom enfant2",j:"105 jour e2",m:"106 mois e2",a:"107 année e2",cot:"04e cot e2",rat:"115 case",
+     s:["108 secu e2","109 secu e3","110 secu e2","111 secu e2","112 secu e2","113 secu e2","114 secu e2"]},
+    {n:"118 nom enfant3",p:"119 prénom enfant2",j:"120 jour e2",m:"121 mois e2",a:"122 année e2",rat:"130 case",
+     s:["123 secu e3","124 secu e3","125 secu e3","126 secu e3","127 secu e3","128 secu e3","129 secu e3"]},
+    {n:"134 nom enfant4",p:"135 prénom enfant4",j:"136 jour e4",m:"137 mois e4",a:"138 année e4",rat:"146 case",
+     s:["139 secu e4","140 secu e4","141 secu e4","142 secu e4","143 secu e4","144 secu e4","145 secu e4"]}
+  ];
+  const kn=+document.getElementById("kids").value||0;
+  const unit=(r.pK!=null&&kn>0)?r.pK/Math.min(kn,2):null;
+  for(let i=0;i<KID.length;i++){
+    if(!g("knom"+i))continue;
+    nAss++;
+    const K=KID[i];
+    T(K.n,g("knom"+i).toUpperCase());T(K.p,g("kpre"+i));
+    const dk=D3(g("kddn"+i)); if(dk){T(K.j,dk[0]);T(K.m,dk[1]);T(K.a,dk[2]);}
+    SPLIT(K.s,[1,2,2,2,3,3,2],g("kss"+i));
+    C(K.rat);
+    if(K.cot&&unit!=null)T(K.cot,EUR(unit));
+  }
+  // ---- Annexe CAPI FINANCE (devoir de conseil, mandat SEPA) ----
+  const now=new Date(), sig=g("asig")||(("0"+now.getDate()).slice(-2)+"/"+("0"+(now.getMonth()+1)).slice(-2)+"/"+now.getFullYear());
+  T("DATE DU JOUR",sig);
+  T("FULLNAME1",(g("anom")+" "+g("apre")).trim().toUpperCase());
+  T("COTISATION MENS",EUR(r.total));
+  T("compagnie souhaitée","MUTUELLE VERTE");
+  T("orias","COHEN Fabrice -  07001983");   // valeur alignée sur ce qui est déjà imprimé
+  if(eff){T("JOUR EFFET ADHESION",eff[0]);T("MOIS EFFET ADHESION",eff[1]);T("ANNEE EFFET ADHESION",eff[2]);}
+  S("Liste déroulante2",g("asit"));
+  if(g("aanc")&&g("aanc")!=="OPTIONS")S("Liste déroulante3",g("aanc"));
+  if(g("amot")&&g("amot")!=="MOTIFS DE DEPART")S("Liste déroulante4",g("amot"));
+  if(g("bcss")==="oui")C("CMU");else C("CMU NO");
+  if(g("baide")==="oui")C("AIDE MUTUELLE");else C("AIDE MUTUELLE NO");
+  if(g("bpol")==="oui")C("EXPOSE POLITIQUEMENT");
+  C(/dépassement/i.test(g("brmb"))?"TM PLUS":"TM");
+  S("NIV2",g("bnd"));S("NIV4",g("bno"));S("NIV6",g("bnh"));S("NIV8",g("bnhon"));
+  if(g("bbes"))T("BESOINS 1",g("bbes"));
+  S("NB_ASSURES",String(Math.min(nAss,7)));
+  // Mandat SEPA
+  SPLIT(["iban1","iban2","iban3","iban4","iban5","iban6","iban7"],[4,4,4,4,4,4,3],iban);
+  T("BIC",g("abic").replace(/\s+/g,"").toUpperCase());
+  T("VILLE",g("avil"));
+  const ds=D3(sig); if(ds){T("JOUR",ds[0]);T("MOIS",ds[1]);T("ANNEE",ds[2]);}
+  // Mandat SEPA : le cadre « Nom, prénom, adresse du débiteur » n'a pas de champ — on l'écrit
+  try{
+    const pg=pdf.getPages()[4];
+    const fnt=await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
+    const lines=[(g("aciv")+" "+g("anom").toUpperCase()+" "+g("apre")).trim(),g("aadr"),(g("acp")+" "+g("avil")).trim()];
+    lines.forEach((t,i)=>{if(t)pg.drawText(t,{x:44,y:252-i*15,size:9.5,font:fnt,color:PDFLib.rgb(0,0,0)});});
+  }catch(e){}
+  return pdf;
+}
 async function fillAdh(r,ov){
   const st=document.getElementById("astat"); st.textContent="Génération…";
   try{
     const g=id=>{const e=document.getElementById(id);return e?e.value.trim():"";};
     if(typeof PDFLib==="undefined"){st.textContent="Librairie PDF non chargée (connexion requise).";return;}
+    if(r.key==="MV"){
+      let pdfMV;
+      try{ pdfMV=await fillAdhMV(r,st,g); }
+      catch(e){ st.textContent="❌ "+(e&&e.message||e)+" — génération impossible depuis cette page."; return; }
+      const outMV=await pdfMV.save();
+      const fMV="adhesion_MV_"+(g("anom")||"client")+".pdf";
+      const dlMV=await CUSE("downloads");
+      if(dlMV){ await dlMV.save({filename:fMV,data:outMV}); st.textContent="✅ Bulletin téléchargé."; }
+      else{ const b2=new Blob([outMV],{type:"application/pdf"});const a3=document.createElement("a");a3.href=URL.createObjectURL(b2);a3.download=fMV;document.body.appendChild(a3);a3.click();a3.remove();st.textContent="✅ Bulletin téléchargé."; }
+      return;
+    }
     const bytes=Uint8Array.from(atob(BULLETIN_B64),c=>c.charCodeAt(0));
     const pdf=await PDFLib.PDFDocument.load(bytes);
     const form=pdf.getForm();
@@ -1522,7 +1646,7 @@ function render(rows,warns){
         '<div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">'+
         Object.entries(DOCS[r.key]||{}).map(([n,u])=>'<a class="tgbtn doc" href="'+u+'" target="_blank" rel="noopener" onclick="event.stopPropagation();try{var w=window.open(this.href,\'docwin\',\'popup,width=980,height=860,left=120,top=60\');if(w){event.preventDefault();w.focus();}}catch(e){}">'+n+' ↗</a>').join('')+
         '<button class="tgbtn ibtn" data-info="'+i+'" title="Limites, plafonds et exclusions" aria-label="Informations"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16.5"></line><circle cx="12" cy="7.6" r="1.1" fill="currentColor" stroke="none"></circle></svg><span>Infos</span></button>'+
-        (__ADH__&&["CAPEVO","CAPNR","TALIS"].includes(r.key)?'<button class="tgbtn" data-adh="'+i+'">📝 Adhésion</button>':'')+
+        (__ADH__&&["CAPEVO","CAPNR","TALIS","MV"].includes(r.key)?'<button class="tgbtn" data-adh="'+i+'">📝 Adhésion</button>':'')+
         '<button class="tgbtn" data-tg="'+r.key+'">📄 Tableau de garantie</button></div>'+
         "</div></td></tr>";
       }
