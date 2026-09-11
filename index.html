@@ -250,7 +250,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-11 05:17</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-11 06:41</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -262,7 +262,7 @@ const CUSE=async n=>{try{return (typeof claude!=="undefined"&&claude&&claude.use
 // HOSTED = page hébergée hors claude.ai (GitHub Pages / CRM) : aucune contrainte de plateforme
 const HOSTED=true;
 // Accès au bulletin d'adhésion sur le site hébergé : code d'accès (empreinte SHA-256), mémorisé sur l'appareil
-const ADHGATE="02023546b4039abe3b9f355c23dafd9119570f301a024e2fd2ff3186ae54060c";
+const ADHGATE="771b132d4416ba004e694647abf789f5a5ac3c076eb4cca1b1dff3252873f486";
 async function sha256(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest("SHA-256",b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("");}
 function adhUnlocked(){if(!ADHGATE)return true;try{return localStorage.getItem("santeo_adh")===ADHGATE;}catch(e){return false;}}
 function adhLogout(){try{localStorage.removeItem("santeo_adh");}catch(e){}updateAdhBadge();}
