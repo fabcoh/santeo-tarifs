@@ -1,0 +1,1888 @@
+<title>Comparateur Santéo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --ground:#F6F7F4; --panel:#FFFFFF; --ink:#1A2740; --muted:#5C6879; --line:#DDE1DA;
+  --accent:#0E6E8C; --accent-ink:#FFFFFF; --soft:#EAF1EF;
+  --best:#FBF3DC; --best-line:#D9C489;
+  --ok:#1A7A5C; --ok-bg:#E4F1EB; --warn:#A9651B; --warn-bg:#F6EBDA;
+  --mcci:#C33B54; --avenir:#2F6B3C;
+  --respc:#157A46; --nrc:#8B2332;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#141922; --panel:#1C2330; --ink:#E8EBF0; --muted:#9AA5B5; --line:#313A49;
+    --accent:#4FB3D4; --accent-ink:#0E1620; --soft:#22303A;
+    --best:#33301F; --best-line:#8A7A45;
+    --ok:#5CC79C; --ok-bg:#1E332B; --warn:#E0A55E; --warn-bg:#39301F;
+    --mcci:#E06A80; --avenir:#7BC488;
+    --respc:#5CC79C; --nrc:#E08A96;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#141922; --panel:#1C2330; --ink:#E8EBF0; --muted:#9AA5B5; --line:#313A49;
+  --accent:#4FB3D4; --accent-ink:#0E1620; --soft:#22303A;
+  --best:#33301F; --best-line:#8A7A45;
+  --ok:#5CC79C; --ok-bg:#1E332B; --warn:#E0A55E; --warn-bg:#39301F;
+  --mcci:#E06A80; --avenir:#7BC488;
+  --respc:#5CC79C; --nrc:#E08A96;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font:14.5px/1.5 "IBM Plex Sans",system-ui,sans-serif;margin:0;padding:0 14px 48px}
+.wrap{max-width:1720px;margin:0 auto}
+header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:22px 2px 12px}
+h1{font-family:"Archivo",system-ui,sans-serif;font-weight:800;font-size:25px;margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:12.5px}
+.topflex{display:flex;gap:14px;align-items:stretch;flex-wrap:wrap;margin-top:10px}
+.topflex .bar{flex:1 1 560px;max-width:860px;min-width:320px}
+.topflex .rightcol{flex:1 1 380px;display:flex;flex-direction:column;gap:10px}
+.topflex .rightcol .gsel{margin-top:0;align-content:flex-start;flex:1}
+.bar{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.bar .row{display:grid;gap:12px}
+.bar .row1{grid-template-columns:1fr 1fr}
+.bar .row2{grid-template-columns:1.4fr 1fr .8fr}
+@media (max-width:620px){
+  body{padding:0 8px 40px}
+  .bar{padding:10px;gap:8px}
+  .bar .row{gap:8px}
+  .f label{font-size:9.5px;font-weight:500;letter-spacing:.04em;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .f input,.f select{padding:7px 8px;font-size:15px}
+  .ageout{font-size:10.5px;margin-top:2px}
+  .gsel{padding:8px 10px;gap:6px 8px}
+  .gsel label.g{font-size:11.5px;padding:2px 6px}
+  h1{font-size:21px}
+  .sub{font-size:11px}
+  td{padding:6px 7px;font-size:12px}
+  th{padding:6px 7px;font-size:9.5px}
+  th.grp,th.big{font-size:10.5px}
+  thead tr:first-child th{font-size:10.5px}
+  thead tr:first-child th{height:26px}
+  thead tr:nth-child(2) th{top:26px;height:18px}
+  .gname{font-size:11px}
+  .fname{font-size:12px}
+  .chip{font-size:8.5px;padding:1px 5px}
+  .total{font-size:13px}
+  table{min-width:812px}
+  .tblwrap{max-height:76vh}
+}
+.f label{display:block;font-family:"Archivo",sans-serif;font-weight:500;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.f input,.f select{font-weight:700;font-size:16px;width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
+.f input:focus,.f select:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.ageout{font-size:11.5px;color:var(--muted);margin-top:4px}
+.gsel{margin-top:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;gap:8px 14px;flex-wrap:wrap;align-items:center}
+.gsel .lbl{font-family:"Archivo",sans-serif;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.gsel label.g{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:3px 8px;border-radius:7px;border:1px solid var(--line);background:var(--ground)}
+.gsel label.g input{accent-color:var(--accent)}
+.results{margin-top:16px}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
+.meta .pill{font-family:"Archivo",sans-serif;font-weight:600;font-size:12px;padding:3px 10px;border-radius:99px;background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.tblwrap{overflow:auto;max-height:80vh;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+thead{background:var(--panel)}
+thead th{position:sticky;background:var(--panel);z-index:3;box-shadow:0 1px 0 var(--line)}
+thead tr:first-child th{top:0;height:32px}
+thead tr:nth-child(2) th{top:32px;height:22px}
+th:first-child,td:first-child{position:sticky;left:0;background:var(--panel);z-index:2;width:24px;min-width:24px}
+th:nth-child(2),td:nth-child(2){position:sticky;left:24px;background:var(--panel);z-index:2}
+thead th:first-child,thead th:nth-child(2){z-index:4}
+th.big{font-size:12.5px;font-weight:800;color:var(--ink)}
+thead tr:first-child th{vertical-align:top;padding-top:9px;color:var(--accent);font-weight:800;font-size:12px}
+thead tr:first-child th.grp,thead tr:first-child th.big{font-size:12px}
+thead tr:first-child th.grp,thead tr:first-child th.big{color:var(--accent)}
+table{border-collapse:collapse;width:100%;min-width:846px;table-layout:fixed}
+th{font-family:"Archivo",sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:bottom}
+th.c{text-align:center}
+th.grp{text-align:center;border-bottom:none;padding-bottom:2px;font-size:12.5px;font-weight:800;color:var(--accent)}
+th.sub{font-size:8.5px;font-weight:600;letter-spacing:.03em;padding-top:0;color:var(--muted);opacity:.85}
+td.g{text-align:center;font-variant-numeric:tabular-nums}
+th.num,td.num{text-align:right}
+td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13.5px}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.offer{cursor:pointer}
+tr.offer:hover td{background:var(--soft)}
+.total{font-weight:700;font-size:15px}
+.caret{display:inline-block;width:14px;color:var(--muted);transition:transform .15s;font-size:11px}
+tr.open .caret{transform:rotate(90deg)}
+.gamme{display:flex;align-items:center;gap:7px}
+.dot{width:9px;height:9px;border-radius:3px;flex:none}
+.dot.mcci{background:var(--mcci)} .dot.avenir{background:var(--avenir)} .dot.mverte{background:#3FA34D}
+.gsel label.g{flex-direction:column;gap:1px;align-items:center}
+.gsel label.g .comp{font-size:8.5px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.gsel label.g .top{display:inline-flex;align-items:center;gap:6px}
+.gname{font-family:"Archivo",sans-serif;font-weight:700;font-size:12.5px}
+.rp{color:var(--respc)} .nrp{color:var(--nrc)}
+.gsel label.g.rp,.gsel label.g.nrp{font-weight:700}
+.fname{font-weight:600}
+.hosp{color:var(--muted);font-size:11.5px;margin-top:1px}
+.chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
+.chip{font-size:10px;font-weight:600;font-family:"Archivo",sans-serif;letter-spacing:.03em;padding:2px 7px;border-radius:99px;border:1px solid transparent}
+.chip.resp{background:var(--ok-bg);color:var(--ok)}
+.chip.nr{background:var(--warn-bg);color:var(--warn)}
+.chip.info{background:var(--soft);color:var(--muted);border-color:var(--line)}
+tr.best td{background:var(--best)}
+tr.best td:first-child{box-shadow:inset 3px 0 0 var(--best-line)}
+tr.best.offer:hover td{background:var(--best)}
+.bestlbl{font-size:10px;font-weight:700;font-family:"Archivo",sans-serif;color:var(--warn);letter-spacing:.05em;text-transform:uppercase}
+tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
+.bk{display:flex;gap:22px;flex-wrap:wrap}
+.bk div b{font-variant-numeric:tabular-nums}
+.bk .who{color:var(--muted);font-family:"Archivo",sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;display:block}
+.warnbox{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:8px;padding:9px 13px;font-size:12.5px;color:var(--muted)}
+.notes{margin-top:16px;font-size:11.5px;color:var(--muted);line-height:1.7}
+.notes b{color:var(--ink)}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+.tgbtn{margin-left:auto;font:600 12px "Archivo",sans-serif;color:var(--accent);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:5px 10px;cursor:pointer;text-decoration:none;display:inline-block}
+#tgov{position:fixed;inset:0;background:rgba(10,14,20,.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
+#tgbox{background:var(--panel);color:var(--ink);border-radius:12px;max-width:880px;width:100%;max-height:86vh;overflow:auto;padding:18px;border:1px solid var(--line)}
+#tgbox h2{font-family:"Archivo",sans-serif;font-size:17px;margin:0 0 4px}
+#tgbox .src{font-size:11px;color:var(--muted);margin-bottom:10px}
+#tgbox table{width:100%;min-width:0;table-layout:auto;border-collapse:collapse}
+#tgbox th,#tgbox td{padding:6px 8px;font-size:12.5px;border-bottom:1px solid var(--line);text-align:center}
+#tgbox td:first-child,#tgbox th:first-child{text-align:left;font-weight:600;position:static;width:auto;min-width:0;background:transparent}
+#tgbox thead th{position:static;height:auto;color:var(--accent);font-size:11.5px;background:transparent;box-shadow:none;vertical-align:bottom;padding-top:6px}
+#tgbox .close{float:right;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:7px;padding:4px 10px;cursor:pointer;font-weight:700}
+#tgbox .foot{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6}
+#tgbox.infobox{max-width:640px}
+#tgbox .ipost{margin:12px 0 0}
+#tgbox .ipost h3{font:800 12px 'Archivo',sans-serif;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin:0 0 5px;border-bottom:1px solid var(--line);padding-bottom:3px}
+#tgbox .irow{display:flex;gap:12px;align-items:baseline;padding:4px 0;border-bottom:1px dotted var(--line);font-size:13px}
+#tgbox .irow span{flex:1}
+#tgbox .irow b{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+#tgbox .irow.iwarn{background:var(--warn-bg);border-radius:6px;padding:5px 8px;border-bottom:0;margin:2px 0}
+#tgbox .irow.iwarn span::before{content:"⚠ ";color:var(--warn)}
+#tgbox .irow.iwarn b{color:var(--warn)}
+.ibtn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);border-radius:7px;padding:4px 10px 4px 7px;cursor:pointer;font:700 12px 'Archivo',sans-serif;line-height:1}
+.ibtn svg{flex:none}
+.ibtn:hover{background:var(--accent);color:var(--accent-ink)}
+#tgbox th.pick{cursor:pointer}
+#tgbox th.pick:hover{color:var(--accent)}
+#tgbox td.reco,#tgbox th.reco{background:var(--best);border-left:2px solid var(--warn);border-right:2px solid var(--warn)}
+#tgbox thead th.reco{border-top:2px solid var(--warn)}
+#tgbox tbody tr:last-child td.reco{border-bottom:2px solid var(--warn)}
+#tgbox .recolbl{display:block;font:800 10.5px 'Archivo',sans-serif;letter-spacing:.03em;color:var(--warn);margin-bottom:2px;text-transform:none}
+#tgbox .rectip{font-size:11px;color:var(--muted);margin:-4px 0 8px}
+#tgbox .star{display:block;font-size:16px;line-height:1;color:var(--muted);opacity:.55;margin-bottom:2px}
+#tgbox th.pick:hover .star{opacity:1;color:var(--warn)}
+#tgbox.capwide .recolbl{font-size:13px}
+#tgbox.capwide{max-width:none;max-height:none;height:auto;overflow:visible;flex:0 0 auto;align-self:flex-start}
+#tgbox.capwide table{width:max-content}
+#tgbox.capwide th,#tgbox.capwide td{white-space:nowrap;font-size:15.5px;padding:9px 13px}
+#tgbox.capwide thead th{font-size:14.5px}
+#tgbox.capwide h2{font-size:21px}
+#tgbox.capwide .src{font-size:13px}
+#tgbox.capwide .foot{font-size:13px;line-height:1.55}
+.f input,.f select{font-weight:800 !important;color:var(--ink)}
+#reload{position:fixed;top:10px;right:10px;z-index:50;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--accent);font-size:19px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center}
+#reload:active{transform:rotate(180deg)}
+#reload{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+#aipanel[hidden]{display:none}#aipanel:not([hidden]){display:flex}
+.sendchk{display:block;width:18px;height:18px;margin:5px auto 0;accent-color:var(--accent)}
+.volet{width:100%;display:flex;align-items:center;gap:8px;text-align:left;padding:11px 14px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--ink);font:800 14px 'Archivo',sans-serif;cursor:pointer;margin-bottom:6px}
+.volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
+.volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
+.volet.open .chev{transform:rotate(180deg)}
+#gsel[hidden],#expanel[hidden]{display:none}
+</style>
+<button id="aibtn" title="Assistant IA" style="position:fixed;bottom:16px;right:16px;z-index:60;display:none;padding:10px 16px;border-radius:99px;border:1px solid var(--line);background:var(--accent);color:var(--accent-ink);font:700 14px 'Archivo',sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)">🤖 Assistant</button>
+<div id="aipanel" hidden style="position:fixed;bottom:66px;right:16px;z-index:60;width:min(440px,92vw);max-height:70vh;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.25)">
+  <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)">
+    <b style="font-family:'Archivo',sans-serif">Assistant garanties</b>
+    <span style="font-size:10.5px;color:var(--muted)">documents contractuels seuls font foi</span>
+    <button id="aiclose" style="margin-left:auto;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:6px;padding:2px 8px;cursor:pointer">✕</button>
+  </div>
+  <div id="ailog" style="flex:1;overflow:auto;padding:12px;font-size:13.5px;line-height:1.5;white-space:pre-wrap"></div>
+  <div style="display:flex;gap:6px;padding:10px;border-top:1px solid var(--line)">
+    <input id="aiq" placeholder="Ta question sur les garanties…" style="flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:inherit">
+    <button id="aisend" style="border:none;background:var(--accent);color:var(--accent-ink);border-radius:7px;padding:8px 14px;font-weight:700;cursor:pointer">Envoyer</button>
+  </div>
+</div>
+<button id="reload" title="Recharger la dernière version" aria-label="Recharger">↻</button>
+<div class="wrap">
+<div class="topflex">
+<div class="bar">
+  <div class="row row1">
+    <div class="f"><label for="naiss">Assuré — année / âge</label>
+      <input id="naiss" inputmode="numeric" value="1966">
+      <div class="ageout" id="ageinfo"></div></div>
+    <div class="f"><label for="cnj">Conjoint — année / âge</label>
+      <input id="cnj" inputmode="numeric" placeholder="aucun" value="">
+      <div class="ageout" id="cnjinfo"></div></div>
+  </div>
+  <div class="row row2">
+    <div class="f"><label for="regime">Régime</label>
+      <select id="regime">
+        <option value="SAL">Salarié</option>
+        <option value="TNS">TNS</option>
+        <option value="RL">Salarié RL</option>
+        <option value="TNSRL">TNS RL</option>
+      </select></div>
+    <div class="f"><label for="cp">Département</label>
+      <input id="cp" value="75" maxlength="3">
+      </div>
+    <div class="f"><label for="kids">Mineurs</label>
+      <select id="kids"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+  </div>
+</div>
+
+<div class="rightcol">
+  <button type="button" class="volet" id="vg">🏢 Compagnies &amp; gammes <span class="vsum" id="vgsum"></span><span class="chev">▾</span></button>
+  <div class="gsel" id="gsel" hidden></div>
+  <button type="button" class="volet" id="vx">➕ Options par poste <span class="vsum" id="vxsum"></span><span class="chev">▾</span></button>
+  <div class="gsel" id="expanel" hidden><span id="exchecks" style="display:contents"></span></div>
+</div>
+</div>
+
+<div id="prospect" hidden style="margin-top:10px;background:var(--accent);color:var(--accent-ink);border-radius:9px;padding:8px 14px;font:700 15px 'Archivo',sans-serif"></div>
+
+<div class="results">
+  
+  <div class="tblwrap"><table>
+    <colgroup id="cg"></colgroup>
+    <thead id="thd"></thead>
+    <tbody id="rows"></tbody>
+  </table></div>
+  <div id="warns"></div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version __BUILD__</div>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script>
+const D = __DATA__;
+const BULLETIN_B64="__BULLETIN__";
+const YEAR = new Date().getFullYear();
+const CUSE=async n=>{try{return (typeof claude!=="undefined"&&claude&&claude.use)?await claude.use(n):null}catch(e){return null}};
+// HOSTED = page hébergée hors claude.ai (GitHub Pages / CRM) : aucune contrainte de plateforme
+const HOSTED=__HOSTED__;
+// Accès au bulletin d'adhésion sur le site hébergé : code d'accès (empreinte SHA-256), mémorisé sur l'appareil
+const ADHGATE="__GATE__";
+async function sha256(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest("SHA-256",b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("");}
+function adhUnlocked(){if(!ADHGATE)return true;try{return localStorage.getItem("santeo_adh")===ADHGATE;}catch(e){return false;}}
+function adhLogout(){try{localStorage.removeItem("santeo_adh");}catch(e){}updateAdhBadge();}
+function updateAdhBadge(){
+  let b=document.getElementById("adhbadge");
+  if(!ADHGATE)return;
+  if(!adhUnlocked()){if(b)b.remove();return;}
+  if(b)return;
+  b=document.createElement("button");b.id="adhbadge";b.textContent="🔓 Adhésion";b.title="Bulletin d'adhésion débloqué sur cet appareil — cliquer pour verrouiller";
+  b.style.cssText="position:fixed;top:16px;right:56px;z-index:49;background:#1b7f4b;color:#fff;border:0;border-radius:9px;padding:7px 11px;font:800 12px 'Archivo',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:pointer";
+  b.addEventListener("click",()=>{if(confirm("Verrouiller le bulletin d'adhésion sur cet appareil ?"))adhLogout();});
+  document.body.appendChild(b);
+}
+// Demande le code d'accès une fois par appareil, puis exécute cb
+function withAdhGate(cb){
+  if(adhUnlocked()){cb();return;}
+  const ov=document.createElement("div");
+  ov.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.55);z-index:1002;display:flex;align-items:flex-start;justify-content:center;padding:80px 16px 16px";
+  ov.innerHTML='<div style="background:var(--panel,#fff);color:var(--ink,#12233d);border-radius:14px;max-width:360px;width:100%;padding:16px 18px;box-shadow:0 18px 50px rgba(0,0,0,.35);font-family:\'Archivo\',sans-serif">'
+    +'<div style="font:800 15px \'Archivo\',sans-serif;margin-bottom:6px">🔒 Bulletin d\'adhésion — accès réservé</div>'
+    +'<div style="font-size:13px;color:var(--muted,#667);margin-bottom:10px">Entrez le code d\'accès Santéo. Il est mémorisé sur cet appareil.</div>'
+    +'<input id="gpwd" type="password" autocomplete="current-password" placeholder="Code d\'accès" style="width:100%;box-sizing:border-box;padding:11px;border:1px solid var(--line,#ccc);border-radius:9px;background:var(--ground,#f6f7f4);color:var(--ink,#12233d);font:15px \'IBM Plex Sans\',sans-serif">'
+    +'<div id="gerr" style="color:#c62828;font-size:13px;margin-top:6px;min-height:16px"></div>'
+    +'<div style="display:flex;gap:8px;margin-top:8px"><button id="gok" style="flex:1;padding:11px;border:0;border-radius:9px;background:var(--accent,#1b4f8a);color:#fff;font:700 14px \'Archivo\',sans-serif;cursor:pointer">Se connecter</button>'
+    +'<button id="gno" style="padding:11px 14px;border:1px solid var(--line,#ccc);border-radius:9px;background:var(--soft,#eee);color:var(--ink,#12233d);font:700 14px \'Archivo\',sans-serif;cursor:pointer">Annuler</button></div></div>';
+  document.body.appendChild(ov);
+  const inp=ov.querySelector("#gpwd");inp.focus();
+  const go=async()=>{
+    const h=await sha256(inp.value.trim());
+    if(h===ADHGATE){try{localStorage.setItem("santeo_adh",h);}catch(e){}ov.remove();updateAdhBadge();cb();}
+    else{ov.querySelector("#gerr").textContent="Code incorrect.";inp.select();}
+  };
+  ov.querySelector("#gok").addEventListener("click",go);
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter")go();});
+  ov.querySelector("#gno").addEventListener("click",()=>ov.remove());
+  ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
+}
+// garanties par formule : hono %, dentaire, optique, chambre, médecine douce
+const F = {
+  MCCINOVA:{label:"MCCINOVA",resp:false,ins:"mcci",names:["Socle","Essentielle","Ajustée","Maîtrisée"],
+    hospO:["100 %","130 %","160 %","190 %"],hospN:["100 %","110 %","140 %","170 %"],
+    honoO:["100 %","130 %","160 %","190 %"],honoN:["100 %","110 %","140 %","170 %"],
+    dent:["—","—","—","150 %"],opt:["—","—","—","—"],aud:["—","—","—","—"],ch:["—","30 €/j","40 €/j","50 €/j"],md:["—","—","—","—"]},
+  FLEXIA:{label:"FLEXIA",resp:true,ins:"mcci",names:["Start","Confort","Performance","Premium"],
+    hospO:["100 %","150 %","200 %","300 %"],hospN:["100 %","130 %","180 %","200 %"],
+    honoO:["100 %","150 %","200 %","300 %"],honoN:["100 %","130 %","180 %","200 %"],
+    dent:["100 %","150 %","200 %","300 %"],opt:["100 % BR","95 €","110 €","120 €"],aud:["400 €","500 €","600 €","700 €"],ch:["—","30 €/j","45 €/j","60 €/j"],md:["—","5×30 €","5×40 €","5×50 €"]},
+  SOLENCIA:{label:"SOLENCIA",resp:true,ins:"mcci",names:["Origine","Équilibre","Plénitude","Absolue"],
+    hospO:["180 %","200 %","300 %","350 %"],hospN:["160 %","180 %","200 %","200 %"],
+    honoO:["180 %","200 %","300 %","350 %"],honoN:["160 %","180 %","200 %","200 %"],
+    dent:["160 %","200 %","300 %","350 %"],opt:["90 €","120 €","160 €","175 €"],aud:["260 %","310 %","310 %","360 %"],ch:["30 €/j","45 €/j","60 €/j","80 €/j"],md:["5×40 €","5×50 €","5×50 €","5×60 €"]},
+  CAPEVO:{label:"CAP EVOLUTION",resp:true,ins:"avenir",names:["Accès","Équilibre","Tranquillité","Sérénité"],
+    hospO:["100 %","130 %","160 %","200 %"],hospN:["100 %","110 %","140 %","180 %"],
+    honoO:["100 %","130 %","160 %","200 %"],honoN:["100 %","110 %","140 %","180 %"],
+    dent:["100 %","130 %","160 %","200 %"],opt:["100 €","230 €","250 €","300 €"],aud:["200 €","200 €","1 000 €","1 000 €"],ch:["—","40 €/j","60 €/j","80 €/j"],md:["—","120 €/an","160 €/an","200 €/an"]},
+  CAPNR:{label:"CAP NR",resp:false,ins:"avenir",names:["Cap Essentiel","Cap 100 NR","Cap 130 NR","Cap 160 NR","Cap 200 NR","Cap 300 NR","Cap 400 NR"],
+    hospO:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],hospN:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],
+    honoO:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],honoN:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],
+    dent:["—","100 %","130 %","160 %","200 %","300 %","400 %"],opt:["—","130 €","200 €","200 €","250 €","350 €","450 €"],aud:["—","100 %","130 %","160 %","200 %","200 %","200 %"],ch:["25 €/j","30 €/j","40 €/j","60 €/j","80 €/j","100 €/j","120 €/j"],md:["—","30 €","40 €","50 €","75 €","100 €","150 €"]},
+  REV:{label:"REVOLUO",resp:true,ins:"avenir",names:["Rev 1","Rev 2","Rev 3","Rev 4","Rev 5","Rev 6","Rev 7","Rev 8"],
+    hospO:["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"],hospN:["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
+    honoO:["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"],honoN:["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
+    dent:["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"],opt:["—","100 €","125 €","150 €","175 €","225 €","275 €","300 €"],
+    ch:["—","30 €/j","35 €/j","40 €/j","50 €/j","60 €/j","70 €/j","100 €/j"],md:["—","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €"]},
+  RF50:{label:"REVOLUO RF50",resp:true,ins:"avenir",names:["Rev 2","Rev 3","Rev 4","Rev 5","Rev 6","Rev 7","Rev 8"],
+    hospO:["100 %","125 %","150 %","175 %","200 %","250 %","300 %"],hospN:["100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
+    honoO:["100 %","125 %","150 %","175 %","200 %","250 %","300 %"],honoN:["100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
+    dent:["150 %","175 %","200 %","225 %","250 %","300 %","350 %"],opt:["150 €","175 €","200 €","225 €","275 €","325 €","350 €"],
+    ch:["30 €/j","35 €/j","40 €/j","50 €/j","60 €/j","70 €/j","100 €/j"],md:["4×20 €","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €"]},
+  RF100:{label:"REVOLUO RF100",resp:true,ins:"avenir",names:["Rev 2","Rev 3","Rev 4","Rev 5","Rev 6"],
+    hospO:["100 %","125 %","150 %","175 %","200 %"],hospN:["100 %","105 %","130 %","155 %","180 %"],
+    honoO:["100 %","125 %","150 %","175 %","200 %"],honoN:["100 %","105 %","130 %","155 %","180 %"],
+    dent:["200 %","225 %","250 %","275 %","300 %"],opt:["150 €","175 €","200 €","225 €","275 €"],
+    ch:["30 €/j","35 €/j","40 €/j","50 €/j","60 €/j"],md:["4×20 €","4×20 €","4×20 €","4×20 €","4×20 €"]},
+  MV:{label:"M. VERTE GCI",resp:true,ins:"mverte",names:["GCI 100","GCI 150","GCI 200","GCI 300","GCI 500"],
+    hospO:["100 %","160 %","200 %","300 %","500 %"],hospN:["100 %","140 %","180 %","200 %","200 %"],
+    honoO:["100 %","160 %","200 %","300 %","500 %"],honoN:["100 %","140 %","180 %","200 %","200 %"],
+    dent:["100 %","200 %","250 %","400 %","500 %"],opt:["100 %","150 €","250 €","300 €","350 €"],
+    ch:["—","50 €/j","55 €/j","65 €/j","70 €/j"],md:["10 €/s","20 €/s","30 €/s","40 €/s","50 €/s"]},
+  LPSH:{label:"LPS HOSPI",resp:false,ins:"avenir",names:["LPS Hospi Santé"],
+    ij:["20 €/jour dès le 1er jour"],
+    hospO:["100 %"],hospN:["100 %"],
+    honoO:["—"],honoN:["—"],
+    dent:["—"],opt:["—"],aud:["—"],ch:["40 €/j"],md:["—"]},
+  TALIS:{label:"TALIS",resp:false,ins:"avenir",names:["Talis","Talis +"],
+    hospO:["+50 %","+100 %"],hospN:["+50 %","+100 %"],
+    honoO:["+25 %","+50 %"],honoN:["+25 %","+50 %"],
+    dent:["50 €/dent","100 €/dent"],opt:["50 €","100 €"],aud:["—","100 €"],ch:["20 €/j","30 €/j"],md:["3×15 €","3×20 €"]}
+};
+const EX={
+  MCCINOVA:{aud:["—","—","—","—"],imp:["—","—","—","150 %"],orthR:["—","—","—","—"],orthN:["—","—","—","—"],lentA:["—","—","—","—"],lentR:["—","—","—","—"]},
+  FLEXIA:{aud:["400 €","500 €","600 €","700 €"],imp:["—","—","—","300 €"],orthR:["100 %","150 %","200 %","300 %"],orthN:["—","—","150 €","250 €"],lentA:["100 % BR","60 €","80 €","100 €"],lentR:["100 % BR","60 €","80 €","100 €"]},
+  SOLENCIA:{aud:["260 %","310 %","310 %","360 %"],imp:["—","150 €","200 €","400 €"],orthR:["160 %","200 %","300 %","350 %"],orthN:["—","150 €","200 €","300 €"],lentA:["—","50 €","70 €","100 €"],lentR:["—","50 €","70 €","100 €"]},
+  CAPEVO:{aud:["200 €","200 €","1 000 €","1 000 €"],imp:["—","300 €","500 €","700 €"],orthR:["100 %","130 %","160 %","200 %"],orthN:["—","—","160 €","200 €"],lentA:["100 €/an","100 €/an","260 €/an","300 €/an"],lentR:["100 €/an","100 €/an","260 €/an","300 €/an"]},
+  CAPNR:{aud:["—","100 %","130 %","160 %","200 %","200 %","200 %"],imp:["—","—","—","160 €","200 €","300 €","400 €"],orthR:["—","100 %","130 %","160 %","200 %","300 %","400 %"],orthN:["—","—","—","160 €","200 €","300 €","400 €"],lentA:["incl. opt.","incl. opt.","incl. opt.","incl. opt.","incl. opt.","incl. opt.","incl. opt."],lentR:["incl. opt.","incl. opt.","incl. opt.","incl. opt.","incl. opt.","incl. opt.","incl. opt."]},
+  REV:{aud:["100 %","+50 €","+100 €","+150 €","+200 €","+250 €","+300 €","+350 €"],imp:["—","40 €","60 €","80 €","100 €","150 €","200 €","250 €"],orthR:["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"],orthN:["—","—","25 %","50 %","75 %","100 %","150 %","200 %"],lentA:["100 %","100 % +100 €","100 % +125 €","100 % +150 €","100 % +175 €","100 % +225 €","100 % +275 €","100 % +300 €"],lentR:["—","+100 €","+125 €","+150 €","+175 €","+225 €","+275 €","+300 €"]},
+  RF50:{aud:["+50 €","+100 €","+150 €","+200 €","+250 €","+300 €","+350 €"],imp:["40 €","60 €","80 €","100 €","150 €","200 €","250 €"],orthR:["150 %","175 %","200 %","225 %","250 %","300 %","350 %"],orthN:["50 %","75 %","100 %","125 %","150 %","200 %","250 %"],lentA:["100 % +150 €","100 % +175 €","100 % +200 €","100 % +225 €","100 % +275 €","100 % +325 €","100 % +350 €"],lentR:["+150 €","+175 €","+200 €","+225 €","+275 €","+325 €","+350 €"]},
+  RF100:{aud:["+50 €","+100 €","+150 €","+200 €","+250 €"],imp:["40 €","60 €","80 €","100 €","150 €"],orthR:["200 %","225 %","250 %","275 %","300 %"],orthN:["100 %","125 %","150 %","175 %","200 %"],lentA:["100 % +150 €","100 % +175 €","100 % +200 €","100 % +225 €","100 % +275 €"],lentR:["+150 €","+175 €","+200 €","+225 €","+275 €"]},
+  MV:{aud:["100 %","150 %","200 %","300 %","500 %"],imp:["—","300 €","350 €","400 €","500 €"],
+    orthR:["100 %","200 %","250 %","400 %","500 %"],orthN:["—","300 €","350 €","400 €","500 €"],
+    lentA:["100 % +50 €","100 % +100 €","100 % +150 €","100 % +150 €","100 % +200 €"],lentR:["+50 €","+100 €","+150 €","+150 €","+200 €"]},
+  LPSH:{aud:["—"],imp:["—"],orthR:["—"],orthN:["—"],lentA:["—"],lentR:["—"]},
+  TALIS:{aud:["—","100 €"],imp:["200 €/impl","300 €/impl"],orthR:["100 €/sem","200 €/sem"],orthN:["100 €/sem","150 €/sem"],lentA:["25 €/an","50 €/an"],lentR:["25 €/an","50 €/an"]}
+};
+const EXD=[["proth","Prothèses dent."],["imp","Implantologie"],["orthR","Ortho remb."],["orthN","Ortho non remb."]];
+const EXO=[["lent","Lentilles"],["aud","Audio"]];
+const EXTRAS=EXD.concat(EXO);
+const exOn={imp:false,proth:false,orthR:false,orthN:false,lent:false,aud:false};
+function exVal(key,k,fi){
+  if(k==="proth") return F[key].dent[fi];
+  const e=EX[key]; if(!e) return "—";
+  if(k==="lent"){
+    const A=(e.lentA&&e.lentA[fi]!==undefined)?e.lentA[fi]:"—", R=(e.lentR&&e.lentR[fi]!==undefined)?e.lentR[fi]:"—";
+    if(A===R) return A;
+    return '<div>acc. '+A+'</div><div class="hosp">réf. '+R+"</div>";
+  }
+  return (e[k]&&e[k][fi]!==undefined)?e[k][fi]:"—";
+}
+function buildHead(){
+  const ad=EXD.filter(e=>exOn[e[0]]), ao=EXO.filter(e=>exOn[e[0]]);
+  const xc='<col style="width:86px">';
+  let cg='<col style="width:34px"><col style="width:168px"><col style="width:86px"><col style="width:74px>'.replace('74px>','74px">')+xc.repeat(ad.length)+
+    '<col style="width:80px"><col style="width:70px"><col style="width:62px"><col style="width:70px"><col style="width:80px">'+xc.repeat(ao.length)+
+    '<col style="width:74px">';
+  document.getElementById("cg").innerHTML=cg;
+  let r1='<tr><th rowspan="2"></th><th rowspan="2">Gamme · Formule</th><th class="num" rowspan="2">Total / mois</th>'+
+    '<th class="c big" rowspan="2">Dentaire</th>'+
+    ad.map(e=>'<th class="c" rowspan="2">'+e[1]+'</th>').join("")+
+    '<th class="c grp" colspan="2">Hospitalisation</th><th class="c grp" colspan="2">Honoraires</th>'+
+    '<th class="c big" rowspan="2">Optique</th>'+
+    ao.map(e=>'<th class="c" rowspan="2">'+e[1]+'</th>').join("")+
+    '<th class="c" rowspan="2">Méd. douce</th>';
+  r1+='</tr><tr><th class="c sub">Optam</th><th class="c sub">hors Opt.</th><th class="c sub">Optam</th><th class="c sub">hors Opt.</th></tr>';
+  document.getElementById("thd").innerHTML=r1;
+  return 10+ad.length+ao.length;
+}
+const DOCS={
+  CAPNR:{"TG PDF":"https://fabcoh.github.io/santeo-tarifs/docs/capnr_tg_2026.pdf","IPID":"https://fabcoh.github.io/santeo-tarifs/docs/capnr_ipid_2026.pdf"},
+  REV:{"TG + notice":"https://fabcoh.github.io/santeo-tarifs/docs/revoluo_tg_2026.pdf"},RF50:{"TG + notice":"https://fabcoh.github.io/santeo-tarifs/docs/revoluo_tg_2026.pdf"},RF100:{"TG + notice":"https://fabcoh.github.io/santeo-tarifs/docs/revoluo_tg_2026.pdf"},
+  MCCINOVA:{"TG PDF":"https://fabcoh.github.io/santeo-tarifs/docs/mccinova_tg_2026.pdf"},
+  FLEXIA:{"TG PDF":"https://fabcoh.github.io/santeo-tarifs/docs/flexia_tg_2026.pdf"},
+  SOLENCIA:{"TG PDF":"https://fabcoh.github.io/santeo-tarifs/docs/solencia_tg_2026.pdf"},
+  MV:{"TG PDF (GCI 100-300)":"https://fabcoh.github.io/santeo-tarifs/docs/mv_tg_2026.pdf"},
+  TALIS:{"TG PDF":"https://fabcoh.github.io/santeo-tarifs/docs/talis_tg_2026.pdf","IPID":"https://fabcoh.github.io/santeo-tarifs/docs/talis_ipid_2026.pdf"},
+  LPSH:{"Garanties + IPID":"https://fabcoh.github.io/santeo-tarifs/docs/lps_hospi_2026.pdf"},
+  CAPEVO:{"TG PDF":"https://drive.google.com/file/d/1_I_J2OVVyU8ho6ACdObVhftg6ia-2w1h/view","IPID":"https://drive.google.com/file/d/1lFy7NnQ-cKUjndo1qhYjK3yHhkxuljyg/view","Notice":"https://drive.google.com/file/d/11w23LL6Zg6VdI7iAxagVWyx4zBkGeDwu/view"}
+};
+const TGNOTE={
+  MCCINOVA:"Grille MCCINOVA (18–90 ans, tarif national). Pas d\u2019optique, d\u2019audio ni de 100 % Sant\u00e9. Chambre particuli\u00e8re \u00e0 partir du 4\u1d49 jour. 30 premiers jours limit\u00e9s \u00e0 la formule Socle. Statut responsable \u00e0 confirmer aupr\u00e8s de MCCI.",
+  FLEXIA:"Contrat solidaire et responsable, 100 % Sant\u00e9. Plafond proth\u00e8ses 2 500 \u20ac/an (Confort+). Capital obs\u00e8ques 1 500 \u20ac avant 65 ans. Souscription 18\u201384 ans.",
+  SOLENCIA:"Contrat solidaire et responsable, 100 % Sant\u00e9. Souscription 62\u201399 ans. Plafond dentaire 2 000 \u20ac/an. Cures 100\u2013300 %, pr\u00e9vention 50\u2013200 \u20ac/an.",
+  CAPEVO:"Contrat responsable. Plafonds dentaires progressifs 600\u20131 300 \u20ac selon anciennet\u00e9. Audio enfant \u221220 ans : 840\u20131 700 \u20ac. Pharmacie non remb. 30 \u20ac/an (\u00c9quilibre+).",
+  CAPNR:"Contrat NON responsable. Souscription 16\u2013100 ans, zonage AVENIR. Plafonds dentaires 600\u20131 500 \u20ac selon anciennet\u00e9 et formule. Lentilles incluses dans le forfait optique global (130\u2013450 \u20ac). Fid\u00e9lit\u00e9 optique d\u00e8s la 3\u1d49 ann\u00e9e. Frais fun\u00e9raires 200\u20131 000 \u20ac.",
+  REV:"Contrat responsable et solidaire, 100 % Sant\u00e9. Souscription 19\u201380 ans (Rev 7/8 : 70 ans max), pas de DOM-TOM. Plafond dentaire 1 400 \u20ac (Rev 7) / 2 000 \u20ac (Rev 8). Chambre limit\u00e9e 90 j (30 j psy).",
+  RF50:"REVOLUO + Renfort 50 : +50 % sur soins/proth\u00e8ses/orthodontie dentaires, +50 \u20ac verres et lentilles. \u00c9ligible Rev 2 \u00e0 8.",
+  RF100:"REVOLUO + Renfort 100 : +100 % dentaire, +50 \u20ac verres et lentilles. \u00c9ligible Rev 2 \u00e0 6.",
+  MV:"La Mutuelle Verte, gamme Courtage GCI. \u00c2ge r\u00e9el, 18 ans minimum. GCI 100\u2013300 responsables ; GCI 500 NON responsable, sans 100 % Sant\u00e9. Plafonds dentaires 750\u20132 400 \u20ac/12 mois. Audio max 1 700 \u20ac/acte/48 mois. Pr\u00e9vention plafonn\u00e9e 30\u2013150 \u20ac/an. D\u00e9lais de stage applicables (GCI 500 notamment).",
+  LPSH:"Contrat NON responsable limit\u00e9 aux frais d\u2019hospitalisation : aucun remboursement en ville (consultations, pharmacie, dentaire, optique, audio). Inclus : frais de s\u00e9jour et honoraires 100 % BR (OPTAM et non OPTAM), forfait journalier 100 % FR, chambre particuli\u00e8re 40 \u20ac/jour, lit d\u2019accompagnant enfant de moins de 16 ans 15 \u20ac/nuit, indemnit\u00e9s journali\u00e8res 20 \u20ac/jour d\u00e8s le 1er jour, forfait patient urgence et participation actes lourds 100 % FR, transport 100 % BR, \u00ab Mon soutien psy \u00bb 100 % BR. Assistance RMA, t\u00e9l\u00e9consultation, No\u00e9 Sant\u00e9, deuxi\u00e8me avis. Pas de r\u00e9seau Kalixia. Forfait journalier et chambre particuli\u00e8re limit\u00e9s \u00e0 30 j la 1re ann\u00e9e, 60 j la 2e, 90 j ensuite ; long s\u00e9jour, maison de retraite et g\u00e9riatrie exclus. Adh\u00e9sion sans questionnaire m\u00e9dical, 16 \u00e0 100 ans, zonage AVENIR.",
+  TALIS:"Surcompl\u00e9mentaire (non responsable) : intervient apr\u00e8s la S\u00e9cu ET une compl\u00e9mentaire principale. Carence 90 j dentaire/optique. Plafond dentaire 600/900 \u20ac/an. Chambre 90 j (30 j psy). Sans questionnaire de sant\u00e9."
+};
+const INFO={"CAPEVO":[["Hospitalisation",[["Frais de séjour",["100 %","130 %","160 %","200 %"]],["Honoraires OPTAM / non OPTAM",["100 % / 100 %","130 % / 110 %","160 % / 140 %","200 % / 180 %"]],["Forfait journalier","Frais réels, illimité"],["Chambre particulière",["—","40 €/nuit","60 €/nuit","80 €/nuit"]],["Chambre ambulatoire",["—","—","30 €","30 €"]],["Lit accompagnant (enfant −16 ans)",["—","10 €/nuit","30 €/nuit","30 €/nuit"]],["Transport, actes lourds, forfait urgence","100 % / frais réels"]]],["Honoraires & soins courants",[["Généralistes et spécialistes OPTAM",["100 %","130 %","160 %","200 %"]],["Non OPTAM",["100 %","110 %","140 %","180 %"]],["Analyses, auxiliaires médicaux",["100 %","130 %","160 %","200 %"]],["Mon Soutien Psy","Frais réels"],["Pharmacie non remboursée (prescrite)",["—","30 €/an","30 €/an","30 €/an"]]]],["Dentaire",[["100 % Santé","Frais réels (dans la limite des honoraires plafonnés)"],["Prothèses hors 100 % Santé, soins, inlay-onlay",["100 %","130 %","160 %","200 %"]],["Orthodontie remboursée / non remboursée",["100 % / —","130 % / —","160 % / 160 €","200 % / 200 €"]],["Implantologie",["—","300 €/acte","500 €/acte","700 €/acte"]],["⚠ Plafond annuel 1re année",["—","600 €","1 000 €","1 100 €"]],["⚠ Plafond 2e–3e année",["—","700 €","1 100 €","1 200 €"]],["⚠ Plafond 4e année et +",["—","800 €","1 200 €","1 300 €"]]]],["Optique",[["100 % Santé (classe A)","Frais réels (prix limites de vente)"],["Monture + 2 verres simples",["100 €","230 €","250 €","300 €"]],["Monture + 1 simple + 1 complexe",["125 €","250 €","275 €","350 €"]],["Monture + 2 complexes",["200 €","300 €","325 €","375 €"]],["Monture + 2 très complexes",["200 €","330 €","360 €","450 €"]],["Lentilles (remboursées ou non, jetables incluses)",["100 €/an","100 €/an","260 €/an","300 €/an"]],["Chirurgie réfractive non remb. / remb.",["—","—","—","500 € / 300 € par œil"]],["⚠ Rythme","1 équipement par 2 ans (1 an pour les −16 ans ou en cas d'évolution de la vue)"]]],["Aides auditives",[["100 % Santé (classe I)","Frais réels"],["Classe II — adulte",["200 €","200 €","1 000 €","1 000 €"]],["Classe II — enfant −20 ans",["840 €","840 €","1 700 €","1 700 €"]],["⚠ Renouvellement","1 aide par oreille tous les 4 ans"]]],["Bien-être & prévention",[["Bien-être (ostéo, acupuncture, chiro, homéo, étiopathie, pédicure, podologie, diététique)",["—","120 €/an","160 €/an","200 €/an"]],["Actes médicaux féminins (FIV, amniocentèse, contraception, péridurale NR)",["—","80 €/an","120 €/an","200 €/an"]],["Prévention (vaccins NR, densitométrie, sevrage tabac)",["40 €/an","120 €/an","160 €/an","240 €/an"]],["Cures thermales remboursées","100 % BR"],["Frais funéraires",["—","—","300 €","500 €"]],["Forfait ALD / naissance",["—","—","—","200 € / 200 €"]]]],["Conditions & points de vigilance",[["Contrat","Responsable — dépassements hors parcours de soins et franchises non remboursés"],["Assistance / Noé Santé / deuxiemeavis.fr",["Non / — / —","Oui / — / Oui","Oui / Oui / Oui","Oui / Oui / Oui"]],["Réseau KALIXIA","Oui (optique, audio)"],["Enfants","3e enfant et suivants gratuits"],["⚠ Forfaits","Tous les forfaits s'entendent par année civile et par bénéficiaire"]]]],"CAPNR":[["Hospitalisation (secteur conventionné)",[["Frais de séjour et honoraires",["100 %","100 %","130 %","160 %","200 %","300 %","400 %"]],["Forfait hospitalier","Frais réels"],["Chambre particulière",["25 €","30 €","40 €","60 €","80 €","100 €","120 €"]],["Lit accompagnant (enfant −16 ans)",["5 €","8 €","10 €","15 €","20 €","20 €","20 €"]],["Transport accepté, forfait patient urgence","100 % BR / frais réels"]]],["Honoraires & soins courants",[["Généralistes",["100 %","100 %","130 %","160 %","200 %","300 %","400 %"]],["Spécialistes (hors psychiatrie)",["—","100 %","130 %","160 %","200 %","300 %","400 %"]],["Psychiatres",["—","100 %","130 %","160 %","200 %","300 %","400 %"]],["⚠ Psychiatrie","Dépassements limités à 12 remboursements par an"],["Analyses, imagerie, auxiliaires",["—","100 %","130 %","160 %","200 %","300 %","400 %"]],["Pharmacie remboursée 65/30/15 %","100 % BR"]]],["Dentaire (secteur conventionné)",[["Soins, inlay-onlay",["100 %","100 %","130 %","160 %","200 %","300 %","400 %"]],["Prothèses remboursées",["—","100 %","130 %","160 %","200 %","300 %","400 %"]],["Orthodontie remboursée",["—","100 %","130 %","160 %","200 %","300 %","400 %"]],["Orthodontie non remboursée",["—","—","—","160 €","200 €","300 €","400 €"]],["Inlay core",["—","40 €","82 €","122 €","170 €","310 €","440 €"]],["Implantologie",["—","—","—","160 €","200 €","300 €","400 €"]],["⚠ Plafond annuel 1re année",["—","—","—","600 €","700 €","800 €","1 000 €"]],["⚠ Plafond 2e–3e année",["—","—","—","700 €","800 €","1 000 €","1 300 €"]],["⚠ Plafond 4e année et +",["—","—","—","800 €","900 €","1 200 €","1 500 €"]]]],["Optique",[["⚠ Forfait global (montures, verres, lentilles remboursées ou non, jetables, opération laser)",["—","130 €","200 €","200 €","250 €","350 €","450 €"]],["Forfait à partir de la 3e année de fidélité",["—","170 €","210 €","240 €","300 €","400 €","500 €"]],["⚠ À retenir","Un seul forfait couvre l'ensemble du poste optique, lentilles comprises"],["⚠ Décompte","Montant accordé par an à compter de la date d'acquisition et par personne protégée"]]],["Aides auditives & appareillage",[["Orthopédie, appareillage, prothèses auditives",["—","100 %","130 %","160 %","200 %","200 %","200 %"]],["⚠ Plafond annuel du poste",["—","—","—","500 €","600 €","700 €","800 €"]]]],["Bien-être & prévention",[["Bien-être (acupuncture, ostéopathie, chiropractie, homéopathie, étiopathie)",["—","30 €","40 €","50 €","75 €","100 €","150 €"]],["Actes médicaux féminins",["—","30 €","40 €","50 €","75 €","100 €","150 €"]],["Prévention (vaccins NR, densitométrie, arrêt tabac, pédicure, parodontologie)",["—","30 €","40 €","50 €","75 €","100 €","150 €"]],["Cures thermales acceptées","100 % BR (sauf Cap Essentiel)"],["Frais funéraires",["—","200 €","200 €","300 €","500 €","700 €","1 000 €"]]]],["Conditions & points de vigilance",[["⚠ Contrat","NON responsable : pas de 100 % Santé, aides auditives et optique hors dispositif réglementaire"],["Adhésion","16 à 100 ans, sans questionnaire de santé — tarif selon le zonage AVENIR"],["Cotisations","Réduction pour le conjoint souscrivant, gratuité à partir du 3e enfant"],["Services","Assistance RMA, réseau KALIXIA, Noé Santé, deuxiemeavis.fr (avis spécialisé sous 7 jours)"],["⚠ Remboursements en euros","Par bénéficiaire, sur présentation de la facture acquittée, dans la limite des frais engagés"],["Forfait patient urgence","Pris en charge pour chaque passage aux urgences non suivi d'hospitalisation"]]]],"TALIS":[["Nature du contrat",[["⚠ Surcomplémentaire","Intervient APRÈS la Sécurité sociale ET une complémentaire principale — ne peut pas être souscrite seule"],["⚠ Contrat","NON responsable"],["⚠ Délai de carence","90 jours sur le dentaire et l'optique"],["Questionnaire de santé","Aucun"],["⚠ Famille","Un même niveau doit être souscrit pour toute la famille"],["⚠ Actes non conventionnés","Remboursement limité au ticket modérateur calculé sur le tarif d'autorité"],["⚠ Limite des garanties","Année civile (1er janvier au 31 décembre) ; l'année d'adhésion court de la date d'effet au 31 décembre"]]],["Hospitalisation",[["Dépassements sur honoraires chirurgicaux",["+50 % BR","+100 % BR"]],["Chambre particulière",["20 €/nuit","30 €/nuit"]],["⚠ Limite chambre","90 jours/an en médecine-chirurgie, 30 jours/an en psychiatrie"],["⚠ Nuitée","Séjour comportant au moins une nuit de 22 h à 6 h"],["⚠ Non remboursé","Forfaits d'accueil, dépenses personnelles et suppléments hôteliers (téléphone, journal, télévision)"]]],["Honoraires & soins courants",[["Consultations et visites (généralistes et spécialistes)",["+25 % BR","+50 % BR"]],["Pack médicaments (sevrage tabac, vaccins NR, pharmacie prescrite NR)",["25 €/an","50 €/an"]],["⚠ Pack médicaments","Sur présentation d'une prescription médicale"]]],["Dentaire",[["Prothèses remboursées",["50 €/dent","100 €/dent"]],["Prothèses non remboursées",["100 €/dent","150 €/dent"]],["Implantologie",["200 €/implant","300 €/implant"]],["Parodontie / endodontie non remboursées",["200 €/acte","300 €/acte"]],["⚠ Limite parodontie-endodontie","2 actes par an maximum"],["Orthodontie remboursée / non remboursée",["100 € / 100 € par semestre","200 € / 150 € par semestre"]],["⚠ Plafond dentaire annuel (hors soins)",["600 €","900 €"]]]],["Optique",[["Monture",["50 €","100 €"]],["Verre simple",["20 €","30 €"]],["Verre progressif",["50 €","75 €"]],["Lentilles remboursées ou non",["25 €/an","50 €/an"]],["Chirurgie réfractive",["100 €/œil","150 €/œil"]],["⚠ Limite","1 équipement par an et par bénéficiaire"],["⚠ Verres","Sphère supérieure à +10,25 ou inférieure à −10,25 dioptries assimilée à un verre progressif"],["⚠ Prise en charge","Seuls les verres, montures et lentilles cornéennes inscrits à la LPP"]]],["Aides auditives",[["Audioprothèse",["—","100 € par prothèse"]],["⚠ Limite","1 par oreille et par an"]]],["Bien-être",[["Pack consultations (homéopathe, diététicien, orthophoniste, psychologue, podologue, ostéopathie, chiropractie, réflexologie, acupuncture, thalasso)",["15 €/séance","20 €/séance"]],["⚠ Limite","3 séances par an"],["⚠ Praticiens","Professionnel recensé au répertoire ADELI/RPPS ou exerçant dans un établissement FINESS"]]],["Exclusions",[["⚠ Non couvert","Moyens et longs séjours, maisons de retraite, MAS"]]]],"LPSH":[["Nature du contrat",[["⚠ Couverture","Hospitalisation UNIQUEMENT — aucun remboursement en ville (consultations, pharmacie, dentaire, optique, audio)"],["⚠ Contrat","NON responsable"],["Adhésion","16 à 100 ans, sans questionnaire de santé — tarif selon le zonage AVENIR"]]],["Hospitalisation",[["Indemnités journalières","20 €/jour dès le 1er jour d'hospitalisation"],["Frais de séjour, honoraires OPTAM et non OPTAM","100 % BR"],["Forfait journalier hospitalier","100 % frais réels"],["Chambre particulière","40 €/jour"],["Lit accompagnant (enfant −16 ans)","15 €/nuit"],["Participation actes lourds, forfait patient urgence","100 % frais réels"],["Transport","100 % BR"],["⚠ Limite forfait journalier et chambre","30 jours la 1re année, 60 jours la 2e, 90 jours à partir de la 3e"],["⚠ Indemnités journalières","Allocation forfaitaire, sans limitation de durée"]]],["Soins courants",[["« Mon soutien psy »","100 % BR"],["⚠ Tout le reste","Non couvert"]]],["Services",[["Assistance RMA, téléconsultation, Noé Santé, deuxiemeavis.fr","Oui"],["Réseau KALIXIA","Non"]]],["Exclusions",[["⚠ Non assimilés à une hospitalisation","Moyens et longs séjours, maisons de retraite, maisons d'accueil spécialisées et établissements médico-sociaux (art. L.312-1)"],["⚠ Gériatrie-gérontologie","Moyens et longs séjours limités à 30 jours par an ; placements à l'année et temporaires exclus"],["⚠ Délai","Soins déclarés au-delà de 2 ans non remboursés"]]]],"MV":[["Hospitalisation",[["Honoraires OPTAM",["100 %","160 %","200 %","300 %","500 %"]],["Honoraires non OPTAM",["100 %","140 %","180 %","200 %","200 %"]],["Séjour",["100 %","150 %","200 %","300 %","500 %"]],["Chambre particulière",["—","50 €/jour","55 €/jour","65 €/jour","70 €/jour"]],["⚠ Limite chambre","Illimitée en chirurgie, 90 jours en médecine et SSR, 30 jours en psychiatrie"],["Forfait journalier (hors psy / psy)","20 € / 15 € par jour"],["Accompagnant (enfant −12 ans)",["—","10 €/jour","15 €/jour","20 €/jour","20 €/jour"]],["Participation frais d'accouchement",["—","100 €","150 €","175 €","200 €"]],["Hospitalisation à l'étranger","100 %"]]],["Honoraires & soins courants",[["Médecins OPTAM",["100 %","160 %","200 %","300 %","500 %"]],["Médecins non OPTAM",["100 %","140 %","180 %","200 %","500 %"]],["⚠ Limite dépassements","12 consultations par période de 12 mois et par bénéficiaire"],["Pharmacie 65/30/15 %, analyses, paramédicaux","100 %"],["Matériel médical, appareillage",["100 %","150 %","200 %","300 %","500 %"]]]],["Dentaire",[["100 % Santé","Frais réels (GCI 500 exclue)"],["Soins dentaires remboursés",["100 %","100 %","125 %","150 %","150 %"]],["Couronnes, bridges dents visibles",["100 %","200 %","250 %","400 %","500 %"]],["Couronnes, bridges autres dents",["100 %","150 %","200 %","300 %","400 %"]],["Inlays-onlays, appareils mobiles",["100 %","175 %","225 %","250 %","300 %"]],["Orthodontie remboursée",["100 %","200 %","250 %","400 %","500 %"]],["Implant, parodontie et orthodontie NON remboursées",["—","300 €","350 €","400 €","500 €"]],["⚠ Plafond dentaire 1re et 2e année",["—","750 €/12 mois","750 €/12 mois","1 000 €/12 mois","1 200 €/12 mois"]],["⚠ Plafond dentaire après 2 ans",["—","1 000 €/12 mois","1 200 €/12 mois","2 000 €/12 mois","2 400 €/12 mois"]],["⚠ Forfait implant/parodontie","Versé une seule fois pour un même numéro de dent"]]],["Optique",[["100 % Santé","Frais réels (GCI 500 exclue)"],["Verres simples (16 ans et +)",["100 %","100 €","150 €","200 €","250 €"]],["Verres mixtes (16 ans et +)",["100 %","150 €","250 €","300 €","350 €"]],["Verres complexes / hypercomplexes (16 ans et +)",["100 %","200 €","250 €","300 €","350 €"]],["Lentilles remboursées ou non",["+50 €","+100 €","+150 €","+150 €","+200 €"]],["Chirurgie réfractive",["50 €/œil","75 €/œil","100 €/œil","250 €/œil","350 €/œil"]],["⚠ Rythme","1 monture + 2 verres par période de 24 mois (sauf évolution de la vue ou −16 ans)"],["⚠ Monture","Remboursement limité à 100 € (Sécu + mutuelle)"],["Bonus si aucun équipement depuis 12 mois",["50 à 200 € selon les verres","+50 €","+50 €","+50 €","+50 €"]],["Bonus si aucun équipement depuis 24 mois",["80 à 200 € selon les verres","+100 €","+150 €","+200 €","+250 €"]],["⚠ Forfait optique","Versé déduction faite de ce qui a déjà été remboursé au titre du 100 % Santé"]]],["Aides auditives",[["100 % Santé","Frais réels (GCI 500 exclue)"],["Hors 100 % Santé",["100 %","150 %","200 %","300 % + 200 €","500 %"]],["⚠ Limites","1 700 € maximum par acte, renouvellement après 48 mois"]]],["Prévention & bien-être",[["Ostéopathie, chiropractie, étiopathie",["10 €/séance","20 €/séance","30 €/séance","40 €/séance","50 €/séance"]],["Psychologue / diététique (enfant −15 ans), antitabac",["—","30 €","50 €","50 €","50 €"]],["Cure thermale remboursée",["Sécu seule","+150 €","+200 €","+250 €","+300 €"]]]],["Conditions & points de vigilance",[["⚠ GCI 500","Contrat NON responsable — pas de 100 % Santé"],["GCI 100 à GCI 300","Contrats responsables"],["Âge","Tarification à l'âge réel, 18 ans minimum"],["⚠ Délais de stage","Applicables selon la formule (GCI 500 notamment)"],["⚠ Document de garanties","Le tableau officiel joint couvre GCI 100 à GCI 300 ; GCI 500 fait l'objet d'un document distinct"],["Gamme labellisée","Au titre de la participation des collectivités territoriales (décret n°2011-1474)"],["Services","Téléconsultation, assistance, réseaux de soins, application mobile"]]]],"REV":[["Hospitalisation",[["Honoraires OPTAM / OPTAM-CO",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Honoraires hors OPTAM",["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"]],["Frais de séjour, forfait journalier","Remboursement intégral (établissements conventionnés)"],["Chambre particulière (conventionné)",["—","30 €","35 €","40 €","50 €","60 €","70 €","100 €"]],["Chambre (non conventionné)",["—","30 €","35 €","40 €","50 €","60 €","70 €","70 €"]],["Lit accompagnant (enfant −16 ans)",["—","10 €","10 €","10 €","13 €","13 €","15 €","15 €"]],["⚠ Limite chambre — psychiatrie","30 jours par an et par assuré, 90 jours maximum sur toute la durée de l'adhésion"],["⚠ Limite chambre — secteur spécialisé","90 jours par an et par assuré (rééducation, convalescence, maison de repos, sevrage, soins de suite) hors psychiatrie"],["⚠ Chambre","Hors hospitalisation de jour ; séjour de plus de 24 h (une nuitée minimum)"],["⚠ REV 8 non conventionné","Chambre limitée à 70 € en secteur non conventionné"]]],["Honoraires & soins courants",[["Généralistes, spécialistes, imagerie OPTAM",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Hors OPTAM",["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"]],["Paramédicaux, analyses, transport",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Médicaments remboursés 65 / 30 / 15 %","100 %"],["Prothèses orthopédiques, appareillage",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Forfait annuel complémentaire prothèse",["—","25 €","35 €","45 €","55 €","65 €","75 €","85 €"]],["Cure thermale — forfait annuel",["—","50 €","75 €","100 €","125 €","150 €","175 €","200 €"]],["Allocation naissance / adoption",["—","—","—","—","120 €","120 €","120 €","120 €"]],["⚠ Allocation naissance","Versée à l'inscription de l'enfant, au plus tard 3 mois après la naissance"],["⚠ Secteur non conventionné","Remboursement calculé sur le tarif d'autorité de la Sécurité sociale"]]],["Dentaire",[["100 % Santé","Remboursement intégral, sans reste à charge"],["Soins, prophylaxie, parodontologie remboursés",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Prothèses hors 100 % Santé",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Orthodontie remboursée",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Orthodontie non remboursée",["—","—","25 %","50 %","75 %","100 %","150 %","200 %"]],["Actes non remboursés (prothèse, implant, parodontologie, gingivectomie) — forfait annuel",["—","40 €","60 €","80 €","100 €","150 €","200 €","250 €"]],["⚠ Plafond annuel du poste dentaire (hors 100 % Santé)",["—","—","—","—","—","—","1 400 €","2 000 €"]]]],["Optique",[["100 % Santé (classe A)","Remboursement intégral"],["Monture de classe B",["100 %","70 €","50 €","100 €","100 €","30 €","70 €","100 €"]],["Équipement 2 verres simples",["100 %","100 €","125 €","150 €","175 €","225 €","275 €","300 €"]],["Équipement 1 simple + 1 complexe",["100 %","150 €","175 €","200 €","225 €","250 €","275 €","300 €"]],["Équipement 2 verres complexes",["100 %","200 €","200 €","200 €","200 €","225 €","275 €","300 €"]],["Bonus fidélité optique (3e année et +)",["—","30 €","38 €","45 €","53 €","68 €","83 €","90 €"]],["Lentilles remboursées ou non, chirurgie réfractive",["100 %","+100 €","+125 €","+150 €","+175 €","+225 €","+275 €","+300 €"]],["⚠ Rythme","1 équipement (monture + 2 verres) tous les 2 ans — 1 an pour les moins de 16 ans ou en cas d'évolution de la vue"],["⚠ Monture","Remboursement limité à 100 € (Sécurité sociale comprise)"],["⚠ Point de départ","La période de 2 ans court à partir de la date d'acquisition du dernier équipement"]]],["Aides auditives",[["100 % Santé (classe I)","Remboursement intégral"],["Hors 100 % Santé (classe II)",["100 %","+50 €","+100 €","+150 €","+200 €","+250 €","+300 €","+350 €"]],["⚠ Plafond réglementaire","1 700 € par oreille à appareiller (Sécurité sociale comprise)"],["⚠ Renouvellement","1 aide auditive par oreille tous les 4 ans, à partir de la date d'acquisition"]]],["Bien-être & prévention",[["Ostéopathe, chiropraticien","20 € par acte"],["⚠ Limite","4 actes par an maximum"],["Actes de prévention (contrats responsables)","100 %"],["Participation forfaitaire actes lourds","Intégralement remboursée"]]],["Renforts optique / dentaire",[["Renfort 25","Éligible Rev 2 à Rev 8 — dentaire +25 %, verres et lentilles +25 €"],["Renfort 50","Éligible Rev 2 à Rev 8 — dentaire +50 %, verres et lentilles +50 €"],["Renfort 100","Éligible Rev 2 à Rev 6 uniquement — dentaire +100 %, verres et lentilles +50 €"]]],["Conditions & points de vigilance",[["⚠ Régime local","Contrat hors régime local Alsace-Moselle"],["⚠ Délai d'attente","Période après la prise d'effet pendant laquelle aucune prestation n'est due pour les frais et événements survenus"],["⚠ Plafonnement","Le remboursement ne dépasse jamais les frais réellement engagés"],["Échéance principale","1er janvier de chaque année"],["Contrat","Responsable et solidaire — 100 % Santé optique, dentaire et audio inclus"],["Services","Assistance vie quotidienne, tiers payant (pharmacie, biologie, radiologie, kiné, auxiliaires), prise en charge hospitalière et optique"],["Tarification","Base salarié × zone × régime ; Alsace-Moselle ×0,65 sans zone"]]]],"RF50":[["Hospitalisation",[["Honoraires OPTAM / OPTAM-CO",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Honoraires hors OPTAM",["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"]],["Frais de séjour, forfait journalier","Remboursement intégral (établissements conventionnés)"],["Chambre particulière (conventionné)",["—","30 €","35 €","40 €","50 €","60 €","70 €","100 €"]],["Chambre (non conventionné)",["—","30 €","35 €","40 €","50 €","60 €","70 €","70 €"]],["Lit accompagnant (enfant −16 ans)",["—","10 €","10 €","10 €","13 €","13 €","15 €","15 €"]],["⚠ Limite chambre — psychiatrie","30 jours par an et par assuré, 90 jours maximum sur toute la durée de l'adhésion"],["⚠ Limite chambre — secteur spécialisé","90 jours par an et par assuré (rééducation, convalescence, maison de repos, sevrage, soins de suite) hors psychiatrie"],["⚠ Chambre","Hors hospitalisation de jour ; séjour de plus de 24 h (une nuitée minimum)"],["⚠ REV 8 non conventionné","Chambre limitée à 70 € en secteur non conventionné"]]],["Honoraires & soins courants",[["Généralistes, spécialistes, imagerie OPTAM",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Hors OPTAM",["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"]],["Paramédicaux, analyses, transport",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Médicaments remboursés 65 / 30 / 15 %","100 %"],["Prothèses orthopédiques, appareillage",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Forfait annuel complémentaire prothèse",["—","25 €","35 €","45 €","55 €","65 €","75 €","85 €"]],["Cure thermale — forfait annuel",["—","50 €","75 €","100 €","125 €","150 €","175 €","200 €"]],["Allocation naissance / adoption",["—","—","—","—","120 €","120 €","120 €","120 €"]],["⚠ Allocation naissance","Versée à l'inscription de l'enfant, au plus tard 3 mois après la naissance"],["⚠ Secteur non conventionné","Remboursement calculé sur le tarif d'autorité de la Sécurité sociale"]]],["Dentaire",[["100 % Santé","Remboursement intégral, sans reste à charge"],["Soins, prophylaxie, parodontologie remboursés",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Prothèses hors 100 % Santé",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Orthodontie remboursée",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Orthodontie non remboursée",["—","—","25 %","50 %","75 %","100 %","150 %","200 %"]],["Actes non remboursés (prothèse, implant, parodontologie, gingivectomie) — forfait annuel",["—","40 €","60 €","80 €","100 €","150 €","200 €","250 €"]],["⚠ Plafond annuel du poste dentaire (hors 100 % Santé)",["—","—","—","—","—","—","1 400 €","2 000 €"]]]],["Optique",[["100 % Santé (classe A)","Remboursement intégral"],["Monture de classe B",["100 %","70 €","50 €","100 €","100 €","30 €","70 €","100 €"]],["Équipement 2 verres simples",["100 %","100 €","125 €","150 €","175 €","225 €","275 €","300 €"]],["Équipement 1 simple + 1 complexe",["100 %","150 €","175 €","200 €","225 €","250 €","275 €","300 €"]],["Équipement 2 verres complexes",["100 %","200 €","200 €","200 €","200 €","225 €","275 €","300 €"]],["Bonus fidélité optique (3e année et +)",["—","30 €","38 €","45 €","53 €","68 €","83 €","90 €"]],["Lentilles remboursées ou non, chirurgie réfractive",["100 %","+100 €","+125 €","+150 €","+175 €","+225 €","+275 €","+300 €"]],["⚠ Rythme","1 équipement (monture + 2 verres) tous les 2 ans — 1 an pour les moins de 16 ans ou en cas d'évolution de la vue"],["⚠ Monture","Remboursement limité à 100 € (Sécurité sociale comprise)"],["⚠ Point de départ","La période de 2 ans court à partir de la date d'acquisition du dernier équipement"]]],["Aides auditives",[["100 % Santé (classe I)","Remboursement intégral"],["Hors 100 % Santé (classe II)",["100 %","+50 €","+100 €","+150 €","+200 €","+250 €","+300 €","+350 €"]],["⚠ Plafond réglementaire","1 700 € par oreille à appareiller (Sécurité sociale comprise)"],["⚠ Renouvellement","1 aide auditive par oreille tous les 4 ans, à partir de la date d'acquisition"]]],["Bien-être & prévention",[["Ostéopathe, chiropraticien","20 € par acte"],["⚠ Limite","4 actes par an maximum"],["Actes de prévention (contrats responsables)","100 %"],["Participation forfaitaire actes lourds","Intégralement remboursée"]]],["Renforts optique / dentaire",[["Renfort 25","Éligible Rev 2 à Rev 8 — dentaire +25 %, verres et lentilles +25 €"],["Renfort 50","Éligible Rev 2 à Rev 8 — dentaire +50 %, verres et lentilles +50 €"],["Renfort 100","Éligible Rev 2 à Rev 6 uniquement — dentaire +100 %, verres et lentilles +50 €"]]],["Conditions & points de vigilance",[["⚠ Régime local","Contrat hors régime local Alsace-Moselle"],["⚠ Délai d'attente","Période après la prise d'effet pendant laquelle aucune prestation n'est due pour les frais et événements survenus"],["⚠ Plafonnement","Le remboursement ne dépasse jamais les frais réellement engagés"],["Échéance principale","1er janvier de chaque année"],["Contrat","Responsable et solidaire — 100 % Santé optique, dentaire et audio inclus"],["Services","Assistance vie quotidienne, tiers payant (pharmacie, biologie, radiologie, kiné, auxiliaires), prise en charge hospitalière et optique"],["Tarification","Base salarié × zone × régime ; Alsace-Moselle ×0,65 sans zone"]]]],"RF100":[["Hospitalisation",[["Honoraires OPTAM / OPTAM-CO",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Honoraires hors OPTAM",["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"]],["Frais de séjour, forfait journalier","Remboursement intégral (établissements conventionnés)"],["Chambre particulière (conventionné)",["—","30 €","35 €","40 €","50 €","60 €","70 €","100 €"]],["Chambre (non conventionné)",["—","30 €","35 €","40 €","50 €","60 €","70 €","70 €"]],["Lit accompagnant (enfant −16 ans)",["—","10 €","10 €","10 €","13 €","13 €","15 €","15 €"]],["⚠ Limite chambre — psychiatrie","30 jours par an et par assuré, 90 jours maximum sur toute la durée de l'adhésion"],["⚠ Limite chambre — secteur spécialisé","90 jours par an et par assuré (rééducation, convalescence, maison de repos, sevrage, soins de suite) hors psychiatrie"],["⚠ Chambre","Hors hospitalisation de jour ; séjour de plus de 24 h (une nuitée minimum)"],["⚠ REV 8 non conventionné","Chambre limitée à 70 € en secteur non conventionné"]]],["Honoraires & soins courants",[["Généralistes, spécialistes, imagerie OPTAM",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Hors OPTAM",["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"]],["Paramédicaux, analyses, transport",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Médicaments remboursés 65 / 30 / 15 %","100 %"],["Prothèses orthopédiques, appareillage",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Forfait annuel complémentaire prothèse",["—","25 €","35 €","45 €","55 €","65 €","75 €","85 €"]],["Cure thermale — forfait annuel",["—","50 €","75 €","100 €","125 €","150 €","175 €","200 €"]],["Allocation naissance / adoption",["—","—","—","—","120 €","120 €","120 €","120 €"]],["⚠ Allocation naissance","Versée à l'inscription de l'enfant, au plus tard 3 mois après la naissance"],["⚠ Secteur non conventionné","Remboursement calculé sur le tarif d'autorité de la Sécurité sociale"]]],["Dentaire",[["100 % Santé","Remboursement intégral, sans reste à charge"],["Soins, prophylaxie, parodontologie remboursés",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Prothèses hors 100 % Santé",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Orthodontie remboursée",["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"]],["Orthodontie non remboursée",["—","—","25 %","50 %","75 %","100 %","150 %","200 %"]],["Actes non remboursés (prothèse, implant, parodontologie, gingivectomie) — forfait annuel",["—","40 €","60 €","80 €","100 €","150 €","200 €","250 €"]],["⚠ Plafond annuel du poste dentaire (hors 100 % Santé)",["—","—","—","—","—","—","1 400 €","2 000 €"]]]],["Optique",[["100 % Santé (classe A)","Remboursement intégral"],["Monture de classe B",["100 %","70 €","50 €","100 €","100 €","30 €","70 €","100 €"]],["Équipement 2 verres simples",["100 %","100 €","125 €","150 €","175 €","225 €","275 €","300 €"]],["Équipement 1 simple + 1 complexe",["100 %","150 €","175 €","200 €","225 €","250 €","275 €","300 €"]],["Équipement 2 verres complexes",["100 %","200 €","200 €","200 €","200 €","225 €","275 €","300 €"]],["Bonus fidélité optique (3e année et +)",["—","30 €","38 €","45 €","53 €","68 €","83 €","90 €"]],["Lentilles remboursées ou non, chirurgie réfractive",["100 %","+100 €","+125 €","+150 €","+175 €","+225 €","+275 €","+300 €"]],["⚠ Rythme","1 équipement (monture + 2 verres) tous les 2 ans — 1 an pour les moins de 16 ans ou en cas d'évolution de la vue"],["⚠ Monture","Remboursement limité à 100 € (Sécurité sociale comprise)"],["⚠ Point de départ","La période de 2 ans court à partir de la date d'acquisition du dernier équipement"]]],["Aides auditives",[["100 % Santé (classe I)","Remboursement intégral"],["Hors 100 % Santé (classe II)",["100 %","+50 €","+100 €","+150 €","+200 €","+250 €","+300 €","+350 €"]],["⚠ Plafond réglementaire","1 700 € par oreille à appareiller (Sécurité sociale comprise)"],["⚠ Renouvellement","1 aide auditive par oreille tous les 4 ans, à partir de la date d'acquisition"]]],["Bien-être & prévention",[["Ostéopathe, chiropraticien","20 € par acte"],["⚠ Limite","4 actes par an maximum"],["Actes de prévention (contrats responsables)","100 %"],["Participation forfaitaire actes lourds","Intégralement remboursée"]]],["Renforts optique / dentaire",[["Renfort 25","Éligible Rev 2 à Rev 8 — dentaire +25 %, verres et lentilles +25 €"],["Renfort 50","Éligible Rev 2 à Rev 8 — dentaire +50 %, verres et lentilles +50 €"],["Renfort 100","Éligible Rev 2 à Rev 6 uniquement — dentaire +100 %, verres et lentilles +50 €"]]],["Conditions & points de vigilance",[["⚠ Régime local","Contrat hors régime local Alsace-Moselle"],["⚠ Délai d'attente","Période après la prise d'effet pendant laquelle aucune prestation n'est due pour les frais et événements survenus"],["⚠ Plafonnement","Le remboursement ne dépasse jamais les frais réellement engagés"],["Échéance principale","1er janvier de chaque année"],["Contrat","Responsable et solidaire — 100 % Santé optique, dentaire et audio inclus"],["Services","Assistance vie quotidienne, tiers payant (pharmacie, biologie, radiologie, kiné, auxiliaires), prise en charge hospitalière et optique"],["Tarification","Base salarié × zone × régime ; Alsace-Moselle ×0,65 sans zone"]]]],"MCCINOVA":[["Nature du contrat",[["⚠ Délai d'attente","Pendant les 30 premiers jours suivant la prise d'effet, les remboursements sont limités à la formule SOCLE"],["Contrat","Responsable — 100 % Santé optique, dentaire et audio inclus"],["Âges","Adhésion de 18 à 90 ans"]]],["Hospitalisation",[["Frais de séjour (conventionné et non conventionné)","100 % BR"],["Honoraires praticiens OPTAM",["100 %","130 %","160 %","190 %"]],["Honoraires hors OPTAM",["100 %","110 %","140 %","170 %"]],["Honoraires en établissement non conventionné","100 % BR"],["Forfait journalier hospitalier","Frais réels"],["Chambre particulière",["—","30 €/jour","40 €/jour","50 €/jour"]],["⚠ Chambre — délai","Remboursée à partir du 4e jour consécutif d'hospitalisation ; le délai de 3 jours repart à chaque hospitalisation et n'est pas cumulable"],["⚠ Chambre — limite","60 jours par an en rééducation, psychiatrie et addictologie"]]],["Honoraires & soins courants",[["Généralistes OPTAM",["100 %","100 %","130 %","160 %"]],["Spécialistes OPTAM",["100 %","130 %","160 %","190 %"]],["Généralistes hors OPTAM",["100 %","100 %","110 %","140 %"]],["Spécialistes hors OPTAM",["100 %","110 %","140 %","170 %"]],["Imagerie, actes techniques, paramédicaux, analyses, transport","100 % BR"],["Médicaments remboursés à 65 %","100 % BR"],["Médicaments remboursés à 30 %",["30 %","100 %","100 %","100 %"]],["Médicaments remboursés à 15 %",["15 %","100 %","100 %","100 %"]],["Actes de prévention (arrêté du 8 juin 2006)","100 % BR"]]],["Dentaire",[["Soins et prothèses 100 % Santé","Pris en charge (panier sans reste à charge)"],["Soins hors panier 100 % Santé",["—","100 %","100 %","100 %"]],["Prothèses, inlays-core, inlay-onlay et implantologie hors panier",["—","—","—","150 %"]],["⚠ À retenir","Seule la formule MAÎTRISÉE rembourse les prothèses hors 100 % Santé"]]],["Optique & aides auditives",[["Équipements 100 % Santé","Pris en charge (classe A optique, classe I audio)"],["⚠ Hors 100 % Santé","Aucun remboursement optique ni audioprothèse hors panier dans cette gamme"]]],["Bien-être",[["⚠ Médecine douce","Non couverte dans cette gamme"]]],["Conditions & points de vigilance",[["⚠ Hospitalisation exclue","Séjours en maisons d'accueil spécialisées, EHPAD et maisons de retraite non pris en charge"],["⚠ Hors parcours de soins","Désengagement du régime obligatoire et pénalités non remboursés"],["Forfaits et limites","Par année civile et par bénéficiaire, sauf optique (monture et verres) et aide auditive"],["Alsace-Moselle","Taux de remboursement différents, MCCI intervient en complément"],["Total remboursé","Jamais supérieur aux frais réellement engagés"],["Services","Tiers payant, réseau Itelis, assistance santé, remboursements automatisés, téléconsultation"],["Date d'effet du tableau","1er avril 2026"]]]],"FLEXIA":[["Hospitalisation",[["Frais de séjour et honoraires DPTAM",["100 %","150 %","200 %","300 %"]],["Honoraires non DPTAM",["100 %","130 %","180 %","200 %"]],["⚠ Établissement non conventionné","Frais de séjour et honoraires limités à 100 % BR"],["Forfait journalier et forfait actes lourds","100 % du forfait"],["Hospitalisation à domicile",["100 %","150 %","200 %","300 %"]],["Chambre particulière",["—","30 €/jour","45 €/jour","60 €/jour"]],["⚠ Limite chambre","60 jours par an (médecine, chirurgie), 30 jours par an (psychiatrie, soins de suite et réadaptation)"],["Lit d'accompagnant",["—","20 €/jour","30 €/jour","40 €/jour"]],["⚠ Limite lit accompagnant","30 jours par an"],["Forfait maternité (adoption incluse)",["—","—","200 €","250 €"]],["Forfait maternité — naissance multiple","Prestation doublée"]]],["Honoraires & soins courants",[["Généralistes et spécialistes DPTAM",["100 %","150 %","200 %","300 %"]],["Généralistes et spécialistes non DPTAM",["100 %","130 %","180 %","200 %"]],["Actes techniques, imagerie DPTAM",["100 %","150 %","200 %","300 %"]],["Analyses, paramédicaux",["100 %","150 %","200 %","300 %"]],["Pharmacie remboursée 65 / 30 / 15 %","100 % BR"],["Pharmacie prescrite non remboursée (sevrage tabac, contraception, vaccins)",["—","25 €","25 €","45 €"]],["Prothèses capillaires non remboursées",["—","—","100 €","200 €"]],["Transport (hors cure)","100 % BR"],["Téléconsultation","Incluse"]]],["Dentaire",[["Soins et prothèses 100 % Santé","100 % des prix limites de vente"],["Soins hors 100 % Santé, inlay-onlay, prothèses paniers modéré et libre",["100 %","150 %","200 %","300 %"]],["Orthodontie remboursée",["100 %","150 %","200 %","300 %"]],["Orthodontie non remboursée, parodontologie, prothèses fixes non remboursées",["—","—","150 €","250 €"]],["Implantologie (forfait annuel)",["—","—","—","300 €"]],["⚠ Limite annuelle prothèses (paniers modéré et libre, hors 100 % Santé)",["—","2 500 €","2 500 €","2 500 €"]],["⚠ Au-delà de la limite","Seul le ticket modérateur est pris en charge"]]],["Optique",[["Équipement 100 % Santé (classe A)","100 % des prix limites de vente"],["Monture classe B",["100 % BR","60 €","80 €","100 €"]],["1 verre simple",["100 % BR","45 €","60 €","80 €"]],["1 verre complexe",["100 % BR","95 €","110 €","120 €"]],["1 verre très complexe",["100 % BR","120 €","135 €","150 €"]],["Lentilles (remboursées ou non)",["100 % BR","60 €/an","80 €/an","100 €/an"]],["Chirurgie réfractive",["—","200 €/œil","250 €/œil","350 €/œil"]],["⚠ Rythme","1 équipement (monture + 2 verres) tous les 2 ans à compter de la date de facturation du précédent — tous les ans pour les moins de 16 ans ou en cas d'évolution de la vue"],["⚠ Équipement mixte","Les éléments de classe A sont pris en charge à 100 % des prix limites de vente et déduits du forfait classe B"]]],["Aides auditives",[["Équipements 100 % Santé","100 % des prix limites de vente"],["Bénéficiaire de 21 ans et plus",["400 €","500 €","600 €","700 €"]],["Bénéficiaire de moins de 21 ans",["1 400 €","1 450 €","1 500 €","1 550 €"]],["⚠ Limite","Par oreille et par période de 4 ans ; les montants en euros incluent le remboursement de la Sécurité sociale"],["Accessoires, entretien et piles remboursés",["100 %","150 %","200 %","300 %"]]]],["Bien-être & prévention",[["Forfait bien-être (ostéopathe, chiropracteur, acupuncteur, homéopathe, psychomotricien, psychologue, ergothérapeute, diététicien, pédicure-podologue, ostéodensitométrie)",["—","5 séances × 30 €","5 séances × 40 €","5 séances × 50 €"]],["⚠ Forfait bien-être","Limite globale par année civile et par bénéficiaire"],["Cures thermales (frais médicaux, séjour, transport)","100 % BR"],["Garantie obsèques","Capital décès de 1 500 € avant 65 ans (adhérent, conjoint et enfant), sous réserve de l'accord de l'assureur UNMI"]]],["Conditions & points de vigilance",[["⚠ Hospitalisation exclue","Séjours en maisons d'accueil spécialisées, EHPAD et maisons de retraite non pris en charge"],["⚠ Hors parcours de soins","Désengagement du régime obligatoire et pénalités non remboursés"],["Forfaits et limites","Par année civile et par bénéficiaire, sauf optique (monture et verres) et aide auditive"],["Alsace-Moselle","Taux de remboursement différents, MCCI intervient en complément"],["Total remboursé","Jamais supérieur aux frais réellement engagés"],["Services","Tiers payant, réseau Itelis, assistance santé, remboursements automatisés, téléconsultation"],["Date d'effet du tableau","1er avril 2026"]]]],"SOLENCIA":[["Hospitalisation",[["Frais de séjour et honoraires DPTAM",["180 %","200 %","300 %","350 %"]],["Honoraires non DPTAM",["160 %","180 %","200 %","200 %"]],["⚠ Établissement non conventionné","Frais de séjour et honoraires limités à 100 % BR"],["Forfait journalier et forfait actes lourds","Frais réels"],["Hospitalisation à domicile",["180 %","200 %","300 %","350 %"]],["Chambre particulière",["30 €/jour","45 €/jour","60 €/jour","80 €/jour"]],["⚠ Limite chambre","60 jours par an (médecine, chirurgie), 30 jours par an (psychiatrie, soins de suite et réadaptation)"],["Lit d'accompagnant",["15 €/jour","20 €/jour","30 €/jour","60 €/jour"]],["⚠ Limite lit accompagnant","30 jours par an"]]],["Honoraires & soins courants",[["Généralistes et spécialistes DPTAM",["180 %","200 %","300 %","350 %"]],["Généralistes et spécialistes non DPTAM",["160 %","180 %","200 %","200 %"]],["Imagerie et actes techniques DPTAM",["180 %","200 %","300 %","350 %"]],["Analyses, paramédicaux",["180 %","200 %","300 %","350 %"]],["Pharmacie remboursée 65 / 30 / 15 %","100 % BR"],["Pharmacie et vaccins prescrits non remboursés",["30 €","45 €","60 €","70 €"]],["Matériel médical, appareillage",["—","200 %","300 %","350 %"]],["Prothèses capillaires non remboursées",["—","100 €","200 €","300 €"]],["Transport (hors cure)",["—","100 %","100 %","100 %"]],["Téléconsultation","Incluse"]]],["Dentaire",[["Soins et prothèses 100 % Santé","100 % des prix limites de vente"],["Soins hors 100 % Santé, inlay-onlay, prothèses paniers modéré et libre",["160 %","200 %","300 %","350 %"]],["Orthodontie remboursée",["160 %","200 %","300 %","350 %"]],["Parodontologie et prothèses non remboursées (forfait annuel)",["—","150 €","200 €","300 €"]],["Implantologie (forfait annuel)",["—","150 €","200 €","400 €"]],["⚠ Implantologie","2 actes maximum par an et par bénéficiaire"],["⚠ Limite annuelle prothèses et inlay-onlay (paniers modéré et libre)","2 000 € toutes formules"]]],["Optique",[["Équipement 100 % Santé (classe A)","100 % des prix limites de vente"],["Monture classe B",["50 €","60 €","80 €","100 €"]],["1 verre simple",["50 €","70 €","110 €","125 €"]],["1 verre complexe",["90 €","120 €","160 €","175 €"]],["1 verre très complexe",["125 €","145 €","185 €","200 €"]],["Lentilles (remboursées ou non)",["—","50 €/an","70 €/an","100 €/an"]],["Implants intraoculaires multifocaux (cataracte)",["—","—","125 €/œil","200 €/œil"]],["Chirurgie réfractive",["—","—","300 €/œil","350 €/œil"]],["Traitement DMLA non remboursé",["—","—","100 €","100 €"]],["⚠ Rythme","1 équipement (monture + 2 verres) tous les 2 ans à compter de la date de délivrance du précédent — tous les ans pour les moins de 16 ans ou en cas d'évolution de la vue"]]],["Aides auditives",[["Équipements 100 % Santé","100 % des prix limites de vente"],["Équipements à tarifs libres (21 ans et plus)",["260 %","310 %","310 %","360 %"]],["⚠ Limite","Par oreille et par période de 4 ans"]]],["Bien-être & prévention",[["Médecine douce (diététicien, nutritionniste, acupuncteur, ostéopathe, chiropracteur, étiopathe, ergothérapeute)",["5 × 40 €","5 × 50 €","5 × 50 €","5 × 60 €"]],["⚠ Médecine douce","5 séances par an et par bénéficiaire"],["Forfait prévention (podologie, densitométrie, psychologue, sophrologue, analyses prescrites)",["50 €/an","100 €/an","150 €/an","200 €/an"]],["Activité physique adaptée (ALD, sur prescription)",["—","—","3 séances × 30 €","3 séances × 50 €"]],["Cures thermales remboursées",["100 %","150 %","200 %","300 %"]]]],["Conditions & points de vigilance",[["⚠ Hospitalisation exclue","Séjours en maisons d'accueil spécialisées, EHPAD et maisons de retraite non pris en charge"],["⚠ Hors parcours de soins","Désengagement du régime obligatoire et pénalités non remboursés"],["Forfaits et limites","Par année civile et par bénéficiaire, sauf optique (monture et verres) et aide auditive"],["Alsace-Moselle","Taux de remboursement différents, MCCI intervient en complément"],["Total remboursé","Jamais supérieur aux frais réellement engagés"],["Services","Tiers payant, réseau Itelis, assistance santé, remboursements automatisés, téléconsultation"],["Date d'effet du tableau","1er avril 2026"]]]]};
+// Popup « i » : limites, plafonds et exclusions du poste, pour la formule choisie
+function showInfo(r){
+  const blocks=INFO[r.key]||[];
+  const val=v=>Array.isArray(v)?(v[r.fi]!==undefined?v[r.fi]:"—"):v;
+  const docs=Object.entries(DOCS[r.key]||{}).map(([n,u])=>'<a class="tgbtn doc" href="'+u+'" target="_blank" rel="noopener">'+n+' ↗</a>').join(' ');
+  let html=blocks.map(([poste,items])=>'<div class="ipost"><h3>'+poste+'</h3>'
+      +items.map(([lab,v])=>{const x=val(v);const w=/^⚠/.test(lab);
+        return '<div class="irow'+(w?' iwarn':'')+'"><span>'+lab.replace(/^⚠\s*/,'')+'</span><b>'+x+'</b></div>';}).join('')
+    +'</div>').join('');
+  if(!blocks.length)html='<div class="ipost">Détail non disponible pour cette gamme.</div>';
+  const ov=document.createElement('div');ov.id='tgov';
+  ov.innerHTML='<div id="tgbox" class="infobox"><button class="close">Fermer ✕</button>'
+    +'<h2>'+(F[r.key].label+" "+r.formule).replace(/\b(\S+) \1\b/,"$1")+'</h2>'
+    +'<div class="src">'+COMP[r.key]+' · '+eur(r.total)+' par mois · limites, plafonds et exclusions — seuls les documents contractuels font foi.</div>'
+    +(docs?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">'+docs+'</div>':'')
+    +html+'<div class="foot">'+(TGNOTE[r.key]||'')+'</div></div>';
+  ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
+  document.body.appendChild(ov);
+}
+const TGROWS=[["Hospitalisation Optam","hospO"],["Hospitalisation hors Optam","hospN"],["Chambre particulière","ch"],["Consult. spécialistes Optam","honoO"],["Consult. hors Optam","honoN"],["Dentaire — prothèses","dent"],["Implantologie","x:imp"],["Orthodontie remboursée","x:orthR"],["Orthodontie non remboursée","x:orthN"],["Optique (équipement)","opt"],["Lentilles acceptées","x:lentA"],["Lentilles refusées","x:lentR"],["Aides auditives","x:aud"],["Médecine douce / bien-être","md"]];
+// ---- Lecture de documents (RIB, attestation de Sécurité sociale) ----
+// Tout se passe dans le navigateur : aucun document n'est envoyé ni conservé.
+function loadScript(src){return new Promise((ok,ko)=>{const s=document.createElement("script");s.src=src;s.onload=ok;s.onerror=ko;document.head.appendChild(s);});}
+function ibanOK(v){
+  v=v.replace(/\s+/g,"").toUpperCase();
+  if(!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(v))return false;
+  const r=(v.slice(4)+v.slice(0,4)).replace(/[A-Z]/g,c=>c.charCodeAt(0)-55);
+  let m=0; for(const d of r) m=(m*10+ +d)%97;
+  return m===1;
+}
+function secuOK(v){
+  v=v.replace(/\s+/g,"").toUpperCase().replace(/^(\d{5})2A/,"$119").replace(/^(\d{5})2B/,"$118");
+  if(!/^\d{15}$/.test(v))return false;
+  let m=0; for(const d of v.slice(0,13)) m=(m*10+ +d)%97;   // clé = 97 − (13 premiers chiffres modulo 97)
+  return (97-m)===+v.slice(13);
+}
+// Type de document : chaque pièce ne renseigne que sa zone
+function docKind(T){
+  const t=T.toLowerCase();
+  if(/relev[ée]\s*d.identit[ée]\s*bancaire|\brib\b|domiciliation|\bbic\b|\biban\b/.test(t))return "rib";
+  if(/attestation|assurance maladie|ameli|cpam|droits? ouverts|organisme|caisse primaire/.test(t))return "secu";
+  if(/carte nationale|passeport|permis de conduire|titre de s[ée]jour|r[ée]publique fran|identity card/.test(t)||/[A-Z0-9<]{28,}/.test(T))return "id";
+  return "autre";
+}
+// Nom du titulaire du document, pour vérifier qu'il s'agit bien du bon prospect
+const ADMIN=/^(ATTESTATION|ATTESTATIONS|DROITS|DROIT|ASSURANCE|MALADIE|CAISSE|PRIMAIRE|CPAM|MSA|RSI|ORGANISME|SECURITE|SÉCURITÉ|SOCIALE|NUMERO|NUMÉRO|BENEFICIAIRE|BÉNÉFICIAIRE|BENEFICIAIRES|BÉNÉFICIAIRES|ASSURE|ASSURÉ|ASSUREE|ASSURÉE|TITULAIRE|NIR|IBAN|BIC|RIB|RELEVE|RELEVÉ|IDENTITE|IDENTITÉ|BANCAIRE|DOMICILIATION|BANQUE|AGENCE|COMPTE|CODE|GUICHET|CLE|CLÉ|ADRESSE|VILLE|POSTAL|TELEPHONE|TÉLÉPHONE|EMAIL|MAIL|REPUBLIQUE|RÉPUBLIQUE|FRANCAISE|FRANÇAISE|CARTE|NATIONALE|PASSEPORT|PERMIS|CONDUIRE|NOM|PRENOM|PRÉNOM|NEE|NÉE|VALABLE|DELIVRE|DÉLIVRÉ|SIREN|SIRET|MUTUELLE|SANTE|SANTÉ|VOS|VOTRE|LES|DES|DU|DE|LA|LE|ET|POUR|AVEC|SUR|PAR)$/i;
+// Raisons sociales de banques et d'assureurs : jamais un nom de titulaire
+const BANKW=/^(BNP|PARIBAS|CREDIT|CRÉDIT|AGRICOLE|MUTUEL|MUTUELLE|LYONNAIS|LCL|SOCIETE|SOCIÉTÉ|GENERALE|GÉNÉRALE|CIC|HSBC|POPULAIRE|EPARGNE|ÉPARGNE|POSTALE|POSTE|BRED|FORTUNEO|BOURSORAMA|MONABANQ|REVOLUT|QONTO|NICKEL|AXA|ALLIANZ|GROUPAMA|MACIF|MAIF|MATMUT|CNP|SUCCURSALE|SIEGE|SIÈGE|SOCIAL|ETABLISSEMENT|ÉTABLISSEMENT|DOMICILIE|DOMICILIÉ|CENTRE|CENTRALE|SERVICE|SERVICES|CLIENT|CLIENTELE|CLIENTÈLE|CONSEILLER|GESTION|REFERENCE|RÉFÉRENCE|EDITION|ÉDITION|PAGE|MONTANT|SOLDE|VIREMENT|PRELEVEMENT|PRÉLÈVEMENT|SEPA|ZONE|EUROS|EUR|DATE|DUPLICATA|EXEMPLAIRE)$/i;
+const CIVW=/^(?:m|mr|mme|mlle|monsieur|madame|mademoiselle)\.?$/i;
+const stopW=w=>ADMIN.test(w)||BANKW.test(w);
+// Nom du titulaire du document, pour vérifier qu'il s'agit bien du bon prospect
+function docHolder(T,kind,fields){
+  if(fields.nom)return (fields.nom+" "+(fields.prenom||"")).trim();
+  const clean=str=>{
+    const out=[]; let skip=0;
+    for(const w of String(str||"").split(/[\s,;:]+/)){
+      if(!w)continue;
+      if(CIVW.test(w))continue;
+      if(/\d/.test(w))break;
+      if(stopW(w)||w.length<2){ if(out.length)break; if(++skip>6)break; continue; } // on saute « du compte : », « de M. »…
+      out.push(w); if(out.length===3)break;
+    }
+    return out.join(" ").trim();
+  };
+  // 1) après une mention explicite
+  let m=T.match(/(?:titulaire|b[ée]n[ée]ficiaire[s]?|assur[ée]\(?e?\)?|au nom de|compte de|nom\s*(?:et\s*pr[ée]nom|du\s*titulaire)?)[^A-Za-zÀ-ÿ]{0,12}([A-Za-zÀ-ÿ'\-][^\n]{2,60})/i);
+  let h=m?clean(m[1]):"";
+  // 2) après une civilité
+  if(!h){m=T.match(/\b(?:M\.|MR|MME|MLLE|Mme|Mlle|MONSIEUR|MADAME|Monsieur|Madame)\s+([A-ZÀ-Ý][^\n]{2,50})/);if(m)h=clean(m[1]);}
+  // 3) permis de conduire : rubriques numérotées 1. NOM  2. Prénom
+  if(!h&&/permis de conduire/i.test(T)){
+    m=T.match(/\b1\s*[.\)]?\s*([A-ZÀ-Ý][A-ZÀ-Ý'\- ]{1,30})[\s\S]{0,6}?\b2\s*[.\)]?\s*([A-ZÀ-Ý][A-Za-zÀ-ÿ'\-]{1,25})/);
+    if(m)h=(clean(m[1])+" "+clean(m[2])).trim();
+  }
+  // 4) NOM en majuscules suivi d'un prénom (forme la plus courante sur les attestations)
+  if(!h){
+    const re=/\b([A-ZÀ-Ý][A-ZÀ-Ý'\-]{2,24})\s+([A-ZÀ-Ý][a-zà-ÿ'\-]{2,20}|[A-ZÀ-Ý]{2,20})\b/g;
+    let x; while((x=re.exec(T))){
+      // civilité ou mot écarté en 1re position : on repart juste après ce mot, il peut ouvrir le couple suivant
+      if(CIVW.test(x[1])||stopW(x[1])||stopW(x[2])){re.lastIndex=x.index+x[1].length;continue;}
+      h=(x[1]+" "+x[2]).trim(); break;
+    }
+  }
+  // 5) juste avant « né(e) le »
+  if(!h){m=T.match(/([A-ZÀ-Ý][A-Za-zÀ-ÿ'\- ]{2,40})\s*,?\s*n[ée]\(?e?\)?\s*le/i);if(m)h=clean(m[1]);}
+  return h;
+}
+// Sépare « POISSON Claire » en nom / prénom quand la casse le permet
+function splitHolder(h){
+  const w=String(h||"").trim().split(/\s+/).filter(x=>x.length>1);
+  if(w.length<2)return null;
+  const up=w.filter(x=>x===x.toUpperCase()), lo=w.filter(x=>x!==x.toUpperCase());
+  if(!up.length||lo.length!==1)return null;
+  return {nom:up.join(" "),prenom:lo[0]};
+}
+function extractDocFields(txt){
+  const T=txt.replace(/[  ]/g," ");
+  const out={};
+  // IBAN : on teste chaque candidat avec la clé de contrôle
+  const ib=[...T.matchAll(/\b[A-Z]{2}\s?\d{2}(?:\s?[A-Z0-9]){10,30}\b/gi)].map(m=>m[0].replace(/\s+/g,"").toUpperCase());
+  for(const c of ib){ for(let L=c.length;L>=15;L--){ const t=c.slice(0,L); if(ibanOK(t)){out.iban=t;break;} } if(out.iban)break; }
+  // BIC
+  const bic=T.match(/\b(?:BIC|SWIFT)[^A-Z0-9]{0,12}([A-Z]{6}[A-Z0-9]{2}(?:[A-Z0-9]{3})?)\b/i)||T.match(/\b([A-Z]{4}FR[A-Z0-9]{2}(?:[A-Z0-9]{3})?)\b/);
+  if(bic)out.bic=bic[1].toUpperCase();
+  // Numéro de Sécurité sociale : 15 chiffres avec clé valide
+  const ss=[...T.matchAll(/\b[12]\s?\d{2}\s?\d{2}\s?(?:\d{2,3}|2[AB])\s?\d{2,3}\s?\d{3}\s?\d{2}\b/gi)].map(m=>m[0]);
+  for(const c of ss){ if(secuOK(c)){out.secu=c.replace(/\s+/g,"").toUpperCase();break;} }
+  // ---- Pièce d'identité : bande MRZ (passeport, CNI, titre de séjour) ----
+  const mrz=[...T.matchAll(/[A-Z0-9<]{28,44}/g)].map(m=>m[0]).filter(l=>(l.match(/</g)||[]).length>=3);
+  if(mrz.length){
+    const nm=mrz.find(l=>/<</.test(l)&&/[A-Z]{2}/.test(l));
+    if(nm){
+      const part=nm.replace(/^[A-Z]{1,2}<?[A-Z]{3}/,"").split("<<");
+      const nom=(part[0]||"").replace(/</g," ").trim();
+      const pre=(part[1]||"").replace(/</g," ").trim().split(/\s+/)[0]||"";
+      if(nom.length>1)out.nom=nom;
+      if(pre.length>1)out.prenom=pre.charAt(0)+pre.slice(1).toLowerCase();
+    }
+    if(!out.prenom){
+      const p2=mrz.map(l=>l.match(/^\d{12,13}([A-Z][A-Z'\-]{1,24})</)).find(Boolean);
+      if(p2)out.prenom=p2[1].charAt(0)+p2[1].slice(1).toLowerCase();
+    }
+    // Date de naissance : 6 chiffres + clé de contrôle MRZ (poids 7-3-1), suivis du sexe.
+    // Sans cette clé on prenait par erreur des chiffres du numéro de document.
+    const chk=s=>{const w=[7,3,1];let t=0;for(let i=0;i<s.length;i++)t+=(+s[i]||0)*w[i%3];return t%10;};
+    const plaus=s=>{const mm=+s.slice(2,4),dd=+s.slice(4,6);return mm>=1&&mm<=12&&dd>=1&&dd<=31;};
+    let bd=null,fb=null;
+    for(const l of mrz){
+      const re2=/(\d{6})(\d)[MFX<]/g; let y;
+      while((y=re2.exec(l))){
+        if(!plaus(y[1]))continue;
+        if(chk(y[1])===+y[2]){bd=y[1];break;}
+        if(!fb)fb=y[1];
+      }
+      if(bd)break;
+    }
+    const D=bd||fb;
+    if(D){const yy=+D.slice(0,2);const an=(yy>(new Date().getFullYear()%100))?1900+yy:2000+yy;
+      out.ddn=D.slice(4,6)+"/"+D.slice(2,4)+"/"+an;}
+  }
+  // Permis de conduire : rubriques numérotées (1 = nom, 2 = prénom, 3 = date et lieu de naissance)
+  if(/permis de conduire/i.test(T)){
+    const P=T.replace(/[A-Z0-9<]{20,}/g," ");
+    if(!out.nom){const n=P.match(/\b1\s*[.\)]?\s*([A-ZÀ-Ý][A-ZÀ-Ý'\- ]{1,30})/);if(n)out.nom=n[1].trim();}
+    if(!out.prenom){const n=P.match(/\b2\s*[.\)]?\s*([A-ZÀ-Ý][A-Za-zÀ-ÿ'\-]{1,25})/);if(n)out.prenom=n[1].trim();}
+    if(!out.ddn){const d=P.match(/\b3\s*[.\)]?\s*(\d{2})[.\/\- ](\d{2})[.\/\- ]((?:19|20)\d{2})/);if(d)out.ddn=d[1]+"/"+d[2]+"/"+d[3];}
+  }
+  // Mentions en clair (CNI, permis de conduire) — on écarte d'abord les lignes MRZ
+  const TC=T.replace(/[A-Z0-9<]{20,}/g," ");
+  if(!out.ddn){
+    const d=TC.match(/n[ée]\(?e?\)?\s*(?:le)?\s*:?\s*(\d{2})[\/.\- ](\d{2})[\/.\- ]((?:19|20)\d{2})/i);
+    if(d)out.ddn=d[1]+"/"+d[2]+"/"+d[3];
+  }
+  if(!out.nom){const n=TC.match(/\bnom\s*(?:de naissance)?\s*:?\s*([A-ZÀ-Ý][A-ZÀ-Ý'\- ]{1,40})/);if(n)out.nom=n[1].trim();}
+  if(!out.prenom){const n=TC.match(/\bpr[ée]nom[s]?\s*:?\s*([A-ZÀ-Ýa-zà-ÿ][\wÀ-ÿ'\-]{1,25})/i);if(n)out.prenom=n[1].trim();}
+  // Adresse : ligne « Adresse » puis code postal + ville
+  const ad=TC.match(/adresse\s*:?\s*([^\n]{5,70}?)\s*(\d{5})\s+([A-ZÀ-Ýa-zà-ÿ'\- ]{2,40})/i);
+  const cleanCity=v=>v.trim().split(/\s+/).filter(w=>!/\d/.test(w)&&w.length<=18).slice(0,4).join(" ").trim();
+  if(ad){out.adresse=ad[1].trim().replace(/[,;]$/,"");out.cp=ad[2];out.ville=cleanCity(ad[3]);}
+  else{const cpv=TC.match(/\b(\d{5})\s+([A-ZÀ-Ý][A-ZÀ-Ý'\- ]{2,30})\b/);if(cpv){out.cp=cpv[1];out.ville=cleanCity(cpv[2]);}}
+  // Organisme d'affiliation (9 chiffres, souvent annoncé par « organisme » ou « caisse »)
+  const org=T.match(/organisme[^0-9]{0,40}(\d[\d\s]{7,14}\d)/i)||T.match(/caisse[^0-9]{0,40}(\d[\d\s]{7,14}\d)/i)||T.match(/\b(\d{9})\b(?=[^\d]{0,30}(?:CPAM|caisse|organisme))/i);
+  if(org)out.org=org[1].replace(/\s+/g,"");
+  return out;
+}
+async function readPdfText(file){
+  if(typeof pdfjsLib==="undefined"){
+    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+    pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+  const buf=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  let t="";
+  for(let i=1;i<=pdf.numPages;i++){const pg=await pdf.getPage(i);const c=await pg.getTextContent();t+=" "+c.items.map(x=>x.str).join(" ");}
+  return t;
+}
+async function readImageText(file,onProgress){
+  if(typeof Tesseract==="undefined")await loadScript("https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js");
+  const url=URL.createObjectURL(file);
+  try{
+    const {data}=await Tesseract.recognize(url,"fra",{logger:m=>{if(m.status==="recognizing text"&&onProgress)onProgress(Math.round(m.progress*100));}});
+    return data.text;
+  } finally { URL.revokeObjectURL(url); }
+}
+const ZONES={rib:["iban","bic"],secu:["secu","org"],id:["nom","prenom","ddn","adresse","cp","ville"],
+  autre:["iban","bic","secu","org","nom","prenom","ddn","adresse","cp","ville"]};
+const KINDLBL={rib:"RIB",secu:"Attestation de droits",id:"Pièce d'identité",autre:"Document"};
+async function scanDocs(files,st){
+  const found=[];
+  for(const f of files){
+    st.textContent="Lecture de "+f.name+"…";
+    let txt="";
+    try{
+      if(/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name)) txt=await readPdfText(f);
+      else txt=await readImageText(f,p=>{st.textContent="Lecture de "+f.name+" — "+p+" %";});
+    }catch(e){ st.textContent="Impossible de lire "+f.name+" ("+(e&&e.message||e)+")"; continue; }
+    const all=extractDocFields(txt);
+    const kind=docKind(txt);
+    const got={};
+    ZONES[kind].forEach(k=>{if(all[k])got[k]=all[k];});
+    // Un PDF sans texte (scan) : on repasse en reconnaissance d'image
+    if(!Object.keys(got).length&&/pdf$/i.test(f.type)&&(txt||"").replace(/\s/g,"").length<40){
+      st.textContent=f.name+" : PDF sans texte — utilisez une photo du document.";
+    }
+    const holder=docHolder(txt,kind,all);
+    // Pièce d'identité sans mention « Nom » lisible : on reprend le titulaire détecté
+    if(kind==="id"&&!got.nom){const s=splitHolder(holder);if(s){got.nom=s.nom;got.prenom=got.prenom||s.prenom;}}
+    found.push({file:f.name,kind:kind,fields:got,holder:holder});
+  }
+  return found;
+}
+// Comparaison souple des noms (accents, casse, ordre)
+function sameName(a,b){
+  const norm=v=>String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z ]/g," ").split(/\s+/).filter(w=>w.length>2);
+  const A=norm(a),B=norm(b);
+  if(!A.length||!B.length)return null;         // impossible de conclure
+  return A.some(w=>B.includes(w));
+}
+function docDropHTML(){
+  return '<div id="adocs" style="grid-column:1/-1;margin:8px 0 2px;border:1.5px dashed var(--line);border-radius:10px;padding:10px 12px;background:var(--ground)">'
+   +'<div style="font:800 12px \'Archivo\',sans-serif;text-transform:uppercase;letter-spacing:.04em;color:var(--accent)">📎 Remplir depuis un document</div>'
+   +'<div style="font-size:12px;color:var(--muted);margin:3px 0 7px">RIB, attestation de droits, pièce d\'identité ou permis (PDF ou photo) : identité, adresse, n° de Sécurité sociale, organisme, IBAN et BIC sont proposés à la reprise, après confirmation. <b>La lecture se fait sur votre appareil : aucun document n\'est envoyé ni conservé.</b></div>'
+   +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
+   +'<label class="tgbtn" style="cursor:pointer;margin:0">📄 Choisir un fichier<input id="adocf" type="file" accept="application/pdf,image/*" multiple hidden></label>'
+   +'<span id="adocst" style="font-size:12px;color:var(--muted)"></span></div></div>';
+}
+// Confirmation avant de recopier : un bloc par document, alerte si le nom ne correspond pas
+function confirmDoc(docs,onDone){
+  const esc=v=>String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+  const fiche=((document.getElementById("anom")||{}).value||"")+" "+((document.getElementById("apre")||{}).value||"");
+  const LAB={secu:["ass","N° de Sécurité sociale",0],org:["aorg","N° organisme d'affiliation",0],
+    iban:["aiban","IBAN",0],bic:["abic","BIC",0],nom:["anom","Nom",0],prenom:["apre","Prénom",0],
+    ddn:["addn","Date de naissance",0],adresse:["aadr","Adresse",1],cp:["acp","Code postal",1],ville:["avil","Ville",1]};
+  const rows=[]; let html="";
+  docs.forEach(d=>{
+    const keys=Object.keys(d.fields); if(!keys.length)return;
+    const ok=sameName(fiche,d.holder);
+    html+='<div class="ipost"><h3>'+esc(KINDLBL[d.kind]||"Document")+' <span style="font-weight:500;text-transform:none;color:var(--muted)">'+esc(d.file)+'</span></h3>';
+    if(ok===false)html+='<div class="irow iwarn"><span>Nom du document : '+esc(d.holder)+'</span><b>ne correspond pas à la fiche ('+esc(fiche.trim()||"—")+')</b></div>';
+    if(d.kind==="id")html+='<div class="irow iwarn"><span>Adresse issue d\'une pièce d\'identité</span><b>à confirmer (déménagement)</b></div>';
+    keys.forEach(k=>{
+      const L=LAB[k]; if(!L)return;
+      let v=d.fields[k]; if(k==="iban")v=v.replace(/(.{4})/g,"$1 ").trim();
+      const cur=((document.getElementById(L[0])||{}).value||"");
+      const i=rows.length; rows.push({id:L[0],val:v});
+      html+='<label class="irow" style="cursor:pointer"><span><input type="checkbox" data-i="'+i+'" '+(L[2]?'':'checked')+' style="margin-right:7px;accent-color:var(--accent)">'+L[1]
+        +(cur?'<span style="display:block;font-size:11px;color:var(--muted);margin-left:23px">actuel : '+esc(cur)+'</span>':'')+'</span><b>'+esc(v)+'</b></label>';
+    });
+    html+='</div>';
+  });
+  if(!rows.length){onDone(0);return;}
+  const ov=document.createElement("div");ov.id="tgov";ov.style.zIndex=1006;
+  ov.innerHTML='<div id="tgbox" style="max-width:580px"><button class="close">Fermer ✕</button>'
+    +'<h2>Informations trouvées</h2>'
+    +'<div class="src">Chaque document ne renseigne que sa zone. Décochez ce que vous ne voulez pas reprendre, puis validez. Les alertes n\'empêchent pas la reprise.</div>'
+    +html
+    +'<div style="margin-top:12px;display:flex;gap:8px"><button id="cdok" class="tgbtn" style="background:var(--accent);color:var(--accent-ink);border:none">Reprendre la sélection</button>'
+    +'<button id="cdno" class="tgbtn">Ne rien reprendre</button></div></div>';
+  const close=n=>{ov.remove();onDone(n);};
+  ov.addEventListener("click",e=>{if(e.target===ov||e.target.classList.contains("close"))close(0);});
+  document.body.appendChild(ov);
+  ov.querySelector("#cdno").addEventListener("click",()=>close(0));
+  ov.querySelector("#cdok").addEventListener("click",()=>{
+    let n=0;
+    ov.querySelectorAll('input[type=checkbox]').forEach(c=>{
+      if(!c.checked)return;
+      const r=rows[+c.dataset.i], e=document.getElementById(r.id);
+      if(!e)return;
+      e.value=r.val; e.dispatchEvent(new Event("input",{bubbles:true}));
+      e.style.transition="background .4s";const b=e.style.background;e.style.background="#DCF3E6";
+      setTimeout(()=>{e.style.background=b;},1600); n++;
+    });
+    close(n);
+  });
+}
+function wireDocDrop(){
+  const box=document.getElementById("adocs"); if(!box)return;
+  const inp=document.getElementById("adocf"), st=document.getElementById("adocst");
+  const setv=(id,v)=>{const e=document.getElementById(id);if(!e||!v)return false;e.value=v;e.dispatchEvent(new Event("input",{bubbles:true}));
+    e.style.transition="background .4s";const b=e.style.background;e.style.background="#DCF3E6";setTimeout(()=>{e.style.background=b;},1600);return true;};
+  const apply=async files=>{
+    if(!files||!files.length)return;
+    st.textContent="Lecture…";
+    const docs=await scanDocs([...files],st);
+    if(!docs.some(d=>Object.keys(d.fields).length)){st.textContent="Aucune information reconnue dans ce document.";return;}
+    st.textContent="";
+    confirmDoc(docs,n=>{st.textContent=n?("✅ "+n+" champ"+(n>1?"s":"")+" recopié"+(n>1?"s":"")+" — vérifiez avant de générer."):"Aucun champ repris.";});
+  };
+  inp.addEventListener("change",()=>apply(inp.files));
+  ["dragenter","dragover"].forEach(ev=>box.addEventListener(ev,e=>{e.preventDefault();box.style.borderColor="var(--accent)";}));
+  ["dragleave","drop"].forEach(ev=>box.addEventListener(ev,e=>{e.preventDefault();box.style.borderColor="var(--line)";}));
+  box.addEventListener("drop",e=>apply(e.dataTransfer.files));
+}
+
+// ---- Contrôles avant génération : champs obligatoires, e-mail, coupon des besoins ----
+const REQFIELDS=[["anom","Nom"],["apre","Prénom"],["addn","Date de naissance"],["aadr","Adresse"],
+  ["acp","Code postal"],["avil","Ville"],["ass","N° de Sécurité sociale"],["atel","Téléphone"],["amail","E-mail"]];
+const COUPONFIELDS=["brmb","bnd","bno","bnh","bnhon","bcss","baide","bpol","bbes","aanc","amot"];
+var COUPONINIT=null;
+function snapshotCoupon(){COUPONINIT={};COUPONFIELDS.forEach(id=>{const e=document.getElementById(id);if(e)COUPONINIT[id]=e.value;});}
+function couponChanged(){
+  if(!COUPONINIT)return 0;
+  return COUPONFIELDS.filter(id=>{const e=document.getElementById(id);return e&&e.value!==COUPONINIT[id];}).length;
+}
+function missingFields(){
+  const miss=[];
+  for(const [id,lab] of REQFIELDS){
+    const e=document.getElementById(id); if(!e)continue;
+    const v=(e.value||"").trim();
+    if(!v){miss.push([id,lab,"à renseigner"]);continue;}
+    if(id==="amail"&&!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(v))miss.push([id,lab,"adresse e-mail invalide"]);
+    if(id==="addn"&&!/^\d{2}\/\d{2}\/(19|20)\d\d$/.test(v))miss.push([id,lab,"format attendu jj/mm/aaaa"]);
+    if(id==="acp"&&!/^\d{5}$/.test(v))miss.push([id,lab,"5 chiffres attendus"]);
+    if(id==="ass"&&!secuOK(v))miss.push([id,lab,"numéro incomplet ou clé incorrecte"]);
+    if(id==="atel"&&(v.replace(/\D/g,"").length<10))miss.push([id,lab,"numéro incomplet"]);
+  }
+  return miss;
+}
+function overlay(html,wide){
+  const ov=document.createElement("div");ov.id="tgov";ov.style.zIndex=1005;
+  ov.innerHTML='<div id="tgbox" style="max-width:'+(wide||520)+'px">'+html+'</div>';
+  ov.addEventListener("click",e=>{if(e.target===ov||e.target.classList.contains("close"))ov.remove();});
+  document.body.appendChild(ov);return ov;
+}
+function showMissing(miss){
+  const ov=overlay('<button class="close">Fermer ✕</button><h2>Informations manquantes</h2>'
+    +'<div class="src">Ces éléments sont nécessaires pour établir le bulletin d\'adhésion :</div>'
+    +'<div class="ipost">'+miss.map(([id,lab,why])=>'<div class="irow iwarn"><span>'+lab+'</span><b>'+why+'</b></div>').join('')+'</div>'
+    +'<div style="margin-top:12px"><button id="mvgo" class="tgbtn" style="background:var(--accent);color:var(--accent-ink);border:none">Compléter</button></div>');
+  ov.querySelector("#mvgo").addEventListener("click",()=>{
+    ov.remove();
+    const e=document.getElementById(miss[0][0]);
+    if(e){e.scrollIntoView({block:"center",behavior:"smooth"});e.focus();
+      e.style.borderColor="#c62828";setTimeout(()=>{e.style.borderColor="";},2500);}
+  });
+}
+// Coupon des besoins : fenêtre dédiée, on ne peut continuer qu'après avoir ajusté au moins un champ
+function showCoupon(onDone){
+  const rows=[["brmb","Remboursements souhaités"],["bnd","Niveau Dentaire"],["bno","Niveau Optique"],
+    ["bnh","Niveau Hospitalisation"],["bnhon","Niveau Honoraires"],["aanc","Ancienne mutuelle (niveau)"],
+    ["amot","Motif de départ"],["bcss","CSS (ex-CMU)"],["baide","Aide complémentaire"],
+    ["bpol","Politiquement exposé"],["bbes","Précisez vos besoins"]];
+  const html='<button class="close">Fermer ✕</button><h2>Coupon des besoins</h2>'
+    +'<div class="src">Devoir de conseil : ajustez les niveaux avec le prospect avant d\'établir le bulletin. Au moins un élément doit être adapté à sa situation.</div>'
+    +'<div id="cpwrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px 12px"></div>'
+    +'<div id="cperr" style="color:var(--warn);font-size:12.5px;margin-top:8px"></div>'
+    +'<div style="margin-top:10px;display:flex;gap:8px"><button id="cpok" class="tgbtn" style="background:var(--accent);color:var(--accent-ink);border:none">Valider et générer le bulletin</button></div>';
+  const ov=overlay(html,620);
+  const wrap=ov.querySelector("#cpwrap");
+  // on déplace les vrais champs dans la fenêtre : pas de doublon, la saisie reste la même
+  const moved=[];
+  rows.forEach(([id,lab])=>{
+    const e=document.getElementById(id); if(!e)return;
+    const holder=e.parentElement, marker=document.createComment("cp:"+id);
+    holder.parentElement.insertBefore(marker,holder);
+    moved.push([holder,marker]);
+    wrap.appendChild(holder);
+  });
+  const restore=()=>moved.forEach(([h,m])=>{m.parentElement&&m.parentElement.insertBefore(h,m);m.remove();});
+  const err=ov.querySelector("#cperr");
+  ov.querySelector("#cpok").addEventListener("click",()=>{
+    if(couponChanged()<1){err.textContent="Ajustez au moins un niveau ou une réponse avant de continuer.";return;}
+    restore(); ov.remove(); onDone();
+  });
+  ov.addEventListener("click",e=>{if(e.target===ov||e.target.classList.contains("close"))restore();});
+}
+function beforeGenerate(run){
+  const miss=missingFields();
+  if(miss.length){showMissing(miss);return;}
+  if(couponChanged()<1){showCoupon(run);return;}
+  run();
+}
+
+function showAdh(r){
+  const fmtD=d=>("0"+d.getDate()).slice(-2)+"/"+("0"+(d.getMonth()+1)).slice(-2)+"/"+d.getFullYear();
+  const reg=document.getElementById("regime").value;
+  const nA=document.getElementById("naiss").value, nC=document.getElementById("cnj").value.trim(), kids=+document.getElementById("kids").value;
+  const F1=(id,lab,ph,val)=>'<div><label style="display:block;font-size:10px;text-transform:uppercase;color:var(--muted);margin:6px 0 2px">'+lab+'</label><input id="'+id+'" autocomplete="off" placeholder="'+(ph||"")+'" value="'+String(val||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;")+'" style="width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink);font:inherit"></div>';
+  const P=typeof PRO!=="undefined"?PRO:{};
+  const SEL=(id,lab,opts,def)=>'<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">'+lab+'</label><select id="'+id+'" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)">'+opts.map(o=>'<option'+(o===def?' selected':'')+'>'+o+'</option>').join('')+'</select></div>';
+  let kidsHtml="";
+  for(let i=0;i<Math.min(kids,4);i++) kidsHtml+='<div style="grid-column:1/-1;font-weight:700;margin-top:4px">Enfant '+(i+1)+'</div>'+F1("knom"+i,"Nom")+F1("kpre"+i,"Prénom")+F1("kddn"+i,"Naissance","jj/mm/aaaa")+F1("kss"+i,"N° SS (si propre)");
+  const ov=document.createElement("div");ov.id="tgov";
+  ov.innerHTML='<div id="tgbox" style="max-width:760px"><button class="close">Fermer ✕</button><h2>Adhésion — '+r.gamme+" "+r.formule+'</h2><div class="src">'+eur(r.total)+' /mois · le bulletin AVENIR MUTUELLE sera rempli et téléchargé</div>'+
+  '<form autocomplete="off" onsubmit="return false" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:4px 12px">'+
+  '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Civilité</label><select id="aciv" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option'+(P.civ!=="Mme"?" selected":"")+'>M.</option><option'+(P.civ==="Mme"?" selected":"")+'>Mme</option></select></div>'+
+  F1("anom","Nom","",P.nom)+F1("apre","Prénom","",P.prenom)+F1("annais","Nom de naissance")+
+  F1("addn","Date de naissance","jj/mm/"+ ((/^(19|20)\d\d$/.test(nA))?nA:""),P.ddn||"")+F1("ass","N° Sécurité sociale")+F1("aorg","N° organisme d'affiliation")+
+  F1("aadr","Adresse","",P.adresse)+F1("acp","Code postal","",P.cp5||(document.getElementById("cp").value.length>=4?document.getElementById("cp").value:""))+F1("avil","Ville","",P.ville)+
+  F1("amail","Email","",P.email)+F1("atel","Tél. mobile","",P.tel)+
+  '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Situation</label><select id="asit" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option>activité salarié</option><option>activité indépendante</option><option>auto entrepreneur</option><option>retraité</option><option>fonctionnaire</option><option>chômage</option><option>sans profession</option><option>autre...</option></select></div>'+
+  F1("aeff","Date d\u2019effet (d\u00e9faut : demain)","jj/mm/aaaa",fmtD(new Date(Date.now()+86400000)))+F1("asig","Date de signature","",fmtD(new Date()))+
+  '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Ancienne mutuelle (niveau)</label><select id="aanc" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option>OPTIONS</option><option>je n\u2019avais pas de mutuelle</option><option>hospitaliation seulement</option><option>100%</option><option>125% - 130%</option><option>150% - 160%</option><option>200% - 250%</option><option>300% - 400%</option><option>plus de 400%</option><option>ancienne mutuelle obligatoire</option></select></div>'+
+  '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Motif de d\u00e9part</label><select id="amot" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option>MOTIFS DE DEPART</option><option>Mauvaise gestion</option><option>Probl\u00e8mes de remboursements</option><option>Augmentations des cotisations</option><option>Peu rembours\u00e9 </option><option>Plus adapt\u00e9 \u00e0 mes besoins</option><option>Motifs personnels</option><option>Cotisation trop \u00e9lev\u00e9e</option><option>Autres</option></select></div>'+
+  (HOSTED?docDropHTML():"")+
+  F1("aiban","IBAN (27 caract\u00e8res)","FR76 \u2026").replace('<div>','<div style="grid-column:span 2;min-width:0">').replace('style="width:100%;','style="width:100%;font-family:\'IBM Plex Mono\',ui-monospace,monospace;letter-spacing:.04em;')+F1("abic","BIC")+
+  (nC?'<div style="grid-column:1/-1;font-weight:700;margin-top:4px">Conjoint</div>'+F1("cnom","Nom")+F1("cpre","Prénom")+F1("cddn","Naissance","jj/mm/"+((/^(19|20)\d\d$/.test(nC))?nC:""))+F1("css","N° SS"):"")+
+  kidsHtml+
+  (function(){
+    const lvl=Math.min(5,Math.max(1,(r.fi||0)+2))+" / 5";
+    const NIVOPTS=["1 / 5","2 / 5","3 / 5","4 / 5","5 / 5"];
+    return '<div style="grid-column:1/-1;font-weight:800;margin-top:10px;border-top:1px solid var(--line);padding-top:8px">Coupon des besoins <span style="font-weight:500;font-size:11px;color:var(--muted)">(niveaux pré-réglés selon la formule — ajustables)</span></div>'+
+    SEL("brmb","Remboursements souhaités",["Ticket modérateur","Avec dépassement d’honoraires"],(r.fi||0)===0?"Ticket modérateur":"Avec dépassement d’honoraires")+
+    SEL("bnd","Niveau Dentaire",NIVOPTS,lvl)+SEL("bno","Niveau Optique",NIVOPTS,lvl)+
+    SEL("bnh","Niveau Hospitalisation",NIVOPTS,lvl)+SEL("bnhon","Niveau Honoraires",NIVOPTS,lvl)+
+    SEL("bcss","CSS (ex-CMU)",["non","oui"],"non")+SEL("baide","Aide complémentaire",["non","oui"],"non")+
+    SEL("bpol","Politiquement exposé",["non","oui"],"non")+
+    F1("bbes","Précisez vos besoins (texte libre)");
+  })()+
+  '</form><div style="margin-top:12px;display:flex;gap:8px"><button id="agen" type="button" class="tgbtn" style="background:var(--accent);color:var(--accent-ink);border:none">Générer le bulletin rempli</button><span id="astat" style="font-size:12px;color:var(--muted);align-self:center"></span></div>'+
+  '<div class="foot">Cases cochées automatiquement : gamme/formule, régime, cotisation, prélèvement mensuel, NOEMIE oui, date du jour. Vérifie le PDF avant signature.</div></div>';
+  ov.addEventListener("click",ev=>{if(ev.target===ov||ev.target.classList.contains("close"))ov.remove();});
+  document.body.appendChild(ov);
+  try{if(HOSTED)wireDocDrop();}catch(e){}
+  // Date d'effet en rouge et gras pour qu'elle ne passe pas inaperçue
+  const effEl=document.getElementById("aeff");
+  effEl.style.color="#c62828"; effEl.style.fontWeight="800"; effEl.style.borderColor="#c62828";
+  const effLbl=effEl.previousElementSibling; if(effLbl)effLbl.style.color="#c62828";
+  if(reg==="TNS"||reg==="TNSRL")document.getElementById("asit").value="activité indépendante";
+  // Saisie IBAN/BIC : format automatique (groupes de 4, majuscules)
+  const ibEl=document.getElementById("aiban");
+  ibEl.setAttribute("maxlength","33"); // 27 caractères + 6 espaces de groupage
+  ibEl.addEventListener("input",()=>{const v=ibEl.value.replace(/[^0-9a-z]/gi,"").toUpperCase().slice(0,27);ibEl.value=v.replace(/(.{4})/g,"$1 ").trim();});
+  const bicEl=document.getElementById("abic");
+  bicEl.addEventListener("input",()=>{bicEl.value=bicEl.value.replace(/[^0-9a-z]/gi,"").toUpperCase().slice(0,11);});
+  snapshotCoupon();
+  document.getElementById("agen").addEventListener("click",()=>beforeGenerate(()=>fillAdh(r,ov)));
+}
+async function fillAdh(r,ov){
+  const st=document.getElementById("astat"); st.textContent="Génération…";
+  try{
+    const g=id=>{const e=document.getElementById(id);return e?e.value.trim():"";};
+    if(typeof PDFLib==="undefined"){st.textContent="Librairie PDF non chargée (connexion requise).";return;}
+    const bytes=Uint8Array.from(atob(BULLETIN_B64),c=>c.charCodeAt(0));
+    const pdf=await PDFLib.PDFDocument.load(bytes);
+    const form=pdf.getForm();
+    const T=(n,v)=>{try{if(v)form.getTextField(n).setText(String(v));}catch(e){}};
+    const C=n=>{try{form.getCheckBox(n).check();}catch(e){}};
+    const U=n=>{try{form.getCheckBox(n).uncheck();}catch(e){}};
+    const S=(n,v)=>{try{form.getDropdown(n).select(v);}catch(e){}};
+    // Liste déroulante dont la valeur voulue n'est pas dans les options (formules CAP NR / TALIS)
+    const SOPT=(n,v)=>{try{const d=form.getDropdown(n);if(!d.getOptions().includes(v))d.addOptions([v]);d.select(v);}catch(e){}};
+    const reg=document.getElementById("regime").value;
+    T("NOM1",g("anom").toUpperCase());T("PRENOM1",g("apre"));T("NOM DE NAISSANCE",g("annais").toUpperCase());
+    T("FULLNAME1",(g("anom")+" "+g("apre")).trim().toUpperCase());
+    T("DDN1",g("addn"));T("SECU1",g("ass"));T("ORG1",g("aorg"));
+    T("ADRESSE",g("aadr"));T("CP",g("acp"));T("VILLE",g("avil"));T("EMAIL",g("amail"));T("TELMOB",g("atel"));
+    C(g("aciv")==="Mme"?"MME":"MR");
+    if(reg==="RL"||reg==="TNSRL")C("alsace-moselle");else C("sécu");
+    S("Liste déroulante2",g("asit"));
+    // gamme / formule (le formulaire 2026 arrive avec « EVO TNS » coché : on remet tout à zéro)
+    ["EVO SAL","EVO TNS","EVO PRO","LPS HOSPI","CAP  NR","TALIS","TALIS +"].forEach(U);
+    if(r.key==="CAPEVO"){C(reg==="TNS"||reg==="TNSRL"?"EVO TNS":"EVO SAL");S("OPTION CHOISIE LISTE",{0:"ACCÈS",1:"ÉQUILIBRE",2:"TRANQUILLITÉ",3:"SÉRÉNITÉ"}[r.fi]);}
+    else if(r.key==="CAPNR"){C("CAP  NR");T("BESOINS 1","Formule choisie : "+r.formule);SOPT("OPTION CHOISIE LISTE",r.formule);}
+    else if(r.key==="TALIS"){C(r.fi===0?"TALIS":"TALIS +");C("TALIS ADHERENT");SOPT("OPTION CHOISIE LISTE",r.formule);}
+    T("COTISATION MENS",r.total.toFixed(2).replace(".",","));
+    const eff=g("aeff").split("/");
+    if(eff.length===3){T("JOUR EFFET ADHESION",eff[0]);T("MOIS EFFET ADHESION",eff[1]);T("ANNEE EFFET ADHESION",eff[2]);}
+    const iban=g("aiban").replace(/\s+/g,"").toUpperCase();
+    for(let i=0;i<7;i++){
+      const part=iban.slice(i*4,i*4+4);
+      try{
+        const fI=form.getTextField("IBAN "+(i+1));
+        try{fI.setMaxLength(part.length===3?3:4);fI.enableCombing();}catch(_){}
+        if(part)fI.setText(part);
+      }catch(e){}
+    }
+    const bicV=g("abic").replace(/\s+/g,"").toUpperCase();
+    try{
+      const fB=form.getTextField("BIC");
+      try{fB.setMaxLength(11);fB.enableCombing();}catch(_){}
+      if(bicV)fB.setText(bicV);
+    }catch(e){}
+    if(iban&&(iban.length!==27||!/^FR/.test(iban)))st.textContent="⚠ IBAN inhabituel (un IBAN français fait 27 caractères commençant par FR) — vérifie avant signature. ";
+    const now=new Date();
+    T("DATE DU JOUR",g("asig")||(("0"+now.getDate()).slice(-2)+"/"+("0"+(now.getMonth()+1)).slice(-2)+"/"+now.getFullYear()));
+    // Coupon des besoins : ancienne mutuelle et motif de départ
+    if(g("aanc")&&g("aanc")!=="OPTIONS")S("Liste déroulante3",g("aanc"));
+    if(g("amot")&&g("amot")!=="MOTIFS DE DEPART")S("Liste déroulante4",g("amot"));
+    // Coupon des besoins : cases et niveaux
+    if(g("bcss")==="oui"){C("CMU");U("CMU NO");}
+    if(g("baide")==="oui"){C("AIDE MUTUELLE");U("AIDE MUTUELLE NO");}
+    if(g("bpol")==="oui")C("EXPOSE POLITIQUEMENT");
+    if(/dépassement/i.test(g("brmb")))C("TM PLUS");else C("TM");
+    S("NIV2",g("bnd"));S("NIV4",g("bno"));S("NIV6",g("bnh"));S("NIV8",g("bnhon"));
+    const besTxt=[(r.key==="CAPNR"?"Formule choisie : "+r.formule:""),g("bbes")].filter(Boolean).join(" — ");
+    if(besTxt)T("BESOINS 1",besTxt);
+    // Mandat SEPA (page 6) : rempli automatiquement via les mêmes champs (nom, adresse, IBAN, BIC, date)
+    // Coupon (page 5) : masque le « 2025 » imprimé en dur sous le champ année
+    try{
+      const p5=pdf.getPages()[4];
+      p5.drawRectangle({x:304,y:p5.getHeight()-376.5,width:36,height:17,color:PDFLib.rgb(1,1,1)});
+    }catch(e){}
+    // conjoint / enfants
+    if(g("cnom")){T("NOM2",g("cnom").toUpperCase());T("PRENOM2",g("cpre"));T("DDN2",g("cddn"));T("SECU2",g("css"));C(g("aciv")==="Mme"?"MR":"MME");}
+    let nAss=1+(g("cnom")?1:0);
+    for(let i=0;i<4;i++){if(g("knom"+i)){T("NOM"+(i+3),g("knom"+i).toUpperCase());T("PRENOM"+(i+3),g("kpre"+i));T("DDN"+(i+3),g("kddn"+i));T("SECU"+(i+3),g("kss"+i));nAss++;}}
+    S("NB_ASSURES",String(Math.min(nAss,7)));
+    const out=await pdf.save();
+    const fname="adhesion_"+(g("anom")||"client")+".pdf";
+    const dl=await CUSE("downloads");
+    if(dl){
+      await dl.save({filename:fname,data:out});
+      st.textContent="✅ Bulletin téléchargé.";
+    } else {
+      const blob=new Blob([out],{type:"application/pdf"});
+      const a2=document.createElement("a");a2.href=URL.createObjectURL(blob);a2.download=fname;
+      document.body.appendChild(a2);a2.click();a2.remove();
+      st.textContent="✅ Bulletin généré (téléchargement navigateur).";
+    }
+  }catch(e){st.textContent="Erreur : "+(e&&e.message||e);}
+}
+function showDoc(name,url){
+  const prev=url.replace(/\/view.*$/,"/preview");
+  const ov=document.createElement("div");ov.id="tgov";
+  ov.innerHTML='<div id="tgbox" style="max-width:1000px;height:86vh;display:flex;flex-direction:column">'+
+    '<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px"><h2 style="margin:0">'+name+'</h2>'+
+    '<a class="tgbtn" style="margin-left:auto" href="'+url+'" target="_blank" rel="noopener">Ouvrir dans un onglet</a>'+
+    '<button class="close">Fermer ✕</button></div>'+
+    '<iframe src="'+prev+'" style="flex:1;border:1px solid var(--line);border-radius:8px;width:100%" allow="autoplay"></iframe>'+
+    '<div class="foot">Si l\u2019aper\u00e7u reste vide, utilise \u00ab Ouvrir dans un onglet \u00bb.</div></div>';
+  ov.addEventListener("click",ev=>{if(ev.target===ov||ev.target.classList.contains("close"))ov.remove();});
+  document.body.appendChild(ov);
+}
+// Valeur d'une garantie pour une formule donnée (gamme key, indice fi)
+function tgVal(key,fi,src){
+  const f=F[key], e=EX[key]||{};
+  if(src.startsWith("x:")){const k=src.slice(2);return (e[k]&&e[k][fi]!==undefined)?e[k][fi]:"—";}
+  const arr=f[src];return (arr&&arr[fi]!==undefined)?arr[fi]:"—";
+}
+// Tableau de garantie d'une gamme (toutes ses formules)
+function showTG(key){
+  const f=F[key];
+  renderTG(f.names.map((_,i)=>({key:key,fi:i})),f.label+" — tableau de garantie",COMP[key],TGNOTE[key]||"",key);
+}
+// Tableau de garantie de la SÉLECTION (formules cochées, toutes gammes confondues)
+function showTGSel(){
+  const cols=LASTROWS.filter(r=>SENDSEL.has(r.key+"|"+r.fi)).map(r=>({key:r.key,fi:r.fi}));
+  if(!cols.length)return;
+  const keys=[...new Set(cols.map(c=>c.key))];
+  const notes=keys.map(k=>TGNOTE[k]?"<b>"+F[k].label+"</b> : "+TGNOTE[k]:"").filter(Boolean).join("<br>");
+  renderTG(cols,"Sélection — tableau de garantie",[...new Set(keys.map(k=>COMP[k]))].join(" · "),notes,null);
+}
+// cols = [{key,fi}] ; single = clé de gamme si tableau mono-gamme (sinon null)
+var RECO=null; // formule conseillée : "cle|indice"
+function renderTG(cols,title,sub,note,single){
+  const multi=cols.some(c=>c.key!==cols[0].key);
+  const isReco=c=>RECO===(c.key+"|"+c.fi);
+  // Indemnités journalières : ligne en tête, seulement si l'une des formules en verse
+  const ROWS=(cols.some(c=>{const v=tgVal(c.key,c.fi,"ij");return v&&v!=="—";})?[["Indemnités journalières hospitalisation","ij"]]:[]).concat(TGROWS);
+  let head='<tr><th></th>'+cols.map((c,ci)=>'<th class="pick'+(isReco(c)?' reco':'')+'" data-ci="'+ci+'">'
+    +(isReco(c)?'<span class="recolbl">\u2b50 Je vous conseille</span>'
+               :'<span class="star" title="Conseiller cette formule">\u2606</span>')
+    +(multi?'<span style="display:block;font-size:11px;opacity:.75">'+F[c.key].label+'</span>':'')+F[c.key].names[c.fi]+'</th>').join('')+'</tr>';
+  let body=ROWS.map(([lab,src])=>'<tr><td>'+lab+'</td>'+cols.map((c,ci)=>'<td'+(isReco(c)?' class="reco"':'')+'>'+tgVal(c.key,c.fi,src)+'</td>').join('')+'</tr>').join('');
+  const ov=document.createElement('div');ov.id='tgov';
+  ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><button class="shot" data-t="1" style="float:right;margin-right:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;font:700 13px \'Archivo\',sans-serif">📷 Avec tarifs</button><button class="shot" data-t="0" style="float:right;margin-right:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;font:700 13px \'Archivo\',sans-serif">📷 Sans tarifs</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+note+'</div></div>';
+  ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
+  document.body.appendChild(ov);
+  // Touchez le nom d'une formule pour la mettre en avant (et l'annoncer dans l'envoi)
+  const tip=document.createElement('div');tip.className='rectip';
+  tip.textContent='Touchez l\u2019\u2606 d\u2019une formule pour la conseiller : elle est mise en avant dans l\u2019image et annoncée dans l\u2019envoi.';
+  ov.querySelector('#tgbox .src').after(tip);
+  ov.querySelectorAll('#tgbox thead th.pick').forEach(th=>th.addEventListener('click',()=>{
+    const c=cols[+th.dataset.ci], id=c.key+"|"+c.fi;
+    RECO=(RECO===id)?null:id;
+    ov.remove(); renderTG(cols,title,sub,note,single);
+  }));
+  const key=single; const f={label:title.replace(/ — .*$/,"")};
+  // Capture du tableau en image PNG : copiée dans le presse-papier (collez dans WhatsApp)
+  ov.querySelectorAll('.shot').forEach(sbtn=>sbtn.addEventListener('click',async ev=>{
+    const btn=ev.target; const old=btn.textContent; btn.textContent="⏳…";
+    const withPrices=btn.dataset.t==="1";
+    // Site hébergé (GitHub Pages) : la copie de l'image est lancée dès le clic (geste utilisateur
+    // conservé, même sur Safari/Samsung) — le navigateur attend l'image en cours de fabrication.
+    let hostedCopy=null,hostedResolve=null,hostedReject=null;
+    if(HOSTED&&navigator.clipboard&&navigator.clipboard.write&&typeof ClipboardItem!=="undefined"){
+      try{
+        const bp=new Promise((res,rej)=>{hostedResolve=res;hostedReject=rej;});
+        hostedCopy=navigator.clipboard.write([new ClipboardItem({"image/png":bp})]).then(()=>true).catch(()=>false);
+      }catch(e0){hostedCopy=null;}
+    }
+    try{
+      if(typeof html2canvas==="undefined")throw new Error("lib");
+      const box=document.getElementById('tgbox');
+      // En-tête prospect, intégré à l'image uniquement
+      const PR=typeof PRO!=="undefined"?PRO:{};
+      const nm=[(PR.civ||""),(PR.nom||""),(PR.prenom||"")].filter(Boolean).join(" ");
+      const bits=[];
+      if(nm)bits.push(nm);
+      if(PR.ddn)bits.push("né(e) le "+PR.ddn);
+      else{const n=document.getElementById("naiss").value;if(n)bits.push(/^\d{4}$/.test(n)?"né(e) en "+n:n+" ans");}
+      bits.push("étude du "+new Date().toLocaleDateString("fr-FR"));
+      const hdr=document.createElement('div');
+      hdr.textContent=bits.join("  ·  ");
+      hdr.style.cssText="font:700 16.5px 'Archivo',sans-serif;color:var(--accent);margin:2px 0 10px";
+      box.querySelector('h2').after(hdr);
+      // Tarifs sous le nom de chaque formule (version avec tarifs)
+      const thP=[];
+      if(withPrices){
+        box.querySelectorAll('thead th').forEach((th2,ix)=>{
+          if(ix===0)return;
+          const c2=cols[ix-1]; const r2=c2&&LASTROWS.find(x=>x.key===c2.key&&x.fi===c2.fi);
+          const d2=document.createElement('div');
+          d2.textContent=r2?eur(r2.total)+" /mois":"—";
+          d2.style.cssText="font:800 12.5px 'Archivo',sans-serif;color:var(--accent);margin-top:3px;text-transform:none";
+          th2.appendChild(d2);thP.push(d2);
+        });
+      }
+      // Largeur complète : on déplie le tableau pour capturer TOUTES les colonnes
+      const wrap2=box.querySelector('div[style*="overflow-x"]');
+      const savedWrap=wrap2?wrap2.style.cssText:"";
+      box.classList.add("capwide");
+      if(wrap2)wrap2.style.overflowX="visible";
+      // Si des formules sont cochées (envoi), la capture ne montre que leurs colonnes
+      const selFi=(key&&typeof SENDSEL!=="undefined")?[...SENDSEL].filter(x=>x.split("|")[0]===key).map(x=>+x.split("|")[1]):[];
+      const hidden=[];
+      if(key&&selFi.length&&selFi.length<cols.length){
+        box.querySelectorAll('table tr').forEach(tr2=>{
+          [...tr2.children].forEach((cell,ci)=>{
+            if(ci>0&&!selFi.includes(ci-1)){hidden.push([cell,cell.style.display]);cell.style.display="none";}
+          });
+        });
+      }
+      // Portrait : le cadre prend exactement la largeur du tableau, les textes se replient dessous
+      const tbl2=box.querySelector('table');
+      box.style.width=(tbl2.offsetWidth+40)+"px";
+      let canvas;
+      try{
+        canvas=await html2canvas(box,{scale:2,backgroundColor:"#ffffff",ignoreElements:el=>el.classList&&(el.classList.contains('close')||el.classList.contains('shot')||el.classList.contains('rectip')||el.classList.contains('star'))});
+      }finally{hdr.remove();thP.forEach(d2=>d2.remove());hidden.forEach(h2=>{h2[0].style.display=h2[1];});box.classList.remove("capwide");box.style.width="";if(wrap2)wrap2.style.cssText=savedWrap;}
+      const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
+      const fname='garanties_'+f.label.replace(/[^\wÀ-ÿ]+/g,'_')+'.png';
+      // ---- Site hébergé : copie directe + aperçu avec Partager / Télécharger ----
+      if(HOSTED){
+        let copied=false;
+        if(hostedCopy){hostedResolve(blob);copied=await hostedCopy;}
+        else if(navigator.clipboard&&navigator.clipboard.write&&typeof ClipboardItem!=="undefined"){
+          try{await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);copied=true;}catch(e2){}
+        }
+        const fimg=new File([blob],fname,{type:'image/png'});
+        const canSh=!!(navigator.canShare&&navigator.canShare({files:[fimg]}));
+        const urlImg=canvas.toDataURL('image/png');
+        const iv=document.createElement('div');
+        iv.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.75);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:10px";
+        const bst="padding:9px 16px;border:0;border-radius:8px;background:#fff;font:700 14px 'Archivo',sans-serif;cursor:pointer";
+        iv.innerHTML='<div style="color:#fff;font:700 14px \'Archivo\',sans-serif;text-align:center">'
+          +(copied?"✅ Image copiée — collez-la dans WhatsApp ou un mail":"Image prête — Partager ou Télécharger ci-dessous")+'</div>'
+          +'<img src="'+urlImg+'" style="max-width:94vw;max-height:calc(100vh - 170px);width:auto;height:auto;object-fit:contain;border-radius:8px;background:#fff">'
+          +'<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">'
+          +(canSh?'<button data-a="share" style="'+bst+'">📤 Partager</button>':'')
+          +(window.CRMLINK?'<button data-a="crm" style="'+bst+';background:#059669;color:#fff">📲 Déposer dans le CRM</button>':'')
+          +'<button data-a="dl" style="'+bst+'">⬇️ Télécharger</button>'
+          +'<button data-a="close" style="'+bst+'">Fermer</button></div>';
+        iv.addEventListener('click',async e=>{
+          const a=e.target&&e.target.dataset&&e.target.dataset.a;
+          if(e.target===iv||a==="close"){iv.remove();return;}
+          if(a==="share"){try{await navigator.share({files:[fimg],title:'Tableau de garantie'});}catch(e3){}return;}
+          if(a==="crm"){
+            const bt=e.target; bt.disabled=true; bt.textContent="⏳ Dépôt…";
+            try{
+              const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);});
+              const PR2=typeof PRO!=="undefined"?PRO:{};
+              await crmDepot({kind:"image",filename:fname,mime:"image/png",data:b64,caption:"Tableau de garantie — "+[(PR2.civ||""),(PR2.nom||""),(PR2.prenom||"")].filter(Boolean).join(" ")});
+              bt.textContent="✅ Déposé dans la conversation";
+              const back=document.createElement("button");back.textContent="↩ Revenir au CRM";back.style.cssText=bst;back.addEventListener("click",crmBack);bt.after(back);
+            }catch(e4){bt.disabled=false;bt.textContent="❌ Dépôt impossible — réessayer";}
+            return;
+          }
+          if(a==="dl"){const a2=document.createElement('a');a2.href=URL.createObjectURL(blob);a2.download=fname;document.body.appendChild(a2);a2.click();a2.remove();return;}
+        });
+        document.body.appendChild(iv);
+        btn.textContent=copied?"✅ Copiée":"✅ Image prête";
+        setTimeout(()=>{btn.textContent=old;},2500);
+        return;
+      }
+      // 1) Partage natif (Android/iOS) : ouvre directement WhatsApp/Mail avec l'image
+      let shared=false;
+      try{
+        const fimg=new File([blob],'garanties.png',{type:'image/png'});
+        if(navigator.canShare&&navigator.canShare({files:[fimg]})){
+          await navigator.share({files:[fimg],title:'Tableau de garantie'});
+          shared=true;
+        }
+      }catch(e2){}
+      if(shared){btn.textContent="✅ Partagée";setTimeout(()=>{btn.textContent=old;},2500);return;}
+      // 2) Copie de l'IMAGE dans le presse-papier
+      let copied=false;
+      try{
+        if(navigator.clipboard&&navigator.clipboard.write&&typeof ClipboardItem!=="undefined"){
+          await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);
+          copied=true;
+        }
+      }catch(e2){}
+      // 3) Téléchargement du fichier image (autorisé sur le lien privé uniquement)
+      let saved=false;
+      if(!copied){
+        try{
+          const dl2=await CUSE("downloads");
+          if(dl2){await dl2.save({filename:'garanties_'+f.label.replace(/[^\wÀ-ÿ]+/g,'_')+'.png',data:new Uint8Array(await blob.arrayBuffer())});saved=true;}
+        }catch(e3){}
+      }
+      // Aperçu : confirmation ou solution de secours (appui long)
+      const urlImg=canvas.toDataURL('image/png');
+      const iv=document.createElement('div');
+      iv.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.75);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:10px";
+      iv.innerHTML='<div style="color:#fff;font:700 14px \'Archivo\',sans-serif;text-align:center">'
+        +(saved?"✅ Image téléchargée — retrouvez-la dans vos téléchargements":(copied?"Image copiée (si « Coller » ne propose rien dans WhatsApp : ":"")+"appui long sur l'image → Partager / Copier l'image"+(copied?")":""))
+        +'</div>'
+        +'<img src="'+urlImg+'" style="max-width:94vw;max-height:calc(100vh - 170px);width:auto;height:auto;object-fit:contain;border-radius:8px;background:#fff">'
+        +'<button style="padding:9px 18px;border:0;border-radius:8px;background:#fff;font:700 14px \'Archivo\',sans-serif;cursor:pointer">Fermer</button>';
+      iv.querySelector('button').addEventListener('click',()=>iv.remove());
+      iv.addEventListener('click',e=>{if(e.target===iv)iv.remove();});
+      document.body.appendChild(iv);
+      btn.textContent=copied?"✅ Copiée":"✅ Image prête";
+    }catch(e){btn.textContent="échec capture";try{if(hostedReject)hostedReject(e);}catch(e9){}}
+    setTimeout(()=>{btn.textContent=old;},2500);
+  }));
+}
+const REGLBL={SAL:"Salarié",TNS:"TNS",RL:"Salarié régime local",TNSRL:"TNS régime local"};
+const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
+const sel={MCCINOVA:false,FLEXIA:false,SOLENCIA:false,CAPEVO:false,CAPNR:false,LPSH:false,REV:false,RF50:false,RF100:false,MV:false,TALIS:false};
+const COMP={MCCINOVA:'MCCI',FLEXIA:'MCCI',SOLENCIA:'MCCI',CAPEVO:'AVENIR M.',CAPNR:'AVENIR M.',LPSH:'AVENIR M.',REV:'AVENIR M.',RF50:'AVENIR M.',RF100:'AVENIR M.',TALIS:'AVENIR M.',MV:'M. VERTE'};
+const on=k=>Object.values(sel).some(v=>v)?sel[k]:true; // aucune coche = toutes les gammes ; coche(s) = uniquement celles-là
+let openKeys=new Set();
+
+function parseAge(s){
+  s=(s||"").trim(); if(!/^\d{1,4}$/.test(s)) return null;
+  const n=+s;
+  if(n>=1900&&n<=YEAR) return YEAR-n;
+  if(n>=0&&n<=110) return n;
+  return null;
+}
+function deptOf(s){
+  s=(s||"").trim().toUpperCase();
+  if(s==="2A"||s==="2B") return s;
+  if(/^\d{4,5}$/.test(s)){ // tolère un code postal complet
+    if(s.length===4) s="0"+s;
+    if(s.startsWith("97")) return s.slice(0,3);
+    if(s.startsWith("20")) return (+s<=20190?"2A":"2B");
+    return s.slice(0,2);
+  }
+  if(/^97\d$/.test(s)) return s;
+  if(/^\d{1,2}$/.test(s)){ s=s.padStart(2,"0"); return s==="20"?"2A":s; }
+  return null;
+}
+let ZMAP={};
+for(const[z,s]of Object.entries(D.ZONES)) s.split(" ").forEach(d=>ZMAP[d]=+z);
+
+// panneau gammes — la dernière sélection de compagnies est mémorisée sur l'appareil
+try{
+  const s=JSON.parse(localStorage.getItem("santeo_sel")||"null");
+  if(s)for(const k in sel)if(k in s)sel[k]=!!s[k];
+}catch(e){}
+function saveSel(){try{localStorage.setItem("santeo_sel",JSON.stringify(sel))}catch(e){}}
+const gsel=document.getElementById("gsel");
+for(const k of Object.keys(F)){
+  const l=document.createElement("label"); l.className="g "+(F[k].resp?"rp":"nrp");
+  l.innerHTML='<span class="top"><input type="checkbox" data-k="'+k+'"'+(sel[k]?" checked":"")+'> '+F[k].label+'</span><span class="comp">'+COMP[k]+"</span>";
+  l.querySelector("input").addEventListener("change",e=>{sel[k]=e.target.checked;saveSel();calc();});
+  gsel.appendChild(l);
+}
+
+function calc(){
+  const age=parseAge(document.getElementById("naiss").value);
+  const cnjAge=parseAge(document.getElementById("cnj").value);
+  const hasCnj=document.getElementById("cnj").value.trim()!=="";
+  const kids=+document.getElementById("kids").value;
+  const reg=document.getElementById("regime").value;
+  const dept=deptOf(document.getElementById("cp").value);
+  const zone=dept?ZMAP[dept]:null;
+  document.getElementById("ageinfo").textContent=age==null?"":"Âge retenu : "+age+" ans";
+  document.getElementById("cnjinfo").textContent=(hasCnj&&cnjAge!=null)?"Âge retenu : "+cnjAge+" ans":"";
+  const rows=[],warns=[];
+  if(age==null){render(rows,warns);return}
+  const isRL=(reg==="RL"||reg==="TNSRL"), isTNS=(reg==="TNS"||reg==="TNSRL");
+  const chMadelin=isTNS?[["info","Madelin à confirmer"]]:[];
+
+  function push(key,fi,suffix,chips,pA,pC,pK,kidNote,incomplete){
+    const total=pA+(pC||0)+(pK||0),f=F[key];
+    rows.push({key,fi,ins:f.ins,resp:f.resp,gamme:f.label+(suffix||""),formule:f.names[fi],
+      hospO:f.hospO[fi],hospN:f.hospN[fi],honoO:f.honoO[fi],honoN:f.honoN[fi],
+      dent:f.dent[fi],opt:f.opt[fi],aud:f.aud[fi],ch:f.ch[fi],md:f.md[fi],
+      chips,pA,pC,pK,kidNote,total,incomplete:!!incomplete});
+  }
+  function mcci(key,suffix,grid,chips,minA,maxA,childPrice){
+    if(isRL||!on(key))return;
+    if(age<minA||age>maxA){warns.push(F[key].label+" : non éligible à "+age+" ans (grille "+minA+"–"+maxA+" ans).");return}
+    for(let i=0;i<F[key].names.length;i++){
+      const pA=grid[age][i];
+      let pC=null,cW=false;
+      if(hasCnj&&cnjAge!=null){ if(cnjAge>=minA&&cnjAge<=maxA)pC=grid[cnjAge][i]; else cW=true; }
+      let pK=null,kidNote="";
+      if(kids>0){ if(childPrice){pK=childPrice[i]*kids;kidNote=kids+" × "+eur(childPrice[i]);} else kidNote="pas de tarif enfant publié"; }
+      push(key,i,suffix,chips.slice(),pA,hasCnj?(cW?undefined:pC):null,pK,kidNote,(hasCnj&&cW)||(kids>0&&pK==null));
+    }
+  }
+  mcci("MCCINOVA","",D.MCCINOVA,[["nr","Non responsable*"]].concat(chMadelin),18,90,null);
+  if(zone){
+    mcci("FLEXIA","",D.FLEXIA[zone],[["resp","Responsable"]].concat(chMadelin),18,84,D.FLEXIA[zone]["E"]);
+    mcci("SOLENCIA","",D.SOLENCIA[zone],[["resp","Responsable"]],62,99,D.SOLENCIA[zone]["E"]);
+  } else if(!isRL) warns.push("Code postal manquant ou hors zonage : FLEXIA et SOLENCIA non calculées.");
+  // CAP EVOLUTION — bloc par régime
+  if(on("CAPEVO")&&age>=16){
+    const g=D.CAPEVO[reg];
+    const a=String(Math.min(Math.max(age,16),100));
+    for(let i=0;i<4;i++){
+      const pA=g[a][i*2];
+      let pC=null;
+      if(hasCnj&&cnjAge!=null&&cnjAge>=16)pC=g[String(Math.min(Math.max(cnjAge,16),100))][i*2+1];
+      const kp=g["15"][i*2],kn=Math.min(kids,2);
+      const pK=kids>0?kp*kn:null;
+      push("CAPEVO",i,isTNS?" TNS":(isRL?" RL":""),[["resp","Responsable"]],pA,hasCnj?pC:null,pK,
+        kids>0?(kn+" × "+eur(kp)+(kids>2?" (3ᵉ+ gratuit)":"")):"",false);
+    }
+  }
+  // CAP NR — tarif unique salarié/TNS, colonne RL sinon zone AVENIR
+  if(on("CAPNR")){
+    const g=D.CAPNR;
+    const c=isRL?0:(dept&&D.AVZ[dept]?D.AVZ[dept]:null);
+    if(c===null){ if(!isRL) warns.push("CAP NR : code postal requis pour le zonage AVENIR."); }
+    else if(age>=16&&age<=100){
+      const a=String(age);
+      for(let f=0;f<7;f++){
+        const pA=g[a][f*8+c*2];
+        let pC=null;
+        if(hasCnj&&cnjAge!=null&&cnjAge>=16)pC=g[String(Math.min(Math.max(cnjAge,16),100))][f*8+c*2+1];
+        const kp=g["15"][f*8+c*2],kn=Math.min(kids,2);
+        const pK=kids>0?kp*kn:null;
+        push("CAPNR",f,"",[["nr","Non responsable"]].concat(isTNS?[["info","Tarif unique sal./TNS"]]:[]),
+          pA,hasCnj?pC:null,pK,kids>0?(kn+" × "+eur(kp)+(kids>2?" (3ᵉ+ gratuit)":"")):"",false);
+      }
+    }
+  }
+  // REVOLUO — base salarié × zone × régime (Alsace ×0,65 sans zone), mineurs payants max 2 (ligne 19 ans)
+  if(on("REV")||on("RF50")||on("RF100")){
+    const RZC={1:1,2:0.95,3:0.90,4:0.85,5:0.80};
+    const rz=dept?D.RVZ[dept]:null;
+    const isDom=dept&&dept.length===3;
+    const nAd=1+((hasCnj&&cnjAge!=null)?1:0), nPers=nAd+kids;
+    const fam=(nAd===2||nPers>=3)?0.90:(nAd===1&&kids===1)?0.95:1;
+    const r2=v=>Math.round(v*100)/100;
+    const coef=isRL?0.65:(rz?RZC[rz]*(isTNS?0.90:1):null);
+    if(isDom) warns.push("REVOLUO : pas de souscription DOM-TOM.");
+    else if(coef===null) warns.push("REVOLUO : département requis pour le zonage.");
+    else if(age<19||age>80) warns.push("REVOLUO : non éligible à "+age+" ans (grille 19–80 ans).");
+    else for(const key of ["REV","RF50","RF100"]){
+      if(!on(key)) continue;
+      const g=D.RVL[key], row=g[String(age)];
+      for(let f=0;f<F[key].names.length;f++){
+        const bA=row&&row[f]; if(!bA) continue;
+        const pA=r2(bA*coef);
+        let pC=null;
+        if(hasCnj&&cnjAge!=null){
+          const rw=(cnjAge>=19&&cnjAge<=80)?g[String(cnjAge)]:null;
+          pC=(rw&&rw[f])?r2(rw[f]*coef):undefined;
+        }
+        let pK=null,kidNote="";
+        if(kids>0){const kn=Math.min(2,kids),bk=r2(g["19"][f]*coef);pK=r2(bk*kn);kidNote=kn+" × "+eur(bk)+(kids>2?" (3ᵉ+ gratuit)":"")+" — tarif 19 ans";}
+        const tot=r2((pA+((pC&&pC!==undefined)?pC:0)+(pK||0))*fam);
+        rows.push({key,fi:f,ins:"avenir",resp:true,gamme:F[key].label,formule:F[key].names[f],
+          hospO:F[key].hospO[f],hospN:F[key].hospN[f],honoO:F[key].honoO[f],honoN:F[key].honoN[f],
+          dent:F[key].dent[f],opt:F[key].opt[f],ch:F[key].ch[f],md:F[key].md[f],
+          chips:[["resp","Responsable"]].concat(fam<1?[["info","Réduction famille −"+Math.round((1-fam)*100)+" %"]]:[]),
+          pA,pC:hasCnj?pC:null,pK,kidNote,total:tot,incomplete:false});
+      }
+    }
+  }
+  // MUTUELLE VERTE GCI — âge réel, ZT1-4 (régime général) ou grille Alsace-Moselle, 2 enfants payants
+  if(on("MV")){
+    const g=D.MV;
+    const mz=isRL?"AL":(dept?(D.MVZ[dept]!==undefined?String(D.MVZ[dept]):null):null);
+    const mvAge=a2=>String(Math.min(Math.max(a2,18),85));
+    if(dept&&dept.length===3) warns.push("M. VERTE : grille DOM non fournie (gamme courtage).");
+    else if(mz===null) warns.push("M. VERTE : zone inconnue pour ce département — non calculée.");
+    else if(age<18) warns.push("M. VERTE : adhésion à partir de 18 ans.");
+    else {
+      const gr=g[mz];
+      if(kids>2) warns.push("M. VERTE : 2 enfants payants appliqués — la gratuité du 3ᵉ enfant et suivants est à confirmer auprès de la mutuelle.");
+      for(let f=0;f<5;f++){
+        const pA=gr[mvAge(age)][f];
+        let pC=null;
+        if(hasCnj&&cnjAge!=null) pC=(cnjAge>=18)?gr[mvAge(cnjAge)][f]:undefined;
+        let pK=null,kidNote="";
+        if(kids>0){const kn=Math.min(2,kids);pK=Math.round(gr["E"][f]*kn*100)/100;kidNote=kn+" enfants payants × "+eur(gr["E"][f])+(kids>2?" — gratuité du 3ᵉ à confirmer":"");}
+        const total=Math.round((pA+((pC&&pC!==undefined)?pC:0)+(pK||0))*100)/100;
+        const rsp=f<4;
+        rows.push({key:"MV",fi:f,ins:"mverte",resp:rsp,gamme:"M. VERTE",formule:F.MV.names[f],
+          hospO:F.MV.hospO[f],hospN:F.MV.hospN[f],honoO:F.MV.honoO[f],honoN:F.MV.honoN[f],
+          dent:F.MV.dent[f],opt:F.MV.opt[f],ch:F.MV.ch[f],md:F.MV.md[f],
+          chips:[rsp?["resp","Responsable"]:["nr","Non responsable"],["info","Âge réel"],["info","Délais de stage"]],
+          pA,pC:hasCnj?pC:null,pK,kidNote,total,incomplete:false});
+      }
+    }
+  }
+  // LPS HOSPI — hospitalisation seule, zone AVENIR ou colonne RL, 16-100 ans, pas de tarif enfant
+  if(on("LPSH")){
+    const g=D.LPSH;
+    const c=isRL?3:(dept&&D.AVZ[dept]?D.AVZ[dept]-1:null);
+    if(c===null){ warns.push("LPS HOSPI : code postal requis pour le zonage AVENIR."); }
+    else if(age>=16&&age<=100){
+      const a=String(age);
+      let pC=null;
+      if(hasCnj&&cnjAge!=null&&cnjAge>=16)pC=g[String(Math.min(Math.max(cnjAge,16),100))][c*2+1];
+      push("LPSH",0,"",[["nr","Non responsable"],["info","Hospitalisation seule"],["info","IJ 20 €/jour"]],
+        g[a][c*2],hasCnj?pC:null,null,kids>0?"mineurs : nous consulter":"",false);
+    }
+  }
+  // TALIS — surcomplémentaire nationale
+  if(on("TALIS")&&age>=16){
+    const g=D.TALIS;
+    const a=String(Math.min(Math.max(age,16),100));
+    for(let f=0;f<2;f++){
+      const pA=g[a][f*2];
+      let pC=null;
+      if(hasCnj&&cnjAge!=null&&cnjAge>=16)pC=g[String(Math.min(Math.max(cnjAge,16),100))][f*2+1];
+      const kp=g["15"][f*2];
+      const pK=kids>0?kp*kids:null;
+      push("TALIS",f,"",[["info","Surcomplémentaire"],["nr","Non responsable"]],pA,hasCnj?pC:null,pK,
+        kids>0?(kids+" × "+eur(kp)):"",false);
+    }
+  }
+  if(isRL) warns.push("Régime local Alsace-Moselle : grilles MCCI non applicables (taux spécifiques, consulter MCCI) — restent CAP EVOLUTION RL, CAP NR RL et TALIS.");
+  if(kids>0&&on("LPSH")) warns.push("LPS HOSPI : pas de tarif enfant dans la grille 2026 — total affiché hors mineurs pour cette gamme.");
+  if(kids>0&&on("MCCINOVA")&&!isRL) warns.push("MCCINOVA : pas de tarif enfant publié — total affiché hors mineurs pour cette gamme.");
+  rows.sort((x,y)=>x.total-y.total);
+  render(rows,warns);
+}
+let LASTROWS=[];
+// ---- Envoi des formules cochées par WhatsApp (prix) ou email (garanties + prix + liens PDF) ----
+const SENDSEL=new Set();
+function selRows(){return LASTROWS.filter(r=>SENDSEL.has(r.key+"|"+r.fi));}
+function offreTxt(r,full){
+  const f=F[r.key], e=EX[r.key]||{};
+  let s=("• "+f.label+" "+r.formule).replace(/\b(\S+) \1\b/,"$1")+" : "+eur(r.total)+" par mois";
+  if(full){
+    const lines=[];
+    for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
+      let v;
+      if(src.startsWith("x:")){const k2=src.slice(2);v=(e[k2]&&e[k2][r.fi]!==undefined)?e[k2][r.fi]:"—";}
+      else v=(f[src]&&f[src][r.fi]!==undefined)?f[src][r.fi]:"—";
+      if(v&&v!=="—")lines.push("   - "+lab+" : "+v);
+    }
+    if(lines.length)s+="\n"+lines.join("\n");
+    const d=DOCS[r.key];
+    if(d)for(const [n,u] of Object.entries(d))if(/TG|IPID/i.test(n))s+="\n   "+(/IPID/i.test(n)?"IPID":"Tableau de garantie (PDF)")+" : "+u;
+  }
+  return s;
+}
+function sendIntro(){
+  return "Bonjour,\nvoici la sélection préparée pour votre complémentaire santé :\n\n";
+}
+function sendText(){
+  let reco="";
+  if(RECO){const r=LASTROWS.find(x=>x.key+"|"+x.fi===RECO);
+    if(r)reco="\n\n\u2b50 Ma recommandation : "+(F[r.key].label+" "+r.formule).replace(/\b(\S+) \1\b/,"$1")+" \u2014 "+eur(r.total)+" par mois.";}
+  return sendIntro()+selRows().map(r=>offreTxt(r,true)).join("\n\n")+reco+"\n\nLes documents contractuels seuls font foi.";
+}
+// Dépôt dans la conversation du CRM (lien venu du CRM avec jeton) — rien n'est envoyé au prospect
+async function crmDepot(payload){
+  const resp=await fetch(window.CRMLINK.base+"/api/comparateur/depot",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(Object.assign({token:window.CRMLINK.token},payload))});
+  if(!resp.ok)throw new Error("HTTP "+resp.status);
+  return true;
+}
+function crmBack(){ try{window.close();}catch(e){} setTimeout(()=>{alert("Fermez cet onglet pour revenir au CRM : la pièce est dans la conversation, prête à envoyer.");},400); }
+async function doDepotText(){
+  const bt=document.getElementById("sbwa"); if(!bt||bt.disabled)return;
+  const old=bt.textContent; bt.disabled=true; bt.textContent="⏳ Dépôt…";
+  try{
+    await crmDepot({kind:"text",text:sendText()});
+    bt.textContent="✅ Déposé";
+    let back=document.getElementById("sbback");
+    if(!back){back=document.createElement("button");back.id="sbback";back.textContent="↩ Revenir au CRM";
+      back.style.cssText="border:0;border-radius:9px;background:#fff;color:#12233d;padding:8px 11px;font:800 13px 'Archivo',sans-serif;cursor:pointer";
+      back.addEventListener("click",crmBack);bt.after(back);}
+    setTimeout(()=>{bt.disabled=false;bt.textContent=old;},4000);
+  }catch(e){bt.disabled=false;bt.textContent="❌ Réessayer";setTimeout(()=>{bt.textContent=old;},3000);}
+}
+function doWhatsApp(){
+  if(window.CRMLINK){doDepotText();return;}
+  const t=sendText();
+  try{navigator.clipboard.writeText(t)}catch(e){}
+  window.open("https://wa.me/?text="+encodeURIComponent(t),"_blank","noopener");
+}
+function doMail(){
+  const t=sendText();
+  try{navigator.clipboard.writeText(t)}catch(e){}
+  const a=document.createElement("a");
+  a.href="mailto:?subject="+encodeURIComponent("Votre étude complémentaire santé")+"&body="+encodeURIComponent(t);
+  document.body.appendChild(a);a.click();a.remove();
+}
+function updateSendBar(){
+  let bar=document.getElementById("sendbar");
+  if(!SENDSEL.size){if(bar)bar.remove();return;}
+  if(!bar){
+    bar=document.createElement("div");
+    bar.id="sendbar";
+    bar.style.cssText="position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:200;display:flex;gap:8px;align-items:center;background:var(--ink);color:var(--ground);border-radius:14px;padding:9px 14px;box-shadow:0 8px 26px rgba(0,0,0,.35);font:700 13.5px 'Archivo',sans-serif;max-width:96vw";
+    bar.innerHTML='<span id="sbcount"></span>'
+      +'<button id="sbtg" title="Tableau de garantie des formules cochées (toutes gammes) — puis 📷 pour copier l\'image" style="border:0;border-radius:9px;background:var(--soft);color:var(--ink);padding:8px 11px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">📄 Garanties</button>'
+      +'<button id="sbwa" style="border:0;border-radius:9px;background:#25D366;color:#fff;padding:8px 13px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">🟢 WhatsApp</button>'
+      +'<button id="sbml" style="border:0;border-radius:9px;background:var(--accent);color:var(--accent-ink);padding:8px 13px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">✉️ Email</button>'
+      +'<button id="sbx" style="border:0;background:transparent;color:inherit;font-size:16px;cursor:pointer;padding:2px 4px">✕</button>';
+    document.body.appendChild(bar);
+    bar.querySelector("#sbtg").addEventListener("click",showTGSel);
+    bar.querySelector("#sbwa").addEventListener("click",doWhatsApp);
+    bar.querySelector("#sbml").addEventListener("click",doMail);
+    bar.querySelector("#sbx").addEventListener("click",()=>{SENDSEL.clear();updateSendBar();calc();});
+  }
+  bar.querySelector("#sbcount").textContent=SENDSEL.size+" formule"+(SENDSEL.size>1?"s":"");
+  if(window.CRMLINK){const w=bar.querySelector("#sbwa");if(!w.disabled&&!/Déposé|Dépôt|Réessayer/.test(w.textContent))w.textContent="📲 Déposer dans le CRM";}
+}
+function render(rows,warns){
+  LASTROWS=rows;
+  const NC=buildHead();
+  const tb=document.getElementById("rows");
+  if(!rows.length){tb.innerHTML='<tr><td colspan="'+NC+'" class="empty">Renseigne une année de naissance (ou un âge) pour lancer le calcul.</td></tr>';}
+  else{
+    tb.innerHTML=rows.map((r,i)=>{
+      const rk=r.key+"|"+r.fi;
+      const isOpen=openKeys.has(rk);
+      const chips=r.chips.map(c=>'<span class="chip '+c[0]+'">'+c[1]+"</span>").join("");
+      let h='<tr class="offer'+(isOpen?" open":"")+'" data-rk="'+rk+'">'+
+      '<td><span class="caret">▶</span><input type="checkbox" class="sendchk"'+(SENDSEL.has(rk)?" checked":"")+' data-rk="'+rk+'" title="Cocher pour envoyer par mail / WhatsApp"></td>'+
+      '<td><div class="gamme"><span class="dot '+r.ins+'"></span><span class="gname '+(r.resp?"rp":"nrp")+'">'+r.gamme+'</span></div><div class="fname">'+r.formule+'</div><div class="chips">'+chips+"</div></td>"+
+      '<td class="num total">'+eur(r.total)+(r.incomplete?" *":"")+"</td>"+
+      '<td class="g">'+r.dent+"</td>"+
+      EXD.filter(e=>exOn[e[0]]).map(e=>'<td class="g">'+exVal(r.key,e[0],r.fi)+"</td>").join("")+
+      '<td class="g">'+r.hospO+(r.ch&&r.ch!=="—"?'<div class="hosp">'+r.ch.replace("/j","")+' ch. part.</div>':"")+'</td><td class="g">'+r.hospN+"</td>"+
+      '<td class="g">'+r.honoO+'</td><td class="g">'+r.honoN+"</td>"+
+      '<td class="g">'+r.opt+'</td>'+
+      EXO.filter(e=>exOn[e[0]]).map(e=>'<td class="g">'+exVal(r.key,e[0],r.fi)+"</td>").join("")+
+      '<td class="g">'+r.md+"</td></tr>";
+      if(isOpen){
+        h+='<tr class="detail"><td colspan="'+NC+'"><div class="bk">'+
+        '<div><span class="who">Assuré</span><b>'+eur(r.pA)+"</b></div>"+
+        (r.pC!==null?'<div><span class="who">Conjoint</span><b>'+(r.pC===undefined?"non éligible":eur(r.pC))+"</b></div>":"")+
+        (r.kidNote?'<div><span class="who">Mineurs</span><b>'+(r.pK!=null?eur(r.pK):"—")+"</b> <span style=\"color:var(--muted)\">("+r.kidNote+")</span></div>":"")+
+        '<div><span class="who">Total foyer</span><b>'+eur(r.total)+"</b></div>"+
+        '<div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">'+
+        Object.entries(DOCS[r.key]||{}).map(([n,u])=>'<a class="tgbtn doc" href="'+u+'" target="_blank" rel="noopener" onclick="event.stopPropagation();try{var w=window.open(this.href,\'docwin\',\'popup,width=980,height=860,left=120,top=60\');if(w){event.preventDefault();w.focus();}}catch(e){}">'+n+' ↗</a>').join('')+
+        '<button class="tgbtn ibtn" data-info="'+i+'" title="Limites, plafonds et exclusions" aria-label="Informations"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16.5"></line><circle cx="12" cy="7.6" r="1.1" fill="currentColor" stroke="none"></circle></svg><span>Infos</span></button>'+
+        (__ADH__&&["CAPEVO","CAPNR","TALIS"].includes(r.key)?'<button class="tgbtn" data-adh="'+i+'">📝 Adhésion</button>':'')+
+        '<button class="tgbtn" data-tg="'+r.key+'">📄 Tableau de garantie</button></div>'+
+        "</div></td></tr>";
+      }
+      return h;
+    }).join("");
+    tb.querySelectorAll(".tgbtn").forEach(btn=>{
+      btn.addEventListener("click",ev=>{
+        ev.stopPropagation();
+        if(btn.dataset.info!==undefined){ showInfo(LASTROWS[+btn.dataset.info]); return; }
+        if(btn.dataset.adh!==undefined) withAdhGate(()=>showAdh(LASTROWS[+btn.dataset.adh]));
+        else if(btn.dataset.tg){ if(SENDSEL.size) showTGSel(); else showTG(btn.dataset.tg); } // formules cochées → tableau de la sélection (toutes gammes)
+      });
+    });
+    tb.querySelectorAll(".sendchk").forEach(cb=>{
+      cb.addEventListener("click",e=>e.stopPropagation());
+      cb.addEventListener("change",e=>{
+        e.stopPropagation();
+        const rk=cb.dataset.rk;
+        cb.checked?SENDSEL.add(rk):SENDSEL.delete(rk);
+        updateSendBar();
+      });
+    });
+    tb.querySelectorAll("tr.offer").forEach(tr=>{
+      tr.addEventListener("click",()=>{
+        const rk=tr.dataset.rk;
+        openKeys.has(rk)?openKeys.delete(rk):openKeys.add(rk);
+        calc();
+      });
+    });
+  }
+  document.getElementById("warns").innerHTML=warns.map(w=>'<div class="warnbox">'+w+"</div>").join("");
+}
+{
+  const ec=document.getElementById("exchecks");
+  for(const [k,l] of EXTRAS){
+    const lab=document.createElement("label"); lab.className="g";
+    lab.innerHTML='<input type="checkbox" data-x="'+k+'"> '+l;
+    lab.querySelector("input").addEventListener("change",e=>{exOn[k]=e.target.checked;calc();});
+    ec.appendChild(lab);
+  }
+}
+// Volets rétractables : compagnies/gammes et options par poste, fermés par défaut
+function voletsSum(){
+  const vg=document.getElementById("vgsum"),vx=document.getElementById("vxsum");
+  if(!vg)return;
+  const n=Object.values(sel).filter(Boolean).length;
+  vg.textContent=n?n+" sélectionnée"+(n>1?"s":""):"toutes affichées";
+  const x=Object.values(exOn).filter(Boolean).length;
+  vx.textContent=x?x+" activée"+(x>1?"s":""):"";
+}
+for(const [bid,pid] of [["vg","gsel"],["vx","expanel"]]){
+  const b=document.getElementById(bid),p=document.getElementById(pid);
+  b.addEventListener("click",()=>{p.hidden=!p.hidden;b.classList.toggle("open",!p.hidden);});
+}
+document.getElementById("gsel").addEventListener("change",voletsSum);
+document.getElementById("expanel").addEventListener("change",voletsSum);
+voletsSum();
+// ---- Préremplissage par lien (ex: #naiss=1966&dept=66&regime=SAL&cnj=1968&kids=2&nom=DUPONT%20Marie) ----
+function applyImport(raw){
+  const P=new URLSearchParams(raw);
+  const imported=[];
+  const set=(id,v)=>{if(v!==null&&v!=="")document.getElementById(id).value=v;};
+  const naiss=P.get("naiss")||P.get("age"); if(naiss){set("naiss",naiss);imported.push(["Année de naissance / âge",naiss]);}
+  const cnj=P.get("cnj")||P.get("conjoint"); if(cnj){set("cnj",cnj);imported.push(["Conjoint (naissance)",cnj]);}
+  const dept=P.get("dept")||P.get("cp"); if(dept){set("cp",dept);imported.push(["Département",dept.slice(0,2)]);}
+  const kids=P.get("kids")||P.get("mineurs"); if(kids!==null&&kids!==""){set("kids",kids);imported.push(["Mineurs",kids]);}
+  const rg=(P.get("regime")||"").toUpperCase();
+  const RMAP={SAL:"SAL",SALARIE:"SAL",SALARIES:"SAL",TNS:"TNS",PL:"TNS",ALSACE:"RL",RL:"RL",TNSRL:"TNSRL"};
+  const RLBL={SAL:"Salarié",TNS:"TNS",RL:"Salarié RL",TNSRL:"TNS RL"};
+  if(RMAP[rg]){set("regime",RMAP[rg]);imported.push(["Régime",RLBL[RMAP[rg]]]);}
+  for(const [k,l] of [["adresse","Adresse"],["ville","Ville"],["email","Email"],["tel","Téléphone"]])if(typeof PRO!=="undefined"&&PRO[k])imported.push([l,PRO[k]]);
+  let nomTxt="";
+  const nom=P.get("nom");
+  if(nom)nomTxt=decodeURIComponent(nom).replace(/\+/g," ");
+  // Ligne récapitulative permanente en haut : toutes les infos importées
+  if(imported.length||nomTxt){
+    const PR=typeof PRO!=="undefined"?PRO:{};
+    const bits=[];
+    if(nomTxt)bits.push((PR.civ?PR.civ+" ":"")+nomTxt);
+    if(PR.ddn)bits.push("né(e) "+PR.ddn); else if(naiss)bits.push("né(e) en "+naiss);
+    const loc=[PR.cp5||dept,PR.ville].filter(Boolean).join(" ");
+    if(loc)bits.push(loc);
+    if(RMAP[rg])bits.push(RLBL[RMAP[rg]]);
+    if(kids&&+kids>0)bits.push(kids+" mineur"+(+kids>1?"s":""));
+    if(PR.email)bits.push(PR.email);
+    if(PR.tel)bits.push(PR.tel);
+    const b2=document.getElementById("prospect");
+    b2.hidden=false;
+    b2.textContent="Prospect : "+bits.join("  ·  ");
+  }
+  if(imported.length||nomTxt){
+    // Popup récapitulative : les infos importées doivent être impossibles à rater (jamais en double)
+    const prev=document.getElementById("impov"); if(prev)prev.remove();
+    const ov=document.createElement("div");
+    ov.id="impov";
+    ov.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:16px";
+    ov.innerHTML='<div style="background:var(--card,#fff);color:var(--ink,#12233d);border-radius:14px;max-width:400px;width:100%;padding:20px 22px;box-shadow:0 18px 50px rgba(0,0,0,.35);font-family:\'Archivo\',sans-serif">'
+      +'<div style="font:800 17px \'Archivo\',sans-serif;margin-bottom:4px">📥 Données importées du CRM</div>'
+      +(nomTxt?'<div style="font:700 16px \'Archivo\',sans-serif;color:var(--accent,#1d4ed8);margin-bottom:8px">'+nomTxt.replace(/</g,"&lt;")+'</div>':"")
+      +imported.map(([l,v])=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:14px"><span style="color:var(--muted,#5b6b82)">'+l+'</span><span style="font-weight:800;white-space:nowrap">'+String(v).replace(/</g,"&lt;")+'</span></div>').join("")
+      +'<button id="impok" style="margin-top:14px;width:100%;padding:10px;border:0;border-radius:9px;background:var(--accent,#1d4ed8);color:#fff;font:800 15px \'Archivo\',sans-serif;cursor:pointer">OK — voir les tarifs</button></div>';
+    document.body.appendChild(ov);
+    ov.querySelector("#impok").addEventListener("click",()=>ov.remove());
+    ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
+    calc();
+    return true;
+  }
+  return false;
+}
+// ---- Mise à jour automatique : un onglet rouvert après 6 h se recharge seul, valeurs conservées ----
+(function(){
+  const FRESH=6*3600*1000, t0=Date.now();
+  try{
+    const s=JSON.parse(sessionStorage.getItem("santeo_stash")||"null");
+    sessionStorage.removeItem("santeo_stash");
+    if(s&&Date.now()-s.ts<10*60*1000){
+      for(const id of ["naiss","cnj","cp","regime","kids"])if(s[id]!=null)document.getElementById(id).value=s[id];
+    }
+  }catch(e){}
+  const refresh=()=>{
+    try{
+      const o={ts:Date.now()};
+      for(const id of ["naiss","cnj","cp","regime","kids"])o[id]=document.getElementById(id).value;
+      sessionStorage.setItem("santeo_stash",JSON.stringify(o));
+    }catch(e){}
+    location.reload();
+  };
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&Date.now()-t0>FRESH)refresh();});
+  window.addEventListener("pageshow",e=>{if(e.persisted&&Date.now()-t0>FRESH)refresh();});
+})();
+const urlImported=(function(){
+  PRO=PRO||{}; // le lien peut arriver avant l'initialisation plus bas
+  const rawAll=(location.hash||"").replace(/^#/,"")+"&"+(location.search||"").replace(/^\?/,"");
+  // Hébergement CRM : la fiche complète peut arriver dans le lien (#fiche=...) → import 100 % automatique
+  try{
+    const qp=new URLSearchParams(rawAll);
+    // Lien venant du CRM : crm=<origine du CRM>&t=<jeton> → bouton « Déposer dans le CRM » sur les captures
+    (function(){
+      let c=qp.get("crm")||qp.get("crmUrl")||qp.get("origin")||"", t=qp.get("t")||qp.get("token")||qp.get("depot")||"";
+      c=c.trim(); if(c&&!/^https?:\/\//i.test(c))c="https://"+c;
+      if(c&&t&&/^https:\/\/[^\s\/]+/i.test(c))window.CRMLINK={base:c.replace(/\/+$/,""),token:t.trim()};
+    })();
+    const fp=qp.get("fiche");
+    if(fp){const parsed=parseFiche(fp);if(parsed)return applyImport(parsed);window.FICHE_KO=fp;}
+  }catch(e){}
+  return applyImport(rawAll);
+})();
+// Certains hébergeurs ne transmettent le hash qu'après coup, ou lors d'un changement
+window.addEventListener("hashchange",()=>applyImport((location.hash||"").replace(/^#/,"")));
+
+// ---- Import par collage : on colle la fiche du prospect, la page reconnaît tout ----
+var PRO=PRO||{}; // coordonnées importées (adhésion) : civ, nom, prenom, ddn, cp5, adresse, ville, email, tel — déjà rempli si le lien portait la fiche
+function parseFiche(t){
+  for(const k in PRO)delete PRO[k];
+  const out=new URLSearchParams();
+  // Dates ISO (1983-05-15, format base CRM) → 15/05/1983
+  const T=t.replace(/ /g," ").replace(/\b((?:19|20)\d{2})-(\d{2})-(\d{2})\b/g,"$3/$2/$1");
+  const dates=[...T.matchAll(/\b\d{1,2}[\/\-.]\d{1,2}[\/\-.](19\d{2}|20[01]\d)\b/g)].map(m=>m[1]);
+  const years=[...T.matchAll(/\b(19\d{2}|20[01]\d)\b/g)].map(m=>m[1]);
+  const ys=dates.length?dates:years;
+  if(ys[0])out.set("naiss",ys[0]);
+  if(ys[1])out.set("cnj",ys[1]);
+  if(!ys.length){const ag=T.match(/\b(\d{2})\s*ans\b/i);if(ag)out.set("naiss",ag[1]);}
+  const dfull=T.match(/\b(\d{1,2}[\/\-.]\d{1,2}[\/\-.](?:19\d{2}|20[01]\d))\b/);
+  if(dfull)PRO.ddn=dfull[1].replace(/[\-.]/g,"/");
+  const cp=T.match(/\b(\d{5})\b/);
+  if(cp){out.set("dept",cp[1].slice(0,2));PRO.cp5=cp[1];}
+  else{const d2=T.match(/\bd[ée]pt?\.?\s*:?\s*(\d{2,3})\b/i);if(d2)out.set("dept",d2[1].slice(0,2));}
+  // Coordonnées pour le formulaire d'adhésion (lignes étiquetées ou texte libre)
+  const em=T.match(/[\w.+\-]+@[\w\-]+\.[A-Za-z]{2,}/); if(em)PRO.email=em[0];
+  // Téléphone : accepte 06…, +33 6…, 33 6… (avec ou sans séparateurs), normalisé en 0X XX XX XX XX
+  const ph2=T.replace(em?em[0]:"","").match(/\b(?:\+?33[\s.\-]?[1-9]|0[1-9])(?:[\s.\-]?\d{2}){4}\b/);
+  if(ph2){
+    let tt=ph2[0].replace(/\D/g,"");
+    if(tt.length===11&&tt.slice(0,2)==="33")tt="0"+tt.slice(2);
+    PRO.tel=tt.length===10?tt.replace(/(\d{2})(?=\d)/g,"$1 ").trim():ph2[0].trim();
+  }
+  const adl=T.match(/^[\s]*adresse\s*:?\s*(.+)$/im);
+  if(adl)PRO.adresse=adl[1].trim();
+  else{const ad2=T.split(/\n+/).find(l=>/\d/.test(l)&&/\b(rue|avenue|av\.|boulevard|bd|chemin|place|impasse|all[ée]e|route|lotissement|r[ée]sidence)\b/i.test(l));if(ad2)PRO.adresse=ad2.trim();}
+  const vil=T.match(/^[\s]*ville\s*:?\s*(.+)$/im);
+  if(vil)PRO.ville=vil[1].trim();
+  // Nettoyage adresse : un simple code postal n'est pas une adresse ; « rue 94500 VILLE » se découpe
+  if(PRO.adresse){
+    if(/^\d{4,5}$/.test(PRO.adresse.trim()))delete PRO.adresse;
+    else{const m2=PRO.adresse.match(/^(.*?)[,\s]+(\d{5})\s+(.{2,})$/);if(m2){PRO.adresse=m2[1].trim();if(!PRO.ville)PRO.ville=m2[3].trim();}}
+  }
+  if(!PRO.ville&&cp){const v2=T.match(new RegExp("\\b"+cp[1]+"\\b[ \\t,\\-–]*([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ' \\-]{1,40})"));if(v2&&!/^(ville|cp\b|email|e-mail|t[ée]l)/i.test(v2[1]))PRO.ville=v2[1].trim();}
+  if(/\b(mme|madame)\b/i.test(T))PRO.civ="Mme";
+  else if(/\b(m\.|mr|monsieur)\b/i.test(T))PRO.civ="M.";
+  const L=T.toLowerCase();
+  const rl=/\balsace\b|\bmoselle\b|r[ée]gime local|\brl\b/.test(L);
+  let rg="";
+  if(/\btns\b|ind[ée]pendant|profession lib|travailleur non|auto.?entrepreneur|artisan|commer[çc]ant|g[ée]rant/.test(L)) rg=rl?"TNSRL":"TNS";
+  else if(/salari|\bsal\b|cadre\b|employ[ée]|retrait[ée]/.test(L)) rg=rl?"RL":"SAL";
+  else if(rl) rg="RL";
+  if(rg)out.set("regime",rg);
+  const kid=L.match(/(\d)\s*(enfants?|mineurs?)\b/);
+  if(kid)out.set("kids",kid[1]);
+  for(const l of T.split(/\n+/).map(s=>s.trim()).filter(Boolean)){
+    if(/\d/.test(l))continue;
+    let w=l.replace(/[^\p{L}\s'\-.]/gu,"").replace(/\s+/g," ").trim();
+    w=w.replace(/^(m\.?|mr|mme|monsieur|madame)\s+/i,"");
+    const wl=w.replace(/[^\p{L}\s'\-]/gu,"");
+    if(wl.length>=3&&wl.split(" ").length<=5&&!/^(tns|sal|salari|r[ée]gime|conjoint|assur|mutuelle|t[ée]l|mail|email|adresse|ville|civilit|prospect|fiche|note|n[ée]e?\b)/i.test(wl)){
+      out.set("nom",encodeURIComponent(wl));
+      // Sépare NOM (tout en majuscules) et Prénom pour le formulaire d'adhésion
+      const toks=wl.split(" ");
+      const noms=toks.filter(x=>x.length>1&&x===x.toLocaleUpperCase("fr"));
+      const pres=toks.filter(x=>!(x.length>1&&x===x.toLocaleUpperCase("fr")));
+      PRO.nom=(noms.length?noms:toks.slice(0,1)).join(" ");
+      PRO.prenom=(noms.length?pres:toks.slice(1)).join(" ");
+      break;
+    }
+  }
+  // Garde-fou : un nom seul, sans aucune autre donnée (date, CP, tél, email), n'est pas une fiche
+  if(!ys.length&&!cp&&!PRO.tel&&!PRO.email){for(const k in PRO)delete PRO[k];return "";}
+  return out.toString();
+}
+function openImport(){
+  try{localStorage.setItem("santeo_courtier","1")}catch(e){}
+  try{ensureAdhLink()}catch(e){}
+  const ov=document.createElement("div");
+  ov.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.55);z-index:998;display:flex;align-items:center;justify-content:center;padding:16px";
+  ov.innerHTML='<div style="background:var(--panel,#fff);color:var(--ink,#12233d);border-radius:14px;max-width:440px;width:100%;padding:18px 20px;box-shadow:0 18px 50px rgba(0,0,0,.35);font-family:\'Archivo\',sans-serif">'
+    +'<div style="font:800 16px \'Archivo\',sans-serif;margin-bottom:6px">📥 Import du prospect</div>'
+    +'<div style="font-size:13px;color:var(--muted,#5b6b82);margin-bottom:8px">Collez la fiche telle quelle (nom, année ou date de naissance, code postal, régime, enfants…). La page reconnaît tout automatiquement.</div>'
+    +'<textarea id="imptxt" rows="6" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid var(--line,#ccc);border-radius:9px;background:var(--ground,#f6f7f4);color:var(--ink,#12233d);font:14px \'IBM Plex Sans\',sans-serif;resize:vertical" placeholder="Ex.&#10;DESPREZ Corinne&#10;12/05/1966 — 66420 — TNS&#10;1 enfant"></textarea>'
+    +'<div id="imperr" style="color:var(--nrc,#8b2332);font-size:13px;margin-top:6px"></div>'
+    +'<div style="display:flex;gap:8px;margin-top:12px">'
+    +'<button id="impgo" style="flex:1;padding:10px;border:0;border-radius:9px;background:var(--accent,#1d4ed8);color:var(--accent-ink,#fff);font:800 15px \'Archivo\',sans-serif;cursor:pointer">Analyser et remplir</button>'
+    +'<button id="impcancel" style="padding:10px 14px;border:1px solid var(--line,#ccc);border-radius:9px;background:var(--soft,#eee);color:var(--ink,#12233d);font:700 14px \'Archivo\',sans-serif;cursor:pointer">Annuler</button>'
+    +'</div></div>';
+  document.body.appendChild(ov);
+  const ta=ov.querySelector("#imptxt");
+  ta.focus();
+  // Si le presse-papier est lisible, on pré-remplit directement
+  if(navigator.clipboard&&navigator.clipboard.readText)navigator.clipboard.readText().then(t=>{if(t&&!ta.value)ta.value=t;}).catch(()=>{});
+  ov.querySelector("#impcancel").addEventListener("click",()=>ov.remove());
+  ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
+  ov.querySelector("#impgo").addEventListener("click",()=>{
+    const parsed=parseFiche(ta.value||"");
+    if(!parsed){ov.querySelector("#imperr").textContent="Rien de reconnu — vérifiez qu'il y a au moins une année, un code postal ou un régime.";return;}
+    ov.remove();
+    applyImport(parsed);
+  });
+}
+// Import direct : lit le presse-papier et remplit sans afficher la zone de collage
+async function importDirect(){
+  try{
+    if(navigator.clipboard&&navigator.clipboard.readText){
+      // 1,5 s max : si le navigateur ne répond pas (permission bloquée), on bascule
+      const t=await Promise.race([
+        navigator.clipboard.readText(),
+        new Promise(r=>setTimeout(()=>r(null),1500))
+      ]);
+      if(t&&t.trim()){
+        const parsed=parseFiche(t);
+        if(parsed){applyImport(parsed);return;}
+      }
+    }
+  }catch(e){}
+  pasteCapture(); // secours discret : fine barre de collage
+}
+function pasteCapture(){
+  const old=document.getElementById("pastebar"); if(old)old.remove();
+  const bar=document.createElement("div");
+  bar.id="pastebar";
+  bar.style.cssText="position:fixed;top:0;left:0;right:0;z-index:999;background:var(--accent);color:var(--accent-ink);padding:8px 12px;display:flex;gap:8px;align-items:center;font:700 14px 'Archivo',sans-serif;box-shadow:0 3px 12px rgba(0,0,0,.25)";
+  bar.innerHTML='<span>📥</span><textarea id="pastein" rows="1" autocomplete="off" placeholder="Collez la fiche ici (Ctrl+V / appui long → Coller)" style="flex:1;padding:8px 10px;border:0;border-radius:7px;background:#fff;color:#12233d;font:14px \'IBM Plex Sans\',sans-serif;min-width:0;resize:none;height:36px;line-height:20px"></textarea><button id="pastex" style="border:0;background:transparent;color:inherit;font-size:18px;cursor:pointer;padding:2px 6px">✕</button>';
+  document.body.appendChild(bar);
+  const inp=bar.querySelector("#pastein"); inp.focus();
+  let fired=false;
+  const done=t=>{if(fired)return;fired=true;const parsed=parseFiche(t||"");
+    if(parsed){bar.remove();applyImport(parsed);}
+    else{fired=false;inp.value="";inp.placeholder="Fiche non reconnue — collez une fiche avec date, CP, tél ou email";}};
+  inp.addEventListener("paste",e=>{e.preventDefault();done((e.clipboardData||window.clipboardData).getData("text"));});
+  inp.addEventListener("input",()=>{if(inp.value.length>8)done(inp.value);});
+  bar.querySelector("#pastex").addEventListener("click",()=>bar.remove());
+}
+// Fonction discrète : appui long (1 s) sur ↻ = import ; appui court = rechargement
+(function(){
+  const rb=document.getElementById("reload");
+  let t=null,long=false;
+  const start=()=>{long=false;clearTimeout(t);t=setTimeout(()=>{long=true;openImport();},900);};
+  const stop=()=>clearTimeout(t);
+  rb.addEventListener("pointerdown",start);
+  rb.addEventListener("pointerup",stop);
+  rb.addEventListener("pointerleave",stop);
+  rb.addEventListener("pointercancel",stop);
+  rb.addEventListener("click",e=>{
+    if(long){e.preventDefault();long=false;return;}
+    // Recharge l'enveloppe claude.ai entière (c'est elle qui épingle la version), pas seulement l'intérieur
+    const SELF="__SELFURL__";
+    try{if(SELF&&window.top!==window.self){window.top.location.href=SELF;return;}}catch(err){}
+    location.reload();
+  });
+  rb.addEventListener("contextmenu",e=>e.preventDefault());
+})();
+// Site public : icône 🔒 visible par tous, vers le site miroir privé (bulletin PDF).
+// Au clic, la fiche AFFICHÉE est recopiée dans le presse-papier → rien ne se perd au passage.
+var ADHURL="__ADHURL__";
+function ficheFromState(){
+  const P=PRO||{};
+  if(!(P.nom||P.ddn||P.email||P.tel||P.adresse))return ""; // rien d'importé : on ne touche pas au presse-papier
+  const L=[];
+  const nomL=[(P.civ||""),(P.nom||""),(P.prenom||"")].filter(Boolean).join(" ").trim();
+  if(nomL)L.push(nomL);
+  if(P.ddn)L.push("né(e) le "+P.ddn);
+  else{const n=document.getElementById("naiss").value;if(/^(19|20)\d\d$/.test(n))L.push("né(e) en "+n);}
+  if(P.adresse)L.push("Adresse : "+P.adresse);
+  L.push("CP "+(P.cp5||document.getElementById("cp").value));
+  if(P.ville)L.push("Ville : "+P.ville);
+  if(P.email)L.push("Email : "+P.email);
+  if(P.tel)L.push("Tél : "+P.tel);
+  const RL2={SAL:"salarié",TNS:"TNS",RL:"salarié régime local",TNSRL:"TNS régime local"};
+  L.push(RL2[document.getElementById("regime").value]||"");
+  const k=document.getElementById("kids").value;
+  if(+k>0)L.push(k+" enfant"+(+k>1?"s":""));
+  return L.filter(Boolean).join("\n");
+}
+function ensureAdhLink(){
+  if(!ADHURL||document.getElementById("adhlink"))return;
+  const b=document.createElement("a");
+  b.href=ADHURL;b.target="_blank";b.rel="noopener";b.id="adhlink";b.textContent="🔒";
+  b.title="Version privée (bulletin PDF) — la fiche affichée est recopiée automatiquement";
+  b.style.cssText="position:fixed;top:10px;right:56px;z-index:50;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:17px;box-shadow:0 1px 4px rgba(0,0,0,.15)";
+  b.addEventListener("click",()=>{try{const f=ficheFromState();if(f)navigator.clipboard.writeText(f);}catch(e){}});
+  document.body.appendChild(b);
+}
+ensureAdhLink();
+try{updateAdhBadge();}catch(e){}
+// Badge du site privé : impossible de le confondre avec le site public
+if(__PRIV__){
+  const t=document.createElement("div");
+  t.textContent="🔒 VERSION PRIVÉE — bulletin PDF";
+  t.style.cssText="position:fixed;top:16px;right:56px;z-index:49;background:var(--nrc);color:#fff;border-radius:9px;padding:7px 11px;font:800 12px 'Archivo',sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.2)";
+  document.body.appendChild(t);
+}
+// Version CRM uniquement : proposer l'import à chaque ouverture
+(function(){
+  const CRMMODE=__CRM__;
+  if(!CRMMODE||urlImported)return;
+  const ov=document.createElement("div");
+  ov.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.45);z-index:997;display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 16px";
+  ov.innerHTML='<div style="background:var(--panel,#fff);color:var(--ink,#12233d);border-radius:14px;max-width:420px;width:100%;padding:16px 18px;box-shadow:0 18px 50px rgba(0,0,0,.35);font-family:\'Archivo\',sans-serif">'
+    +'<div style="font:800 15px \'Archivo\',sans-serif;margin-bottom:8px">📥 Importer une fiche prospect ?</div>'
+    +'<textarea id="stpaste" rows="4" autocomplete="off" placeholder="Collez la fiche ici (appui long → Coller / Ctrl+V) — l\'analyse démarre toute seule" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid var(--line,#ccc);border-radius:9px;background:var(--ground,#f6f7f4);color:var(--ink,#12233d);font:14px \'IBM Plex Sans\',sans-serif;resize:vertical"></textarea>'
+    +'<div id="sterr" style="color:#c62828;font-size:13px;margin-top:6px"></div>'
+    +'<button id="stskip" style="width:100%;margin-top:10px;padding:11px;border:1px solid var(--line,#ccc);border-radius:9px;background:var(--soft,#eee);color:var(--ink,#12233d);font:700 14px \'Archivo\',sans-serif;cursor:pointer">Continuer sans import</button>'
+    +'</div>';
+  document.body.appendChild(ov);
+  const ta=ov.querySelector("#stpaste"); ta.focus();
+  // Fiche reçue par le lien mais incomplète : on la montre, avec la raison, au lieu d'un écran muet
+  if(window.FICHE_KO){ta.value=window.FICHE_KO;ov.querySelector("#sterr").textContent="Fiche reçue du CRM mais incomplète — il faut au moins une date de naissance, un code postal, un téléphone ou un email. Complétez-la ci-dessus.";}
+  let fired=false;
+  const done=t=>{if(fired)return;fired=true;const parsed=parseFiche(t||"");
+    if(parsed){ov.remove();applyImport(parsed);}
+    else{fired=false;ta.value="";ov.querySelector("#sterr").textContent="Fiche non reconnue — il faut au moins une date de naissance, un code postal, un téléphone ou un email.";}};
+  ta.addEventListener("paste",e=>{e.preventDefault();done((e.clipboardData||window.clipboardData).getData("text"));});
+  ta.addEventListener("input",()=>{if(ta.value.length>8)done(ta.value);});
+  ov.querySelector("#stskip").addEventListener("click",()=>ov.remove());
+  ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
+})();
+["naiss","regime","cp","cnj","kids"].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener("input",calc); el.addEventListener("change",calc);
+});
+calc();
+
+// ---- Assistant IA (capacité sample) ----
+(async()=>{
+  const s=await CUSE("sample");
+  if(!s) return;
+  const btn=document.getElementById("aibtn"),panel=document.getElementById("aipanel"),
+        log=document.getElementById("ailog"),q=document.getElementById("aiq"),send=document.getElementById("aisend");
+  btn.style.display="block";
+  btn.addEventListener("click",()=>{panel.hidden=!panel.hidden;if(!panel.hidden)q.focus();});
+  document.getElementById("aiclose").addEventListener("click",()=>panel.hidden=true);
+  const hist=[];
+  const GKEYS={MCCINOVA:["mccinova"],FLEXIA:["flexia"],SOLENCIA:["solencia","solencia"],CAPEVO:["evolution","évolution","capevo","acces","accès","tranquillité","sérénité"],LPSH:["lps","hospi","hospitalisation seule"],CAPNR:["cap nr","capnr","cap 100","cap 130","cap 160","cap 200","cap 300","cap 400","essentiel"],REV:["revoluo","révoluo","rev "],RF50:["rf50","rf 50","renfort 50"],RF100:["rf100","rf 100","renfort 100"],MV:["verte","gci"],TALIS:["talis"]};
+  const DOCK={MCCINOVA:"MCCIDOC",FLEXIA:"FLEXDOC",SOLENCIA:"SOLDOC",CAPEVO:"CAPEVODOC",CAPNR:"CAPNRDOC",REV:"REVDOC",RF50:"REVDOC",RF100:"REVDOC",MV:"MVDOC",TALIS:"TALISDOC"};
+  function summary(){
+    let out="";
+    for(const k of Object.keys(F)){
+      const f=F[k],e=EX[k]||{};
+      out+="## "+f.label+" ("+COMP[k]+", "+(f.resp?"responsable":"non responsable")+")\nFormules: "+f.names.join(", ")+"\n";
+      out+="Hospi Optam: "+f.hospO.join("/")+" | hors Optam: "+f.hospN.join("/")+" | Chambre: "+f.ch.join("/")+"\n";
+      out+="Consult Optam: "+f.honoO.join("/")+" | hors: "+f.honoN.join("/")+"\n";
+      out+="Prothèses dentaires: "+f.dent.join("/")+" | Implant: "+(e.imp||[]).join("/")+" | Ortho R: "+(e.orthR||[]).join("/")+" | Ortho NR: "+(e.orthN||[]).join("/")+"\n";
+      out+="Optique: "+f.opt.join("/")+" | Lentilles acc: "+(e.lentA||[]).join("/")+" | réf: "+(e.lentR||[]).join("/")+" | Audio: "+(e.aud||[]).join("/")+" | Méd douce: "+f.md.join("/")+"\n";
+      out+="Notes: "+(TGNOTE[k]||"")+"\n\n";
+    }
+    return out;
+  }
+  function docsFor(question){
+    const ql=question.toLowerCase();
+    const picked=new Set();
+    for(const[k,words]of Object.entries(GKEYS)) if(words.some(w=>ql.includes(w))) picked.add(DOCK[k]);
+    let out="";
+    for(const d of picked) out+="\n\n===== DOCUMENT "+d+" =====\n"+(D.DOCSMD[d]||"");
+    return out;
+  }
+  async function ask(){
+    const question=q.value.trim(); if(!question) return;
+    q.value=""; send.disabled=true;
+    log.textContent+=(log.textContent?"\n\n":"")+"❓ "+question+"\n→ ";
+    const anchor=log.textContent.length;
+    const ctxIn=document.getElementById("naiss").value+" ans/année, régime "+document.getElementById("regime").value+", dépt "+document.getElementById("cp").value;
+    const instr="Tu es l'assistant du comparateur mutuelle de Santéo (courtier Capi Finance). Tu réponds UNIQUEMENT sur les gammes ci-dessous, en français, de façon concise et exacte, en citant les chiffres des données fournies. Si l'information n'est pas dans les données, dis-le. Termine par: «Seuls les documents contractuels font foi.» Profil client en cours: "+ctxIn+".\n\n=== SYNTHÈSE DES GAMMES ===\n"+summary()+docsFor(question);
+    const turns=[{role:"user",content:instr+"\n\nQuestion: "+question}];
+    for(const t of hist) turns.splice(turns.length-1,0,t);
+    try{
+      const r=await s(turns,{cache:false,onText:({text})=>{log.textContent=log.textContent.slice(0,anchor)+text;log.scrollTop=log.scrollHeight;}});
+      log.textContent=log.textContent.slice(0,anchor)+r.text;
+      hist.push({role:"user",content:question},{role:"assistant",content:r.text});
+      if(hist.length>8)hist.splice(0,hist.length-8);
+    }catch(e){
+      log.textContent+="[Assistant indisponible: "+(e&&e.code||e)+"]";
+    }
+    send.disabled=false; log.scrollTop=log.scrollHeight;
+  }
+  send.addEventListener("click",ask);
+  q.addEventListener("keydown",e=>{if(e.key==="Enter")ask();});
+})();
+</script>
