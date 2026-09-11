@@ -250,7 +250,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-11 04:50</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-11 05:17</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -469,19 +469,55 @@ function docKind(T){
   return "autre";
 }
 // Nom du titulaire du document, pour vérifier qu'il s'agit bien du bon prospect
+const ADMIN=/^(ATTESTATION|ATTESTATIONS|DROITS|DROIT|ASSURANCE|MALADIE|CAISSE|PRIMAIRE|CPAM|MSA|RSI|ORGANISME|SECURITE|SÉCURITÉ|SOCIALE|NUMERO|NUMÉRO|BENEFICIAIRE|BÉNÉFICIAIRE|BENEFICIAIRES|BÉNÉFICIAIRES|ASSURE|ASSURÉ|ASSUREE|ASSURÉE|TITULAIRE|NIR|IBAN|BIC|RIB|RELEVE|RELEVÉ|IDENTITE|IDENTITÉ|BANCAIRE|DOMICILIATION|BANQUE|AGENCE|COMPTE|CODE|GUICHET|CLE|CLÉ|ADRESSE|VILLE|POSTAL|TELEPHONE|TÉLÉPHONE|EMAIL|MAIL|REPUBLIQUE|RÉPUBLIQUE|FRANCAISE|FRANÇAISE|CARTE|NATIONALE|PASSEPORT|PERMIS|CONDUIRE|NOM|PRENOM|PRÉNOM|NEE|NÉE|VALABLE|DELIVRE|DÉLIVRÉ|SIREN|SIRET|MUTUELLE|SANTE|SANTÉ|VOS|VOTRE|LES|DES|DU|DE|LA|LE|ET|POUR|AVEC|SUR|PAR)$/i;
+// Raisons sociales de banques et d'assureurs : jamais un nom de titulaire
+const BANKW=/^(BNP|PARIBAS|CREDIT|CRÉDIT|AGRICOLE|MUTUEL|MUTUELLE|LYONNAIS|LCL|SOCIETE|SOCIÉTÉ|GENERALE|GÉNÉRALE|CIC|HSBC|POPULAIRE|EPARGNE|ÉPARGNE|POSTALE|POSTE|BRED|FORTUNEO|BOURSORAMA|MONABANQ|REVOLUT|QONTO|NICKEL|AXA|ALLIANZ|GROUPAMA|MACIF|MAIF|MATMUT|CNP|SUCCURSALE|SIEGE|SIÈGE|SOCIAL|ETABLISSEMENT|ÉTABLISSEMENT|DOMICILIE|DOMICILIÉ|CENTRE|CENTRALE|SERVICE|SERVICES|CLIENT|CLIENTELE|CLIENTÈLE|CONSEILLER|GESTION|REFERENCE|RÉFÉRENCE|EDITION|ÉDITION|PAGE|MONTANT|SOLDE|VIREMENT|PRELEVEMENT|PRÉLÈVEMENT|SEPA|ZONE|EUROS|EUR|DATE|DUPLICATA|EXEMPLAIRE)$/i;
+const CIVW=/^(?:m|mr|mme|mlle|monsieur|madame|mademoiselle)\.?$/i;
+const stopW=w=>ADMIN.test(w)||BANKW.test(w);
+// Nom du titulaire du document, pour vérifier qu'il s'agit bien du bon prospect
 function docHolder(T,kind,fields){
   if(fields.nom)return (fields.nom+" "+(fields.prenom||"")).trim();
-  const CIV=/^(?:m|mr|mme|mlle|monsieur|madame|mademoiselle)\.?$/i;
-  const m=T.match(/(?:titulaire|b[ée]n[ée]ficiaire|assur[ée]\(?e?\)?|au nom de|nom\s*et\s*pr[ée]nom)[^A-Za-zÀ-ÿ]{0,12}([A-Za-zÀ-ÿ'\-]{1,20}(?:\s+[A-Za-zÀ-ÿ'\-]{2,20}){0,3})/i);
-  if(!m)return "";
-  const STOP=/^(iban|bic|adresse|domiciliation|banque|code|compte|num[ée]ro|n[°o]|rib|swift|cle|cl[ée])$/i;
-  const out=[];
-  for(const w of m[1].split(/\s+/)){
-    if(CIV.test(w))continue;
-    if(STOP.test(w)||/\d/.test(w))break;
-    out.push(w); if(out.length===3)break;
+  const clean=str=>{
+    const out=[]; let skip=0;
+    for(const w of String(str||"").split(/[\s,;:]+/)){
+      if(!w)continue;
+      if(CIVW.test(w))continue;
+      if(/\d/.test(w))break;
+      if(stopW(w)||w.length<2){ if(out.length)break; if(++skip>6)break; continue; } // on saute « du compte : », « de M. »…
+      out.push(w); if(out.length===3)break;
+    }
+    return out.join(" ").trim();
+  };
+  // 1) après une mention explicite
+  let m=T.match(/(?:titulaire|b[ée]n[ée]ficiaire[s]?|assur[ée]\(?e?\)?|au nom de|compte de|nom\s*(?:et\s*pr[ée]nom|du\s*titulaire)?)[^A-Za-zÀ-ÿ]{0,12}([A-Za-zÀ-ÿ'\-][^\n]{2,60})/i);
+  let h=m?clean(m[1]):"";
+  // 2) après une civilité
+  if(!h){m=T.match(/\b(?:M\.|MR|MME|MLLE|Mme|Mlle|MONSIEUR|MADAME|Monsieur|Madame)\s+([A-ZÀ-Ý][^\n]{2,50})/);if(m)h=clean(m[1]);}
+  // 3) permis de conduire : rubriques numérotées 1. NOM  2. Prénom
+  if(!h&&/permis de conduire/i.test(T)){
+    m=T.match(/\b1\s*[.\)]?\s*([A-ZÀ-Ý][A-ZÀ-Ý'\- ]{1,30})[\s\S]{0,6}?\b2\s*[.\)]?\s*([A-ZÀ-Ý][A-Za-zÀ-ÿ'\-]{1,25})/);
+    if(m)h=(clean(m[1])+" "+clean(m[2])).trim();
   }
-  return out.join(" ").trim();
+  // 4) NOM en majuscules suivi d'un prénom (forme la plus courante sur les attestations)
+  if(!h){
+    const re=/\b([A-ZÀ-Ý][A-ZÀ-Ý'\-]{2,24})\s+([A-ZÀ-Ý][a-zà-ÿ'\-]{2,20}|[A-ZÀ-Ý]{2,20})\b/g;
+    let x; while((x=re.exec(T))){
+      // civilité ou mot écarté en 1re position : on repart juste après ce mot, il peut ouvrir le couple suivant
+      if(CIVW.test(x[1])||stopW(x[1])||stopW(x[2])){re.lastIndex=x.index+x[1].length;continue;}
+      h=(x[1]+" "+x[2]).trim(); break;
+    }
+  }
+  // 5) juste avant « né(e) le »
+  if(!h){m=T.match(/([A-ZÀ-Ý][A-Za-zÀ-ÿ'\- ]{2,40})\s*,?\s*n[ée]\(?e?\)?\s*le/i);if(m)h=clean(m[1]);}
+  return h;
+}
+// Sépare « POISSON Claire » en nom / prénom quand la casse le permet
+function splitHolder(h){
+  const w=String(h||"").trim().split(/\s+/).filter(x=>x.length>1);
+  if(w.length<2)return null;
+  const up=w.filter(x=>x===x.toUpperCase()), lo=w.filter(x=>x!==x.toUpperCase());
+  if(!up.length||lo.length!==1)return null;
+  return {nom:up.join(" "),prenom:lo[0]};
 }
 function extractDocFields(txt){
   const T=txt.replace(/[  ]/g," ");
@@ -506,12 +542,34 @@ function extractDocFields(txt){
       if(nom.length>1)out.nom=nom;
       if(pre.length>1)out.prenom=pre.charAt(0)+pre.slice(1).toLowerCase();
     }
-    const dl=mrz.find(l=>/\d{6}[MF<]\d{6}/.test(l));
-    if(dl){
-      const m2=dl.match(/(\d{2})(\d{2})(\d{2})\d?[MF<]/);
-      if(m2){const yy=+m2[1];const an=(yy>(new Date().getFullYear()%100))?1900+yy:2000+yy;
-        out.ddn=m2[3]+"/"+m2[2]+"/"+an;}
+    if(!out.prenom){
+      const p2=mrz.map(l=>l.match(/^\d{12,13}([A-Z][A-Z'\-]{1,24})</)).find(Boolean);
+      if(p2)out.prenom=p2[1].charAt(0)+p2[1].slice(1).toLowerCase();
     }
+    // Date de naissance : 6 chiffres + clé de contrôle MRZ (poids 7-3-1), suivis du sexe.
+    // Sans cette clé on prenait par erreur des chiffres du numéro de document.
+    const chk=s=>{const w=[7,3,1];let t=0;for(let i=0;i<s.length;i++)t+=(+s[i]||0)*w[i%3];return t%10;};
+    const plaus=s=>{const mm=+s.slice(2,4),dd=+s.slice(4,6);return mm>=1&&mm<=12&&dd>=1&&dd<=31;};
+    let bd=null,fb=null;
+    for(const l of mrz){
+      const re2=/(\d{6})(\d)[MFX<]/g; let y;
+      while((y=re2.exec(l))){
+        if(!plaus(y[1]))continue;
+        if(chk(y[1])===+y[2]){bd=y[1];break;}
+        if(!fb)fb=y[1];
+      }
+      if(bd)break;
+    }
+    const D=bd||fb;
+    if(D){const yy=+D.slice(0,2);const an=(yy>(new Date().getFullYear()%100))?1900+yy:2000+yy;
+      out.ddn=D.slice(4,6)+"/"+D.slice(2,4)+"/"+an;}
+  }
+  // Permis de conduire : rubriques numérotées (1 = nom, 2 = prénom, 3 = date et lieu de naissance)
+  if(/permis de conduire/i.test(T)){
+    const P=T.replace(/[A-Z0-9<]{20,}/g," ");
+    if(!out.nom){const n=P.match(/\b1\s*[.\)]?\s*([A-ZÀ-Ý][A-ZÀ-Ý'\- ]{1,30})/);if(n)out.nom=n[1].trim();}
+    if(!out.prenom){const n=P.match(/\b2\s*[.\)]?\s*([A-ZÀ-Ý][A-Za-zÀ-ÿ'\-]{1,25})/);if(n)out.prenom=n[1].trim();}
+    if(!out.ddn){const d=P.match(/\b3\s*[.\)]?\s*(\d{2})[.\/\- ](\d{2})[.\/\- ]((?:19|20)\d{2})/);if(d)out.ddn=d[1]+"/"+d[2]+"/"+d[3];}
   }
   // Mentions en clair (CNI, permis de conduire) — on écarte d'abord les lignes MRZ
   const TC=T.replace(/[A-Z0-9<]{20,}/g," ");
@@ -570,7 +628,10 @@ async function scanDocs(files,st){
     if(!Object.keys(got).length&&/pdf$/i.test(f.type)&&(txt||"").replace(/\s/g,"").length<40){
       st.textContent=f.name+" : PDF sans texte — utilisez une photo du document.";
     }
-    found.push({file:f.name,kind:kind,fields:got,holder:docHolder(txt,kind,all)});
+    const holder=docHolder(txt,kind,all);
+    // Pièce d'identité sans mention « Nom » lisible : on reprend le titulaire détecté
+    if(kind==="id"&&!got.nom){const s=splitHolder(holder);if(s){got.nom=s.nom;got.prenom=got.prenom||s.prenom;}}
+    found.push({file:f.name,kind:kind,fields:got,holder:holder});
   }
   return found;
 }
