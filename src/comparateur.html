@@ -257,7 +257,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version __BUILD__</div>
+  <div id="buildstamp" data-build="__BUILD__" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version __BUILD__</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -994,10 +994,25 @@ function renderTG(cols,title,sub,note,single){
   const tip=document.createElement('div');tip.className='rectip';
   tip.textContent='Touchez l\u2019\u2606 d\u2019une formule pour la conseiller : elle est mise en avant dans l\u2019image et annoncée dans l\u2019envoi.';
   ov.querySelector('#tgbox .src').after(tip);
+  // Mise en avant appliquée sur place : le tableau ne se reconstruit pas, rien ne saute
+  function paintReco(){
+    const tbl=ov.querySelector('#tgbox table');
+    cols.forEach((c,ci)=>{
+      const on=RECO===(c.key+"|"+c.fi);
+      const th=tbl.querySelector('thead th.pick[data-ci="'+ci+'"]');
+      if(th){
+        th.classList.toggle('reco',on);
+        th.innerHTML=(on?'<span class="recolbl">⭐ Je vous conseille</span>'
+                        :'<span class="star" title="Conseiller cette formule">☆</span>')
+          +(multi?'<span style="display:block;font-size:11px;opacity:.75">'+F[c.key].label+'</span>':'')+F[c.key].names[c.fi];
+      }
+      tbl.querySelectorAll('tbody tr').forEach(tr=>{const td=tr.children[ci+1];if(td)td.classList.toggle('reco',on);});
+    });
+  }
   ov.querySelectorAll('#tgbox thead th.pick').forEach(th=>th.addEventListener('click',()=>{
     const c=cols[+th.dataset.ci], id=c.key+"|"+c.fi;
     RECO=(RECO===id)?null:id;
-    ov.remove(); renderTG(cols,title,sub,note,single);
+    paintReco();
   }));
   const key=single; const f={label:title.replace(/ — .*$/,"")};
   // Capture du tableau en image PNG : copiée dans le presse-papier (collez dans WhatsApp)
@@ -1524,7 +1539,19 @@ function render(rows,warns){
       ev.stopPropagation();
       const id=b.dataset.star;
       RECO=(RECO===id)?null:id;
-      calc();
+      // Mise à jour sur place : pas de recalcul, la page ne bouge pas
+      tb.querySelectorAll("tr.offer").forEach(tr=>{
+        const on=RECO===tr.dataset.rk;
+        tr.classList.toggle("reco",on);
+        const st=tr.querySelector(".rowstar");
+        if(st){st.classList.toggle("on",on);st.textContent=on?"⭐":"☆";}
+        const ch=tr.querySelector(".chips");
+        if(ch){
+          const ex=ch.querySelector(".chip.reco");
+          if(on&&!ex){const s=document.createElement("span");s.className="chip reco";s.textContent="⭐ Je vous conseille";ch.prepend(s);}
+          if(!on&&ex)ex.remove();
+        }
+      });
     }));
     tb.querySelectorAll(".sendchk").forEach(cb=>{
       cb.addEventListener("click",e=>e.stopPropagation());
@@ -1937,5 +1964,14 @@ calc();
   }
   send.addEventListener("click",ask);
   q.addEventListener("keydown",e=>{if(e.key==="Enter")ask();});
+})();
+</script>
+<script>
+// Horodatage de construction affiché dans l'heure locale du navigateur
+(function(){
+  var e=document.getElementById("buildstamp"); if(!e)return;
+  var iso=e.getAttribute("data-build"); if(!iso||iso.indexOf("T")<0)return;
+  var d=new Date(iso); if(isNaN(d))return;
+  e.textContent="version "+d.toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}).replace(",","");
 })();
 </script>
