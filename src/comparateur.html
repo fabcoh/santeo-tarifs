@@ -128,6 +128,10 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 .bk div b{font-variant-numeric:tabular-nums}
 .bk .who{color:var(--muted);font-family:"Archivo",sans-serif;font-weight:600;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;display:block}
 .warnbox{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:8px;padding:9px 13px;font-size:12.5px;color:var(--muted)}
+.condbox{margin-top:12px;background:var(--soft);border:1px solid var(--accent);border-left:5px solid var(--accent);border-radius:8px;padding:10px 14px;font-size:13.5px;line-height:1.55;color:var(--ink)}
+.condbox b{color:var(--accent);font-family:"Archivo",sans-serif;font-weight:800;margin-right:4px}
+.condbox div+div{margin-top:5px}
+@media (max-width:620px){.condbox{font-size:12.5px;padding:8px 11px}}
 .notes{margin-top:16px;font-size:11.5px;color:var(--muted);line-height:1.7}
 .notes b{color:var(--ink)}
 .empty{padding:28px;text-align:center;color:var(--muted)}
@@ -177,6 +181,13 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #reload{touch-action:manipulation;-webkit-user-select:none;user-select:none}
 #aipanel[hidden]{display:none}#aipanel:not([hidden]){display:flex}
 .sendchk{display:block;width:18px;height:18px;margin:5px auto 0;accent-color:var(--accent)}
+.rowstar{border:0;background:transparent;cursor:pointer;font-size:15px;line-height:1;padding:0 0 0 6px;color:var(--muted);vertical-align:-1px}
+.rowstar:hover{color:var(--warn)}
+.rowstar.on{color:var(--warn)}
+tr.offer.reco td{background:var(--best)}
+tr.offer.reco td:first-child{box-shadow:inset 3px 0 0 var(--warn)}
+tr.offer.reco:hover td{background:var(--best)}
+.chip.reco{background:var(--best);color:var(--warn);border-color:var(--warn)}
 .volet{width:100%;display:flex;align-items:center;gap:8px;text-align:left;padding:11px 14px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--ink);font:800 14px 'Archivo',sans-serif;cursor:pointer;margin-bottom:6px}
 .volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 .volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
@@ -242,6 +253,10 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
+  <div class="condbox">
+    <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
+    <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
+  </div>
   <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version __BUILD__</div>
 </div>
 </div>
@@ -1065,6 +1080,13 @@ function renderTG(cols,title,sub,note,single){
         iv.innerHTML='<div style="color:#fff;font:700 14px \'Archivo\',sans-serif;text-align:center">'
           +(copied?"✅ Image copiée — collez-la dans WhatsApp ou un mail":"Image prête — Partager ou Télécharger ci-dessous")+'</div>'
           +'<img src="'+urlImg+'" style="max-width:94vw;max-height:calc(100vh - 170px);width:auto;height:auto;object-fit:contain;border-radius:8px;background:#fff">'
+          +'<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center;max-width:94vw">'
+          +'<span style="color:#fff;font:700 12px \'Archivo\',sans-serif;opacity:.85">Je conseille :</span>'
+          +cols.map((c,ci)=>{const on2=RECO===(c.key+"|"+c.fi);
+             return '<button data-reco="'+ci+'" style="padding:6px 11px;border:0;border-radius:8px;cursor:pointer;font:700 12px \'Archivo\',sans-serif;'
+               +(on2?'background:#E8B45A;color:#2b2110':'background:rgba(255,255,255,.85);color:#12233d')+'">'
+               +(on2?'⭐ ':'☆ ')+F[c.key].names[c.fi]+'</button>';}).join('')
+          +'</div>'
           +'<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">'
           +(canSh?'<button data-a="share" style="'+bst+'">📤 Partager</button>':'')
           +(window.CRMLINK?'<button data-a="crm" style="'+bst+';background:#059669;color:#fff">📲 Déposer dans le CRM</button>':'')
@@ -1072,6 +1094,16 @@ function renderTG(cols,title,sub,note,single){
           +'<button data-a="close" style="'+bst+'">Fermer</button></div>';
         iv.addEventListener('click',async e=>{
           const a=e.target&&e.target.dataset&&e.target.dataset.a;
+          // Changer la formule conseillée depuis l'aperçu : l'image est refaite aussitôt
+          const st=e.target&&e.target.dataset?e.target.dataset.reco:undefined;
+          if(st!==undefined){
+            const c2=cols[+st], id2=c2.key+"|"+c2.fi;
+            RECO=(RECO===id2)?null:id2;
+            iv.remove(); ov.remove(); renderTG(cols,title,sub,note,single);
+            const nb=document.querySelector('#tgbox .shot[data-t="'+(withPrices?"1":"0")+'"]');
+            if(nb)nb.click();
+            return;
+          }
           if(e.target===iv||a==="close"){iv.remove();return;}
           if(a==="share"){try{await navigator.share({files:[fimg],title:'Tableau de garantie'});}catch(e3){}return;}
           if(a==="crm"){
@@ -1080,8 +1112,9 @@ function renderTG(cols,title,sub,note,single){
               const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);});
               const PR2=typeof PRO!=="undefined"?PRO:{};
               await crmDepot({kind:"image",filename:fname,mime:"image/png",data:b64,caption:"Tableau de garantie — "+[(PR2.civ||""),(PR2.nom||""),(PR2.prenom||"")].filter(Boolean).join(" ")});
-              bt.textContent="✅ Déposé dans la conversation";
+              bt.textContent="✅ Déposé — retour à la conversation…";
               const back=document.createElement("button");back.textContent="↩ Revenir au CRM";back.style.cssText=bst;back.addEventListener("click",crmBack);bt.after(back);
+              setTimeout(crmBack,900);   // bascule automatique vers le CRM
             }catch(e4){bt.disabled=false;bt.textContent="❌ Dépôt impossible — réessayer";}
             return;
           }
@@ -1195,13 +1228,13 @@ function calc(){
   const chMadelin=isTNS?[["info","Madelin à confirmer"]]:[];
 
   function push(key,fi,suffix,chips,pA,pC,pK,kidNote,incomplete){
-    const total=pA+(pC||0)+(pK||0),f=F[key];
+    const total=Math.round((pA+(pC||0)+(pK||0))*100)/100,f=F[key];
     rows.push({key,fi,ins:f.ins,resp:f.resp,gamme:f.label+(suffix||""),formule:f.names[fi],
       hospO:f.hospO[fi],hospN:f.hospN[fi],honoO:f.honoO[fi],honoN:f.honoN[fi],
       dent:f.dent[fi],opt:f.opt[fi],aud:f.aud[fi],ch:f.ch[fi],md:f.md[fi],
       chips,pA,pC,pK,kidNote,total,incomplete:!!incomplete});
   }
-  function mcci(key,suffix,grid,chips,minA,maxA,childPrice){
+  function mcci(key,suffix,grid,chips,minA,maxA,childPrice,childLabel){
     if(isRL||!on(key))return;
     if(age<minA||age>maxA){warns.push(F[key].label+" : non éligible à "+age+" ans (grille "+minA+"–"+maxA+" ans).");return}
     for(let i=0;i<F[key].names.length;i++){
@@ -1209,11 +1242,11 @@ function calc(){
       let pC=null,cW=false;
       if(hasCnj&&cnjAge!=null){ if(cnjAge>=minA&&cnjAge<=maxA)pC=grid[cnjAge][i]; else cW=true; }
       let pK=null,kidNote="";
-      if(kids>0){ if(childPrice){pK=childPrice[i]*kids;kidNote=kids+" × "+eur(childPrice[i]);} else kidNote="pas de tarif enfant publié"; }
+      if(kids>0){ if(childPrice){pK=Math.round(childPrice[i]*kids*100)/100;kidNote=kids+" × "+eur(childPrice[i])+(childLabel?" — "+childLabel:"");} else kidNote="pas de tarif enfant publié"; }
       push(key,i,suffix,chips.slice(),pA,hasCnj?(cW?undefined:pC):null,pK,kidNote,(hasCnj&&cW)||(kids>0&&pK==null));
     }
   }
-  mcci("MCCINOVA","",D.MCCINOVA,[["nr","Non responsable*"]].concat(chMadelin),18,90,null);
+  mcci("MCCINOVA","",D.MCCINOVA,[["nr","Non responsable"]].concat(chMadelin),18,90,D.MCCINOVA["18"],"tarif 18 ans");
   if(zone){
     mcci("FLEXIA","",D.FLEXIA[zone],[["resp","Responsable"]].concat(chMadelin),18,84,D.FLEXIA[zone]["E"]);
     mcci("SOLENCIA","",D.SOLENCIA[zone],[["resp","Responsable"]],62,99,D.SOLENCIA[zone]["E"]);
@@ -1340,7 +1373,7 @@ function calc(){
   }
   if(isRL) warns.push("Régime local Alsace-Moselle : grilles MCCI non applicables (taux spécifiques, consulter MCCI) — restent CAP EVOLUTION RL, CAP NR RL et TALIS.");
   if(kids>0&&on("LPSH")) warns.push("LPS HOSPI : pas de tarif enfant dans la grille 2026 — total affiché hors mineurs pour cette gamme.");
-  if(kids>0&&on("MCCINOVA")&&!isRL) warns.push("MCCINOVA : pas de tarif enfant publié — total affiché hors mineurs pour cette gamme.");
+  if(kids>0&&on("MCCINOVA")&&!isRL) warns.push("MCCINOVA : les mineurs sont tarifés au tarif 18 ans, sans gratuité à partir du 3ᵉ enfant.");
   rows.sort((x,y)=>x.total-y.total);
   render(rows,warns);
 }
@@ -1381,7 +1414,17 @@ async function crmDepot(payload){
   if(!resp.ok)throw new Error("HTTP "+resp.status);
   return true;
 }
-function crmBack(){ try{window.close();}catch(e){} setTimeout(()=>{alert("Fermez cet onglet pour revenir au CRM : la pièce est dans la conversation, prête à envoyer.");},400); }
+// Retour au CRM : on remet la fenêtre d'origine au premier plan, puis on ferme celle-ci.
+function crmBack(){
+  let focused=false;
+  try{ if(window.opener&&!window.opener.closed){ window.opener.focus(); focused=true; } }catch(e){}
+  if(!focused&&window.CRMLINK&&window.CRMLINK.base){
+    // Pas de fenêtre d'origine (onglet ouvert seul) : on y retourne par l'adresse du CRM
+    try{ location.href=window.CRMLINK.base; return; }catch(e){}
+  }
+  try{ window.close(); }catch(e){}
+  setTimeout(()=>{ if(!document.hidden) alert("Le document est déposé dans la conversation. Fermez cet onglet pour revenir au CRM."); },700);
+}
 async function doDepotText(){
   const bt=document.getElementById("sbwa"); if(!bt||bt.disabled)return;
   const old=bt.textContent; bt.disabled=true; bt.textContent="⏳ Dépôt…";
@@ -1392,6 +1435,7 @@ async function doDepotText(){
     if(!back){back=document.createElement("button");back.id="sbback";back.textContent="↩ Revenir au CRM";
       back.style.cssText="border:0;border-radius:9px;background:#fff;color:#12233d;padding:8px 11px;font:800 13px 'Archivo',sans-serif;cursor:pointer";
       back.addEventListener("click",crmBack);bt.after(back);}
+    setTimeout(crmBack,900);   // bascule automatique vers le CRM
     setTimeout(()=>{bt.disabled=false;bt.textContent=old;},4000);
   }catch(e){bt.disabled=false;bt.textContent="❌ Réessayer";setTimeout(()=>{bt.textContent=old;},3000);}
 }
@@ -1439,9 +1483,12 @@ function render(rows,warns){
       const rk=r.key+"|"+r.fi;
       const isOpen=openKeys.has(rk);
       const chips=r.chips.map(c=>'<span class="chip '+c[0]+'">'+c[1]+"</span>").join("");
-      let h='<tr class="offer'+(isOpen?" open":"")+'" data-rk="'+rk+'">'+
+      const isR=RECO===rk;
+      let h='<tr class="offer'+(isOpen?" open":"")+(isR?" reco":"")+'" data-rk="'+rk+'">'+
       '<td><span class="caret">▶</span><input type="checkbox" class="sendchk"'+(SENDSEL.has(rk)?" checked":"")+' data-rk="'+rk+'" title="Cocher pour envoyer par mail / WhatsApp"></td>'+
-      '<td><div class="gamme"><span class="dot '+r.ins+'"></span><span class="gname '+(r.resp?"rp":"nrp")+'">'+r.gamme+'</span></div><div class="fname">'+r.formule+'</div><div class="chips">'+chips+"</div></td>"+
+      '<td><div class="gamme"><span class="dot '+r.ins+'"></span><span class="gname '+(r.resp?"rp":"nrp")+'">'+r.gamme+'</span></div>'
+      +'<div class="fname">'+r.formule+'<button class="rowstar'+(isR?" on":"")+'" data-star="'+rk+'" title="Conseiller cette formule">'+(isR?"⭐":"☆")+'</button></div>'
+      +'<div class="chips">'+(isR?'<span class="chip reco">⭐ Je vous conseille</span>':"")+chips+"</div></td>"+
       '<td class="num total">'+eur(r.total)+(r.incomplete?" *":"")+"</td>"+
       '<td class="g">'+r.dent+"</td>"+
       EXD.filter(e=>exOn[e[0]]).map(e=>'<td class="g">'+exVal(r.key,e[0],r.fi)+"</td>").join("")+
@@ -1473,6 +1520,12 @@ function render(rows,warns){
         else if(btn.dataset.tg){ if(SENDSEL.size) showTGSel(); else showTG(btn.dataset.tg); } // formules cochées → tableau de la sélection (toutes gammes)
       });
     });
+    tb.querySelectorAll(".rowstar").forEach(b=>b.addEventListener("click",ev=>{
+      ev.stopPropagation();
+      const id=b.dataset.star;
+      RECO=(RECO===id)?null:id;
+      calc();
+    }));
     tb.querySelectorAll(".sendchk").forEach(cb=>{
       cb.addEventListener("click",e=>e.stopPropagation());
       cb.addEventListener("change",e=>{
