@@ -159,7 +159,9 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox .irow.iwarn{background:var(--warn-bg);border-radius:6px;padding:5px 8px;border-bottom:0;margin:2px 0}
 #tgbox .irow.iwarn span::before{content:"⚠ ";color:var(--warn)}
 #tgbox .irow.iwarn b{color:var(--warn)}
-.ibtn{border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:7px;padding:5px 10px;cursor:pointer;font:700 12px 'Archivo',sans-serif}
+.ibtn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--accent);background:var(--soft);color:var(--accent);border-radius:7px;padding:4px 10px 4px 7px;cursor:pointer;font:700 12px 'Archivo',sans-serif;line-height:1}
+.ibtn svg{flex:none}
+.ibtn:hover{background:var(--accent);color:var(--accent-ink)}
 #tgbox th.pick{cursor:pointer}
 #tgbox th.pick:hover{color:var(--accent)}
 #tgbox td.reco,#tgbox th.reco{background:var(--best);border-left:2px solid var(--warn);border-right:2px solid var(--warn)}
@@ -248,7 +250,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-10 21:46</div>
+  <div id="buildstamp" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-11 04:50</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -458,6 +460,29 @@ function secuOK(v){
   let m=0; for(const d of v.slice(0,13)) m=(m*10+ +d)%97;   // clé = 97 − (13 premiers chiffres modulo 97)
   return (97-m)===+v.slice(13);
 }
+// Type de document : chaque pièce ne renseigne que sa zone
+function docKind(T){
+  const t=T.toLowerCase();
+  if(/relev[ée]\s*d.identit[ée]\s*bancaire|\brib\b|domiciliation|\bbic\b|\biban\b/.test(t))return "rib";
+  if(/attestation|assurance maladie|ameli|cpam|droits? ouverts|organisme|caisse primaire/.test(t))return "secu";
+  if(/carte nationale|passeport|permis de conduire|titre de s[ée]jour|r[ée]publique fran|identity card/.test(t)||/[A-Z0-9<]{28,}/.test(T))return "id";
+  return "autre";
+}
+// Nom du titulaire du document, pour vérifier qu'il s'agit bien du bon prospect
+function docHolder(T,kind,fields){
+  if(fields.nom)return (fields.nom+" "+(fields.prenom||"")).trim();
+  const CIV=/^(?:m|mr|mme|mlle|monsieur|madame|mademoiselle)\.?$/i;
+  const m=T.match(/(?:titulaire|b[ée]n[ée]ficiaire|assur[ée]\(?e?\)?|au nom de|nom\s*et\s*pr[ée]nom)[^A-Za-zÀ-ÿ]{0,12}([A-Za-zÀ-ÿ'\-]{1,20}(?:\s+[A-Za-zÀ-ÿ'\-]{2,20}){0,3})/i);
+  if(!m)return "";
+  const STOP=/^(iban|bic|adresse|domiciliation|banque|code|compte|num[ée]ro|n[°o]|rib|swift|cle|cl[ée])$/i;
+  const out=[];
+  for(const w of m[1].split(/\s+/)){
+    if(CIV.test(w))continue;
+    if(STOP.test(w)||/\d/.test(w))break;
+    out.push(w); if(out.length===3)break;
+  }
+  return out.join(" ").trim();
+}
 function extractDocFields(txt){
   const T=txt.replace(/[  ]/g," ");
   const out={};
@@ -470,6 +495,37 @@ function extractDocFields(txt){
   // Numéro de Sécurité sociale : 15 chiffres avec clé valide
   const ss=[...T.matchAll(/\b[12]\s?\d{2}\s?\d{2}\s?(?:\d{2,3}|2[AB])\s?\d{2,3}\s?\d{3}\s?\d{2}\b/gi)].map(m=>m[0]);
   for(const c of ss){ if(secuOK(c)){out.secu=c.replace(/\s+/g,"").toUpperCase();break;} }
+  // ---- Pièce d'identité : bande MRZ (passeport, CNI, titre de séjour) ----
+  const mrz=[...T.matchAll(/[A-Z0-9<]{28,44}/g)].map(m=>m[0]).filter(l=>(l.match(/</g)||[]).length>=3);
+  if(mrz.length){
+    const nm=mrz.find(l=>/<</.test(l)&&/[A-Z]{2}/.test(l));
+    if(nm){
+      const part=nm.replace(/^[A-Z]{1,2}<?[A-Z]{3}/,"").split("<<");
+      const nom=(part[0]||"").replace(/</g," ").trim();
+      const pre=(part[1]||"").replace(/</g," ").trim().split(/\s+/)[0]||"";
+      if(nom.length>1)out.nom=nom;
+      if(pre.length>1)out.prenom=pre.charAt(0)+pre.slice(1).toLowerCase();
+    }
+    const dl=mrz.find(l=>/\d{6}[MF<]\d{6}/.test(l));
+    if(dl){
+      const m2=dl.match(/(\d{2})(\d{2})(\d{2})\d?[MF<]/);
+      if(m2){const yy=+m2[1];const an=(yy>(new Date().getFullYear()%100))?1900+yy:2000+yy;
+        out.ddn=m2[3]+"/"+m2[2]+"/"+an;}
+    }
+  }
+  // Mentions en clair (CNI, permis de conduire) — on écarte d'abord les lignes MRZ
+  const TC=T.replace(/[A-Z0-9<]{20,}/g," ");
+  if(!out.ddn){
+    const d=TC.match(/n[ée]\(?e?\)?\s*(?:le)?\s*:?\s*(\d{2})[\/.\- ](\d{2})[\/.\- ]((?:19|20)\d{2})/i);
+    if(d)out.ddn=d[1]+"/"+d[2]+"/"+d[3];
+  }
+  if(!out.nom){const n=TC.match(/\bnom\s*(?:de naissance)?\s*:?\s*([A-ZÀ-Ý][A-ZÀ-Ý'\- ]{1,40})/);if(n)out.nom=n[1].trim();}
+  if(!out.prenom){const n=TC.match(/\bpr[ée]nom[s]?\s*:?\s*([A-ZÀ-Ýa-zà-ÿ][\wÀ-ÿ'\-]{1,25})/i);if(n)out.prenom=n[1].trim();}
+  // Adresse : ligne « Adresse » puis code postal + ville
+  const ad=TC.match(/adresse\s*:?\s*([^\n]{5,70}?)\s*(\d{5})\s+([A-ZÀ-Ýa-zà-ÿ'\- ]{2,40})/i);
+  const cleanCity=v=>v.trim().split(/\s+/).filter(w=>!/\d/.test(w)&&w.length<=18).slice(0,4).join(" ").trim();
+  if(ad){out.adresse=ad[1].trim().replace(/[,;]$/,"");out.cp=ad[2];out.ville=cleanCity(ad[3]);}
+  else{const cpv=TC.match(/\b(\d{5})\s+([A-ZÀ-Ý][A-ZÀ-Ý'\- ]{2,30})\b/);if(cpv){out.cp=cpv[1];out.ville=cleanCity(cpv[2]);}}
   // Organisme d'affiliation (9 chiffres, souvent annoncé par « organisme » ou « caisse »)
   const org=T.match(/organisme[^0-9]{0,40}(\d[\d\s]{7,14}\d)/i)||T.match(/caisse[^0-9]{0,40}(\d[\d\s]{7,14}\d)/i)||T.match(/\b(\d{9})\b(?=[^\d]{0,30}(?:CPAM|caisse|organisme))/i);
   if(org)out.org=org[1].replace(/\s+/g,"");
@@ -494,8 +550,11 @@ async function readImageText(file,onProgress){
     return data.text;
   } finally { URL.revokeObjectURL(url); }
 }
+const ZONES={rib:["iban","bic"],secu:["secu","org"],id:["nom","prenom","ddn","adresse","cp","ville"],
+  autre:["iban","bic","secu","org","nom","prenom","ddn","adresse","cp","ville"]};
+const KINDLBL={rib:"RIB",secu:"Attestation de droits",id:"Pièce d'identité",autre:"Document"};
 async function scanDocs(files,st){
-  const found={};
+  const found=[];
   for(const f of files){
     st.textContent="Lecture de "+f.name+"…";
     let txt="";
@@ -503,22 +562,81 @@ async function scanDocs(files,st){
       if(/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name)) txt=await readPdfText(f);
       else txt=await readImageText(f,p=>{st.textContent="Lecture de "+f.name+" — "+p+" %";});
     }catch(e){ st.textContent="Impossible de lire "+f.name+" ("+(e&&e.message||e)+")"; continue; }
-    const got=extractDocFields(txt);
+    const all=extractDocFields(txt);
+    const kind=docKind(txt);
+    const got={};
+    ZONES[kind].forEach(k=>{if(all[k])got[k]=all[k];});
     // Un PDF sans texte (scan) : on repasse en reconnaissance d'image
     if(!Object.keys(got).length&&/pdf$/i.test(f.type)&&(txt||"").replace(/\s/g,"").length<40){
       st.textContent=f.name+" : PDF sans texte — utilisez une photo du document.";
     }
-    Object.assign(found,got);
+    found.push({file:f.name,kind:kind,fields:got,holder:docHolder(txt,kind,all)});
   }
   return found;
+}
+// Comparaison souple des noms (accents, casse, ordre)
+function sameName(a,b){
+  const norm=v=>String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z ]/g," ").split(/\s+/).filter(w=>w.length>2);
+  const A=norm(a),B=norm(b);
+  if(!A.length||!B.length)return null;         // impossible de conclure
+  return A.some(w=>B.includes(w));
 }
 function docDropHTML(){
   return '<div id="adocs" style="grid-column:1/-1;margin:8px 0 2px;border:1.5px dashed var(--line);border-radius:10px;padding:10px 12px;background:var(--ground)">'
    +'<div style="font:800 12px \'Archivo\',sans-serif;text-transform:uppercase;letter-spacing:.04em;color:var(--accent)">📎 Remplir depuis un document</div>'
-   +'<div style="font-size:12px;color:var(--muted);margin:3px 0 7px">RIB et attestation de droits (PDF ou photo) : le numéro de Sécurité sociale, l\'organisme, l\'IBAN et le BIC sont recopiés dans le formulaire. <b>La lecture se fait sur votre appareil : aucun document n\'est envoyé ni conservé.</b></div>'
+   +'<div style="font-size:12px;color:var(--muted);margin:3px 0 7px">RIB, attestation de droits, pièce d\'identité ou permis (PDF ou photo) : identité, adresse, n° de Sécurité sociale, organisme, IBAN et BIC sont proposés à la reprise, après confirmation. <b>La lecture se fait sur votre appareil : aucun document n\'est envoyé ni conservé.</b></div>'
    +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
    +'<label class="tgbtn" style="cursor:pointer;margin:0">📄 Choisir un fichier<input id="adocf" type="file" accept="application/pdf,image/*" multiple hidden></label>'
    +'<span id="adocst" style="font-size:12px;color:var(--muted)"></span></div></div>';
+}
+// Confirmation avant de recopier : un bloc par document, alerte si le nom ne correspond pas
+function confirmDoc(docs,onDone){
+  const esc=v=>String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+  const fiche=((document.getElementById("anom")||{}).value||"")+" "+((document.getElementById("apre")||{}).value||"");
+  const LAB={secu:["ass","N° de Sécurité sociale",0],org:["aorg","N° organisme d'affiliation",0],
+    iban:["aiban","IBAN",0],bic:["abic","BIC",0],nom:["anom","Nom",0],prenom:["apre","Prénom",0],
+    ddn:["addn","Date de naissance",0],adresse:["aadr","Adresse",1],cp:["acp","Code postal",1],ville:["avil","Ville",1]};
+  const rows=[]; let html="";
+  docs.forEach(d=>{
+    const keys=Object.keys(d.fields); if(!keys.length)return;
+    const ok=sameName(fiche,d.holder);
+    html+='<div class="ipost"><h3>'+esc(KINDLBL[d.kind]||"Document")+' <span style="font-weight:500;text-transform:none;color:var(--muted)">'+esc(d.file)+'</span></h3>';
+    if(ok===false)html+='<div class="irow iwarn"><span>Nom du document : '+esc(d.holder)+'</span><b>ne correspond pas à la fiche ('+esc(fiche.trim()||"—")+')</b></div>';
+    if(d.kind==="id")html+='<div class="irow iwarn"><span>Adresse issue d\'une pièce d\'identité</span><b>à confirmer (déménagement)</b></div>';
+    keys.forEach(k=>{
+      const L=LAB[k]; if(!L)return;
+      let v=d.fields[k]; if(k==="iban")v=v.replace(/(.{4})/g,"$1 ").trim();
+      const cur=((document.getElementById(L[0])||{}).value||"");
+      const i=rows.length; rows.push({id:L[0],val:v});
+      html+='<label class="irow" style="cursor:pointer"><span><input type="checkbox" data-i="'+i+'" '+(L[2]?'':'checked')+' style="margin-right:7px;accent-color:var(--accent)">'+L[1]
+        +(cur?'<span style="display:block;font-size:11px;color:var(--muted);margin-left:23px">actuel : '+esc(cur)+'</span>':'')+'</span><b>'+esc(v)+'</b></label>';
+    });
+    html+='</div>';
+  });
+  if(!rows.length){onDone(0);return;}
+  const ov=document.createElement("div");ov.id="tgov";ov.style.zIndex=1006;
+  ov.innerHTML='<div id="tgbox" style="max-width:580px"><button class="close">Fermer ✕</button>'
+    +'<h2>Informations trouvées</h2>'
+    +'<div class="src">Chaque document ne renseigne que sa zone. Décochez ce que vous ne voulez pas reprendre, puis validez. Les alertes n\'empêchent pas la reprise.</div>'
+    +html
+    +'<div style="margin-top:12px;display:flex;gap:8px"><button id="cdok" class="tgbtn" style="background:var(--accent);color:var(--accent-ink);border:none">Reprendre la sélection</button>'
+    +'<button id="cdno" class="tgbtn">Ne rien reprendre</button></div></div>';
+  const close=n=>{ov.remove();onDone(n);};
+  ov.addEventListener("click",e=>{if(e.target===ov||e.target.classList.contains("close"))close(0);});
+  document.body.appendChild(ov);
+  ov.querySelector("#cdno").addEventListener("click",()=>close(0));
+  ov.querySelector("#cdok").addEventListener("click",()=>{
+    let n=0;
+    ov.querySelectorAll('input[type=checkbox]').forEach(c=>{
+      if(!c.checked)return;
+      const r=rows[+c.dataset.i], e=document.getElementById(r.id);
+      if(!e)return;
+      e.value=r.val; e.dispatchEvent(new Event("input",{bubbles:true}));
+      e.style.transition="background .4s";const b=e.style.background;e.style.background="#DCF3E6";
+      setTimeout(()=>{e.style.background=b;},1600); n++;
+    });
+    close(n);
+  });
 }
 function wireDocDrop(){
   const box=document.getElementById("adocs"); if(!box)return;
@@ -528,18 +646,94 @@ function wireDocDrop(){
   const apply=async files=>{
     if(!files||!files.length)return;
     st.textContent="Lecture…";
-    const f=await scanDocs([...files],st);
-    const done=[];
-    if(f.secu&&setv("ass",f.secu))done.push("n° Sécu");
-    if(f.org&&setv("aorg",f.org))done.push("organisme");
-    if(f.iban&&setv("aiban",f.iban.replace(/(.{4})/g,"$1 ").trim()))done.push("IBAN");
-    if(f.bic&&setv("abic",f.bic))done.push("BIC");
-    st.textContent=done.length?("✅ Recopié : "+done.join(", ")+" — vérifiez avant de générer."):"Aucune information reconnue dans ce document.";
+    const docs=await scanDocs([...files],st);
+    if(!docs.some(d=>Object.keys(d.fields).length)){st.textContent="Aucune information reconnue dans ce document.";return;}
+    st.textContent="";
+    confirmDoc(docs,n=>{st.textContent=n?("✅ "+n+" champ"+(n>1?"s":"")+" recopié"+(n>1?"s":"")+" — vérifiez avant de générer."):"Aucun champ repris.";});
   };
   inp.addEventListener("change",()=>apply(inp.files));
   ["dragenter","dragover"].forEach(ev=>box.addEventListener(ev,e=>{e.preventDefault();box.style.borderColor="var(--accent)";}));
   ["dragleave","drop"].forEach(ev=>box.addEventListener(ev,e=>{e.preventDefault();box.style.borderColor="var(--line)";}));
   box.addEventListener("drop",e=>apply(e.dataTransfer.files));
+}
+
+// ---- Contrôles avant génération : champs obligatoires, e-mail, coupon des besoins ----
+const REQFIELDS=[["anom","Nom"],["apre","Prénom"],["addn","Date de naissance"],["aadr","Adresse"],
+  ["acp","Code postal"],["avil","Ville"],["ass","N° de Sécurité sociale"],["atel","Téléphone"],["amail","E-mail"]];
+const COUPONFIELDS=["brmb","bnd","bno","bnh","bnhon","bcss","baide","bpol","bbes","aanc","amot"];
+var COUPONINIT=null;
+function snapshotCoupon(){COUPONINIT={};COUPONFIELDS.forEach(id=>{const e=document.getElementById(id);if(e)COUPONINIT[id]=e.value;});}
+function couponChanged(){
+  if(!COUPONINIT)return 0;
+  return COUPONFIELDS.filter(id=>{const e=document.getElementById(id);return e&&e.value!==COUPONINIT[id];}).length;
+}
+function missingFields(){
+  const miss=[];
+  for(const [id,lab] of REQFIELDS){
+    const e=document.getElementById(id); if(!e)continue;
+    const v=(e.value||"").trim();
+    if(!v){miss.push([id,lab,"à renseigner"]);continue;}
+    if(id==="amail"&&!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(v))miss.push([id,lab,"adresse e-mail invalide"]);
+    if(id==="addn"&&!/^\d{2}\/\d{2}\/(19|20)\d\d$/.test(v))miss.push([id,lab,"format attendu jj/mm/aaaa"]);
+    if(id==="acp"&&!/^\d{5}$/.test(v))miss.push([id,lab,"5 chiffres attendus"]);
+    if(id==="ass"&&!secuOK(v))miss.push([id,lab,"numéro incomplet ou clé incorrecte"]);
+    if(id==="atel"&&(v.replace(/\D/g,"").length<10))miss.push([id,lab,"numéro incomplet"]);
+  }
+  return miss;
+}
+function overlay(html,wide){
+  const ov=document.createElement("div");ov.id="tgov";ov.style.zIndex=1005;
+  ov.innerHTML='<div id="tgbox" style="max-width:'+(wide||520)+'px">'+html+'</div>';
+  ov.addEventListener("click",e=>{if(e.target===ov||e.target.classList.contains("close"))ov.remove();});
+  document.body.appendChild(ov);return ov;
+}
+function showMissing(miss){
+  const ov=overlay('<button class="close">Fermer ✕</button><h2>Informations manquantes</h2>'
+    +'<div class="src">Ces éléments sont nécessaires pour établir le bulletin d\'adhésion :</div>'
+    +'<div class="ipost">'+miss.map(([id,lab,why])=>'<div class="irow iwarn"><span>'+lab+'</span><b>'+why+'</b></div>').join('')+'</div>'
+    +'<div style="margin-top:12px"><button id="mvgo" class="tgbtn" style="background:var(--accent);color:var(--accent-ink);border:none">Compléter</button></div>');
+  ov.querySelector("#mvgo").addEventListener("click",()=>{
+    ov.remove();
+    const e=document.getElementById(miss[0][0]);
+    if(e){e.scrollIntoView({block:"center",behavior:"smooth"});e.focus();
+      e.style.borderColor="#c62828";setTimeout(()=>{e.style.borderColor="";},2500);}
+  });
+}
+// Coupon des besoins : fenêtre dédiée, on ne peut continuer qu'après avoir ajusté au moins un champ
+function showCoupon(onDone){
+  const rows=[["brmb","Remboursements souhaités"],["bnd","Niveau Dentaire"],["bno","Niveau Optique"],
+    ["bnh","Niveau Hospitalisation"],["bnhon","Niveau Honoraires"],["aanc","Ancienne mutuelle (niveau)"],
+    ["amot","Motif de départ"],["bcss","CSS (ex-CMU)"],["baide","Aide complémentaire"],
+    ["bpol","Politiquement exposé"],["bbes","Précisez vos besoins"]];
+  const html='<button class="close">Fermer ✕</button><h2>Coupon des besoins</h2>'
+    +'<div class="src">Devoir de conseil : ajustez les niveaux avec le prospect avant d\'établir le bulletin. Au moins un élément doit être adapté à sa situation.</div>'
+    +'<div id="cpwrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px 12px"></div>'
+    +'<div id="cperr" style="color:var(--warn);font-size:12.5px;margin-top:8px"></div>'
+    +'<div style="margin-top:10px;display:flex;gap:8px"><button id="cpok" class="tgbtn" style="background:var(--accent);color:var(--accent-ink);border:none">Valider et générer le bulletin</button></div>';
+  const ov=overlay(html,620);
+  const wrap=ov.querySelector("#cpwrap");
+  // on déplace les vrais champs dans la fenêtre : pas de doublon, la saisie reste la même
+  const moved=[];
+  rows.forEach(([id,lab])=>{
+    const e=document.getElementById(id); if(!e)return;
+    const holder=e.parentElement, marker=document.createComment("cp:"+id);
+    holder.parentElement.insertBefore(marker,holder);
+    moved.push([holder,marker]);
+    wrap.appendChild(holder);
+  });
+  const restore=()=>moved.forEach(([h,m])=>{m.parentElement&&m.parentElement.insertBefore(h,m);m.remove();});
+  const err=ov.querySelector("#cperr");
+  ov.querySelector("#cpok").addEventListener("click",()=>{
+    if(couponChanged()<1){err.textContent="Ajustez au moins un niveau ou une réponse avant de continuer.";return;}
+    restore(); ov.remove(); onDone();
+  });
+  ov.addEventListener("click",e=>{if(e.target===ov||e.target.classList.contains("close"))restore();});
+}
+function beforeGenerate(run){
+  const miss=missingFields();
+  if(miss.length){showMissing(miss);return;}
+  if(couponChanged()<1){showCoupon(run);return;}
+  run();
 }
 
 function showAdh(r){
@@ -594,7 +788,8 @@ function showAdh(r){
   ibEl.addEventListener("input",()=>{const v=ibEl.value.replace(/[^0-9a-z]/gi,"").toUpperCase().slice(0,27);ibEl.value=v.replace(/(.{4})/g,"$1 ").trim();});
   const bicEl=document.getElementById("abic");
   bicEl.addEventListener("input",()=>{bicEl.value=bicEl.value.replace(/[^0-9a-z]/gi,"").toUpperCase().slice(0,11);});
-  document.getElementById("agen").addEventListener("click",()=>fillAdh(r,ov));
+  snapshotCoupon();
+  document.getElementById("agen").addEventListener("click",()=>beforeGenerate(()=>fillAdh(r,ov)));
 }
 async function fillAdh(r,ov){
   const st=document.getElementById("astat"); st.textContent="Génération…";
@@ -1210,7 +1405,7 @@ function render(rows,warns){
         '<div><span class="who">Total foyer</span><b>'+eur(r.total)+"</b></div>"+
         '<div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">'+
         Object.entries(DOCS[r.key]||{}).map(([n,u])=>'<a class="tgbtn doc" href="'+u+'" target="_blank" rel="noopener" onclick="event.stopPropagation();try{var w=window.open(this.href,\'docwin\',\'popup,width=980,height=860,left=120,top=60\');if(w){event.preventDefault();w.focus();}}catch(e){}">'+n+' ↗</a>').join('')+
-        '<button class="tgbtn ibtn" data-info="'+i+'" title="Limites, plafonds et exclusions">i</button>'+
+        '<button class="tgbtn ibtn" data-info="'+i+'" title="Limites, plafonds et exclusions" aria-label="Informations"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16.5"></line><circle cx="12" cy="7.6" r="1.1" fill="currentColor" stroke="none"></circle></svg><span>Infos</span></button>'+
         (true&&["CAPEVO","CAPNR","TALIS"].includes(r.key)?'<button class="tgbtn" data-adh="'+i+'">📝 Adhésion</button>':'')+
         '<button class="tgbtn" data-tg="'+r.key+'">📄 Tableau de garantie</button></div>'+
         "</div></td></tr>";
