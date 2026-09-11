@@ -1431,12 +1431,13 @@ async function crmDepot(payload){
 }
 // Retour au CRM : on remet la fenêtre d'origine au premier plan, puis on ferme celle-ci.
 function crmBack(){
-  let focused=false;
-  try{ if(window.opener&&!window.opener.closed){ window.opener.focus(); focused=true; } }catch(e){}
-  if(!focused&&window.CRMLINK&&window.CRMLINK.base){
-    // Pas de fenêtre d'origine (onglet ouvert seul) : on y retourne par l'adresse du CRM
-    try{ location.href=window.CRMLINK.base; return; }catch(e){}
-  }
+  // 1) La fenêtre du CRM est encore ouverte derrière : on la remet devant et on ferme celle-ci.
+  //    C'est le seul retour qui ramène exactement sur la conversation quittée.
+  try{ if(window.opener&&!window.opener.closed){ window.opener.focus(); window.close(); return; } }catch(e){}
+  // 2) Sinon, adresse de retour fournie par le lien (&back=… : la conversation elle-même)
+  const bk=window.CRMLINK&&window.CRMLINK.back;
+  if(bk){ try{ location.href=bk; return; }catch(e){} }
+  // 3) Sinon on ferme simplement : l'onglet du CRM reste celui du dessous
   try{ window.close(); }catch(e){}
   setTimeout(()=>{ if(!document.hidden) alert("Le document est déposé dans la conversation. Fermez cet onglet pour revenir au CRM."); },700);
 }
@@ -1680,7 +1681,11 @@ const urlImported=(function(){
     (function(){
       let c=qp.get("crm")||qp.get("crmUrl")||qp.get("origin")||"", t=qp.get("t")||qp.get("token")||qp.get("depot")||"";
       c=c.trim(); if(c&&!/^https?:\/\//i.test(c))c="https://"+c;
-      if(c&&t&&/^https:\/\/[^\s\/]+/i.test(c))window.CRMLINK={base:c.replace(/\/+$/,""),token:t.trim()};
+      // back = adresse exacte de la conversation, pour y revenir après le dépôt
+      let bk=(qp.get("back")||qp.get("retour")||qp.get("conv")||"").trim();
+      if(bk&&!/^https?:\/\//i.test(bk))bk=c.replace(/\/+$/,"")+(bk.charAt(0)==="/"?"":"/")+bk;
+      if(bk&&!/^https:\/\//i.test(bk))bk="";
+      if(c&&t&&/^https:\/\/[^\s\/]+/i.test(c))window.CRMLINK={base:c.replace(/\/+$/,""),token:t.trim(),back:bk};
     })();
     const fp=qp.get("fiche");
     if(fp){const parsed=parseFiche(fp);if(parsed)return applyImport(parsed);window.FICHE_KO=fp;}
