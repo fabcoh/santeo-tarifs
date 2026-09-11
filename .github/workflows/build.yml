@@ -1,0 +1,41 @@
+name: Construire le comparateur
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'build.py'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  construire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Construire les pages
+        run: python3 build.py
+
+      - name: Placer la page a la racine
+        run: cp dist/index.html index.html
+
+      - name: Publier
+        run: |
+          git config user.name "Fabrice Cohen"
+          git config user.email "fcohen@santeo.net"
+          if git diff --quiet -- index.html; then
+            echo "Aucun changement a publier."
+            exit 0
+          fi
+          git add index.html
+          git commit -m "Comparateur : construction automatique"
+          git push
