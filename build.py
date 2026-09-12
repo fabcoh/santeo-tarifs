@@ -17,9 +17,12 @@ BUILD = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S
 
 # Code d'accès au bulletin d'adhésion sur GitHub Pages (seule son empreinte SHA-256 est publiée).
 # Pour le changer : modifier ici, relancer build.py, pousser dist/index.html sur santeo-tarifs.
-ADH_PASSWORD = "Monavion54@"
-ADH_GATE = hashlib.sha256(ADH_PASSWORD.encode()).hexdigest()
+ADH_PASSWORDS = ["Monavion54@", "Santeo26@"]
+ADH_GATE = ",".join(hashlib.sha256(x.encode()).hexdigest() for x in ADH_PASSWORDS)
 ROOT = pathlib.Path(__file__).parent
+# Ce fichier fonctionne qu'il soit a la racine du depot ou dans src/
+if not (ROOT/"src").exists() and (ROOT.parent/"src").exists():
+    ROOT = ROOT.parent
 SRC, DIST = ROOT/"src", ROOT/"dist"
 DIST.mkdir(exist_ok=True)
 
