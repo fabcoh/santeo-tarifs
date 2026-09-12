@@ -272,7 +272,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-12T20:17:19Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-12T20:17:19Z</div>
+  <div id="buildstamp" data-build="2026-09-12T20:58:56Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-12T20:58:56Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2250,9 +2250,9 @@ calc();
     const bst="padding:8px 13px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink);font:700 13px 'Archivo',sans-serif;cursor:pointer";
     ov.innerHTML='<div id="tgbox" style="max-width:640px"><button class="close">Fermer ✕</button>'
       +'<h2>Fiche du CRM Santéo</h2>'
-      +'<div class="src">Numéro de fiche, e-mail, téléphone, ou nom et prénom. Lecture seule — aucune écriture dans le CRM.</div>'
+      +'<div class="src">Cherche par <b>n° de fiche</b>, <b>e-mail</b>, <b>téléphone</b> ou <b>nom et prénom</b>. Lecture seule — aucune écriture dans le CRM.</div>'
       +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0">'
-      +'<input id="csq" placeholder="ex. 293106, un e-mail, ou DUPOUY Serge" autocomplete="off" '
+      +'<input id="csq" placeholder="293106 · nom@mail.fr · 06 09 78 35 30 · DUPOUY Serge" autocomplete="off" '
       +'style="flex:1;min-width:200px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--ground);color:var(--ink);font:inherit">'
       +'<button id="csgo" style="'+bst+';background:var(--accent);color:var(--accent-ink);border:none">Chercher</button></div>'
       +'<div id="cspin" style="display:'+(get(KP)?"none":"flex")+';gap:8px;flex-wrap:wrap;align-items:center;margin:4px 0 8px">'
