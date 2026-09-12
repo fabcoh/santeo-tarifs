@@ -205,6 +205,9 @@ tr.offer.reco:hover td{background:var(--best)}
 .volet.mini .chev{font-size:12px}
 .apanel{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:4px 12px;padding:2px 2px 8px}
 .apanel[hidden]{display:none}
+.bslot{grid-column:1/-1}
+.addb{border:1.5px dashed var(--accent);background:var(--soft);color:var(--accent);border-radius:9px;padding:7px 13px;cursor:pointer;font:800 12.5px 'Archivo',sans-serif}
+.addb:hover{background:var(--accent);color:var(--accent-ink);border-style:solid}
 </style>
 <button id="aibtn" title="Assistant IA" style="position:fixed;bottom:16px;right:16px;z-index:60;display:none;padding:10px 16px;border-radius:99px;border:1px solid var(--line);background:var(--accent);color:var(--accent-ink);font:700 14px 'Archivo',sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)">🤖 Assistant</button>
 <div id="aipanel" hidden style="position:fixed;bottom:66px;right:16px;z-index:60;width:min(440px,92vw);max-height:70vh;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.25)">
@@ -269,7 +272,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-12T17:36:52Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-12T17:36:52Z</div>
+  <div id="buildstamp" data-build="2026-09-12T17:42:26Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-12T17:42:26Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -831,11 +834,16 @@ function showAdh(r){
     +'<button type="button" class="volet mini" data-pan="'+id+'"'+(ouvert?' aria-expanded="true"':'')+'>'+icone+' '+titre
       +'<span class="vsum" id="'+id+'sum"></span><span class="chev">▾</span></button>'
     +'<div class="apanel" id="'+id+'"'+(ouvert?'':' hidden')+'>'+champs+'</div></div>';
-  let kidsHtml='<div style="grid-column:1/-1;font-weight:800;margin-top:10px;border-top:1px solid var(--line);padding-top:8px">Bénéficiaires à rattacher <span style="font-weight:500;font-size:11px;color:var(--muted)">(laisser vide si sans objet)</span></div>'
-   +VOLET("pcnj","👤","Conjoint",!!nC,
-      F1("cnom","Nom")+F1("cpre","Prénom")+F1("cddn","Date de naissance","jj/mm/"+((/^(19|20)\d\d$/.test(nC))?nC:"aaaa"))+F1("css","N° Sécurité sociale"));
-  for(let i=0;i<nKid;i++) kidsHtml+=VOLET("pk"+i,"🧒","Enfant "+(i+1),i<kids,
-      F1("knom"+i,"Nom")+F1("kpre"+i,"Prénom")+F1("kddn"+i,"Date de naissance","jj/mm/aaaa")+F1("kss"+i,"N° SS (si propre)"));
+  // Un emplacement par personne : affiché d'office si la fiche l'annonce, sinon ajouté par le bouton ＋
+  const SLOT=(id,actif,contenu)=>'<div class="bslot" data-slot="'+id+'"'+(actif?"":" hidden")+'>'+contenu+'</div>';
+  let kidsHtml='<div style="grid-column:1/-1;font-weight:800;margin-top:10px;border-top:1px solid var(--line);padding-top:8px">Bénéficiaires à rattacher</div>'
+   +SLOT("cnj",!!nC,VOLET("pcnj","👤","Conjoint",!!nC,
+      F1("cnom","Nom")+F1("cpre","Prénom")+F1("cddn","Date de naissance","jj/mm/"+((/^(19|20)\d\d$/.test(nC))?nC:"aaaa"))+F1("css","N° Sécurité sociale")));
+  for(let i=0;i<4;i++) kidsHtml+=SLOT("k"+i,i<kids,VOLET("pk"+i,"🧒","Enfant "+(i+1),i<kids,
+      F1("knom"+i,"Nom")+F1("kpre"+i,"Prénom")+F1("kddn"+i,"Date de naissance","jj/mm/aaaa")+F1("kss"+i,"N° SS (si propre)")));
+  kidsHtml+='<div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 2px">'
+   +'<button type="button" class="addb" id="addcnj"'+(nC?" hidden":"")+'>＋ Ajouter un conjoint</button>'
+   +'<button type="button" class="addb" id="addkid"'+(kids>=4?" hidden":"")+'>＋ Ajouter un enfant</button></div>';
   const ov=document.createElement("div");ov.id="tgov";
   ov.innerHTML='<div id="tgbox" style="max-width:760px"><button class="close">Fermer ✕</button><h2>Adhésion — '+r.gamme+" "+r.formule+'</h2><div class="src">'+eur(r.total)+' /mois · le bulletin '+(r.key==="MV"?"LA MUTUELLE VERTE":"AVENIR MUTUELLE")+' sera rempli et téléchargé</div>'+
   '<form autocomplete="off" onsubmit="return false" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:4px 12px">'+
@@ -890,6 +898,23 @@ function showAdh(r){
     set(!pan.hidden);
     bt.addEventListener("click",()=>set(pan.hidden));
     pan.addEventListener("input",refresh);
+    bt._open=()=>set(true);
+  });
+  // Boutons ＋ : font apparaître l'emplacement suivant, déjà ouvert
+  const openSlot=id=>{
+    const s=ov.querySelector('.bslot[data-slot="'+id+'"]'); if(!s)return false;
+    s.hidden=false; const b=s.querySelector(".volet.mini"); if(b&&b._open)b._open();
+    const f=s.querySelector("input"); if(f)f.focus();
+    return true;
+  };
+  const bc=ov.querySelector("#addcnj"), bk=ov.querySelector("#addkid");
+  bc.addEventListener("click",()=>{openSlot("cnj");bc.hidden=true;});
+  bk.addEventListener("click",()=>{
+    for(let i=0;i<4;i++){
+      const s=ov.querySelector('.bslot[data-slot="k'+i+'"]');
+      if(s&&s.hidden){ openSlot("k"+i); if(i===3)bk.hidden=true; return; }
+    }
+    bk.hidden=true;
   });
   snapshotCoupon();
   document.getElementById("agen").addEventListener("click",()=>beforeGenerate(()=>fillAdh(r,ov)));
