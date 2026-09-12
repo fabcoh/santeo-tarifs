@@ -272,7 +272,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-12T20:58:56Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-12T20:58:56Z</div>
+  <div id="buildstamp" data-build="2026-09-12T21:04:31Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-12T21:04:31Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -284,9 +284,10 @@ const CUSE=async n=>{try{return (typeof claude!=="undefined"&&claude&&claude.use
 // HOSTED = page hébergée hors claude.ai (GitHub Pages / CRM) : aucune contrainte de plateforme
 const HOSTED=true;
 // Accès au bulletin d'adhésion sur le site hébergé : code d'accès (empreinte SHA-256), mémorisé sur l'appareil
-const ADHGATE="771b132d4416ba004e694647abf789f5a5ac3c076eb4cca1b1dff3252873f486";
+const ADHGATE="771b132d4416ba004e694647abf789f5a5ac3c076eb4cca1b1dff3252873f486,d8be6f5e88953c3603fa0a5aaed3819710944f30c8f1c974b08232a76b41d05f";
+const ADHGATES=ADHGATE?ADHGATE.split(","):[];
 async function sha256(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest("SHA-256",b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("");}
-function adhUnlocked(){if(!ADHGATE)return true;try{return localStorage.getItem("santeo_adh")===ADHGATE;}catch(e){return false;}}
+function adhUnlocked(){if(!ADHGATE)return true;try{return ADHGATES.includes(localStorage.getItem("santeo_adh"));}catch(e){return false;}}
 function adhLogout(){try{localStorage.removeItem("santeo_adh");}catch(e){}updateAdhBadge();}
 function updateAdhBadge(){
   let b=document.getElementById("adhbadge");
@@ -314,7 +315,7 @@ function withAdhGate(cb){
   const inp=ov.querySelector("#gpwd");inp.focus();
   const go=async()=>{
     const h=await sha256(inp.value.trim());
-    if(h===ADHGATE){try{localStorage.setItem("santeo_adh",h);}catch(e){}ov.remove();updateAdhBadge();cb();}
+    if(ADHGATES.includes(h)){try{localStorage.setItem("santeo_adh",h);}catch(e){}ov.remove();updateAdhBadge();cb();}
     else{ov.querySelector("#gerr").textContent="Code incorrect.";inp.select();}
   };
   ov.querySelector("#gok").addEventListener("click",go);
@@ -2130,7 +2131,9 @@ if(false){
 // Version CRM uniquement : proposer l'import à chaque ouverture
 (function(){
   const CRMMODE=true;
-  if(!CRMMODE||urlImported)return;
+  // Lien direct (#vide) : on arrive sur un comparateur vierge, sans proposition de collage
+  const DIRECT=/(^|[#&?])(vide|direct|nofiche)\b/i.test(location.hash+location.search);
+  if(!CRMMODE||urlImported||DIRECT)return;
   const ov=document.createElement("div");
   ov.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.45);z-index:997;display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 16px";
   ov.innerHTML='<div style="background:var(--panel,#fff);color:var(--ink,#12233d);border-radius:14px;max-width:420px;width:100%;padding:16px 18px;box-shadow:0 18px 50px rgba(0,0,0,.35);font-family:\'Archivo\',sans-serif">'
@@ -2236,7 +2239,11 @@ calc();
   async function chercher(q){
     const rp=await fetch(base().replace(/\/+$/,"")+"/api/comparateur/recherche?q="+encodeURIComponent(q),
       {cache:"no-store",headers:{"X-Import-Auto-PIN":get(KP)}});
-    if(rp.status===404)return {vide:true};
+    if(rp.status===404){
+      let txt=""; try{txt=await rp.text();}catch(e){}
+      // une route absente renvoie du HTML, une recherche sans résultat renvoie du JSON
+      return /^\s*[{[]/.test(txt)?{vide:true}:{absente:true};
+    }
     if(rp.status===401||rp.status===403)return {refus:true};
     if(rp.status===429)return {bloque:true};
     if(!rp.ok)return {erreur:"HTTP "+rp.status};
@@ -2282,6 +2289,7 @@ calc();
       let r; try{ r=await chercher(v); }catch(e){ res.innerHTML='<div class="irow iwarn"><span>CRM injoignable</span><b>'+esc(e&&e.message||e)+'</b></div>'; return; }
       if(r.refus){res.innerHTML='<div class="irow iwarn"><span>PIN refusé</span><b>vérifie-le</b></div>';ov.querySelector("#cspin").style.display="flex";return;}
       if(r.bloque){res.innerHTML='<div class="irow iwarn"><span>Accès bloqué 15 minutes</span><b>trop d’essais</b></div>';return;}
+      if(r.absente){res.innerHTML='<div class="irow iwarn"><span>Recherche indisponible</span><b>la route n’est pas encore en ligne côté CRM</b></div>';return;}
       if(r.vide){res.innerHTML='<div class="irow iwarn"><span>Aucune fiche</span><b>'+esc(v)+'</b></div>';return;}
       if(r.erreur){res.innerHTML='<div class="irow iwarn"><span>Erreur</span><b>'+esc(r.erreur)+'</b></div>';return;}
       if(r.fiche){remplir(r.fiche);return;}
