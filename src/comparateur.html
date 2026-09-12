@@ -2228,20 +2228,26 @@ calc();
   const set=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
   const base=()=>(window.CRMLINK&&window.CRMLINK.base)||get(KB)||DEF;
 
+  let DIAG="";
   async function chercher(q){
-    const rp=await fetch(base().replace(/\/+$/,"")+"/api/comparateur/recherche?q="+encodeURIComponent(q),
-      {cache:"no-store",headers:{"X-Import-Auto-PIN":get(KP)}});
-    if(rp.status===404){
-      let txt=""; try{txt=await rp.text();}catch(e){}
-      // une route absente renvoie du HTML, une recherche sans résultat renvoie du JSON
-      return /^\s*[{[]/.test(txt)?{vide:true}:{absente:true};
-    }
+    const url=base().replace(/\/+$/,"")+"/api/comparateur/recherche?q="+encodeURIComponent(q);
+    DIAG="GET "+url;
+    let rp;
+    try{ rp=await fetch(url,{cache:"no-store",headers:{"X-Import-Auto-PIN":get(KP)}}); }
+    catch(e){ DIAG+="\n→ appel bloqué : "+(e&&e.message||e)+" (CORS ou serveur injoignable)"; throw e; }
+    let txt=""; try{txt=await rp.text();}catch(e){}
+    const apercu=String(txt||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
+    DIAG+="\n→ HTTP "+rp.status+" · "+(apercu?apercu.slice(0,140):"(réponse vide)");
+    if(rp.status===404) return /^\s*[{[]/.test(txt)?{vide:true}:{absente:true};
     if(rp.status===401||rp.status===403)return {refus:true};
     if(rp.status===429)return {bloque:true};
     if(!rp.ok)return {erreur:"HTTP "+rp.status};
-    const d=await rp.json();
-    return Array.isArray(d)?{liste:d}:(Array.isArray(d&&d.resultats)?{liste:d.resultats}:{fiche:d});
+    let d=null; try{ d=JSON.parse(txt); }catch(e){ return {erreur:"réponse illisible"}; }
+    if(Array.isArray(d)) return d.length?{liste:d}:{vide:true};
+    if(Array.isArray(d&&d.resultats)) return d.resultats.length?{liste:d.resultats}:{vide:true};
+    return {fiche:d};
   }
+  const diagHTML=()=>DIAG?'<div style="margin-top:8px;font:11.5px/1.5 ui-monospace,monospace;color:var(--muted);white-space:pre-wrap;word-break:break-all;border-top:1px dotted var(--line);padding-top:6px">'+String(DIAG).replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</div>':"";
 
   function panneau(){
     const esc=v=>String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
@@ -2278,12 +2284,12 @@ calc();
       const v=q.value.trim(); if(!v)return;
       if(!get(KP)){res.innerHTML='<div class="irow iwarn"><span>PIN manquant</span><b>saisis-le ci-dessus</b></div>';ov.querySelector("#cspin").style.display="flex";return;}
       res.textContent="Recherche…";
-      let r; try{ r=await chercher(v); }catch(e){ res.innerHTML='<div class="irow iwarn"><span>CRM injoignable</span><b>'+esc(e&&e.message||e)+'</b></div>'; return; }
-      if(r.refus){res.innerHTML='<div class="irow iwarn"><span>PIN refusé</span><b>vérifie-le</b></div>';ov.querySelector("#cspin").style.display="flex";return;}
-      if(r.bloque){res.innerHTML='<div class="irow iwarn"><span>Accès bloqué 15 minutes</span><b>trop d’essais</b></div>';return;}
-      if(r.absente){res.innerHTML='<div class="irow iwarn"><span>Recherche indisponible</span><b>la route n’est pas encore en ligne côté CRM</b></div>';return;}
-      if(r.vide){res.innerHTML='<div class="irow iwarn"><span>Aucune fiche</span><b>'+esc(v)+'</b></div>';return;}
-      if(r.erreur){res.innerHTML='<div class="irow iwarn"><span>Erreur</span><b>'+esc(r.erreur)+'</b></div>';return;}
+      let r; try{ r=await chercher(v); }catch(e){ res.innerHTML='<div class="irow iwarn"><span>CRM injoignable</span><b>'+esc(e&&e.message||e)+'</b></div>'+diagHTML(); return; }
+      if(r.refus){res.innerHTML='<div class="irow iwarn"><span>PIN refusé</span><b>vérifie-le</b></div>'+diagHTML();ov.querySelector("#cspin").style.display="flex";return;}
+      if(r.bloque){res.innerHTML='<div class="irow iwarn"><span>Accès bloqué 15 minutes</span><b>trop d’essais</b></div>'+diagHTML();return;}
+      if(r.absente){res.innerHTML='<div class="irow iwarn"><span>Recherche indisponible</span><b>la route n’est pas encore en ligne côté CRM</b></div>'+diagHTML();return;}
+      if(r.vide){res.innerHTML='<div class="irow iwarn"><span>Aucune fiche</span><b>'+esc(v)+'</b></div>'+diagHTML();return;}
+      if(r.erreur){res.innerHTML='<div class="irow iwarn"><span>Erreur</span><b>'+esc(r.erreur)+'</b></div>'+diagHTML();return;}
       if(r.fiche){remplir(r.fiche);return;}
       const L=r.liste||[];
       if(!L.length){res.innerHTML='<div class="irow iwarn"><span>Aucune fiche</span><b>'+esc(v)+'</b></div>';return;}
