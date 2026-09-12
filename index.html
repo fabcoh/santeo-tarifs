@@ -272,7 +272,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-12T17:56:31Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-12T17:56:31Z</div>
+  <div id="buildstamp" data-build="2026-09-12T20:17:19Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-12T20:17:19Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1880,6 +1880,48 @@ window.addEventListener("hashchange",()=>applyImport((location.hash||"").replace
 // ---- Lecture de la fiche directement dans le CRM (jeton du bouton €) ----
 // Le lien continue de porter #fiche= : si la route n'existe pas ou refuse, rien ne change.
 const ISO2FR=v=>{const m=String(v||"").match(/^(\d{4})-(\d{2})-(\d{2})/);return m?m[3]+"/"+m[2]+"/"+m[1]:"";};
+// Applique une fiche reçue du CRM (même format pour le jeton et pour la recherche)
+function applyFicheJSON(d){
+  if(!d||typeof d!=="object")return false;
+  const P=new URLSearchParams();
+  PRO=PRO||{};
+  const put=(k,v)=>{if(v!==null&&v!==undefined&&v!=="")PRO[k]=v;};
+  put("civ",d.civilite); put("nom",d.nom); put("prenom",d.prenom);
+  put("adresse",d.adresse); put("ville",d.ville); put("cp5",d.cp);
+  put("email",d.email); put("tel",d.telephone);
+  put("secu",d.secu); put("org",d.organisme); put("situation",d.situation);
+  const ddn=ISO2FR(d.naissance); if(ddn){PRO.ddn=ddn;P.set("naiss",ddn.slice(-4));}
+  if(d.cp)P.set("dept",String(d.cp));
+  if(d.regime)P.set("regime",String(d.regime));
+  // Conjoint et enfants : fournis tels quels, ou déduits de la liste brute « assures » par l'âge
+  let cj=(d.conjoint&&(d.conjoint.nom||d.conjoint.naissance))?d.conjoint:null;
+  let enf=Array.isArray(d.enfants)?d.enfants.slice():[];
+  if((!cj||!enf.length)&&Array.isArray(d.assures)&&d.assures.length){
+    const an=v=>{const m=String(v||"").match(/^(\d{4})/);return m?+m[1]:null;};
+    const moi=an(d.naissance);
+    for(const a of d.assures){
+      const y=an(a.naissance); if(y===null)continue;
+      if(moi!==null&&y===moi&&!a.nom&&!a.prenom)continue;      // probablement l'adhérent
+      const age=(new Date().getFullYear())-y;
+      if(age<18){ if(enf.length<4)enf.push(a); }
+      else if(!cj){ cj=a; }
+    }
+  }
+  if(cj){
+    PRO.conjoint={nom:cj.nom||"",prenom:cj.prenom||"",ddn:ISO2FR(cj.naissance)};
+    const a=String(cj.naissance||"").slice(0,4); if(/^\d{4}$/.test(a))P.set("cnj",a);
+  }
+  if(enf.length){
+    PRO.enfants=enf.slice(0,4).map(e=>({nom:e.nom||"",prenom:e.prenom||"",ddn:ISO2FR(e.naissance)}));
+    P.set("kids",String(Math.min(enf.length,4)));
+  }
+  const nomTxt=[d.nom,d.prenom].filter(Boolean).join(" ");
+  if(nomTxt)P.set("nom",nomTxt);
+  if(![...P.keys()].length&&!nomTxt)return false;
+  applyImport(P.toString());
+  try{calc();}catch(e){}
+  return true;
+}
 async function crmFiche(){
   if(!window.CRMLINK||!window.CRMLINK.token)return false;
   let d;
@@ -1892,31 +1934,7 @@ async function crmFiche(){
     }
     d=await rp.json();
   }catch(e){ return false; }
-  if(!d||typeof d!=="object")return false;
-  const P=new URLSearchParams();
-  PRO=PRO||{};
-  const put=(k,v)=>{if(v!==null&&v!==undefined&&v!=="")PRO[k]=v;};
-  put("civ",d.civilite); put("nom",d.nom); put("prenom",d.prenom);
-  put("adresse",d.adresse); put("ville",d.ville); put("cp5",d.cp);
-  put("email",d.email); put("tel",d.telephone);
-  put("secu",d.secu); put("org",d.organisme); put("situation",d.situation);
-  const ddn=ISO2FR(d.naissance); if(ddn){PRO.ddn=ddn;P.set("naiss",ddn.slice(-4));}
-  if(d.cp)P.set("dept",String(d.cp));
-  if(d.regime)P.set("regime",String(d.regime));
-  if(d.conjoint&&(d.conjoint.nom||d.conjoint.naissance)){
-    PRO.conjoint={nom:d.conjoint.nom||"",prenom:d.conjoint.prenom||"",ddn:ISO2FR(d.conjoint.naissance)};
-    const a=String(d.conjoint.naissance||"").slice(0,4); if(/^\d{4}$/.test(a))P.set("cnj",a);
-  }
-  if(Array.isArray(d.enfants)&&d.enfants.length){
-    PRO.enfants=d.enfants.slice(0,4).map(e=>({nom:e.nom||"",prenom:e.prenom||"",ddn:ISO2FR(e.naissance)}));
-    P.set("kids",String(Math.min(d.enfants.length,4)));
-  }
-  const nomTxt=[d.nom,d.prenom].filter(Boolean).join(" ");
-  if(nomTxt)P.set("nom",nomTxt);
-  if(![...P.keys()].length&&!nomTxt)return false;
-  applyImport(P.toString());
-  try{calc();}catch(e){}
-  return true;
+  return applyFicheJSON(d);
 }
 if(window.CRMLINK)setTimeout(crmFiche,0);
 
@@ -2203,6 +2221,95 @@ calc();
   var iso=e.getAttribute("data-build"); if(!iso||iso.indexOf("T")<0)return;
   var d=new Date(iso); if(isNaN(d))return;
   e.textContent="version "+d.toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}).replace(",","");
+})();
+</script>
+<script>
+// ---- Recherche d'une fiche dans le CRM Santéo (route « recherche », PIN Import Auto) ----
+(function(){
+  if(!HOSTED)return;
+  const KB="santeo_crm_base", KP="santeo_crm_pin";
+  const DEF="https://whatsappcrm-45ekaxrk.manus.space";
+  const get=k=>{try{return localStorage.getItem(k)||"";}catch(e){return "";}};
+  const set=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
+  const base=()=>(window.CRMLINK&&window.CRMLINK.base)||get(KB)||DEF;
+
+  async function chercher(q){
+    const rp=await fetch(base().replace(/\/+$/,"")+"/api/comparateur/recherche?q="+encodeURIComponent(q),
+      {cache:"no-store",headers:{"X-Import-Auto-PIN":get(KP)}});
+    if(rp.status===404)return {vide:true};
+    if(rp.status===401||rp.status===403)return {refus:true};
+    if(rp.status===429)return {bloque:true};
+    if(!rp.ok)return {erreur:"HTTP "+rp.status};
+    const d=await rp.json();
+    return Array.isArray(d)?{liste:d}:(Array.isArray(d&&d.resultats)?{liste:d.resultats}:{fiche:d});
+  }
+
+  function panneau(){
+    const esc=v=>String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+    const ov=document.createElement("div"); ov.id="tgov"; ov.style.zIndex=1007;
+    const bst="padding:8px 13px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink);font:700 13px 'Archivo',sans-serif;cursor:pointer";
+    ov.innerHTML='<div id="tgbox" style="max-width:640px"><button class="close">Fermer ✕</button>'
+      +'<h2>Fiche du CRM Santéo</h2>'
+      +'<div class="src">Numéro de fiche, e-mail, téléphone, ou nom et prénom. Lecture seule — aucune écriture dans le CRM.</div>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0">'
+      +'<input id="csq" placeholder="ex. 293106, un e-mail, ou DUPOUY Serge" autocomplete="off" '
+      +'style="flex:1;min-width:200px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--ground);color:var(--ink);font:inherit">'
+      +'<button id="csgo" style="'+bst+';background:var(--accent);color:var(--accent-ink);border:none">Chercher</button></div>'
+      +'<div id="cspin" style="display:'+(get(KP)?"none":"flex")+';gap:8px;flex-wrap:wrap;align-items:center;margin:4px 0 8px">'
+      +'<input id="cspv" type="password" placeholder="PIN Import Auto" autocomplete="off" '
+      +'style="width:170px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--ground);color:var(--ink);font:inherit">'
+      +'<button id="cspok" style="'+bst+'">Enregistrer le PIN</button>'
+      +'<span style="font-size:11.5px;color:var(--muted)">gardé sur cet appareil uniquement</span></div>'
+      +'<div id="csres" style="font-size:13px"></div>'
+      +'<div class="foot"><a href="#" id="csconf">Changer le PIN ou l’adresse du CRM</a></div></div>';
+    document.body.appendChild(ov);
+    const res=ov.querySelector("#csres"), q=ov.querySelector("#csq");
+    ov.addEventListener("click",e=>{if(e.target===ov||e.target.classList.contains("close"))ov.remove();});
+    ov.querySelector("#cspok").addEventListener("click",()=>{
+      const v=ov.querySelector("#cspv").value.trim(); if(!v)return;
+      set(KP,v); ov.querySelector("#cspin").style.display="none"; q.focus();
+    });
+    ov.querySelector("#csconf").addEventListener("click",e=>{
+      e.preventDefault();
+      const b=prompt("Adresse du CRM :",base()); if(b)set(KB,b.trim().replace(/\/+$/,""));
+      ov.querySelector("#cspin").style.display="flex"; ov.querySelector("#cspv").focus();
+    });
+    const remplir=d=>{ if(applyFicheJSON(d)){ov.remove();} else res.innerHTML='<div class="irow iwarn"><span>Fiche reçue mais vide</span><b>rien à reprendre</b></div>'; };
+    const lancer=async()=>{
+      const v=q.value.trim(); if(!v)return;
+      if(!get(KP)){res.innerHTML='<div class="irow iwarn"><span>PIN manquant</span><b>saisis-le ci-dessus</b></div>';ov.querySelector("#cspin").style.display="flex";return;}
+      res.textContent="Recherche…";
+      let r; try{ r=await chercher(v); }catch(e){ res.innerHTML='<div class="irow iwarn"><span>CRM injoignable</span><b>'+esc(e&&e.message||e)+'</b></div>'; return; }
+      if(r.refus){res.innerHTML='<div class="irow iwarn"><span>PIN refusé</span><b>vérifie-le</b></div>';ov.querySelector("#cspin").style.display="flex";return;}
+      if(r.bloque){res.innerHTML='<div class="irow iwarn"><span>Accès bloqué 15 minutes</span><b>trop d’essais</b></div>';return;}
+      if(r.vide){res.innerHTML='<div class="irow iwarn"><span>Aucune fiche</span><b>'+esc(v)+'</b></div>';return;}
+      if(r.erreur){res.innerHTML='<div class="irow iwarn"><span>Erreur</span><b>'+esc(r.erreur)+'</b></div>';return;}
+      if(r.fiche){remplir(r.fiche);return;}
+      const L=r.liste||[];
+      if(!L.length){res.innerHTML='<div class="irow iwarn"><span>Aucune fiche</span><b>'+esc(v)+'</b></div>';return;}
+      res.innerHTML='<div class="ipost"><h3>'+L.length+' fiches — choisis la bonne</h3>'
+        +L.map((f,i)=>'<label class="irow" style="cursor:pointer" data-i="'+i+'"><span><b>'+esc([f.nom,f.prenom].filter(Boolean).join(" "))+'</b>'
+          +'<span style="display:block;font-size:11.5px;color:var(--muted)">'
+          +[ISO2FR(f.naissance),f.ville,f.statut,(f.dateCreation?"créée "+ISO2FR(f.dateCreation):"")].filter(Boolean).join(" · ")
+          +'</span></span><b>n° '+esc(f.santeoId)+'</b></label>').join("")+'</div>';
+      res.querySelectorAll(".irow[data-i]").forEach(el=>el.addEventListener("click",async()=>{
+        const f=L[+el.dataset.i]; res.textContent="Lecture de la fiche…";
+        const r2=await chercher(String(f.santeoId));
+        if(r2&&r2.fiche)remplir(r2.fiche);
+        else res.innerHTML='<div class="irow iwarn"><span>Fiche illisible</span><b>n° '+esc(f.santeoId)+'</b></div>';
+      }));
+    };
+    ov.querySelector("#csgo").addEventListener("click",lancer);
+    q.addEventListener("keydown",e=>{if(e.key==="Enter")lancer();});
+    (get(KP)?q:ov.querySelector("#cspv")).focus();
+  }
+
+  const b=document.createElement("button");
+  b.id="crmsearch"; b.type="button"; b.textContent="🔎 Fiche CRM";
+  b.title="Chercher une fiche dans le CRM Santéo";
+  b.style.cssText="position:fixed;top:10px;right:56px;z-index:50;border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:9px;padding:8px 12px;font:800 12.5px 'Archivo',sans-serif;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)";
+  b.addEventListener("click",panneau);
+  document.body.appendChild(b);
 })();
 </script>
 
