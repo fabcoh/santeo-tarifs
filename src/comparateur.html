@@ -2230,7 +2230,8 @@ calc();
 
   let DIAG="";
   async function chercher(q){
-    const url=base().replace(/\/+$/,"")+"/api/comparateur/recherche?q="+encodeURIComponent(q);
+    // « @ » et « + » sont valides dans une requête : on les laisse lisibles, certains serveurs ne les redécodent pas
+    const url=base().replace(/\/+$/,"")+"/api/comparateur/recherche?q="+encodeURIComponent(q).replace(/%40/g,"@");
     DIAG="GET "+url;
     let rp;
     try{ rp=await fetch(url,{cache:"no-store",headers:{"X-Import-Auto-PIN":get(KP)}}); }
