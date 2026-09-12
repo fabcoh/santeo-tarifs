@@ -272,7 +272,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-12T21:35:31Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-12T21:35:31Z</div>
+  <div id="buildstamp" data-build="2026-09-12T21:43:27Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-12T21:43:27Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2238,7 +2238,8 @@ calc();
 
   let DIAG="";
   async function chercher(q){
-    const url=base().replace(/\/+$/,"")+"/api/comparateur/recherche?q="+encodeURIComponent(q);
+    // « @ » et « + » sont valides dans une requête : on les laisse lisibles, certains serveurs ne les redécodent pas
+    const url=base().replace(/\/+$/,"")+"/api/comparateur/recherche?q="+encodeURIComponent(q).replace(/%40/g,"@");
     DIAG="GET "+url;
     let rp;
     try{ rp=await fetch(url,{cache:"no-store",headers:{"X-Import-Auto-PIN":get(KP)}}); }
