@@ -273,7 +273,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-13T14:49:30Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-13T14:49:30Z</div>
+  <div id="buildstamp" data-build="2026-09-13T14:56:55Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-13T14:56:55Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -682,12 +682,29 @@ function confirmDoc(docs,onDone){
     iban:["aiban","IBAN",0],bic:["abic","BIC",0],nom:["anom","Nom",0],prenom:["apre","Prénom",0],
     ddn:["addn","Date de naissance",0],adresse:["aadr","Adresse",1],cp:["acp","Code postal",1],ville:["avil","Ville",1]};
   const rows=[]; let html="";
+  // ---- Adresse : un seul choix parmi celles trouvées (attestation > RIB > pièce d'identité), à valider par le commercial ----
+  const ADRKEYS=["adresse","cp","ville"];
+  const curAdr={a:((document.getElementById("aadr")||{}).value||"").trim(),c:((document.getElementById("acp")||{}).value||"").trim(),v:((document.getElementById("avil")||{}).value||"").trim()};
+  const RANK={secu:0,rib:1,id:2,autre:3};
+  const adrs=[];
+  docs.forEach(d=>{const f=d.fields||{}; if(f.adresse||f.cp||f.ville) adrs.push({kind:d.kind,file:d.file,a:f.adresse||"",c:f.cp||"",v:f.ville||"",rank:RANK[d.kind]??9});});
+  adrs.sort((x,y)=>x.rank-y.rank);
+  let adrHtml="";
+  if(adrs.length){
+    const hasCur=!!(curAdr.a||curAdr.c||curAdr.v);
+    const fmt=o=>[o.a,[o.c,o.v].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+    const opt=(val,lab,txt,checked,warn)=>'<label class="irow" style="cursor:pointer;align-items:flex-start"><span><input type="radio" name="adrpick" value="'+val+'" '+(checked?'checked':'')+' style="margin-right:7px;accent-color:var(--accent)">'+lab
+      +(warn?'<span style="display:block;font-size:11px;color:var(--warn);margin-left:23px">'+warn+'</span>':'')+'</span><b style="text-align:right">'+esc(txt)+'</b></label>';
+    adrHtml='<div class="ipost" style="border-color:var(--accent)"><h3>Adresse '+(hasCur?'— confirmer':'— <span style="color:var(--warn)">non renseignée</span>, choisir')+'</h3>';
+    if(hasCur)adrHtml+=opt("cur","Conserver l\u2019adresse actuelle",fmt(curAdr),true,"");
+    adrs.forEach((o,i)=>adrHtml+=opt(String(i),(KINDLBL[o.kind]||"Document"),fmt(o),!hasCur&&i===0,o.kind==="id"?"pièce d\u2019identité : adresse possiblement ancienne (déménagement)":""));
+    adrHtml+=opt("none","Ne pas reprendre d\u2019adresse","",false,"")+'</div>';
+  }
   docs.forEach(d=>{
-    const keys=Object.keys(d.fields); if(!keys.length)return;
+    const keys=Object.keys(d.fields).filter(k=>!ADRKEYS.includes(k)); if(!keys.length)return;
     const ok=sameName(fiche,d.holder);
     html+='<div class="ipost"><h3>'+esc(KINDLBL[d.kind]||"Document")+' <span style="font-weight:500;text-transform:none;color:var(--muted)">'+esc(d.file)+'</span></h3>';
     if(ok===false)html+='<div class="irow iwarn"><span>Nom du document : '+esc(d.holder)+'</span><b>ne correspond pas à la fiche ('+esc(fiche.trim()||"—")+')</b></div>';
-    if(d.kind==="id")html+='<div class="irow iwarn"><span>Adresse issue d\'une pièce d\'identité</span><b>à confirmer (déménagement)</b></div>';
     keys.forEach(k=>{
       const L=LAB[k]; if(!L)return;
       let v=d.fields[k]; if(k==="iban")v=v.replace(/(.{4})/g,"$1 ").trim();
@@ -698,12 +715,12 @@ function confirmDoc(docs,onDone){
     });
     html+='</div>';
   });
-  if(!rows.length){onDone(0);return;}
+  if(!rows.length&&!adrs.length){onDone(0);return;}
   const ov=document.createElement("div");ov.id="tgov";ov.style.zIndex=1006;
   ov.innerHTML='<div id="tgbox" style="max-width:580px"><button class="close">Fermer ✕</button>'
     +'<h2>Informations trouvées</h2>'
     +'<div class="src">Chaque document ne renseigne que sa zone. Décochez ce que vous ne voulez pas reprendre, puis validez. Les alertes n\'empêchent pas la reprise.</div>'
-    +html
+    +adrHtml+html
     +'<div style="margin-top:12px;display:flex;gap:8px"><button id="cdok" class="tgbtn" style="background:var(--accent);color:var(--accent-ink);border:none">Reprendre la sélection</button>'
     +'<button id="cdno" class="tgbtn">Ne rien reprendre</button></div></div>';
   const close=n=>{ov.remove();onDone(n);};
@@ -712,6 +729,12 @@ function confirmDoc(docs,onDone){
   ov.querySelector("#cdno").addEventListener("click",()=>close(0));
   ov.querySelector("#cdok").addEventListener("click",()=>{
     let n=0;
+    const pick=ov.querySelector('input[name=adrpick]:checked');
+    if(pick&&pick.value!=="cur"&&pick.value!=="none"){
+      const o=adrs[+pick.value];
+      [["aadr",o.a],["acp",o.c],["avil",o.v]].forEach(([id,v])=>{const e=document.getElementById(id);if(!e||!v)return;
+        e.value=v;e.dispatchEvent(new Event("input",{bubbles:true}));e.style.transition="background .4s";const b=e.style.background;e.style.background="#DCF3E6";setTimeout(()=>{e.style.background=b;},1600);n++;});
+    }
     ov.querySelectorAll('input[type=checkbox]').forEach(c=>{
       if(!c.checked)return;
       const r=rows[+c.dataset.i], e=document.getElementById(r.id);
