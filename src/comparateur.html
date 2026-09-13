@@ -260,7 +260,8 @@ tr.offer.reco:hover td{background:var(--best)}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
-  <div class="condbox">
+  <div class="condbox" id="condbox" hidden>
+    <div style="font-weight:800;font-family:'Archivo',sans-serif;margin-bottom:3px">Conditions MCCINOVA</div>
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
@@ -735,7 +736,7 @@ function wireDocDrop(){
 
 // ---- Contrôles avant génération : champs obligatoires, e-mail, coupon des besoins ----
 const REQFIELDS=[["anom","Nom"],["apre","Prénom"],["addn","Date de naissance"],["aadr","Adresse"],
-  ["acp","Code postal"],["avil","Ville"],["ass","N° de Sécurité sociale"],["atel","Téléphone"],["amail","E-mail"]];
+  ["acp","Code postal"],["avil","Ville"],["ass","N° de Sécurité sociale"],["aorg","Organisme d\u2019affiliation"],["atel","Téléphone"],["amail","E-mail"]];
 const COUPONFIELDS=["brmb","bnd","bno","bnh","bnhon","bcss","baide","bpol","bbes","aanc","amot"];
 var COUPONINIT=null;
 var ADHKEY=null;   // gamme de l'adhésion ouverte
@@ -754,6 +755,7 @@ function missingFields(){
     if(id==="addn"&&!/^\d{2}\/\d{2}\/(19|20)\d\d$/.test(v))miss.push([id,lab,"format attendu jj/mm/aaaa"]);
     if(id==="acp"&&!/^\d{5}$/.test(v))miss.push([id,lab,"5 chiffres attendus"]);
     if(id==="ass"&&!secuOK(v))miss.push([id,lab,"numéro incomplet ou clé incorrecte"]);
+    if(id==="aorg"&&v.replace(/\D/g,"").length<9)miss.push([id,lab,"9 chiffres attendus (ex. 751000012)"]);
     if(id==="atel"&&(v.replace(/\D/g,"").length<10))miss.push([id,lab,"numéro incomplet"]);
   }
   return miss;
@@ -792,19 +794,19 @@ function overlay(html,wide){
   document.body.appendChild(ov);return ov;
 }
 // Alerte après génération : le bulletin est déjà produit, on signale seulement ce qui reste à compléter
-function showMissing(miss,bank){
+function showMissing(miss,bank,onAnyway){
   bank=bank||[];
   const bloc=(titre,list)=>list.length?'<div class="ipost"><h3>'+titre+'</h3>'
     +list.map(([id,lab,why])=>'<div class="irow iwarn"><span>'+lab+'</span><b>'+why+'</b></div>').join('')+'</div>':'';
   const all=bank.concat(miss);
-  const ov=overlay('<button class="close">Fermer ✕</button><h2>⚠ À compléter avant signature</h2>'
-    +'<div class="src">Le bulletin a été généré. Ces éléments y sont absents ou incorrects — complétez-les et régénérez avant de le faire signer.</div>'
+  const ov=overlay('<button class="close">Fermer ✕</button><h2>⚠ Informations manquantes</h2>'
+    +'<div class="src">Ces éléments manquent ou sont incorrects. Complétez-les, ou téléchargez quand même un bulletin incomplet.</div>'
     +bloc("Coordonnées bancaires (prélèvement et mandat SEPA)",bank)
     +bloc("Informations de l’adhérent",miss)
     +'<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">'
     +'<button id="mvgo" class="tgbtn" style="background:var(--accent);color:var(--accent-ink);border:none">Compléter</button>'
-    +'<button id="mvno" class="tgbtn">Fermer</button></div>');
-  ov.querySelector("#mvno").addEventListener("click",()=>ov.remove());
+    +(onAnyway?'<button id="mvno" class="tgbtn">Télécharger quand même</button>':'<button id="mvno" class="tgbtn">Fermer</button>')+'</div>');
+  ov.querySelector("#mvno").addEventListener("click",()=>{ov.remove();if(onAnyway)onAnyway();});
   ov.querySelector("#mvgo").addEventListener("click",()=>{
     ov.remove();
     const e=document.getElementById(all[0][0]);
@@ -845,9 +847,9 @@ function showCoupon(onDone){
 // Aucune alerte n'empêche la génération : le bulletin est toujours produit, l'alerte s'affiche ensuite
 function beforeGenerate(run){
   const go=()=>{
-    run();
     const miss=missingFields(), bk=bankIssues();
-    if(miss.length||bk.length)setTimeout(()=>showMissing(miss,bk),700);
+    if(miss.length||bk.length){showMissing(miss,bk,run);return;}   // alerte au clic : « Compléter » ou « Télécharger quand même »
+    run();
   };
   if(couponChanged()<1){showCoupon(go);return;}
   go();
@@ -1852,6 +1854,8 @@ function updateSendBar(){
 }
 function render(rows,warns){
   LASTROWS=rows;
+  // Le cadre des conditions ne concerne que MCCINOVA : affiché seulement si la gamme figure dans le tableau
+  try{document.getElementById("condbox").hidden=!rows.some(r=>r.key==="MCCINOVA");}catch(e){}
   const NC=buildHead();
   const tb=document.getElementById("rows");
   if(!rows.length){tb.innerHTML='<tr><td colspan="'+NC+'" class="empty">Renseigne une année de naissance (ou un âge) pour lancer le calcul.</td></tr>';}
