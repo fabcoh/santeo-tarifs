@@ -1659,7 +1659,8 @@ function calc(){
       }
     }
   }
-  // REVOLUO — base salarié × zone × régime (Alsace ×0,65 sans zone), mineurs payants max 2 (ligne 19 ans)
+  // REVOLUO — base salarié × zone × régime (Alsace ×0,65 sans zone). Première ligne de grille = 18 ans (âge atteint dans l'année) ;
+  // les mineurs sont tarifés comme un 18 ans (2 payants max) ; un mineur ou un 18 ans saisi en adulte donne le même tarif.
   if(on("REV")||on("RF50")||on("RF100")){
     const RZC={1:1,2:0.95,3:0.90,4:0.85,5:0.80};
     const rz=dept?D.RVZ[dept]:null;
@@ -1670,20 +1671,22 @@ function calc(){
     const coef=isRL?0.65:(rz?RZC[rz]*(isTNS?0.90:1):null);
     if(isDom) warns.push("REVOLUO : pas de souscription DOM-TOM.");
     else if(coef===null) warns.push("REVOLUO : département requis pour le zonage.");
-    else if(age<19||age>80) warns.push("REVOLUO : non éligible à "+age+" ans (grille 19–80 ans).");
+    else if(age>80) warns.push("REVOLUO : non éligible à "+age+" ans (grille 18–80 ans).");
     else for(const key of ["REV","RF50","RF100"]){
       if(!on(key)) continue;
-      const g=D.RVL[key], row=g[String(age)];
+      const g=D.RVL[key], L18=g["19"];                 // la ligne « 19 » de la grille source est le tarif 18 ans
+      const rowOf=a=>(a<=18)?L18:g[String(a)];
+      const row=rowOf(age);
       for(let f=0;f<F[key].names.length;f++){
         const bA=row&&row[f]; if(!bA) continue;
         const pA=r2(bA*coef);
         let pC=null;
         if(hasCnj&&cnjAge!=null){
-          const rw=(cnjAge>=19&&cnjAge<=80)?g[String(cnjAge)]:null;
+          const rw=(cnjAge<=80)?rowOf(cnjAge):null;
           pC=(rw&&rw[f])?r2(rw[f]*coef):undefined;
         }
         let pK=null,kidNote="";
-        if(kids>0){const kn=Math.min(2,kids),bk=r2(g["19"][f]*coef);pK=r2(bk*kn);kidNote=kn+" × "+eur(bk)+(kids>2?" (3ᵉ+ gratuit)":"")+" — tarif 19 ans";}
+        if(kids>0){const kn=Math.min(2,kids),bk=r2(L18[f]*coef);pK=r2(bk*kn);kidNote=kn+" × "+eur(bk)+(kids>2?" (3ᵉ+ gratuit)":"")+" — tarif 18 ans";}
         const tot=r2((pA+((pC&&pC!==undefined)?pC:0)+(pK||0))*fam);
         rows.push({key,fi:f,ins:"avenir",resp:true,gamme:F[key].label,formule:F[key].names[f],
           hospO:F[key].hospO[f],hospN:F[key].hospN[f],honoO:F[key].honoO[f],honoN:F[key].honoN[f],
