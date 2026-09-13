@@ -1668,13 +1668,17 @@ function calc(){
     const nAd=1+((hasCnj&&cnjAge!=null)?1:0), nPers=nAd+kids;
     const fam=(nAd===2||nPers>=3)?0.90:(nAd===1&&kids===1)?0.95:1;
     const r2=v=>Math.round(v*100)/100;
+    // Alignement sur le tarificateur showcase (vérifié RF100 18 ans, 5 valeurs sur 5) : grille × 0,999 arrondie au centime
+    const RVALIGN=0.999;
     const coef=isRL?0.65:(rz?RZC[rz]*(isTNS?0.90:1):null);
     if(isDom) warns.push("REVOLUO : pas de souscription DOM-TOM.");
     else if(coef===null) warns.push("REVOLUO : département requis pour le zonage.");
     else if(age>80) warns.push("REVOLUO : non éligible à "+age+" ans (grille 18–80 ans).");
     else for(const key of ["REV","RF50","RF100"]){
       if(!on(key)) continue;
-      const g=D.RVL[key], L18=g["19"];                 // la ligne « 19 » de la grille source est le tarif 18 ans
+      const g0=D.RVL[key];
+      const g={}; for(const a in g0) g[a]=g0[a].map(v=>v==null?v:Math.round(v*RVALIGN*100)/100);
+      const L18=g["19"];                                 // la ligne « 19 » de la grille source est le tarif 18 ans
       const rowOf=a=>(a<=18)?L18:g[String(a)];
       const row=rowOf(age);
       for(let f=0;f<F[key].names.length;f++){
