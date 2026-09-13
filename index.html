@@ -273,7 +273,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-13T14:57:35Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-13T14:57:35Z</div>
+  <div id="buildstamp" data-build="2026-09-13T15:05:57Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-13T15:05:57Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -826,35 +826,46 @@ function signPopup(files,g){
   LASTPDFS=files;
   const esc=t=>String(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
   const infos=[["Nom",g("anom").toUpperCase()],["Prénom",g("apre")],["E-mail",g("amail")],["Mobile",g("atel")]].filter(x=>x[1]);
-  const CP='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-  const html='<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><h2 style="margin:0">Faire signer sur Universign</h2>'
-    +'<a class="tgbtn" href="'+UNIVERSIGN_URL+'" target="_blank" rel="noopener" style="margin-left:auto;text-decoration:none">Ouvrir dans un onglet ↗</a><button class="close">Fermer ✕</button></div>'
-    +'<div class="src">Copiez les informations du signataire, déposez le(s) fichier(s) dans la collecte Universign ci-dessous.</div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 18px" class="signgrid">'
-    +'<div class="ipost"><h3>Signataire</h3>'
-    +infos.map(([l,v],i)=>'<div class="irow" style="align-items:center"><span>'+l+'</span><b style="display:flex;align-items:center;gap:8px;font-family:\'IBM Plex Mono\',ui-monospace,monospace;font-weight:600">'+esc(v)
-      +'<button type="button" class="cpb" data-v="'+esc(v)+'" title="Copier" style="border:1px solid var(--line);background:var(--ground);color:var(--ink);border-radius:6px;padding:3px 7px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font:inherit;font-size:11px">'+CP+'<span>copier</span></button></b></div>').join("")
+  const CP='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  const bt='border:1px solid var(--line);background:var(--ground);color:var(--ink);border-radius:6px;padding:2px 6px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font:inherit;font-size:11px;line-height:1.3';
+  const html='<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'
+    +'<b style="font-family:\'Archivo\',sans-serif;font-size:14px">Faire signer sur Universign</b>'
+    // ligne 1 : le signataire, tout sur une ligne, libellé collé à la valeur
+    +'<div style="display:flex;gap:6px 14px;align-items:center;flex-wrap:wrap;font-size:12.5px">'
+    +infos.map(([l,v])=>'<span style="display:inline-flex;align-items:center;gap:5px"><span style="color:var(--muted);font-size:10.5px;text-transform:uppercase">'+l+'</span><b style="font-family:\'IBM Plex Mono\',ui-monospace,monospace;font-weight:600">'+esc(v)+'</b>'
+      +'<button type="button" class="cpb" data-v="'+esc(v)+'" title="Copier" style="'+bt+'">'+CP+'<span></span></button></span>').join("")
     +'</div>'
-    +'<div class="ipost"><h3>Fichiers à déposer</h3>'
-    +files.map((f,i)=>'<div class="irow" style="align-items:center"><span>📄 '+esc(f.name)+'</span><b><button type="button" class="tgbtn dlb" data-i="'+i+'">Télécharger</button></b></div>').join("")
-    +'<div style="font-size:11.5px;color:var(--muted);margin-top:6px">Déjà dans vos téléchargements — glissez-les dans la collecte.</div></div>'
+    +'<span style="margin-left:auto;display:flex;gap:6px"><a class="tgbtn" href="'+UNIVERSIGN_URL+'" target="_blank" rel="noopener" style="text-decoration:none;padding:4px 9px;font-size:12px">Onglet ↗</a><button class="close" style="padding:4px 9px;font-size:12px">Fermer ✕</button></span>'
     +'</div>'
-    +'<iframe src="'+UNIVERSIGN_URL+'" title="Universign" style="width:100%;height:62vh;min-height:420px;border:1px solid var(--line);border-radius:8px;background:#fff;margin-top:6px" allow="clipboard-read; clipboard-write"></iframe>'
-    +'<div class="foot">Si la page Universign reste vide (affichage intégré refusé par Universign), utilisez « Ouvrir dans un onglet ».</div>';
-  const ov=overlay(html,1100);
-  try{ov.querySelector("#tgbox").style.cssText+=";height:92vh;display:flex;flex-direction:column;overflow:auto";}catch(e){}
-  try{ if(window.matchMedia("(max-width:700px)").matches) ov.querySelector(".signgrid").style.gridTemplateColumns="1fr"; }catch(e){}
+    // ligne 2 : les fichiers, à glisser directement dans Universign (ou à re-télécharger)
+    +'<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0 6px;font-size:12.5px">'
+    +'<span style="color:var(--muted);font-size:10.5px;text-transform:uppercase">Fichiers — glissez-les dans Universign</span>'
+    +files.map((f,i)=>'<span class="dragf" draggable="true" data-i="'+i+'" title="Glisser vers « Choisir un fichier » dans Universign, ou cliquer pour re-télécharger" style="display:inline-flex;align-items:center;gap:6px;border:1px dashed var(--accent);border-radius:8px;padding:4px 10px;background:var(--soft);cursor:grab;user-select:none">'
+      +'<span style="font-size:15px">📄</span><b style="font-weight:600">'+esc(f.name)+'</b><span style="color:var(--muted);font-size:11px">⇣</span></span>').join("")
+    +'</div>'
+    +'<iframe src="'+UNIVERSIGN_URL+'" title="Universign" style="width:100%;flex:1;min-height:420px;border:1px solid var(--line);border-radius:8px;background:#fff" allow="clipboard-read; clipboard-write"></iframe>';
+  const ov=overlay(html,1200);
+  try{ov.querySelector("#tgbox").style.cssText+=";height:94vh;display:flex;flex-direction:column;overflow:hidden;padding:10px 14px";}catch(e){}
   ov.querySelectorAll(".cpb").forEach(b=>b.addEventListener("click",async()=>{
     const v=b.dataset.v; let ok=false;
     try{await navigator.clipboard.writeText(v);ok=true;}catch(e){
       try{const t=document.createElement("textarea");t.value=v;document.body.appendChild(t);t.select();ok=document.execCommand("copy");t.remove();}catch(_){}
     }
-    const sp=b.querySelector("span"); sp.textContent=ok?"copié ✓":"échec"; setTimeout(()=>{sp.textContent="copier";},1500);
+    const sp=b.querySelector("span"); sp.textContent=ok?"✓":"✗"; setTimeout(()=>{sp.textContent="";},1400);
   }));
-  ov.querySelectorAll(".dlb").forEach(b=>b.addEventListener("click",()=>{
-    const f=LASTPDFS[+b.dataset.i]; if(!f)return;
-    const bl=new Blob([f.data],{type:"application/pdf"});const a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download=f.name;document.body.appendChild(a);a.click();a.remove();
-  }));
+  const fileOf=i=>{const f=LASTPDFS[i];return f?new File([f.data],f.name,{type:"application/pdf"}):null;};
+  ov.querySelectorAll(".dragf").forEach(el=>{
+    el.addEventListener("click",()=>{
+      const f=fileOf(+el.dataset.i); if(!f)return;
+      const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();a.remove();
+    });
+    el.addEventListener("dragstart",e=>{
+      const f=fileOf(+el.dataset.i); if(!f)return;
+      try{e.dataTransfer.items.add(f);}catch(_){}
+      try{e.dataTransfer.setData("DownloadURL","application/pdf:"+f.name+":"+URL.createObjectURL(f));}catch(_){}
+      e.dataTransfer.effectAllowed="copy";
+    });
+  });
 }
 function overlay(html,wide){
   const ov=document.createElement("div");ov.id="tgov";ov.style.zIndex=1005;
