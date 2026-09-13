@@ -272,7 +272,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-12T21:43:27Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-12T21:43:27Z</div>
+  <div id="buildstamp" data-build="2026-09-13T11:12:19Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-13T11:12:19Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -717,7 +717,7 @@ function confirmDoc(docs,onDone){
       if(!e)return;
       e.value=r.val; e.dispatchEvent(new Event("input",{bubbles:true}));
       e.style.transition="background .4s";const b=e.style.background;e.style.background="#DCF3E6";
-      setTimeout(()=>{e.style.background=b;},1600); n++;
+      setTimeout(()=>{e.style.background=b;try{paintBank();}catch(_){}},1600); n++;
     });
     close(n);
   });
@@ -765,22 +765,58 @@ function missingFields(){
   }
   return miss;
 }
+// Coordonnées bancaires : alerte, jamais un blocage — le bulletin est toujours généré
+function bicOK(v){return /^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(v);}
+function bankIssues(){
+  const out=[];
+  const ib=((document.getElementById("aiban")||{}).value||"").replace(/\s+/g,"").toUpperCase();
+  const bc=((document.getElementById("abic")||{}).value||"").replace(/\s+/g,"").toUpperCase();
+  if(!ib)out.push(["aiban","IBAN","non renseigné — aucun prélèvement possible"]);
+  else if(!ibanOK(ib))out.push(["aiban","IBAN","clé de contrôle incorrecte"]);
+  else if(/^FR/.test(ib)&&ib.length!==27)out.push(["aiban","IBAN","un IBAN français fait 27 caractères"]);
+  if(!bc)out.push(["abic","BIC","non renseigné"]);
+  else if(!bicOK(bc))out.push(["abic","BIC","format inattendu (8 ou 11 caractères)"]);
+  return out;
+}
+// Marque les champs en rouge tant que l'IBAN/BIC n'est pas complet : impossible de ne pas le voir
+function paintBank(){
+  const bad={}; bankIssues().forEach(([id])=>bad[id]=1);
+  ["aiban","abic"].forEach(id=>{
+    const e=document.getElementById(id); if(!e)return;
+    e.style.borderColor=bad[id]?"#c62828":"";
+    e.style.background=bad[id]?"rgba(198,40,40,.07)":"";
+    const lbl=e.previousElementSibling; if(lbl)lbl.style.color=bad[id]?"#c62828":"";
+  });
+  const n=document.getElementById("abknote");
+  if(n){const is=bankIssues();
+    n.textContent=is.length?("⚠ "+is.map(([,l,w])=>l+" : "+w).join(" · ")):"";
+    n.style.display=is.length?"block":"none";}
+}
 function overlay(html,wide){
   const ov=document.createElement("div");ov.id="tgov";ov.style.zIndex=1005;
   ov.innerHTML='<div id="tgbox" style="max-width:'+(wide||520)+'px">'+html+'</div>';
   ov.addEventListener("click",e=>{if(e.target===ov||e.target.classList.contains("close"))ov.remove();});
   document.body.appendChild(ov);return ov;
 }
-function showMissing(miss){
-  const ov=overlay('<button class="close">Fermer ✕</button><h2>Informations manquantes</h2>'
-    +'<div class="src">Ces éléments sont nécessaires pour établir le bulletin d\'adhésion :</div>'
-    +'<div class="ipost">'+miss.map(([id,lab,why])=>'<div class="irow iwarn"><span>'+lab+'</span><b>'+why+'</b></div>').join('')+'</div>'
-    +'<div style="margin-top:12px"><button id="mvgo" class="tgbtn" style="background:var(--accent);color:var(--accent-ink);border:none">Compléter</button></div>');
+// Alerte après génération : le bulletin est déjà produit, on signale seulement ce qui reste à compléter
+function showMissing(miss,bank){
+  bank=bank||[];
+  const bloc=(titre,list)=>list.length?'<div class="ipost"><h3>'+titre+'</h3>'
+    +list.map(([id,lab,why])=>'<div class="irow iwarn"><span>'+lab+'</span><b>'+why+'</b></div>').join('')+'</div>':'';
+  const all=bank.concat(miss);
+  const ov=overlay('<button class="close">Fermer ✕</button><h2>⚠ À compléter avant signature</h2>'
+    +'<div class="src">Le bulletin a été généré. Ces éléments y sont absents ou incorrects — complétez-les et régénérez avant de le faire signer.</div>'
+    +bloc("Coordonnées bancaires (prélèvement et mandat SEPA)",bank)
+    +bloc("Informations de l’adhérent",miss)
+    +'<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">'
+    +'<button id="mvgo" class="tgbtn" style="background:var(--accent);color:var(--accent-ink);border:none">Compléter</button>'
+    +'<button id="mvno" class="tgbtn">Fermer</button></div>');
+  ov.querySelector("#mvno").addEventListener("click",()=>ov.remove());
   ov.querySelector("#mvgo").addEventListener("click",()=>{
     ov.remove();
-    const e=document.getElementById(miss[0][0]);
+    const e=document.getElementById(all[0][0]);
     if(e){e.scrollIntoView({block:"center",behavior:"smooth"});e.focus();
-      e.style.borderColor="#c62828";setTimeout(()=>{e.style.borderColor="";},2500);}
+      e.style.borderColor="#c62828";setTimeout(()=>{try{paintBank();}catch(_){}if(e.id!=="aiban"&&e.id!=="abic")e.style.borderColor="";},2500);}
   });
 }
 // Coupon des besoins : fenêtre dédiée, on ne peut continuer qu'après avoir ajusté au moins un champ
@@ -813,11 +849,15 @@ function showCoupon(onDone){
   });
   ov.addEventListener("click",e=>{if(e.target===ov||e.target.classList.contains("close"))restore();});
 }
+// Aucune alerte n'empêche la génération : le bulletin est toujours produit, l'alerte s'affiche ensuite
 function beforeGenerate(run){
-  const miss=missingFields();
-  if(miss.length){showMissing(miss);return;}
-  if(couponChanged()<1){showCoupon(run);return;}
-  run();
+  const go=()=>{
+    run();
+    const miss=missingFields(), bk=bankIssues();
+    if(miss.length||bk.length)setTimeout(()=>showMissing(miss,bk),700);
+  };
+  if(couponChanged()<1){showCoupon(go);return;}
+  go();
 }
 
 function showAdh(r){
@@ -860,6 +900,7 @@ function showAdh(r){
   '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Motif de d\u00e9part</label><select id="amot" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option>MOTIFS DE DEPART</option><option>Mauvaise gestion</option><option>Probl\u00e8mes de remboursements</option><option>Augmentations des cotisations</option><option>Peu rembours\u00e9 </option><option>Plus adapt\u00e9 \u00e0 mes besoins</option><option>Motifs personnels</option><option>Cotisation trop \u00e9lev\u00e9e</option><option>Autres</option></select></div>'+
   (HOSTED?docDropHTML():"")+
   F1("aiban","IBAN (27 caract\u00e8res)","FR76 \u2026").replace('<div>','<div style="grid-column:span 2;min-width:0">').replace('style="width:100%;','style="width:100%;font-family:\'IBM Plex Mono\',ui-monospace,monospace;letter-spacing:.04em;')+F1("abic","BIC")+
+  '<div id="abknote" style="grid-column:1/-1;color:#c62828;font-size:12px;font-weight:700;margin:2px 0 0;display:none"></div>'+
   kidsHtml+
   (function(){
     const lvl=Math.min(5,Math.max(1,(r.fi||0)+2))+" / 5";
@@ -888,6 +929,10 @@ function showAdh(r){
   ibEl.addEventListener("input",()=>{const v=ibEl.value.replace(/[^0-9a-z]/gi,"").toUpperCase().slice(0,27);ibEl.value=v.replace(/(.{4})/g,"$1 ").trim();});
   const bicEl=document.getElementById("abic");
   bicEl.addEventListener("input",()=>{bicEl.value=bicEl.value.replace(/[^0-9a-z]/gi,"").toUpperCase().slice(0,11);});
+  // Alerte permanente tant que l'IBAN/BIC manque : le champ reste rouge et la ligne d'alerte visible
+  ibEl.addEventListener("input",paintBank); bicEl.addEventListener("input",paintBank);
+  ibEl.addEventListener("blur",paintBank); bicEl.addEventListener("blur",paintBank);
+  paintBank();
   // Volets bénéficiaires : ouverture/fermeture et rappel du nom saisi quand le volet est replié
   ov.querySelectorAll(".volet.mini").forEach(bt=>{
     const pan=ov.querySelector("#"+bt.dataset.pan), sum=ov.querySelector("#"+bt.dataset.pan+"sum");
