@@ -787,6 +787,40 @@ function paintBank(){
     n.textContent=is.length?("⚠ "+is.map(([,l,w])=>l+" : "+w).join(" · ")):"";
     n.style.display=is.length?"block":"none";}
 }
+// Après génération : fenêtre pour faire signer sur Universign à la main — infos du signataire à copier,
+// fichiers générés à re-télécharger (à déposer dans la collecte), lien direct vers « je fais signer des documents »
+const UNIVERSIGN_URL="https://app.universign.com/fr/apps/signature-electronique/je-fais-signer-des-documents/";
+var LASTPDFS=[];
+function signPopup(files,g){
+  LASTPDFS=files;
+  const esc=t=>String(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+  const infos=[["Nom",g("anom").toUpperCase()],["Prénom",g("apre")],["E-mail",g("amail")],["Mobile",g("atel")]].filter(x=>x[1]);
+  const CP='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  const html='<button class="close">Fermer ✕</button><h2>Faire signer sur Universign</h2>'
+    +'<div class="src">1. Copiez les informations du signataire · 2. Déposez le(s) fichier(s) dans la collecte · 3. Ouvrez Universign</div>'
+    +'<div class="ipost"><h3>Signataire</h3>'
+    +infos.map(([l,v],i)=>'<div class="irow" style="align-items:center"><span>'+l+'</span><b style="display:flex;align-items:center;gap:8px;font-family:\'IBM Plex Mono\',ui-monospace,monospace;font-weight:600">'+esc(v)
+      +'<button type="button" class="cpb" data-v="'+esc(v)+'" title="Copier" style="border:1px solid var(--line);background:var(--ground);color:var(--ink);border-radius:6px;padding:3px 7px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font:inherit;font-size:11px">'+CP+'<span>copier</span></button></b></div>').join("")
+    +'</div>'
+    +'<div class="ipost"><h3>Fichiers à déposer</h3>'
+    +files.map((f,i)=>'<div class="irow" style="align-items:center"><span>📄 '+esc(f.name)+'</span><b><button type="button" class="tgbtn dlb" data-i="'+i+'">Télécharger</button></b></div>').join("")
+    +'</div>'
+    +'<div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
+    +'<a class="tgbtn" href="'+UNIVERSIGN_URL+'" target="_blank" rel="noopener" style="background:var(--accent);color:var(--accent-ink);border:none;text-decoration:none">Ouvrir Universign — je fais signer des documents ↗</a>'
+    +'<span style="font-size:12px;color:var(--muted)">Les fichiers sont déjà dans vos téléchargements ; les boutons les re-téléchargent si besoin.</span></div>';
+  const ov=overlay(html,640);
+  ov.querySelectorAll(".cpb").forEach(b=>b.addEventListener("click",async()=>{
+    const v=b.dataset.v; let ok=false;
+    try{await navigator.clipboard.writeText(v);ok=true;}catch(e){
+      try{const t=document.createElement("textarea");t.value=v;document.body.appendChild(t);t.select();ok=document.execCommand("copy");t.remove();}catch(_){}
+    }
+    const sp=b.querySelector("span"); sp.textContent=ok?"copié ✓":"échec"; setTimeout(()=>{sp.textContent="copier";},1500);
+  }));
+  ov.querySelectorAll(".dlb").forEach(b=>b.addEventListener("click",()=>{
+    const f=LASTPDFS[+b.dataset.i]; if(!f)return;
+    const bl=new Blob([f.data],{type:"application/pdf"});const a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download=f.name;document.body.appendChild(a);a.click();a.remove();
+  }));
+}
 function overlay(html,wide){
   const ov=document.createElement("div");ov.id="tgov";ov.style.zIndex=1005;
   ov.innerHTML='<div id="tgbox" style="max-width:'+(wide||520)+'px">'+html+'</div>';
@@ -1214,15 +1248,17 @@ async function fillAdh(r,ov){
       const warn=st.textContent.startsWith("⚠")?st.textContent:"";
       const SAVE=async(fn,data)=>{ if(dlMV){ await dlMV.save({filename:fn,data}); } else { const b2=new Blob([data],{type:"application/pdf"});const a3=document.createElement("a");a3.href=URL.createObjectURL(b2);a3.download=fn;document.body.appendChild(a3);a3.click();a3.remove(); } };
       await SAVE(fMV,outMV);
+      const gen=[{name:fMV,data:outMV}];
       if(isREV(r.key)){
         // 2e fichier : mandat SEPA CERGAP, signé à part
         try{
           const pdfS=await fillSepaREV(g); const outS=await pdfS.save();
           await new Promise(res=>setTimeout(res,600));
-          await SAVE("sepa_REVOLUO_"+(g("anom")||"client")+".pdf",outS);
+          const fS="sepa_REVOLUO_"+(g("anom")||"client")+".pdf"; await SAVE(fS,outS); gen.push({name:fS,data:outS});
           st.textContent=warn+"✅ 2 fichiers téléchargés : bulletin d\u2019adhésion + mandat SEPA.";
         }catch(e){ st.textContent=warn+"✅ Bulletin téléchargé — ❌ mandat SEPA : "+(e&&e.message||e); }
       } else st.textContent=warn+"✅ Bulletin téléchargé.";
+      try{signPopup(gen,g);}catch(e){}
       return;
     }
     const bytes=Uint8Array.from(atob(BULLETIN_B64),c=>c.charCodeAt(0));
@@ -1302,6 +1338,7 @@ async function fillAdh(r,ov){
       document.body.appendChild(a2);a2.click();a2.remove();
       st.textContent="✅ Bulletin généré (téléchargement navigateur).";
     }
+    try{signPopup([{name:fname,data:out}],g);}catch(e){}
   }catch(e){st.textContent="Erreur : "+(e&&e.message||e);}
 }
 function showDoc(name,url){
