@@ -1446,7 +1446,7 @@ function renderTG(cols,title,sub,note,single){
     +(multi?'<span style="display:block;font-size:11px;opacity:.75">'+F[c.key].label+'</span>':'')+F[c.key].names[c.fi]+'</th>').join('')+'</tr>';
   let body=ROWS.map(([lab,src])=>'<tr><td>'+lab+'</td>'+cols.map((c,ci)=>'<td'+(isReco(c)?' class="reco"':'')+'>'+tgVal(c.key,c.fi,src)+'</td>').join('')+'</tr>').join('');
   const ov=document.createElement('div');ov.id='tgov';
-  ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><button class="shot" data-t="1" style="float:right;margin-right:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;font:700 13px \'Archivo\',sans-serif">📷 Avec tarifs</button><button class="shot" data-t="0" style="float:right;margin-right:8px;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer;font:700 13px \'Archivo\',sans-serif">📷 Sans tarifs</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+note+'</div></div>';
+  ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+note+'</div></div>';
   ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
   document.body.appendChild(ov);
   // Touchez le nom d'une formule pour la mettre en avant (et l'annoncer dans l'envoi)
@@ -1460,10 +1460,12 @@ function renderTG(cols,title,sub,note,single){
       const on=RECO===(c.key+"|"+c.fi);
       const th=tbl.querySelector('thead th.pick[data-ci="'+ci+'"]');
       if(th){
+        const price=th.querySelector('.thprice');   // le tarif affiché sous le nom est conservé
         th.classList.toggle('reco',on);
         th.innerHTML=(on?'<span class="recolbl">⭐ Je vous conseille</span>'
                         :'<span class="star" title="Conseiller cette formule">☆</span>')
           +(multi?'<span style="display:block;font-size:11px;opacity:.75">'+F[c.key].label+'</span>':'')+F[c.key].names[c.fi];
+        if(price)th.appendChild(price);
       }
       tbl.querySelectorAll('tbody tr').forEach(tr=>{const td=tr.children[ci+1];if(td)td.classList.toggle('reco',on);});
     });
@@ -1474,173 +1476,104 @@ function renderTG(cols,title,sub,note,single){
     paintReco();
   }));
   const key=single; const f={label:title.replace(/ — .*$/,"")};
-  // Capture du tableau en image PNG : copiée dans le presse-papier (collez dans WhatsApp)
-  ov.querySelectorAll('.shot').forEach(sbtn=>sbtn.addEventListener('click',async ev=>{
-    const btn=ev.target; const old=btn.textContent; btn.textContent="⏳…";
-    const withPrices=btn.dataset.t==="1";
-    // Site hébergé (GitHub Pages) : la copie de l'image est lancée dès le clic (geste utilisateur
-    // conservé, même sur Safari/Samsung) — le navigateur attend l'image en cours de fabrication.
-    let hostedCopy=null,hostedResolve=null,hostedReject=null;
-    if(HOSTED&&navigator.clipboard&&navigator.clipboard.write&&typeof ClipboardItem!=="undefined"){
-      try{
-        const bp=new Promise((res,rej)=>{hostedResolve=res;hostedReject=rej;});
-        hostedCopy=navigator.clipboard.write([new ClipboardItem({"image/png":bp})]).then(()=>true).catch(()=>false);
-      }catch(e0){hostedCopy=null;}
+  // ---- Tout dans le même tableau : prospect, tarifs par défaut, étoile-conseil, et les actions ----
+  const box=ov.querySelector('#tgbox');
+  const PR=typeof PRO!=="undefined"?PRO:{};
+  const nm=[(PR.civ||""),(PR.nom||""),(PR.prenom||"")].filter(Boolean).join(" ");
+  const bits=[]; if(nm)bits.push(nm);
+  if(PR.ddn)bits.push("né(e) le "+PR.ddn); else{const n=document.getElementById("naiss").value;if(n)bits.push(/^\d{4}$/.test(n)?"né(e) en "+n:n+" ans");}
+  bits.push("étude du "+new Date().toLocaleDateString("fr-FR"));
+  const hdr=document.createElement('div'); hdr.className='tghdr'; hdr.textContent=bits.join("  ·  ");
+  hdr.style.cssText="font:700 16.5px 'Archivo',sans-serif;color:var(--accent);margin:2px 0 8px";
+  box.querySelector('h2').after(hdr);
+  // Tarifs sous chaque formule, affichés d'office
+  box.querySelectorAll('thead th').forEach((th2,ix)=>{
+    if(ix===0)return;
+    const c2=cols[ix-1]; const r2=c2&&LASTROWS.find(x=>x.key===c2.key&&x.fi===c2.fi);
+    const d2=document.createElement('div'); d2.className='thprice';
+    d2.textContent=r2?eur(r2.total)+" /mois":"—";
+    d2.style.cssText="font:800 12.5px 'Archivo',sans-serif;color:var(--accent);margin-top:3px;text-transform:none";
+    th2.appendChild(d2);
+  });
+  // Barre d'actions unique
+  const bar=document.createElement('div'); bar.className='tgactions';
+  bar.style.cssText="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0 10px";
+  const bst="padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink);font:700 13px 'Archivo',sans-serif;cursor:pointer";
+  const canSh=!!(navigator.canShare&&navigator.canShare({files:[new File([new Blob([""])],"x.png",{type:"image/png"})]}));
+  bar.innerHTML='<label style="display:inline-flex;align-items:center;gap:5px;font:600 12.5px \'Archivo\',sans-serif;margin-right:4px;cursor:pointer"><input type="checkbox" id="tgprices" checked style="accent-color:var(--accent)">Tarifs</label>'
+    +'<button data-a="copy" style="'+bst+'">📋 Copier l’image</button>'
+    +(canSh?'<button data-a="share" style="'+bst+'">📤 Partager</button>':'')
+    +(window.CRMLINK?'<button data-a="crm" style="'+bst+';background:#059669;color:#fff;border-color:#059669">📲 Déposer dans le CRM</button>':'')
+    +'<button data-a="dl" style="'+bst+'">⬇️ Télécharger</button>'
+    +'<button data-a="mail" style="'+bst+'">✉️ Email</button>'
+    +'<span id="tgstat" style="font:600 12.5px \'Archivo\',sans-serif;color:var(--accent);margin-left:4px"></span>';
+  ov.querySelector('#tgbox .rectip').after(bar);
+  bar.querySelector('#tgprices').addEventListener('change',e=>{box.querySelectorAll('.thprice').forEach(d=>{d.style.display=e.target.checked?"":"none";});});
+  const stat=t=>{const s=bar.querySelector('#tgstat');s.textContent=t;};
+  // Capture du tableau tel qu'affiché (prospect + tarifs si cochés, sans les boutons)
+  async function capture(){
+    if(typeof html2canvas==="undefined")throw new Error("lib");
+    const wrap2=box.querySelector('div[style*="overflow-x"]');
+    const savedWrap=wrap2?wrap2.style.cssText:"";
+    box.classList.add("capwide"); if(wrap2)wrap2.style.overflowX="visible";
+    // Si des formules sont cochées (envoi), la capture ne montre que leurs colonnes
+    const selFi=(key&&typeof SENDSEL!=="undefined")?[...SENDSEL].filter(x=>x.split("|")[0]===key).map(x=>+x.split("|")[1]):[];
+    const hidden=[];
+    if(key&&selFi.length&&selFi.length<cols.length){
+      box.querySelectorAll('table tr').forEach(tr2=>{[...tr2.children].forEach((cell,ci)=>{if(ci>0&&!selFi.includes(ci-1)){hidden.push([cell,cell.style.display]);cell.style.display="none";}});});
     }
+    const tbl2=box.querySelector('table'); box.style.width=(tbl2.offsetWidth+40)+"px";
+    let canvas;
     try{
-      if(typeof html2canvas==="undefined")throw new Error("lib");
-      const box=document.getElementById('tgbox');
-      // En-tête prospect, intégré à l'image uniquement
-      const PR=typeof PRO!=="undefined"?PRO:{};
-      const nm=[(PR.civ||""),(PR.nom||""),(PR.prenom||"")].filter(Boolean).join(" ");
-      const bits=[];
-      if(nm)bits.push(nm);
-      if(PR.ddn)bits.push("né(e) le "+PR.ddn);
-      else{const n=document.getElementById("naiss").value;if(n)bits.push(/^\d{4}$/.test(n)?"né(e) en "+n:n+" ans");}
-      bits.push("étude du "+new Date().toLocaleDateString("fr-FR"));
-      const hdr=document.createElement('div');
-      hdr.textContent=bits.join("  ·  ");
-      hdr.style.cssText="font:700 16.5px 'Archivo',sans-serif;color:var(--accent);margin:2px 0 10px";
-      box.querySelector('h2').after(hdr);
-      // Tarifs sous le nom de chaque formule (version avec tarifs)
-      const thP=[];
-      if(withPrices){
-        box.querySelectorAll('thead th').forEach((th2,ix)=>{
-          if(ix===0)return;
-          const c2=cols[ix-1]; const r2=c2&&LASTROWS.find(x=>x.key===c2.key&&x.fi===c2.fi);
-          const d2=document.createElement('div');
-          d2.textContent=r2?eur(r2.total)+" /mois":"—";
-          d2.style.cssText="font:800 12.5px 'Archivo',sans-serif;color:var(--accent);margin-top:3px;text-transform:none";
-          th2.appendChild(d2);thP.push(d2);
-        });
-      }
-      // Largeur complète : on déplie le tableau pour capturer TOUTES les colonnes
-      const wrap2=box.querySelector('div[style*="overflow-x"]');
-      const savedWrap=wrap2?wrap2.style.cssText:"";
-      box.classList.add("capwide");
-      if(wrap2)wrap2.style.overflowX="visible";
-      // Si des formules sont cochées (envoi), la capture ne montre que leurs colonnes
-      const selFi=(key&&typeof SENDSEL!=="undefined")?[...SENDSEL].filter(x=>x.split("|")[0]===key).map(x=>+x.split("|")[1]):[];
-      const hidden=[];
-      if(key&&selFi.length&&selFi.length<cols.length){
-        box.querySelectorAll('table tr').forEach(tr2=>{
-          [...tr2.children].forEach((cell,ci)=>{
-            if(ci>0&&!selFi.includes(ci-1)){hidden.push([cell,cell.style.display]);cell.style.display="none";}
-          });
-        });
-      }
-      // Portrait : le cadre prend exactement la largeur du tableau, les textes se replient dessous
-      const tbl2=box.querySelector('table');
-      box.style.width=(tbl2.offsetWidth+40)+"px";
-      let canvas;
-      try{
-        canvas=await html2canvas(box,{scale:2,backgroundColor:"#ffffff",ignoreElements:el=>el.classList&&(el.classList.contains('close')||el.classList.contains('shot')||el.classList.contains('rectip')||el.classList.contains('star'))});
-      }finally{hdr.remove();thP.forEach(d2=>d2.remove());hidden.forEach(h2=>{h2[0].style.display=h2[1];});box.classList.remove("capwide");box.style.width="";if(wrap2)wrap2.style.cssText=savedWrap;}
-      const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
-      const fname='garanties_'+f.label.replace(/[^\wÀ-ÿ]+/g,'_')+'.png';
-      // ---- Site hébergé : copie directe + aperçu avec Partager / Télécharger ----
-      if(HOSTED){
-        let copied=false;
-        if(hostedCopy){hostedResolve(blob);copied=await hostedCopy;}
-        else if(navigator.clipboard&&navigator.clipboard.write&&typeof ClipboardItem!=="undefined"){
-          try{await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);copied=true;}catch(e2){}
+      canvas=await html2canvas(box,{scale:2,backgroundColor:"#ffffff",ignoreElements:el=>el.classList&&(el.classList.contains('close')||el.classList.contains('tgactions')||el.classList.contains('rectip')||el.classList.contains('star'))});
+    }finally{hidden.forEach(h2=>{h2[0].style.display=h2[1];});box.classList.remove("capwide");box.style.width="";if(wrap2)wrap2.style.cssText=savedWrap;}
+    const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
+    const fname='garanties_'+f.label.replace(/[^\wÀ-ÿ]+/g,'_')+'.png';
+    return {blob,canvas,fname};
+  }
+  bar.addEventListener('click',async e=>{
+    const btn=e.target.closest('button[data-a]'); if(!btn)return;
+    const a=btn.dataset.a; const old=btn.textContent;
+    if(a==="mail"){try{doMail();stat("✉️ Message ouvert (texte) — collez l’image copiée si besoin");}catch(_){}return;}
+    // Copie : lancée dès le clic (geste utilisateur conservé, Safari/Samsung), l'image arrive ensuite
+    let copyP=null,resolveImg=null,rejectImg=null;
+    if(a==="copy"&&navigator.clipboard&&navigator.clipboard.write&&typeof ClipboardItem!=="undefined"){
+      try{const bp=new Promise((res,rej)=>{resolveImg=res;rejectImg=rej;});copyP=navigator.clipboard.write([new ClipboardItem({"image/png":bp})]).then(()=>true).catch(()=>false);}catch(_){copyP=null;}
+    }
+    btn.disabled=true; btn.textContent="⏳…"; stat("");
+    try{
+      const {blob,canvas,fname}=await capture();
+      if(a==="copy"){
+        let ok=false;
+        if(copyP){resolveImg(blob);ok=await copyP;}
+        else if(navigator.clipboard&&navigator.clipboard.write&&typeof ClipboardItem!=="undefined"){try{await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);ok=true;}catch(_){}}
+        if(ok)stat("✅ Image copiée — collez-la dans WhatsApp ou un mail");
+        else{
+          // Secours (navigateur sans copie d'image) : aperçu avec appui long
+          const iv=document.createElement('div');
+          iv.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.75);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:10px";
+          iv.innerHTML='<div style="color:#fff;font:700 14px \'Archivo\',sans-serif;text-align:center">Appui long sur l’image → Partager / Copier l’image</div><img src="'+canvas.toDataURL('image/png')+'" style="max-width:94vw;max-height:calc(100vh - 140px);object-fit:contain;border-radius:8px;background:#fff"><button style="padding:9px 18px;border:0;border-radius:8px;background:#fff;font:700 14px \'Archivo\',sans-serif;cursor:pointer">Fermer</button>';
+          iv.querySelector('button').addEventListener('click',()=>iv.remove()); iv.addEventListener('click',ev=>{if(ev.target===iv)iv.remove();});
+          document.body.appendChild(iv); stat("Image prête");
         }
-        const fimg=new File([blob],fname,{type:'image/png'});
-        const canSh=!!(navigator.canShare&&navigator.canShare({files:[fimg]}));
-        const urlImg=canvas.toDataURL('image/png');
-        const iv=document.createElement('div');
-        iv.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.75);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:10px";
-        const bst="padding:9px 16px;border:0;border-radius:8px;background:#fff;font:700 14px 'Archivo',sans-serif;cursor:pointer";
-        iv.innerHTML='<div style="color:#fff;font:700 14px \'Archivo\',sans-serif;text-align:center">'
-          +(copied?"✅ Image copiée — collez-la dans WhatsApp ou un mail":"Image prête — Partager ou Télécharger ci-dessous")+'</div>'
-          +'<img src="'+urlImg+'" style="max-width:94vw;max-height:calc(100vh - 170px);width:auto;height:auto;object-fit:contain;border-radius:8px;background:#fff">'
-          +'<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;align-items:center;max-width:94vw">'
-          +'<span style="color:#fff;font:700 12px \'Archivo\',sans-serif;opacity:.85">Je conseille :</span>'
-          +cols.map((c,ci)=>{const on2=RECO===(c.key+"|"+c.fi);
-             return '<button data-reco="'+ci+'" style="padding:6px 11px;border:0;border-radius:8px;cursor:pointer;font:700 12px \'Archivo\',sans-serif;'
-               +(on2?'background:#E8B45A;color:#2b2110':'background:rgba(255,255,255,.85);color:#12233d')+'">'
-               +(on2?'⭐ ':'☆ ')+F[c.key].names[c.fi]+'</button>';}).join('')
-          +'</div>'
-          +'<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">'
-          +(canSh?'<button data-a="share" style="'+bst+'">📤 Partager</button>':'')
-          +(window.CRMLINK?'<button data-a="crm" style="'+bst+';background:#059669;color:#fff">📲 Déposer dans le CRM</button>':'')
-          +'<button data-a="dl" style="'+bst+'">⬇️ Télécharger</button>'
-          +'<button data-a="close" style="'+bst+'">Fermer</button></div>';
-        iv.addEventListener('click',async e=>{
-          const a=e.target&&e.target.dataset&&e.target.dataset.a;
-          // Changer la formule conseillée depuis l'aperçu : l'image est refaite aussitôt
-          const st=e.target&&e.target.dataset?e.target.dataset.reco:undefined;
-          if(st!==undefined){
-            const c2=cols[+st], id2=c2.key+"|"+c2.fi;
-            RECO=(RECO===id2)?null:id2;
-            iv.remove(); ov.remove(); renderTG(cols,title,sub,note,single);
-            const nb=document.querySelector('#tgbox .shot[data-t="'+(withPrices?"1":"0")+'"]');
-            if(nb)nb.click();
-            return;
-          }
-          if(e.target===iv||a==="close"){iv.remove();return;}
-          if(a==="share"){try{await navigator.share({files:[fimg],title:'Tableau de garantie'});}catch(e3){}return;}
-          if(a==="crm"){
-            const bt=e.target; bt.disabled=true; bt.textContent="⏳ Dépôt…";
-            try{
-              const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);});
-              const PR2=typeof PRO!=="undefined"?PRO:{};
-              await crmDepot({kind:"image",filename:fname,mime:"image/png",data:b64,caption:"Tableau de garantie — "+[(PR2.civ||""),(PR2.nom||""),(PR2.prenom||"")].filter(Boolean).join(" ")});
-              bt.textContent="✅ Déposé — retour à la conversation…";
-              const back=document.createElement("button");back.textContent="↩ Revenir au CRM";back.style.cssText=bst;back.addEventListener("click",crmBack);bt.after(back);
-              setTimeout(crmBack,900);   // bascule automatique vers le CRM
-            }catch(e4){bt.disabled=false;bt.textContent="❌ Dépôt impossible — réessayer";}
-            return;
-          }
-          if(a==="dl"){const a2=document.createElement('a');a2.href=URL.createObjectURL(blob);a2.download=fname;document.body.appendChild(a2);a2.click();a2.remove();return;}
-        });
-        document.body.appendChild(iv);
-        btn.textContent=copied?"✅ Copiée":"✅ Image prête";
-        setTimeout(()=>{btn.textContent=old;},2500);
-        return;
+      } else if(a==="share"){
+        try{await navigator.share({files:[new File([blob],fname,{type:'image/png'})],title:'Tableau de garantie'});stat("✅ Partagée");}catch(_){stat("Partage annulé");}
+      } else if(a==="dl"){
+        let saved=false;
+        try{const dl2=await CUSE("downloads");if(dl2){await dl2.save({filename:fname,data:new Uint8Array(await blob.arrayBuffer())});saved=true;}}catch(_){}
+        if(!saved){const a2=document.createElement('a');a2.href=URL.createObjectURL(blob);a2.download=fname;document.body.appendChild(a2);a2.click();a2.remove();}
+        stat("✅ Image téléchargée");
+      } else if(a==="crm"){
+        btn.textContent="⏳ Dépôt…";
+        const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);});
+        await crmDepot({kind:"image",filename:fname,mime:"image/png",data:b64,caption:"Tableau de garantie — "+nm});
+        stat("✅ Déposé — retour à la conversation…");
+        const back=document.createElement("button");back.textContent="↩ Revenir au CRM";back.style.cssText=bst;back.addEventListener("click",crmBack);btn.after(back);
+        setTimeout(crmBack,900);
       }
-      // 1) Partage natif (Android/iOS) : ouvre directement WhatsApp/Mail avec l'image
-      let shared=false;
-      try{
-        const fimg=new File([blob],'garanties.png',{type:'image/png'});
-        if(navigator.canShare&&navigator.canShare({files:[fimg]})){
-          await navigator.share({files:[fimg],title:'Tableau de garantie'});
-          shared=true;
-        }
-      }catch(e2){}
-      if(shared){btn.textContent="✅ Partagée";setTimeout(()=>{btn.textContent=old;},2500);return;}
-      // 2) Copie de l'IMAGE dans le presse-papier
-      let copied=false;
-      try{
-        if(navigator.clipboard&&navigator.clipboard.write&&typeof ClipboardItem!=="undefined"){
-          await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);
-          copied=true;
-        }
-      }catch(e2){}
-      // 3) Téléchargement du fichier image (autorisé sur le lien privé uniquement)
-      let saved=false;
-      if(!copied){
-        try{
-          const dl2=await CUSE("downloads");
-          if(dl2){await dl2.save({filename:'garanties_'+f.label.replace(/[^\wÀ-ÿ]+/g,'_')+'.png',data:new Uint8Array(await blob.arrayBuffer())});saved=true;}
-        }catch(e3){}
-      }
-      // Aperçu : confirmation ou solution de secours (appui long)
-      const urlImg=canvas.toDataURL('image/png');
-      const iv=document.createElement('div');
-      iv.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.75);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:10px";
-      iv.innerHTML='<div style="color:#fff;font:700 14px \'Archivo\',sans-serif;text-align:center">'
-        +(saved?"✅ Image téléchargée — retrouvez-la dans vos téléchargements":(copied?"Image copiée (si « Coller » ne propose rien dans WhatsApp : ":"")+"appui long sur l'image → Partager / Copier l'image"+(copied?")":""))
-        +'</div>'
-        +'<img src="'+urlImg+'" style="max-width:94vw;max-height:calc(100vh - 170px);width:auto;height:auto;object-fit:contain;border-radius:8px;background:#fff">'
-        +'<button style="padding:9px 18px;border:0;border-radius:8px;background:#fff;font:700 14px \'Archivo\',sans-serif;cursor:pointer">Fermer</button>';
-      iv.querySelector('button').addEventListener('click',()=>iv.remove());
-      iv.addEventListener('click',e=>{if(e.target===iv)iv.remove();});
-      document.body.appendChild(iv);
-      btn.textContent=copied?"✅ Copiée":"✅ Image prête";
-    }catch(e){btn.textContent="échec capture";try{if(hostedReject)hostedReject(e);}catch(e9){}}
-    setTimeout(()=>{btn.textContent=old;},2500);
-  }));
+    }catch(err){ try{if(rejectImg)rejectImg(err);}catch(_){}; stat(a==="crm"?"❌ Dépôt impossible — réessayer":"❌ Capture impossible"); }
+    btn.disabled=false; btn.textContent=old;
+  });
 }
 const REGLBL={SAL:"Salarié",TNS:"TNS",RL:"Salarié régime local",TNSRL:"TNS régime local"};
 const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
