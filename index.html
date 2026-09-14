@@ -273,7 +273,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-13T15:22:47Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-13T15:22:47Z</div>
+  <div id="buildstamp" data-build="2026-09-14T08:54:41Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-14T08:54:41Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -789,6 +789,23 @@ function missingFields(){
     if(id==="aorg"&&v.replace(/\D/g,"").length<9)miss.push([id,lab,"9 chiffres attendus (ex. 751000012)"]);
     if(id==="atel"&&(v.replace(/\D/g,"").length<10))miss.push([id,lab,"numéro incomplet"]);
   }
+  // Cohérence des assurés : le conjoint n'est ni l'adhérent ni un mineur, les enfants sont des enfants
+  try{
+    const V=id=>((document.getElementById(id)||{}).value||"").trim();
+    const norm=v=>String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z]/g,"");
+    const ageOf=d=>{const m=String(d||"").match(/^(\d{2})\/(\d{2})\/(\d{4})$/);return m?(new Date().getFullYear()-+m[3]):null;};
+    if(V("cnom")||V("cddn")){
+      const same=(norm(V("cnom"))===norm(V("anom"))&&norm(V("cpre"))===norm(V("apre"))&&(!V("cddn")||V("cddn")===V("addn")));
+      if(same)miss.push(["cnom","Conjoint","identique à l\u2019adhérent — un assuré ne peut pas être compté deux fois"]);
+      const ca=ageOf(V("cddn")); if(ca!==null&&ca<18)miss.push(["cddn","Conjoint","mineur ("+ca+" ans) — un enfant ne peut pas être inscrit en conjoint"]);
+    }
+    for(let i=0;i<4;i++){
+      if(!V("knom"+i)&&!V("kddn"+i))continue;
+      const ka=ageOf(V("kddn"+i));
+      if(ka!==null&&ka>=28)miss.push(["kddn"+i,"Enfant "+(i+1),ka+" ans — au-delà de l\u2019âge d\u2019un enfant à charge, à vérifier"]);
+      if(norm(V("knom"+i))===norm(V("anom"))&&norm(V("kpre"+i))===norm(V("apre"))&&V("kddn"+i)===V("addn"))miss.push(["knom"+i,"Enfant "+(i+1),"identique à l\u2019adhérent"]);
+    }
+  }catch(e){}
   return miss;
 }
 // Coordonnées bancaires : alerte, jamais un blocage — le bulletin est toujours généré
@@ -2177,13 +2194,18 @@ function applyFicheJSON(d){
   let enf=Array.isArray(d.enfants)?d.enfants.slice():[];
   if((!cj||!enf.length)&&Array.isArray(d.assures)&&d.assures.length){
     const an=v=>{const m=String(v||"").match(/^(\d{4})/);return m?+m[1]:null;};
-    const moi=an(d.naissance);
+    const norm=v=>String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z]/g,"");
+    const moi=an(d.naissance), moiJ=String(d.naissance||"").slice(0,10), moiN=norm(d.nom)+"|"+norm(d.prenom);
     for(const a of d.assures){
       const y=an(a.naissance); if(y===null)continue;
-      if(moi!==null&&y===moi&&!a.nom&&!a.prenom)continue;      // probablement l'adhérent
+      const aN=norm(a.nom)+"|"+norm(a.prenom);
+      // L'adhérent lui-même (même nom + prénom, ou même date de naissance sans nom) : jamais en conjoint ni en enfant
+      if((aN!=="|"&&aN===moiN)||(String(a.naissance||"").slice(0,10)===moiJ&&(aN==="|"||norm(a.prenom)===norm(d.prenom))))continue;
+      const role=norm(a.role||a.type||a.lien||a.qualite);
       const age=(new Date().getFullYear())-y;
-      if(age<18){ if(enf.length<4)enf.push(a); }
-      else if(!cj){ cj=a; }
+      // Un mineur est toujours un enfant, jamais un conjoint ; un seul conjoint possible
+      if(age<18||/ENFANT|FILS|FILLE/.test(role)){ if(enf.length<4)enf.push(a); }
+      else if(!cj&&!/ENFANT/.test(role)){ cj=a; }
     }
   }
   if(cj){
