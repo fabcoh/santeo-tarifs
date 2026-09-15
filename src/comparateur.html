@@ -1322,7 +1322,16 @@ async function fillAdh(r,ov){
       try{signPopup(gen,g,r);}catch(e){}
       return;
     }
-    const bytes=Uint8Array.from(atob(BULLETIN_B64),c=>c.charCodeAt(0));
+    // Cap Évolution : dossier complet (bulletin + notices + tableau de garantie + règlement, 74 pages) ;
+    // autres gammes Avenir : bulletin seul (6 pages), intégré à la page. Repli sur le bulletin seul si le dossier est injoignable.
+    let bytes=null;
+    if(r.key==="CAPEVO"){
+      for(const u of ["docs/bulletin_avenir_2026.pdf","https://fabcoh.github.io/santeo-tarifs/docs/bulletin_avenir_2026.pdf"]){
+        try{const rp=await fetch(u,{cache:"force-cache"});if(rp.ok){bytes=new Uint8Array(await rp.arrayBuffer());break;}}catch(e){}
+      }
+      if(!bytes)st.textContent="⚠ Dossier complet injoignable — bulletin seul généré. ";
+    }
+    if(!bytes)bytes=Uint8Array.from(atob(BULLETIN_B64),c=>c.charCodeAt(0));
     const pdf=await PDFLib.PDFDocument.load(bytes);
     const form=pdf.getForm();
     const T=(n,v)=>{try{if(v)form.getTextField(n).setText(String(v));}catch(e){}};
@@ -1390,14 +1399,16 @@ async function fillAdh(r,ov){
     const out=await pdf.save();
     const fname="adhesion_"+(g("anom")||"client")+".pdf";
     const dl=await CUSE("downloads");
+    const warnA=st.textContent.startsWith("⚠")?st.textContent:"";
+    const nbp=pdf.getPageCount();
     if(dl){
       await dl.save({filename:fname,data:out});
-      st.textContent="✅ Bulletin téléchargé.";
+      st.textContent=warnA+"✅ Bulletin téléchargé ("+nbp+" pages).";
     } else {
       const blob=new Blob([out],{type:"application/pdf"});
       const a2=document.createElement("a");a2.href=URL.createObjectURL(blob);a2.download=fname;
       document.body.appendChild(a2);a2.click();a2.remove();
-      st.textContent="✅ Bulletin généré (téléchargement navigateur).";
+      st.textContent=warnA+"✅ Bulletin généré ("+nbp+" pages).";
     }
     try{signPopup([{name:fname,data:out}],g,r);}catch(e){}
   }catch(e){st.textContent="Erreur : "+(e&&e.message||e);}
@@ -1500,15 +1511,14 @@ function renderTG(cols,title,sub,note,single){
   bar.style.cssText="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0 10px";
   const bst="padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink);font:700 13px 'Archivo',sans-serif;cursor:pointer";
   const canSh=!!(navigator.canShare&&navigator.canShare({files:[new File([new Blob([""])],"x.png",{type:"image/png"})]}));
-  bar.innerHTML='<label style="display:inline-flex;align-items:center;gap:5px;font:600 12.5px \'Archivo\',sans-serif;margin-right:4px;cursor:pointer"><input type="checkbox" id="tgprices" checked style="accent-color:var(--accent)">Tarifs</label>'
-    +'<button data-a="copy" style="'+bst+'">📋 Copier l’image</button>'
-    +(canSh?'<button data-a="share" style="'+bst+'">📤 Partager</button>':'')
-    +(window.CRMLINK?'<button data-a="crm" style="'+bst+';background:#059669;color:#fff;border-color:#059669">📲 Déposer dans le CRM</button>':'')
+  bar.innerHTML='<label style="display:inline-flex;align-items:center;gap:5px;font:600 12.5px \'Archivo\',sans-serif;margin-right:6px;cursor:pointer"><input type="checkbox" id="tgnoprices" style="accent-color:var(--accent)">Sans tarifs</label>'
     +'<button data-a="dl" style="'+bst+'">⬇️ Télécharger</button>'
+    +'<button data-a="wa" style="'+bst+';background:#25D366;color:#0b2b16;border-color:#25D366">💬 WhatsApp</button>'
     +'<button data-a="mail" style="'+bst+'">✉️ Email</button>'
+    +(window.CRMLINK?'<button data-a="crm" style="'+bst+';background:#059669;color:#fff;border-color:#059669">📲 Déposer dans le CRM</button>':'')
     +'<span id="tgstat" style="font:600 12.5px \'Archivo\',sans-serif;color:var(--accent);margin-left:4px"></span>';
   ov.querySelector('#tgbox .rectip').after(bar);
-  bar.querySelector('#tgprices').addEventListener('change',e=>{box.querySelectorAll('.thprice').forEach(d=>{d.style.display=e.target.checked?"":"none";});});
+  bar.querySelector('#tgnoprices').addEventListener('change',e=>{box.querySelectorAll('.thprice').forEach(d=>{d.style.display=e.target.checked?"none":"";});});
   const stat=t=>{const s=bar.querySelector('#tgstat');s.textContent=t;};
   // Capture du tableau tel qu'affiché (prospect + tarifs si cochés, sans les boutons)
   async function capture(){
@@ -1534,21 +1544,32 @@ function renderTG(cols,title,sub,note,single){
   bar.addEventListener('click',async e=>{
     const btn=e.target.closest('button[data-a]'); if(!btn)return;
     const a=btn.dataset.a; const old=btn.textContent;
-    if(a==="mail"){try{doMail();stat("✉️ Message ouvert (texte) — collez l’image copiée si besoin");}catch(_){}return;}
-    // Copie : lancée dès le clic (geste utilisateur conservé, Safari/Samsung), l'image arrive ensuite
+    // Copie de l'image : lancée dès le clic (geste utilisateur conservé, Safari/Samsung), l'image arrive ensuite
     let copyP=null,resolveImg=null,rejectImg=null;
-    if(a==="copy"&&navigator.clipboard&&navigator.clipboard.write&&typeof ClipboardItem!=="undefined"){
+    const wantCopy=(a==="wa"&&!canSh)||a==="mail";
+    if(wantCopy&&navigator.clipboard&&navigator.clipboard.write&&typeof ClipboardItem!=="undefined"){
       try{const bp=new Promise((res,rej)=>{resolveImg=res;rejectImg=rej;});copyP=navigator.clipboard.write([new ClipboardItem({"image/png":bp})]).then(()=>true).catch(()=>false);}catch(_){copyP=null;}
     }
     btn.disabled=true; btn.textContent="⏳…"; stat("");
     try{
       const {blob,canvas,fname}=await capture();
-      if(a==="copy"){
-        let ok=false;
+      const doCopy=async()=>{let ok=false;
         if(copyP){resolveImg(blob);ok=await copyP;}
         else if(navigator.clipboard&&navigator.clipboard.write&&typeof ClipboardItem!=="undefined"){try{await navigator.clipboard.write([new ClipboardItem({"image/png":blob})]);ok=true;}catch(_){}}
-        if(ok)stat("✅ Image copiée — collez-la dans WhatsApp ou un mail");
-        else{
+        return ok;};
+      if(a==="wa"&&canSh){
+        // Mobile : la feuille de partage ouvre WhatsApp avec l'image
+        try{await navigator.share({files:[new File([blob],fname,{type:'image/png'})],title:'Tableau de garantie'});stat("✅ Partagée");}catch(_){stat("Partage annulé");}
+      } else if(a==="wa"||a==="mail"){
+        const ok=await doCopy();
+        if(a==="wa"){
+          try{window.open("https://wa.me/?text="+encodeURIComponent(sendText()),"_blank","noopener");}catch(_){}
+          stat(ok?"✅ Image copiée — collez-la (Ctrl+V) dans la conversation WhatsApp":"⚠ Image non copiée — utilisez Télécharger puis joignez-la");
+        } else {
+          try{doMail();}catch(_){}
+          stat(ok?"✅ Image copiée — collez-la (Ctrl+V) dans le mail ouvert":"⚠ Image non copiée — utilisez Télécharger puis joignez-la");
+        }
+        if(!ok){
           // Secours (navigateur sans copie d'image) : aperçu avec appui long
           const iv=document.createElement('div');
           iv.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.75);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:10px";
