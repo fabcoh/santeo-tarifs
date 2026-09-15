@@ -273,7 +273,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-15T10:28:55Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-15T10:28:55Z</div>
+  <div id="buildstamp" data-build="2026-09-15T10:42:59Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-15T10:42:59Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1330,11 +1330,12 @@ async function fillAdh(r,ov){
       try{signPopup(gen,g,r);}catch(e){}
       return;
     }
-    // Cap Évolution : dossier complet (bulletin + notices + tableau de garantie + règlement, 74 pages) ;
-    // autres gammes Avenir : bulletin seul (6 pages), intégré à la page. Repli sur le bulletin seul si le dossier est injoignable.
+    // Dossiers complets Avenir (bulletin + notices + garanties + règlement) : Cap Évolution (74 p.), Cap NR (75 p.), Talis (55 p.).
+    // LPS Hospi : bulletin seul (6 p.) intégré à la page, complété par ses garanties/IPID. Repli sur le bulletin seul si le dossier est injoignable.
+    const DOSSIER={CAPEVO:"bulletin_avenir_2026.pdf",CAPNR:"bulletin_capnr_2026.pdf",TALIS:"bulletin_talis_2026.pdf"}[r.key];
     let bytes=null;
-    if(r.key==="CAPEVO"){
-      for(const u of ["docs/bulletin_avenir_2026.pdf","https://fabcoh.github.io/santeo-tarifs/docs/bulletin_avenir_2026.pdf"]){
+    if(DOSSIER){
+      for(const u of ["docs/"+DOSSIER,"https://fabcoh.github.io/santeo-tarifs/docs/"+DOSSIER]){
         try{const rp=await fetch(u,{cache:"force-cache"});if(rp.ok){bytes=new Uint8Array(await rp.arrayBuffer());break;}}catch(e){}
       }
       if(!bytes)st.textContent="⚠ Dossier complet injoignable — bulletin seul généré. ";
@@ -1404,6 +1405,21 @@ async function fillAdh(r,ov){
     let nAss=1+(g("cnom")?1:0);
     for(let i=0;i<4;i++){if(g("knom"+i)){T("NOM"+(i+3),g("knom"+i).toUpperCase());T("PRENOM"+(i+3),g("kpre"+i));T("DDN"+(i+3),g("kddn"+i));T("SECU"+(i+3),g("kss"+i));nAss++;}}
     S("NB_ASSURES",String(Math.min(nAss,7)));
+    // Autres gammes Avenir : le bulletin seul est complété par les documents de la gamme (tableau de garantie, IPID)
+    const ANNEX={LPSH:["lps_hospi_2026.pdf"]};
+    if(ANNEX[r.key]&&pdf.getPageCount()<=6){
+      const miss=[];
+      for(const nme of ANNEX[r.key]){
+        let b=null;
+        for(const u of ["docs/"+nme,"https://fabcoh.github.io/santeo-tarifs/docs/"+nme]){
+          try{const rp=await fetch(u,{cache:"force-cache"});if(rp.ok){b=new Uint8Array(await rp.arrayBuffer());break;}}catch(e){}
+        }
+        if(!b){miss.push(nme);continue;}
+        try{const src=await PDFLib.PDFDocument.load(b,{ignoreEncryption:true});const pgs=await pdf.copyPages(src,src.getPageIndices());pgs.forEach(pg=>pdf.addPage(pg));}
+        catch(e){miss.push(nme);}
+      }
+      if(miss.length)st.textContent="⚠ Documents non joints : "+miss.join(", ")+". ";
+    }
     const out=await pdf.save();
     const fname="adhesion_"+(g("anom")||"client")+".pdf";
     const dl=await CUSE("downloads");
