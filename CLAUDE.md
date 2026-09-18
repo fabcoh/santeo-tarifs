@@ -57,7 +57,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Les offres au-dessus du budget portent une pastille « +x % / budget ».
 - **Documents par formule** : APICIL publie une plaquette par gamme Équilibre et une seule pour toutes les
   Sérénité. `docsDe(r)` ne propose que le tableau de garantie de la formule affichée, son IPID et la notice.
-  Le bouton « Infos » ne s'affiche que si la gamme a des données dans `INFO` (APICIL n'en a pas encore).
+  Le bouton « Infos » ne s'affiche que si la gamme a des données dans `INFO`.
 - **Après génération** : fenêtre « Faire signer sur Universign » (nom de collecte, signataire à copier, fichiers,
   page Universign intégrée en iframe). Le glisser-déposer d'un fichier vers un autre site est interdit par le navigateur.
 
@@ -86,6 +86,16 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 
 ### Règles métier APICIL
 
+- **Âges d'adhésion** : Équilibre dès 16 ans, **Sérénité réservée aux plus de 50 ans**.
+  Souscription limitée à moins de 86 ans (Équilibre 2–3, Sérénité 1–2) ou moins de 80 ans
+  (Équilibre 4–6, Sérénité 3–5) ; **78 ans en statut TNS**. L'API applique ces règles elle-même.
+- **Plafond dentaire annuel** (prothèses des paniers modéré et libre) : 500 à 1 000 € la 1re année,
+  800 à 1 500 € ensuite, selon le niveau. Implantologie limitée à **2 implants**.
+  Devis obligatoire au-delà de 1 000 €, sinon remboursement au minimum du contrat responsable.
+- Optique : un équipement tous les 2 ans (un an avant 16 ans ou si la vue évolue).
+  Aides auditives : une par oreille tous les 4 ans, plafond réglementaire 1 700 € en classe II.
+- Exclusions principales : indemnités journalières, chambre particulière en permission de sortie,
+  hébergement en USLD, forfait journalier en établissement médico-social, chirurgie esthétique non remboursée.
 - Gammes **Équilibre 1 à 6** et **Sérénité 1 à 5**. Packs Confort : « Jeunes et Familles » (`...ConfortEquilibreJFBase1/2/3`)
   pour Équilibre, « Séniors » (`...ConfortSereniteSBase1/2/3`) pour Équilibre et Sérénité.
 - **Les libellés du référentiel §6.1.2 font foi** ; l'exemple §5.1.4 de la documentation contient une coquille
@@ -115,9 +125,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Attente de l'activation API par le support ; intégration prévue côté serveur Manus (contrat d'API rédigé le 13/09).
 - APICIL : tarification en production dans le comparateur (gamme « API SANTÉ », **à cocher explicitement** :
   chaque affichage est un appel réel sous notre code apporteur). Garanties **Équilibre 1–6 et Sérénité 1–5**
-  saisies depuis les plaquettes (`docs/apisante_*_tg_2026.pdf`). Restent à faire : Packs Confort en option
-  (PC1–PC3, décrits dans la plaquette Sérénité), âge réel des mineurs (transmis à 10 ans faute de champ),
-  puis devis / souscription / signature électronique.
+  saisies depuis les plaquettes (`docs/apisante_*_tg_2026.pdf`). Plafonds, limites et exclusions
+  renseignés dans `INFO` (bouton ⓘ). Restent à faire : Packs Confort en option (PC1–PC3, décrits dans la
+  plaquette Sérénité — ils portent les médecines douces, absentes des gammes de base), âge réel des mineurs
+  (transmis à 10 ans faute de champ), puis devis / souscription / signature électronique.
 - Date de naissance APICIL : celle de la fiche si elle est cohérente avec l'âge saisi, sinon 1ᵉʳ janvier
   (âge atteint dans l'année). Demander à Manus la date exacte dans ses exports.
 - Autres compagnies : aucune n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
