@@ -57,7 +57,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Les offres au-dessus du budget portent une pastille « +x % / budget ».
   En tête du panneau, un bouton **périmètre** bascule entre toutes les compagnies et la sélection du volet
   « Compagnies & gammes », qu'il tient synchronisée : filtrer n'a de sens que si l'on sait sur quel
-  catalogue on filtre.
+  catalogue on filtre. **TALIS, surcomplémentaire, n'apparaît que si elle est cochée** : son tarif ne couvre
+  qu'un complément et la mêler aux complémentaires fausserait la comparaison. LPS Hospi reste dans le lot,
+  sa pastille « Hospitalisation seule » suffisant à la distinguer.
 - **Documents par formule** : APICIL publie une plaquette par gamme Équilibre et une seule pour toutes les
   Sérénité. `docsDe(r)` ne propose que le tableau de garantie de la formule affichée, son IPID et la notice.
   Le bouton « Infos » ne s'affiche que si la gamme a des données dans `INFO`.

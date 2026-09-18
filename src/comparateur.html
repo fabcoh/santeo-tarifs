@@ -1940,8 +1940,10 @@ function calc(){
         g[a][c*2],hasCnj?pC:null,null,kids>0?"mineurs : nous consulter":"",false);
     }
   }
-  // TALIS — surcomplémentaire nationale
-  if(on("TALIS")&&age>=16){
+  // TALIS — surcomplémentaire : elle vient en plus d'une complémentaire, pas à la place.
+  // La mêler au comparatif fausserait la lecture, son tarif ne couvrant qu'un complément :
+  // elle n'apparaît donc que si le conseiller la demande.
+  if(sel.TALIS&&age>=16){
     const g=D.TALIS;
     const a=String(Math.min(Math.max(age,16),100));
     for(let f=0;f<2;f++){
@@ -2214,11 +2216,16 @@ function fporteeMaj(){
   const b=document.getElementById("fportee"); if(!b)return;
   const cles=Object.keys(sel), n=cles.filter(k=>sel[k]).length, tout=n===cles.length;
   b.classList.toggle("on",tout);
-  const large = tout || n===0;
-  b.innerHTML=(large?"🏢 Toutes les compagnies":"🏢 Périmètre restreint")
-    +"<b>"+(large?cles.length+" / "+cles.length:n+" / "+cles.length)+"</b>";
+  // Sans sélection, tout sort sauf TALIS, réservée à une demande explicite.
+  const lib = tout ? "🏢 Toutes les compagnies"
+            : n    ? "🏢 Périmètre restreint"
+                   : "🏢 Toutes sauf TALIS";
+  const cpt = tout ? cles.length+" / "+cles.length
+            : n    ? n+" / "+cles.length
+                   : (cles.length-1)+" / "+cles.length;
+  b.innerHTML=lib+"<b>"+cpt+"</b>";
   b.title=tout?"Cliquer pour vider la sélection"
-              :"Cliquer pour filtrer sur toutes les compagnies";
+              :"Cliquer pour filtrer sur toutes les compagnies, TALIS comprise";
 }
 function fmaj(info){
   fporteeMaj();
