@@ -204,13 +204,13 @@ tr.offer.reco:hover td{background:var(--best)}
 #fportee.on{border-color:var(--accent);background:var(--best)}
 #fportee b{margin-left:auto;font:800 12px 'Archivo',sans-serif;color:var(--muted)}
 #fportee.on b{color:var(--accent)}
-#fcomp{display:grid;gap:2px;padding:6px 2px 8px;border-bottom:1px solid var(--line);margin-bottom:4px}
+#fcomp{display:grid;grid-template-columns:1fr 1fr;gap:1px 8px;padding:5px 2px 7px;border-bottom:1px solid var(--line);margin-bottom:3px}
 #fcomp[hidden]{display:none}
-#fcomp label{display:flex;align-items:center;gap:7px;padding:3px 4px;border-radius:6px;font:600 12.5px 'IBM Plex Sans',sans-serif;cursor:pointer}
+#fcomp label{display:flex;align-items:center;gap:5px;padding:2px 3px;border-radius:5px;font:600 11.5px 'IBM Plex Sans',sans-serif;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #fcomp label:hover{background:var(--best)}
-#fcomp label span{margin-left:auto;font:600 11px 'IBM Plex Sans',sans-serif;color:var(--muted)}
-#fcomp .raccourcis{display:flex;gap:6px;padding:2px 4px 5px}
-#fcomp .raccourcis button{flex:1;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);padding:5px;font:700 11.5px 'Archivo',sans-serif;cursor:pointer}
+#fcomp label input{margin:0;flex:none}
+#fcomp .raccourcis{grid-column:1/-1;display:flex;gap:6px;padding:1px 3px 4px}
+#fcomp .raccourcis button{flex:1;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);padding:4px;font:700 11px 'Archivo',sans-serif;cursor:pointer}
 #fbud{display:flex;align-items:center;gap:7px;padding:10px 0 4px;border-bottom:1px solid var(--line);margin-bottom:2px}
 #fbud label{flex:1;font:800 13px 'Archivo',sans-serif}
 #fbud input{width:88px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:700 13px 'IBM Plex Sans',sans-serif;text-align:right}
@@ -2165,12 +2165,14 @@ function fconstruit(){
   }).join("")).join("");
   // Le périmètre se règle en trois temps : toutes, aucune, puis le choix compagnie par compagnie.
   const zone=c.querySelector("#fcomp");
+  try{ zone.hidden = localStorage.getItem("santeo_fcomp")!=="1"; }catch(e){ zone.hidden=true; }
   zone.innerHTML='<div class="raccourcis"><button type="button" data-tout="1">Toutes</button>'
     +'<button type="button" data-tout="0">Aucune</button></div>'
-    + Object.keys(sel).map(k=>'<label><input type="checkbox" data-c="'+k+'"'+(sel[k]?" checked":"")
-        +'> '+F[k].label+'<span>'+COMP[k]+'</span></label>').join("");
+    + Object.keys(sel).map(k=>'<label title="'+COMP[k]+'"><input type="checkbox" data-c="'+k+'"'+(sel[k]?" checked":"")
+        +'> '+F[k].label+'</label>').join("");
   const sync=()=>{
     saveSel();
+    try{ localStorage.setItem("santeo_fcomp", zone.hidden?"0":"1"); }catch(e){}
     document.querySelectorAll('#gsel input[data-k]').forEach(i=>{i.checked=sel[i.dataset.k];});
     zone.querySelectorAll('input[data-c]').forEach(i=>{i.checked=sel[i.dataset.c];});
     fporteeMaj(); calc();
