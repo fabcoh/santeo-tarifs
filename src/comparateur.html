@@ -204,6 +204,13 @@ tr.offer.reco:hover td{background:var(--best)}
 #fportee.on{border-color:var(--accent);background:var(--best)}
 #fportee b{margin-left:auto;font:800 12px 'Archivo',sans-serif;color:var(--muted)}
 #fportee.on b{color:var(--accent)}
+#fcomp{display:grid;gap:2px;padding:6px 2px 8px;border-bottom:1px solid var(--line);margin-bottom:4px}
+#fcomp[hidden]{display:none}
+#fcomp label{display:flex;align-items:center;gap:7px;padding:3px 4px;border-radius:6px;font:600 12.5px 'IBM Plex Sans',sans-serif;cursor:pointer}
+#fcomp label:hover{background:var(--best)}
+#fcomp label span{margin-left:auto;font:600 11px 'IBM Plex Sans',sans-serif;color:var(--muted)}
+#fcomp .raccourcis{display:flex;gap:6px;padding:2px 4px 5px}
+#fcomp .raccourcis button{flex:1;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);padding:5px;font:700 11.5px 'Archivo',sans-serif;cursor:pointer}
 #fbud{display:flex;align-items:center;gap:7px;padding:10px 0 4px;border-bottom:1px solid var(--line);margin-bottom:2px}
 #fbud label{flex:1;font:800 13px 'Archivo',sans-serif}
 #fbud input{width:88px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:700 13px 'IBM Plex Sans',sans-serif;text-align:right}
@@ -2145,6 +2152,7 @@ function fconstruit(){
   const c=document.getElementById("fcorps"); if(!c||c.dataset.pret)return;
   c.dataset.pret="1";
   c.innerHTML='<button type="button" id="fportee"></button>'
+    +'<div id="fcomp" hidden></div>'
     +'<div id="fbud"><label for="f_budget">Budget mensuel</label>'
     +'<input id="f_budget" inputmode="decimal" placeholder="—" value="'+(FILTRES.budget||"")+'"></div>'
     +'<div id="fbudnote">Les offres jusqu\'à 15 % au-dessus restent affichées, signalées dans le tableau.</div>'
@@ -2155,13 +2163,40 @@ function fconstruit(){
       +'<option value="">aucun</option>'
       +opts.map(o=>'<option value="'+o[0]+'">≥ '+o[1]+'</option>').join("")+'</select></div>';
   }).join("")).join("");
-  const bp=c.querySelector("#fportee");
-  bp.addEventListener("click",()=>{
-    const tout=Object.keys(sel).every(k=>sel[k]);
-    for(const k in sel) sel[k]=!tout;            // tout cocher, ou tout décocher
+  // Le périmètre se règle en trois temps : toutes, aucune, puis le choix compagnie par compagnie.
+  const zone=c.querySelector("#fcomp");
+  zone.innerHTML='<div class="raccourcis"><button type="button" data-tout="1">Toutes</button>'
+    +'<button type="button" data-tout="0">Aucune</button></div>'
+    + Object.keys(sel).map(k=>'<label><input type="checkbox" data-c="'+k+'"'+(sel[k]?" checked":"")
+        +'> '+F[k].label+'<span>'+COMP[k]+'</span></label>').join("");
+  const sync=()=>{
     saveSel();
     document.querySelectorAll('#gsel input[data-k]').forEach(i=>{i.checked=sel[i.dataset.k];});
+    zone.querySelectorAll('input[data-c]').forEach(i=>{i.checked=sel[i.dataset.c];});
     fporteeMaj(); calc();
+  };
+  zone.querySelectorAll('input[data-c]').forEach(i=>i.addEventListener("change",e=>{
+    sel[e.target.dataset.c]=e.target.checked; sync();
+  }));
+  zone.querySelectorAll('button[data-tout]').forEach(btn=>btn.addEventListener("click",()=>{
+    const v=btn.dataset.tout==="1";
+    for(const k in sel) sel[k]=v;
+    sync();
+  }));
+  // Cycle en trois temps : toutes les compagnies → aucune → choix compagnie par compagnie.
+  c.querySelector("#fportee").addEventListener("click",()=>{
+    const cles=Object.keys(sel), n=cles.filter(k=>sel[k]).length;
+    if(!zone.hidden){                       // 3e temps : on referme et on revient à « toutes »
+      zone.hidden=true;
+      for(const k in sel) sel[k]=true;
+    } else if(n===cles.length){             // 1er temps : toutes → aucune
+      for(const k in sel) sel[k]=false;
+    } else if(n===0){                       // 2e temps : aucune → choix détaillé
+      zone.hidden=false;
+    } else {                                // sélection à la main : on rouvre simplement le détail
+      zone.hidden=false;
+    }
+    sync();
   });
   fporteeMaj();
   const bud=c.querySelector("#f_budget");
@@ -2217,15 +2252,17 @@ function fporteeMaj(){
   const cles=Object.keys(sel), n=cles.filter(k=>sel[k]).length, tout=n===cles.length;
   b.classList.toggle("on",tout);
   // Sans sélection, tout sort sauf TALIS, réservée à une demande explicite.
+  const zone=document.getElementById("fcomp"), ouvert=zone&&!zone.hidden;
   const lib = tout ? "🏢 Toutes les compagnies"
             : n    ? "🏢 Périmètre restreint"
                    : "🏢 Toutes sauf TALIS";
   const cpt = tout ? cles.length+" / "+cles.length
             : n    ? n+" / "+cles.length
                    : (cles.length-1)+" / "+cles.length;
-  b.innerHTML=lib+"<b>"+cpt+"</b>";
-  b.title=tout?"Cliquer pour vider la sélection"
-              :"Cliquer pour filtrer sur toutes les compagnies, TALIS comprise";
+  b.innerHTML=lib+"<b>"+(ouvert?"▴ "+cpt:cpt)+"</b>";
+  b.title=ouvert?"Cliquer pour refermer le détail"
+        :tout?"Cliquer pour tout décocher"
+              :"Cliquer pour choisir compagnie par compagnie";
 }
 function fmaj(info){
   fporteeMaj();
