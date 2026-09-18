@@ -1,0 +1,6 @@
+# Sortie de build.py : régénérée à la demande, jamais publiée telle quelle.
+# Seul index.html à la racine est mis en ligne, et c'est l'Action qui le produit.
+dist/
+
+# Outils de mise au point déposés sur l'hébergement, jamais dans le dépôt public
+apicil-config.php
