@@ -105,9 +105,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - Universign : compte existant (plateforme classique, API XML-RPC `ws.universign.eu/sign/rpc`, guide 8.113).
   Attente de l'activation API par le support ; intégration prévue côté serveur Manus (contrat d'API rédigé le 13/09).
 - APICIL : tarification en production dans le comparateur (gamme « API SANTÉ », **à cocher explicitement** :
-  chaque affichage est un appel réel sous notre code apporteur). Garanties **Équilibre 1–6** saisies
-  depuis les plaquettes (`docs/apisante_eq*_tg_2026.pdf`). Restent à faire : plaquettes **Sérénité 1–5**
-  (colonnes vides), Packs Confort en option, âge réel des mineurs (transmis à 10 ans faute de champ),
+  chaque affichage est un appel réel sous notre code apporteur). Garanties **Équilibre 1–6 et Sérénité 1–5**
+  saisies depuis les plaquettes (`docs/apisante_*_tg_2026.pdf`). Restent à faire : Packs Confort en option
+  (PC1–PC3, décrits dans la plaquette Sérénité), âge réel des mineurs (transmis à 10 ans faute de champ),
   puis devis / souscription / signature électronique.
 - Date de naissance APICIL : celle de la fiche si elle est cohérente avec l'âge saisi, sinon 1ᵉʳ janvier
   (âge atteint dans l'année). Demander à Manus la date exacte dans ses exports.
