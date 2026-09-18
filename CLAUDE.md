@@ -52,6 +52,39 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Après génération** : fenêtre « Faire signer sur Universign » (nom de collecte, signataire à copier, fichiers,
   page Universign intégrée en iframe). Le glisser-déposer d'un fichier vers un autre site est interdit par le navigateur.
 
+## API APICIL / VERALTI (tarification)
+
+- Offre « API Santé » (individuel et TNS), documentation VERALTI **v1.8** du 27/01/2026. Support : support@veralti.com.
+- Identité commerciale : `typePartenaire=COURTAGE`, **code apporteur `0031164`**, `codeProduit=ApiSante`.
+- Recette `https://hp-api.apicil.com/r2/...`, production `https://api.apicil.com/p0/...`.
+  Deux familles de services : `apicil-parcours-souscription-xapi-v1` (tarif, devis, souscription)
+  et `apicil-referentiel-donnees-xapi-v1` (pays, activités professionnelles).
+- **Authentification par en-têtes `client_id` / `client_secret` à chaque appel** — secrets permanents, pas d'OAuth.
+  Le même couple ouvre la souscription : jamais dans le navigateur, **jamais dans ce dépôt public**.
+- APICIL est derrière Cloudflare et **refuse les IP hors d'Europe** (403 « you have been blocked »).
+  Les appels doivent partir d'une IP française.
+
+### Proxy de tarification (obligatoire)
+
+- Hébergement gratuit OVH sur `capisante.fr` (cluster129, Gravelines, PHP 8.2), acheté le 18/09/2026.
+- Fichiers dans `www/` : `apicil-tarif.php` (relais) + `apicil-config.php` (**identifiants, hors dépôt**).
+  `apicil-verif.php` est un outil de diagnostic temporaire, à supprimer après usage.
+- Le relais ne sait faire **que** la tarification ; code apporteur et produit figés côté serveur ;
+  origines autorisées + en-tête `X-Santeo-PIN` + 60 appels/heure/IP.
+- **IP sortante à déclarer si APICIL l'exige : `5.135.48.82`** (différente de l'IP du site).
+- Accès FTP : `ftp.cluster129.hosting.ovh.net`, login `capisaf`, SFTP port 22 (WinSCP ; l'explorateur web OVH n'existe plus).
+
+### Règles métier APICIL
+
+- Gammes **Équilibre 1 à 6** et **Sérénité 1 à 5**. Packs Confort : « Jeunes et Familles » (`...ConfortEquilibreJFBase1/2/3`)
+  pour Équilibre, « Séniors » (`...ConfortSereniteSBase1/2/3`) pour Équilibre et Sérénité.
+- **Les libellés du référentiel §6.1.2 font foi** ; l'exemple §5.1.4 de la documentation contient une coquille
+  (`...ConfortEquilibreSBase...`), vérifié par appel réel.
+- L'API ne renvoie **que les formules éligibles au profil** : inutile de coder les règles d'éligibilité.
+- Limites : 1 assuré, 1 conjoint, 8 enfants, 8 ayants droit ; date d'effet entre J−30 et J+1 an.
+- Régimes : `GENERAL` / `ALSACEMOSELLE` / `SSI`. La tarification **n'enregistre rien** dans le SI d'APICIL.
+- Reste à faire confirmer : le format de `codesAvantages` (chaîne `A|B` au §5.1.3, tableau au §4.1).
+
 ## Contrat avec le CRM (Manus)
 
 - Lien entrant : `#fiche=…`, `crm=<origine>`, `t=<JWT 2 h, conversationId>`, `back=<url>` ; `#vide` = comparateur vide.
@@ -70,7 +103,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 
 - Universign : compte existant (plateforme classique, API XML-RPC `ws.universign.eu/sign/rpc`, guide 8.113).
   Attente de l'activation API par le support ; intégration prévue côté serveur Manus (contrat d'API rédigé le 13/09).
-- Intégration d'API de compagnies d'assurance (chantier à ouvrir).
+- APICIL : tarification validée de bout en bout (18/09/2026, tarifs conformes au tarificateur officiel).
+  Reste à brancher le comparateur sur le relais, puis devis / souscription / signature électronique.
+- Autres compagnies : aucune n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
 - GCI 500 (Mutuelle Verte), harmonisation optique FLEXIA / SOLENCIA.
