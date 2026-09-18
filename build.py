@@ -54,10 +54,10 @@ def ecrire_garanties():
         _bloc("F", "const F = {"),
         _bloc("EX", "const EX={"),
         _bloc("TGNOTE", "const TGNOTE={"),
-        _bloc("TGROWS", "const TGROWS=["),
         _bloc("COMP", "const COMP={"),
     ])
-    dump = decls + """
+    # Les lignes du tableau vivent desormais dans src/tableau.js, partage avec le serveur.
+    dump = decls + "\nconst TGROWS = require(" + json.dumps(str(SRC/"tableau.js")) + ").POSTES;\n" + """
 const postes = TGROWS.map(([libelle, src]) => src.startsWith("x:")
   ? {cle: src.slice(2), libelle, source: "extras"}
   : {cle: src, libelle, source: "gammes"});
@@ -99,13 +99,24 @@ b64  = base64.b64encode((SRC/"bulletin_avenir.pdf").read_bytes()).decode()
 
 # Modules partages avec le serveur du CRM : recopies dans la page pour qu'elle reste
 # un fichier unique, et publies tels quels dans dist/ pour etre charges par Node.
+# Feuille de style de la page, republiee telle quelle : le serveur du CRM rend le
+# tableau de garantie avec exactement les memes regles, sans copie a maintenir.
+_i = tpl.index("<style>") + len("<style>")
+_j = tpl.index("</style>", _i)
+(SRC/"tableau.css").write_text(
+    "/* Genere par build.py depuis le <style> de src/comparateur.html — ne pas editer. */\n"
+    "@import url(\"https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800"
+    "&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap\");\n" + tpl[_i:_j],
+    encoding="utf-8")
+
 MODULES = ["moteur.js", "tableau.js"]
 modules = "\n".join((SRC/m).read_text(encoding="utf-8") for m in MODULES if (SRC/m).exists())
 for m in MODULES:
     if (SRC/m).exists():
         (DIST/m).write_text((SRC/m).read_text(encoding="utf-8"), encoding="utf-8")
-if (SRC/"garanties.json").exists():
-    (DIST/"garanties.json").write_text((SRC/"garanties.json").read_text(encoding="utf-8"), encoding="utf-8")
+for f in ("garanties.json", "tableau.css"):
+    if (SRC/f).exists():
+        (DIST/f).write_text((SRC/f).read_text(encoding="utf-8"), encoding="utf-8")
 
 base = (tpl.replace("/*__MODULES__*/", modules)
            .replace("__DATA__", data).replace("__BULLETIN__", b64))

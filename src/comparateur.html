@@ -552,7 +552,7 @@ function showInfo(r){
   ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
   document.body.appendChild(ov);
 }
-const TGROWS=[["Hospitalisation Optam","hospO"],["Hospitalisation hors Optam","hospN"],["Chambre particulière","ch"],["Consult. spécialistes Optam","honoO"],["Consult. hors Optam","honoN"],["Dentaire — prothèses","dent"],["Implantologie","x:imp"],["Orthodontie remboursée","x:orthR"],["Orthodontie non remboursée","x:orthN"],["Optique (équipement)","opt"],["Lentilles acceptées","x:lentA"],["Lentilles refusées","x:lentR"],["Aides auditives","x:aud"],["Médecine douce / bien-être","md"]];
+const TGROWS=Tableau.POSTES;   // lignes du tableau de garantie — voir src/tableau.js
 // ---- Lecture de documents (RIB, attestation de Sécurité sociale) ----
 // Tout se passe dans le navigateur : aucun document n'est envoyé ni conservé.
 function loadScript(src){return new Promise((ok,ko)=>{const s=document.createElement("script");s.src=src;s.onload=ok;s.onerror=ko;document.head.appendChild(s);});}
@@ -1535,11 +1535,7 @@ function showDoc(name,url){
   document.body.appendChild(ov);
 }
 // Valeur d'une garantie pour une formule donnée (gamme key, indice fi)
-function tgVal(key,fi,src){
-  const f=F[key], e=EX[key]||{};
-  if(src.startsWith("x:")){const k=src.slice(2);return (e[k]&&e[k][fi]!==undefined)?e[k][fi]:"—";}
-  const arr=f[src];return (arr&&arr[fi]!==undefined)?arr[fi]:"—";
-}
+function tgVal(key,fi,src){ return Tableau.valeur(GAR,key,fi,src); }
 // Tableau de garantie d'une gamme (toutes ses formules)
 function showTG(key){
   const f=F[key];
@@ -1555,51 +1551,15 @@ function showTGSel(){
 }
 // cols = [{key,fi}] ; single = clé de gamme si tableau mono-gamme (sinon null)
 var RECO=null; // formule conseillée : "cle|indice"
-// Logos des compagnies, déposés dans docs/ (PNG à fond transparent, hauteur utile ~40 px).
-// Tant qu'un fichier manque, le nom de la compagnie s'affiche à la place : rien ne casse.
-const LOGOS={mcci:"logo_mcci.png",avenir:"logo_avenir.png",mverte:"logo_mverte.png",apicil:"logo_apicil.png"};
-const LOGOBASE="https://fabcoh.github.io/santeo-tarifs/docs/";
-function logoHTML(key){
-  const ins=F[key]&&F[key].ins, f=LOGOS[ins], nom=COMP[key]||"";
-  if(!f) return '<span class="tglogo-txt">'+nom+'</span>';
-  return '<img class="tglogo" src="'+LOGOBASE+f+'" alt="'+nom+'" '
-       + 'onerror="this.outerHTML=\'<span class=&quot;tglogo-txt&quot;>'+nom+'</span>\'">';
-}
-// Bas du tableau de garantie. Une note par gamme laissait croire qu'une compagnie
-// etait commentee et pas les autres : on annonce plutot les atouts de la formule
-// conseillee, poste par poste. Hospitalisation et honoraires sont donnes au
-// parcours OPTAM, le cas courant et le seul comparable d'une compagnie a l'autre.
-const TGAVANT=[["hospitalisation","hospO"],["honoraires spécialistes","honoO"],
-  ["chambre particulière","ch"],["dentaire","dent"],["implantologie","x:imp"],
-  ["orthodontie","x:orthR"],["optique","opt"],["lentilles","x:lentA"],
-  ["aides auditives","x:aud"],["médecines douces","md"]];
-function avantagesTG(key,fi){
-  const bits=TGAVANT.map(([lab,src])=>{const v=tgVal(key,fi,src);
-    return (v&&v!=="—")?lab+" <b>"+v+"</b>":"";}).filter(Boolean);
-  if(!bits.length)return "";
-  return 'Ce produit correspond à votre demande — <b>'+F[key].label+' '+F[key].names[fi]
-        +'</b> : '+bits.join(", ")+'. <span style="opacity:.8">(hospitalisation et honoraires : parcours OPTAM)</span>';
-}
-function tgFoot(cols,note){
-  const c=cols.find(x=>RECO===(x.key+"|"+x.fi));
-  const av=c?avantagesTG(c.key,c.fi):"";
-  if(!av)return note;
-  // Le caractere non responsable d'un contrat reste signale : l'information est due au prospect.
-  const nr=[...new Set(cols.map(x=>x.key))].filter(k=>F[k]&&F[k].resp===false)
-        .map(k=>F[k].label+" : contrat NON responsable.");
-  return av+(nr.length?'<div style="margin-top:5px">'+nr.join(" ")+'</div>':"");
-}
+function logoHTML(key){ return Tableau.logo(GAR,key); }
+// Bas du tableau : les atouts de la formule marquée de l'étoile — voir src/tableau.js.
+function tgFoot(cols,note){ return Tableau.pied(GAR,cols,note,RECO); }
+function avantagesTG(key,fi){ return Tableau.atouts(GAR,key,fi); }
 function renderTG(cols,title,sub,note,single){
   const multi=cols.some(c=>c.key!==cols[0].key);
   const isReco=c=>RECO===(c.key+"|"+c.fi);
-  // Indemnités journalières : ligne en tête, seulement si l'une des formules en verse
-  const ROWS=(cols.some(c=>{const v=tgVal(c.key,c.fi,"ij");return v&&v!=="—";})?[["Indemnités journalières hospitalisation","ij"]]:[]).concat(TGROWS);
-  let head='<tr><th></th>'+cols.map((c,ci)=>'<th class="pick'+(isReco(c)?' reco':'')+'" data-ci="'+ci+'">'
-    +logoHTML(c.key)
-    +(isReco(c)?'<span class="recolbl">\u2b50 Je vous conseille</span>'
-               :'<span class="star" title="Conseiller cette formule">\u2606</span>')
-    +(multi?'<span style="display:block;font-size:11px;opacity:.75">'+F[c.key].label+'</span>':'')+F[c.key].names[c.fi]+'</th>').join('')+'</tr>';
-  let body=ROWS.map(([lab,src])=>'<tr><td>'+lab+'</td>'+cols.map((c,ci)=>'<td'+(isReco(c)?' class="reco"':'')+'>'+tgVal(c.key,c.fi,src)+'</td>').join('')+'</tr>').join('');
+  let head=Tableau.entete(GAR,cols,RECO);
+  let body=Tableau.corps(GAR,cols,RECO);
   const ov=document.createElement('div');ov.id='tgov';
   ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+tgFoot(cols,note)+'</div></div>';
   ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
@@ -1617,10 +1577,7 @@ function renderTG(cols,title,sub,note,single){
       if(th){
         const price=th.querySelector('.thprice');   // le tarif affiché sous le nom est conservé
         th.classList.toggle('reco',on);
-        th.innerHTML=logoHTML(c.key)
-          +(on?'<span class="recolbl">⭐ Je vous conseille</span>'
-               :'<span class="star" title="Conseiller cette formule">☆</span>')
-          +(multi?'<span style="display:block;font-size:11px;opacity:.75">'+F[c.key].label+'</span>':'')+F[c.key].names[c.fi];
+        th.innerHTML=Tableau.celluleEntete(GAR,c,{reco:on,multi:multi});
         if(price)th.appendChild(price);
       }
       tbl.querySelectorAll('tbody tr').forEach(tr=>{const td=tr.children[ci+1];if(td)td.classList.toggle('reco',on);});
@@ -1747,6 +1704,8 @@ const REGLBL={SAL:"Salarié",TNS:"TNS",RL:"Salarié régime local",TNSRL:"TNS r�
 const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
 const sel={MCCINOVA:false,FLEXIA:false,SOLENCIA:false,CAPEVO:false,CAPNR:false,LPSH:false,REV:false,RF50:false,RF100:false,MV:false,TALIS:false,APICIL:false};
 const COMP={MCCINOVA:'MCCI',FLEXIA:'MCCI',SOLENCIA:'MCCI',CAPEVO:'AVENIR M.',CAPNR:'AVENIR M.',LPSH:'AVENIR M.',REV:'AVENIR M.',RF50:'AVENIR M.',RF100:'AVENIR M.',TALIS:'AVENIR M.',MV:'M. VERTE',APICIL:'APICIL'};
+// Garanties remises aux modules partagés : même jeu que src/garanties.json.
+const GAR={gammes:F,extras:EX,compagnies:COMP};
 const on=k=>Object.values(sel).some(v=>v)?sel[k]:true; // aucune coche = toutes les gammes ; coche(s) = uniquement celles-là
 let openKeys=new Set();
 
