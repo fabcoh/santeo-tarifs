@@ -70,6 +70,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   date d'effet, e-mail et téléphone facultatifs) : jamais d'envoi direct, un devis engageant le code apporteur.
   Au retour, référence du devis et lien vers MyVERALTI. Relais dédié `apicil-devis.php`, **15 devis/heure/IP**,
   au plus 3 formules par projet.
+  **Le message n'a pas la forme de celui de la tarification** (§5.2.2) : l'assuré principal est porté par la
+  **racine** (`role`, `civilite`, `nom`, `prenom`, `dateNaissance`, `regimeSocial`, `codePostal`…) et
+  `beneficiaires` ne contient que conjoint, enfants et ayants droit — y mettre l'assuré fait échouer l'appel.
+  Le retour (§5.2.4) place la référence commerciale et le lien MyVERALTI dans `relatedQuotes[0]`
+  (`reference`, `accessURL`), `IdOpportunite` n'étant que l'identifiant du projet.
+  **L'appel dure 25 à 60 s** (enregistrement dans MyVERALTI) : relais à 120 s, compteur affiché dans la
+  fenêtre. En cas de dépassement le devis peut avoir été créé quand même — vérifier MyVERALTI avant de
+  recommencer, jamais relancer à l'aveugle.
 - **Logos dans le tableau de garantie** : `logoHTML(key)` place le logo de l'assureur au-dessus de l'étoile,
   en tête de colonne. Fichiers attendus dans `docs/` : `logo_mcci.png`, `logo_avenir.png`, `logo_mverte.png`,
   `logo_apicil.png` (PNG transparent, affichés en 34 px de haut). **Tant qu'un fichier manque, le nom de la
@@ -98,7 +106,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Aucun jeton dans la page** : elle est publique, un mot de passe y serait lisible. La protection est
   côté serveur — hôte appelant autorisé (`Origin`, à défaut `Referer`) + 60 appels/heure/IP.
 - **IP sortante à déclarer si APICIL l'exige : `5.135.48.82`** (différente de l'IP du site).
-- Accès FTP : `ftp.cluster129.hosting.ovh.net`, login `capisaf`, SFTP port 22 (WinSCP ; l'explorateur web OVH n'existe plus).
+- Accès : `ftp.cluster129.hosting.ovh.net`, login `capisaf`. **SFTP (port 22) est refusé** — la connexion se
+  ferme juste après l'authentification, SSH n'étant pas ouvert sur ce compte. Le **FTP simple fonctionne** ;
+  depuis un Mac, sans rien installer, une ligne suffit dans le Terminal :
+  `curl -T "$(ls -t ~/Downloads/apicil-devis*.php | head -1)" -u capisaf ftp://ftp.cluster129.hosting.ovh.net/www/apicil-devis.php`
+  (vérifier la taille annoncée : le Mac renomme un second téléchargement `fichier (1).php`).
+  L'explorateur web OVH n'existe plus. Depuis une session Claude, les ports 21 et 22 sont bloqués :
+  le dépôt ne peut pas être fait d'ici.
 
 ### Règles métier APICIL
 
@@ -119,7 +133,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - L'API ne renvoie **que les formules éligibles au profil** : inutile de coder les règles d'éligibilité.
 - Limites : 1 assuré, 1 conjoint, 8 enfants, 8 ayants droit ; date d'effet entre J−30 et J+1 an.
 - Régimes : `GENERAL` / `ALSACEMOSELLE` / `SSI`. La tarification **n'enregistre rien** dans le SI d'APICIL.
-- Reste à faire confirmer : le format de `codesAvantages` (chaîne `A|B` au §5.1.3, tableau au §4.1).
+- Reste à faire confirmer : le format de `codesAvantages` en **tarification** (chaîne `A|B` au §5.1.3,
+  tableau au §4.1). En **création de devis**, le §5.2.3 le donne en tableau d'objets `[{"avantage":"CODE"}]` ;
+  le relais l'omet tant qu'aucun code n'est utilisé.
 
 ## Contrat avec le CRM (Manus)
 
