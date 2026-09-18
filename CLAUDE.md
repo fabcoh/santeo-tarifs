@@ -55,9 +55,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   valeurs présentes dans les gammes. Une garantie exprimée dans l'autre unité (% contre €) n'est pas comparable :
   l'offre est écartée et comptée à part, jamais silencieusement. Sélection mémorisée sur l'appareil.
   Les offres au-dessus du budget portent une pastille « +x % / budget ».
-  En tête du panneau, un bouton **périmètre** bascule entre toutes les compagnies (API SANTÉ comprise) et
-  la sélection du volet « Compagnies & gammes », qu'il tient synchronisée : filtrer n'a de sens que si l'on
-  sait sur quel catalogue on filtre.
+  En tête du panneau, un bouton **périmètre** bascule entre toutes les compagnies et la sélection du volet
+  « Compagnies & gammes », qu'il tient synchronisée : filtrer n'a de sens que si l'on sait sur quel
+  catalogue on filtre.
 - **Documents par formule** : APICIL publie une plaquette par gamme Équilibre et une seule pour toutes les
   Sérénité. `docsDe(r)` ne propose que le tableau de garantie de la formule affichée, son IPID et la notice.
   Le bouton « Infos » ne s'affiche que si la gamme a des données dans `INFO`.
@@ -126,8 +126,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 
 - Universign : compte existant (plateforme classique, API XML-RPC `ws.universign.eu/sign/rpc`, guide 8.113).
   Attente de l'activation API par le support ; intégration prévue côté serveur Manus (contrat d'API rédigé le 13/09).
-- APICIL : tarification en production dans le comparateur (gamme « API SANTÉ », **à cocher explicitement** :
-  chaque affichage est un appel réel sous notre code apporteur). Garanties **Équilibre 1–6 et Sérénité 1–5**
+- APICIL : tarification en production dans le comparateur. La gamme « API SANTÉ » suit la règle commune
+  (aucune coche = toutes les gammes) : c'est une complémentaire, elle se compare aux autres. Son tarif vient
+  d'un appel réel sous notre code apporteur — temporisé côté page, 60 appels/heure/IP côté relais. Garanties **Équilibre 1–6 et Sérénité 1–5**
   saisies depuis les plaquettes (`docs/apisante_*_tg_2026.pdf`). Plafonds, limites et exclusions
   renseignés dans `INFO` (bouton ⓘ). Restent à faire : Packs Confort en option (PC1–PC3, décrits dans la
   plaquette Sérénité — ils portent les médecines douces, absentes des gammes de base), âge réel des mineurs

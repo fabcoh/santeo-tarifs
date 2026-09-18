@@ -1958,9 +1958,9 @@ function calc(){
   if(kids>0&&on("LPSH")) warns.push("LPS HOSPI : pas de tarif enfant dans la grille 2026 — total affiché hors mineurs pour cette gamme.");
   if(kids>0&&on("MCCINOVA")&&!isRL) warns.push("MCCINOVA : les mineurs sont tarifés au tarif 18 ans, sans gratuité à partir du 3ᵉ enfant.");
   // API SANTÉ (APICIL) — tarif demandé à l'assureur, pas de grille locale à maintenir
-  // À la différence des grilles locales, APICIL est interrogé en ligne sous notre code apporteur :
-  // la gamme ne se calcule que si le conseiller la coche explicitement.
-  if(sel.APICIL){
+  // API Santé est une complémentaire comme les autres : même règle de sélection.
+  // Son tarif vient d'un appel en ligne, temporisé ici et plafonné côté relais.
+  if(on("APICIL")){
     const profil=apicilProfil(age,cnjAge,hasCnj,kids,reg,document.getElementById("cp").value,dept);
     if(!profil) warns.push("API SANTÉ : code postal ou département requis.");
     else{
@@ -2214,15 +2214,11 @@ function fporteeMaj(){
   const b=document.getElementById("fportee"); if(!b)return;
   const cles=Object.keys(sel), n=cles.filter(k=>sel[k]).length, tout=n===cles.length;
   b.classList.toggle("on",tout);
-  const lib = tout ? "🏢 Toutes les compagnies"
-            : n   ? "🏢 Périmètre restreint"
-                  : "🏢 Toutes sauf API SANTÉ";
-  const cpt = tout ? cles.length+" / "+cles.length
-            : n   ? n+" / "+cles.length
-                  : (cles.length-1)+" / "+cles.length;
-  b.innerHTML=lib+"<b>"+cpt+"</b>";
-  b.title=tout?"Cliquer pour revenir à la sélection vide (toutes les gammes sauf API SANTÉ)"
-              :"Cliquer pour filtrer sur toutes les compagnies, API SANTÉ comprise";
+  const large = tout || n===0;
+  b.innerHTML=(large?"🏢 Toutes les compagnies":"🏢 Périmètre restreint")
+    +"<b>"+(large?cles.length+" / "+cles.length:n+" / "+cles.length)+"</b>";
+  b.title=tout?"Cliquer pour vider la sélection"
+              :"Cliquer pour filtrer sur toutes les compagnies";
 }
 function fmaj(info){
   fporteeMaj();
