@@ -65,6 +65,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Documents par formule** : APICIL publie une plaquette par gamme Équilibre et une seule pour toutes les
   Sérénité. `docsDe(r)` ne propose que le tableau de garantie de la formule affichée, son IPID et la notice.
   Le bouton « Infos » ne s'affiche que si la gamme a des données dans `INFO`.
+- **Devis APICIL** : bouton 🧾 dans le détail d'une formule API SANTÉ, à côté d'Adhésion, **sur le comparateur
+  public**. Il ouvre une fenêtre de contrôle (civilité, nom, prénom, date de naissance, code postal à 5 chiffres,
+  date d'effet, e-mail et téléphone facultatifs) : jamais d'envoi direct, un devis engageant le code apporteur.
+  Au retour, référence du devis et lien vers MyVERALTI. Relais dédié `apicil-devis.php`, **15 devis/heure/IP**,
+  au plus 3 formules par projet.
 - **Après génération** : fenêtre « Faire signer sur Universign » (nom de collecte, signataire à copier, fichiers,
   page Universign intégrée en iframe). Le glisser-déposer d'un fichier vers un autre site est interdit par le navigateur.
 
@@ -136,7 +141,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   saisies depuis les plaquettes (`docs/apisante_*_tg_2026.pdf`). Plafonds, limites et exclusions
   renseignés dans `INFO` (bouton ⓘ). Restent à faire : Packs Confort en option (PC1–PC3, décrits dans la
   plaquette Sérénité — ils portent les médecines douces, absentes des gammes de base), âge réel des mineurs
-  (transmis à 10 ans faute de champ), puis devis / souscription / signature électronique.
+  (transmis à 10 ans faute de champ). **Création de devis en place** ; restent la souscription et la signature
+  électronique APICIL (`modeSouscription` PAPIER / ELECTRONIQUEMAIL / ELECTRONIQUESMS — la signature est
+  fournie par APICIL, Universign n'est pas nécessaire pour cette compagnie).
 - Date de naissance APICIL : celle de la fiche si elle est cohérente avec l'âge saisi, sinon 1ᵉʳ janvier
   (âge atteint dans l'année). Demander à Manus la date exacte dans ses exports.
 - Autres compagnies : aucune n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
