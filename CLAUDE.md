@@ -69,8 +69,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - Hébergement gratuit OVH sur `capisante.fr` (cluster129, Gravelines, PHP 8.2), acheté le 18/09/2026.
 - Fichiers dans `www/` : `apicil-tarif.php` (relais) + `apicil-config.php` (**identifiants, hors dépôt**).
   `apicil-verif.php` est un outil de diagnostic temporaire, à supprimer après usage.
-- Le relais ne sait faire **que** la tarification ; code apporteur et produit figés côté serveur ;
-  origines autorisées + en-tête `X-Santeo-PIN` + 60 appels/heure/IP.
+- Le relais ne sait faire **que** la tarification ; code apporteur et produit figés côté serveur.
+  **Aucun jeton dans la page** : elle est publique, un mot de passe y serait lisible. La protection est
+  côté serveur — hôte appelant autorisé (`Origin`, à défaut `Referer`) + 60 appels/heure/IP.
 - **IP sortante à déclarer si APICIL l'exige : `5.135.48.82`** (différente de l'IP du site).
 - Accès FTP : `ftp.cluster129.hosting.ovh.net`, login `capisaf`, SFTP port 22 (WinSCP ; l'explorateur web OVH n'existe plus).
 
@@ -103,8 +104,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 
 - Universign : compte existant (plateforme classique, API XML-RPC `ws.universign.eu/sign/rpc`, guide 8.113).
   Attente de l'activation API par le support ; intégration prévue côté serveur Manus (contrat d'API rédigé le 13/09).
-- APICIL : tarification validée de bout en bout (18/09/2026, tarifs conformes au tarificateur officiel).
-  Reste à brancher le comparateur sur le relais, puis devis / souscription / signature électronique.
+- APICIL : tarification en production dans le comparateur (gamme « API SANTÉ », **à cocher explicitement** :
+  chaque affichage est un appel réel sous notre code apporteur). Restent à faire : saisir les garanties
+  (l'API ne renvoie que les tarifs — obtenir le tableau de garanties / IPID), l'âge réel des mineurs
+  (transmis à 10 ans faute de champ), puis devis / souscription / signature électronique.
+- Date de naissance APICIL : celle de la fiche si elle est cohérente avec l'âge saisi, sinon 1ᵉʳ janvier
+  (âge atteint dans l'année). Demander à Manus la date exacte dans ses exports.
 - Autres compagnies : aucune n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
