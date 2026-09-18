@@ -14,6 +14,15 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - `fabcoh/santeo-tarifs` (public, GitHub Pages depuis `main`, racine) — **le seul qui compte**.
 - `fabcoh/santeo-comparateur-claude` (privé) — copie de sauvegarde, même contenu de `src/`.
 - Source unique : `src/comparateur.html` (gabarit) + `src/tarifs_all.json` (grilles) + `src/bulletin_avenir.pdf`.
+- **Modules partagés avec le serveur du CRM** : `src/moteur.js` (calcul des tarifs, fonction pure, ni DOM ni
+  réseau) et `src/tableau.js` (fabrique du tableau de garantie). `build.py` les recopie dans la page — elle
+  reste un fichier unique — et les publie tels quels. **Toute règle de tarification se modifie dans
+  `src/moteur.js`, jamais dans la page** : sinon le CRM et le comparateur annoncent deux tarifs différents.
+- **Fichiers dérivés, jamais édités à la main** : `src/garanties.json` (objets `F`, `EX`, `COMP`, `TGNOTE`
+  republiés en JSON) et `src/tableau.css` (le `<style>` de la page). `build.py` les régénère ; l'Action les
+  commit avec `index.html`. Ils sont servis par GitHub Pages : `https://fabcoh.github.io/santeo-tarifs/src/…`.
+- **L'image du tableau reste une capture** : la page avec html2canvas, un serveur avec un navigateur sans
+  écran (Playwright) sur `Tableau.document(...)`. Aucune image identique n'est possible sans moteur de rendu.
 - `build.py` fabrique `dist/` : `index.html` (hébergé, `HOSTED=true`, adhésion derrière code), `clients.html`,
   `crm-public.html`, `adhesion-privee.html`, `comparateur-claude.html`. Il tourne depuis la racine ou depuis `src/`.
 - **Publication = pousser `src/comparateur.html` sur `main`** : l'Action `.github/workflows/build.yml`
@@ -112,6 +121,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Aucun jeton dans la page** : elle est publique, un mot de passe y serait lisible. La protection est
   côté serveur — hôte appelant autorisé (`Origin`, à défaut `Referer`) + 60 appels/heure/IP.
 - **IP sortante à déclarer si APICIL l'exige : `5.135.48.82`** (différente de l'IP du site).
+- **Appelants autorisés** : les sites listés dans `apicil-config.php`, plus, déclarés dans `apicil.php`,
+  l'hôte du CRM WhatsApp (le comparateur y est hébergé, il appelle depuis le navigateur) et les **appelants
+  serveur**. Un serveur n'envoyant ni `Origin` ni `Referer`, il présente une clé dans l'en-tête
+  **`X-Cle-Serveur`** ; la clé vit dans `apicil.php`, jamais dans une page. Quota propre de 600 appels/heure,
+  compté par appelant et non par IP — le CRM sert de nombreuses conversations derrière une seule adresse.
 - Accès : `ftp.cluster129.hosting.ovh.net`, login `capisaf`. **SFTP (port 22) est refusé** — la connexion se
   ferme juste après l'authentification, SSH n'étant pas ouvert sur ce compte. Le **FTP simple fonctionne** ;
   depuis un Mac, sans rien installer, une ligne suffit dans le Terminal :
