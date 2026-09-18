@@ -273,7 +273,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-18T10:05:21Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-18T10:05:21Z</div>
+  <div id="buildstamp" data-build="2026-09-18T10:31:32Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-18T10:31:32Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1679,8 +1679,18 @@ const APICIL_REG={SAL:["GENERAL","SALARIE"],TNS:["SSI","ACTIF"],RL:["ALSACEMOSEL
 let APICIL={cle:"",etat:"vide",tarifs:null,message:""};
 let apicilTimer=null;
 
-// Le comparateur ne connaît qu'un âge : on retient le 1er janvier, soit l'âge atteint dans l'année.
-const apicilNaiss=age=>(YEAR-age)+"-01-01";
+// Date de naissance : celle de la fiche si elle est connue et cohérente avec l'âge saisi,
+// sinon le 1er janvier — l'âge atteint dans l'année, comme au reste du comparateur.
+const champ=id=>{try{const e=document.getElementById(id);return e?e.value:""}catch(e){return ""}};
+function apicilNaiss(age,ddn){
+  const m=/^(\d{2})\/(\d{2})\/((?:19|20)\d\d)$/.exec(String(ddn||"").trim());
+  if(m&&YEAR-(+m[3])===age) return m[3]+"-"+m[2]+"-"+m[1];
+  return (YEAR-age)+"-01-01";
+}
+const apicilDDNAssure =()=>(typeof PRO!=="undefined"&&PRO&&PRO.ddn)?PRO.ddn:champ("addn");
+const apicilDDNConjoint=()=>champ("cddn");
+// Vrai tant qu'aucune date exacte n'a pu être utilisée : sert à prévenir le conseiller.
+let apicilApproche=false;
 function apicilEffet(){                        // 1er du mois suivant, toujours dans la plage J−30 / J+1 an
   const d=new Date(); d.setDate(1); d.setMonth(d.getMonth()+1);
   return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-01";
@@ -1690,9 +1700,17 @@ function apicilProfil(age,cnjAge,hasCnj,kids,reg,cpBrut,dept){
   const brut=(cpBrut||"").trim();
   const cp=/^\d{5}$/.test(brut)?brut:(/^\d{2}$/.test(dept||"")?dept+"000":null);
   if(!cp)return null;
-  const b=[{role:"ASSUR",dateNaissance:apicilNaiss(age),regimeSocial:r[0]}];
-  if(hasCnj&&cnjAge!=null)b.push({role:"CONJT",dateNaissance:apicilNaiss(cnjAge),regimeSocial:r[0]});
-  for(let i=0;i<Math.min(kids,8);i++)b.push({role:"ENFNT",dateNaissance:apicilNaiss(10),regimeSocial:r[0]});
+  apicilApproche=false;
+  const dnA=apicilNaiss(age,apicilDDNAssure());
+  if(dnA.endsWith("-01-01"))apicilApproche=true;
+  const b=[{role:"ASSUR",dateNaissance:dnA,regimeSocial:r[0]}];
+  if(hasCnj&&cnjAge!=null){
+    const dnC=apicilNaiss(cnjAge,apicilDDNConjoint());
+    if(dnC.endsWith("-01-01"))apicilApproche=true;
+    b.push({role:"CONJT",dateNaissance:dnC,regimeSocial:r[0]});
+  }
+  // Le comparateur ne demande que le nombre de mineurs : faute d'âge, on les transmet à 10 ans.
+  for(let i=0;i<Math.min(kids,8);i++)b.push({role:"ENFNT",dateNaissance:(YEAR-10)+"-01-01",regimeSocial:r[0]});
   return {codePostalAssure:cp,dateEffetContrat:apicilEffet(),situationProfessionnelle:r[1],beneficiaires:b};
 }
 function apicilDemande(profil,cle){             // temporisation : on n'appelle pas à chaque frappe
@@ -1912,6 +1930,7 @@ function calc(){
         else{
           warns.push("API SANTÉ : garanties non encore saisies dans le comparateur (colonnes « — ») ; les tarifs, eux, viennent d'APICIL.");
           if(kids>0) warns.push("API SANTÉ : les mineurs sont transmis à 10 ans, le comparateur ne demandant pas leur âge — tarif à confirmer.");
+          if(apicilApproche) warns.push("API SANTÉ : date de naissance ramenée au 1ᵉʳ janvier faute de date exacte — saisir la date complète dans la fiche pour un tarif certain.");
           if(!/^\d{5}$/.test(document.getElementById("cp").value.trim())) warns.push("API SANTÉ : code postal complété en "+profil.codePostalAssure+" à partir du département — saisir les 5 chiffres pour un tarif exact.");
         }
       }
