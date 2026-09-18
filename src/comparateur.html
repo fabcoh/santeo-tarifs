@@ -204,6 +204,9 @@ tr.offer.reco:hover td{background:var(--best)}
 #fportee.on{border-color:var(--accent);background:var(--best)}
 #fportee b{margin-left:auto;font:800 12px 'Archivo',sans-serif;color:var(--muted)}
 #fportee.on b{color:var(--accent)}
+.tglogo{display:block;margin:0 auto 4px;max-height:34px;max-width:120px;object-fit:contain}
+.tglogo-txt{display:block;margin-bottom:3px;font:800 10.5px 'Archivo',sans-serif;letter-spacing:.05em;color:var(--muted)}
+th.pick.reco .tglogo-txt{color:var(--warn)}
 #dvov{position:fixed;inset:0;background:rgba(10,20,35,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
 #dvbox{background:var(--card);color:var(--ink);border-radius:14px;max-width:470px;width:100%;max-height:92vh;overflow:auto;padding:18px 20px;box-shadow:0 18px 50px rgba(0,0,0,.35);font-family:'Archivo',sans-serif}
 #dvbox h3{margin:0 0 3px;font:800 16.5px 'Archivo',sans-serif}
@@ -1548,12 +1551,23 @@ function showTGSel(){
 }
 // cols = [{key,fi}] ; single = clé de gamme si tableau mono-gamme (sinon null)
 var RECO=null; // formule conseillée : "cle|indice"
+// Logos des compagnies, déposés dans docs/ (PNG à fond transparent, hauteur utile ~40 px).
+// Tant qu'un fichier manque, le nom de la compagnie s'affiche à la place : rien ne casse.
+const LOGOS={mcci:"logo_mcci.png",avenir:"logo_avenir.png",mverte:"logo_mverte.png",apicil:"logo_apicil.png"};
+const LOGOBASE="https://fabcoh.github.io/santeo-tarifs/docs/";
+function logoHTML(key){
+  const ins=F[key]&&F[key].ins, f=LOGOS[ins], nom=COMP[key]||"";
+  if(!f) return '<span class="tglogo-txt">'+nom+'</span>';
+  return '<img class="tglogo" src="'+LOGOBASE+f+'" alt="'+nom+'" '
+       + 'onerror="this.outerHTML=\'<span class=&quot;tglogo-txt&quot;>'+nom+'</span>\'">';
+}
 function renderTG(cols,title,sub,note,single){
   const multi=cols.some(c=>c.key!==cols[0].key);
   const isReco=c=>RECO===(c.key+"|"+c.fi);
   // Indemnités journalières : ligne en tête, seulement si l'une des formules en verse
   const ROWS=(cols.some(c=>{const v=tgVal(c.key,c.fi,"ij");return v&&v!=="—";})?[["Indemnités journalières hospitalisation","ij"]]:[]).concat(TGROWS);
   let head='<tr><th></th>'+cols.map((c,ci)=>'<th class="pick'+(isReco(c)?' reco':'')+'" data-ci="'+ci+'">'
+    +logoHTML(c.key)
     +(isReco(c)?'<span class="recolbl">\u2b50 Je vous conseille</span>'
                :'<span class="star" title="Conseiller cette formule">\u2606</span>')
     +(multi?'<span style="display:block;font-size:11px;opacity:.75">'+F[c.key].label+'</span>':'')+F[c.key].names[c.fi]+'</th>').join('')+'</tr>';
@@ -1575,8 +1589,9 @@ function renderTG(cols,title,sub,note,single){
       if(th){
         const price=th.querySelector('.thprice');   // le tarif affiché sous le nom est conservé
         th.classList.toggle('reco',on);
-        th.innerHTML=(on?'<span class="recolbl">⭐ Je vous conseille</span>'
-                        :'<span class="star" title="Conseiller cette formule">☆</span>')
+        th.innerHTML=logoHTML(c.key)
+          +(on?'<span class="recolbl">⭐ Je vous conseille</span>'
+               :'<span class="star" title="Conseiller cette formule">☆</span>')
           +(multi?'<span style="display:block;font-size:11px;opacity:.75">'+F[c.key].label+'</span>':'')+F[c.key].names[c.fi];
         if(price)th.appendChild(price);
       }

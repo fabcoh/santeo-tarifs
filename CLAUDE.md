@@ -70,6 +70,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   date d'effet, e-mail et téléphone facultatifs) : jamais d'envoi direct, un devis engageant le code apporteur.
   Au retour, référence du devis et lien vers MyVERALTI. Relais dédié `apicil-devis.php`, **15 devis/heure/IP**,
   au plus 3 formules par projet.
+- **Logos dans le tableau de garantie** : `logoHTML(key)` place le logo de l'assureur au-dessus de l'étoile,
+  en tête de colonne. Fichiers attendus dans `docs/` : `logo_mcci.png`, `logo_avenir.png`, `logo_mverte.png`,
+  `logo_apicil.png` (PNG transparent, affichés en 34 px de haut). **Tant qu'un fichier manque, le nom de la
+  compagnie s'affiche à sa place** — aucune image cassée. Le logo est reposé à chaque mise en avant d'une formule.
 - **Après génération** : fenêtre « Faire signer sur Universign » (nom de collecte, signataire à copier, fichiers,
   page Universign intégrée en iframe). Le glisser-déposer d'un fichier vers un autre site est interdit par le navigateur.
 
