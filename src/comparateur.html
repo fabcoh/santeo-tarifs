@@ -188,6 +188,30 @@ tr.offer.reco td{background:var(--best)}
 tr.offer.reco td:first-child{box-shadow:inset 3px 0 0 var(--warn)}
 tr.offer.reco:hover td{background:var(--best)}
 .chip.reco{background:var(--best);color:var(--warn);border-color:var(--warn)}
+/* Filtre par garantie : onglet discret sur le bord droit, panneau coulissant */
+#fbtn{position:fixed;right:0;top:38%;z-index:150;writing-mode:vertical-rl;border:1px solid var(--line);border-right:0;border-radius:11px 0 0 11px;background:var(--panel);color:var(--ink);font:800 12.5px 'Archivo',sans-serif;padding:14px 7px;cursor:pointer;box-shadow:-2px 0 10px rgba(0,0,0,.08)}
+#fbtn.actif{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+#fpan{position:fixed;right:0;top:0;bottom:0;width:302px;max-width:92vw;z-index:151;background:var(--panel);border-left:1px solid var(--line);box-shadow:-8px 0 30px rgba(0,0,0,.18);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .22s ease}
+#fpan.ouvert{transform:none}
+#fpan header{display:flex;align-items:center;gap:8px;padding:13px 14px;border-bottom:1px solid var(--line);font:800 14.5px 'Archivo',sans-serif}
+#fpan header button{margin-left:auto;border:0;background:transparent;color:var(--muted);font-size:19px;cursor:pointer;line-height:1}
+#fcorps{flex:1;overflow:auto;padding:4px 14px 12px}
+#fcorps h4{margin:14px 0 5px;font:800 11.5px 'Archivo',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.frow{display:flex;align-items:center;gap:7px;padding:3px 0}
+.frow label{flex:1;font:600 13px 'IBM Plex Sans',sans-serif}
+.frow select{width:104px;padding:5px 6px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:600 12.5px 'IBM Plex Sans',sans-serif}
+#fbud{display:flex;align-items:center;gap:7px;padding:10px 0 4px;border-bottom:1px solid var(--line);margin-bottom:2px}
+#fbud label{flex:1;font:800 13px 'Archivo',sans-serif}
+#fbud input{width:88px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:700 13px 'IBM Plex Sans',sans-serif;text-align:right}
+#fbud input.on{border-color:var(--accent);background:var(--best)}
+#fbudnote{font:600 11.5px 'IBM Plex Sans',sans-serif;color:var(--muted);padding:0 0 6px}
+.chip.sur{background:var(--best);color:var(--warn);border-color:var(--warn)}
+.frow select.on{border-color:var(--accent);background:var(--best);font-weight:800}
+#fpied{border-top:1px solid var(--line);padding:11px 14px;display:flex;align-items:center;gap:9px}
+#fcount{font:800 13px 'Archivo',sans-serif}
+#fcount small{display:block;font:600 11.5px 'IBM Plex Sans',sans-serif;color:var(--muted)}
+#fraz{margin-left:auto;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);padding:7px 10px;font:700 12.5px 'Archivo',sans-serif;cursor:pointer}
+@media print{#fbtn,#fpan{display:none}}
 .volet{width:100%;display:flex;align-items:center;gap:8px;text-align:left;padding:11px 14px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--ink);font:800 14px 'Archivo',sans-serif;cursor:pointer;margin-bottom:6px}
 .volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 .volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
@@ -242,6 +266,12 @@ tr.offer.reco:hover td{background:var(--best)}
   </div>
 </div>
 
+<button type="button" id="fbtn" title="Filtrer les offres par niveau de garantie">⚖ Filtres</button>
+<aside id="fpan" aria-hidden="true">
+  <header>⚖ Filtrer par garantie <button type="button" id="fx" title="Fermer">✕</button></header>
+  <div id="fcorps"></div>
+  <div id="fpied"><span id="fcount"></span><button type="button" id="fraz">Tout effacer</button></div>
+</aside>
 <div class="rightcol">
   <button type="button" class="volet" id="vg">🏢 Compagnies &amp; gammes <span class="vsum" id="vgsum"></span><span class="chev">▾</span></button>
   <div class="gsel" id="gsel" hidden></div>
@@ -1926,7 +1956,8 @@ function calc(){
           const t=APICIL.tarifs[code]; if(t==null)return;   // l'API ne renvoie que les formules éligibles
           n++;
           rows.push({key:"APICIL",fi:i,ins:"apicil",resp:true,gamme:F.APICIL.label,formule:F.APICIL.names[i],
-            hospO:"—",hospN:"—",honoO:"—",honoN:"—",dent:"—",opt:"—",aud:"—",ch:"—",md:"—",
+            hospO:F.APICIL.hospO[i],hospN:F.APICIL.hospN[i],honoO:F.APICIL.honoO[i],honoN:F.APICIL.honoN[i],
+            dent:F.APICIL.dent[i],opt:F.APICIL.opt[i],aud:F.APICIL.aud[i],ch:F.APICIL.ch[i],md:F.APICIL.md[i],
             chips:chips.slice(),pA:t,pC:null,pK:null,kidNote:"",total:t,incomplete:false,foyer:(hasCnj||kids>0)});
         });
         if(!n) warns.push("API SANTÉ : aucune formule éligible pour ce profil.");
@@ -2040,18 +2071,162 @@ function updateSendBar(){
   bar.querySelector("#sbcount").textContent=SENDSEL.size+" formule"+(SENDSEL.size>1?"s":"");
   if(window.CRMLINK){const w=bar.querySelector("#sbwa");if(!w.disabled&&!/Déposé|Dépôt|Réessayer/.test(w.textContent))w.textContent="📲 Déposer dans le CRM";}
 }
+
+// ---- Filtre par niveau de garantie -------------------------------------------
+// Le conseiller pose un minimum par poste ; le tableau des offres s'y réduit aussitôt.
+// Les valeurs proposées sont celles réellement présentes dans les gammes, jamais des valeurs inventées.
+const FPOSTES=[
+  ["Dentaire",[["dent","Prothèses"],["imp","Implantologie"],["orthR","Ortho remboursée"],["orthN","Ortho non remb."]]],
+  ["Optique",[["opt","Équipement"],["lent","Lentilles"]]],
+  ["Hospitalisation",[["hospO","Honoraires OPTAM"],["hospN","Honoraires hors OPTAM"],["ch","Chambre particulière"]]],
+  ["Soins courants",[["honoO","Honoraires OPTAM"],["honoN","Honoraires hors OPTAM"],["aud","Aides auditives"],["md","Médecines douces"]]]
+];
+const FILTRES={};
+try{Object.assign(FILTRES,JSON.parse(localStorage.getItem("santeo_filtres")||"{}"));}catch(e){}
+
+// Une garantie s'écrit « 250 % », « 300 € », « 60 €/j », « 100 % +150 € »… : on en tire
+// la valeur en pourcentage et celle en euros, qui ne sont pas comparables entre elles.
+function fparse(txt){
+  const t=String(txt==null?"":txt).replace(/ /g," ");
+  if(!t||t==="—") return null;
+  const p=/(\d+(?:[.,]\d+)?)\s*%/.exec(t);
+  const e=/(?:^|[^\d])(\d[\d\s]*(?:[.,]\d+)?)\s*€/.exec(t);
+  const n=x=>parseFloat(x.replace(/\s/g,"").replace(",","."));
+  const r={};
+  if(p)r.pct=n(p[1]);
+  if(e)r.eur=n(e[1]);
+  return (r.pct!=null||r.eur!=null)?r:null;
+}
+// Valeur d'un poste pour une ligne du tableau, garanties étendues comprises.
+function fvaleur(r,cle){
+  if(cle==="orthR"||cle==="orthN"||cle==="imp") { const e=EX[r.key]; return e&&e[cle]?e[cle][r.fi]:null; }
+  if(cle==="lent"){ const e=EX[r.key]; if(!e)return null; const a=e.lentA&&e.lentA[r.fi], b=e.lentR&&e.lentR[r.fi];
+                    return [a,b].filter(x=>x&&x!=="—").join(" ") || null; }
+  if(r[cle]!==undefined) return r[cle];
+  const f=F[r.key];                                  // appelé aussi hors ligne de tableau, pour lister les seuils
+  return (f&&f[cle])?f[cle][r.fi]:null;
+}
+// Seuils proposés : uniquement les valeurs qui existent réellement dans les gammes.
+function fseuils(cle){
+  const pcts=new Set(), eurs=new Set();
+  for(const k in F){
+    const n=F[k].names.length;
+    for(let i=0;i<n;i++){
+      const v=fparse(fvaleur({key:k,fi:i},cle));
+      if(!v)continue;
+      if(v.pct!=null)pcts.add(v.pct);
+      if(v.eur!=null)eurs.add(v.eur);
+    }
+  }
+  const tri=a=>[...a].sort((x,y)=>x-y);
+  return tri(pcts).map(v=>[v+"%",v+" %"]).concat(tri(eurs).map(v=>[v+"€",v+" €"]));
+}
+function fconstruit(){
+  const c=document.getElementById("fcorps"); if(!c||c.dataset.pret)return;
+  c.dataset.pret="1";
+  c.innerHTML='<div id="fbud"><label for="f_budget">Budget mensuel</label>'
+    +'<input id="f_budget" inputmode="decimal" placeholder="—" value="'+(FILTRES.budget||"")+'"></div>'
+    +'<div id="fbudnote">Les offres jusqu\'à 15 % au-dessus restent affichées, signalées dans le tableau.</div>'
+    +FPOSTES.map(([titre,postes])=>'<h4>'+titre+'</h4>'+postes.map(([cle,lib])=>{
+    const opts=fseuils(cle);
+    if(!opts.length)return"";
+    return '<div class="frow"><label for="f_'+cle+'">'+lib+'</label><select id="f_'+cle+'" data-f="'+cle+'">'
+      +'<option value="">aucun</option>'
+      +opts.map(o=>'<option value="'+o[0]+'">≥ '+o[1]+'</option>').join("")+'</select></div>';
+  }).join("")).join("");
+  const bud=c.querySelector("#f_budget");
+  bud.classList.toggle("on",!!bud.value);
+  bud.addEventListener("input",e=>{
+    const v=e.target.value.replace(",",".").trim();
+    if(v&&!isNaN(parseFloat(v)))FILTRES.budget=v; else delete FILTRES.budget;
+    e.target.classList.toggle("on",!!FILTRES.budget);
+    try{localStorage.setItem("santeo_filtres",JSON.stringify(FILTRES));}catch(x){}
+    calc();
+  });
+  c.querySelectorAll("select[data-f]").forEach(sel=>{
+    const cle=sel.dataset.f;
+    if(FILTRES[cle])sel.value=FILTRES[cle];
+    sel.classList.toggle("on",!!sel.value);
+    sel.addEventListener("change",e=>{
+      const v=e.target.value;
+      if(v)FILTRES[cle]=v; else delete FILTRES[cle];
+      e.target.classList.toggle("on",!!v);
+      try{localStorage.setItem("santeo_filtres",JSON.stringify(FILTRES));}catch(x){}
+      calc();
+    });
+  });
+}
+// Une offre est retenue si, pour chaque seuil posé, elle atteint ce seuil dans la même unité.
+// Une garantie exprimée dans une autre unité n'est pas comparable : l'offre est écartée et comptée à part.
+const FTOL=1.15;                       // une offre un peu au-dessus du budget reste montrable
+function fbudget(){ const v=parseFloat(String(FILTRES.budget||"").replace(",",".")); return isNaN(v)?null:v; }
+function ftest(r){
+  let incomparable=false;
+  const b=fbudget();
+  if(b!=null&&r.total>b*FTOL) return {ok:false,incomparable:false};
+  for(const cle in FILTRES){
+    if(cle==="budget")continue;
+    const m=/^(\d+(?:\.\d+)?)(%|€)$/.exec(FILTRES[cle]); if(!m)continue;
+    const seuil=parseFloat(m[1]), unite=m[2]==="%"?"pct":"eur";
+    const v=fparse(fvaleur(r,cle));
+    if(!v) return {ok:false,incomparable:false};          // poste non couvert
+    if(v[unite]==null){ incomparable=true; continue; }     // exprimé dans l'autre unité
+    if(v[unite]<seuil) return {ok:false,incomparable:false};
+  }
+  return {ok:!incomparable,incomparable:incomparable};
+}
+function fapplique(rows){
+  if(!Object.keys(FILTRES).length) return {rows:rows,total:rows.length,hors:0,incomp:0};
+  let incomp=0;
+  const gardees=rows.filter(r=>{const t=ftest(r); if(t.incomparable)incomp++; return t.ok;});
+  return {rows:gardees,total:rows.length,hors:rows.length-gardees.length-incomp,incomp:incomp};
+}
+function fmaj(info){
+  const n=Object.keys(FILTRES).length;
+  const nb=document.getElementById("f_budget");
+  if(nb&&nb.value!==(FILTRES.budget||""))nb.value=FILTRES.budget||"";
+  const b=document.getElementById("fbtn"); if(b){b.classList.toggle("actif",n>0); b.textContent=n?("⚖ Filtres · "+n):"⚖ Filtres";}
+  const c=document.getElementById("fcount");
+  if(c) c.innerHTML=!n?"Aucun filtre":(info.rows.length+" offre"+(info.rows.length>1?"s":"")+" sur "+info.total
+      +(info.incomp?'<small>'+info.incomp+" écartée"+(info.incomp>1?"s":"")+" : garantie non comparable (% / €)</small>":""));
+}
+(function(){
+  const b=document.getElementById("fbtn"), p=document.getElementById("fpan");
+  if(!b||!p)return;
+  const ouvre=o=>{p.classList.toggle("ouvert",o);p.setAttribute("aria-hidden",o?"false":"true");if(o)fconstruit();};
+  b.addEventListener("click",()=>ouvre(!p.classList.contains("ouvert")));
+  document.getElementById("fx").addEventListener("click",()=>ouvre(false));
+  document.getElementById("fraz").addEventListener("click",()=>{
+    for(const k in FILTRES)delete FILTRES[k];
+    try{localStorage.removeItem("santeo_filtres");}catch(e){}
+    document.querySelectorAll("#fcorps select[data-f]").forEach(s=>{s.value="";s.classList.remove("on");});
+    const bu=document.getElementById("f_budget"); if(bu){bu.value="";bu.classList.remove("on");}
+    calc();
+  });
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&p.classList.contains("ouvert"))ouvre(false);});
+})();
+
 function render(rows,warns){
+  const finfo=fapplique(rows);
+  rows=finfo.rows; fmaj(finfo);
+  if(Object.keys(FILTRES).length&&!rows.length) warns=warns.concat(["Aucune offre ne satisfait les filtres de garantie — assouplissez un critère."]);
   LASTROWS=rows;
   // Le cadre des conditions ne concerne que MCCINOVA : affiché seulement si la gamme figure dans le tableau
   try{document.getElementById("condbox").hidden=!rows.some(r=>r.key==="MCCINOVA");}catch(e){}
   const NC=buildHead();
   const tb=document.getElementById("rows");
-  if(!rows.length){tb.innerHTML='<tr><td colspan="'+NC+'" class="empty">Renseigne une année de naissance (ou un âge) pour lancer le calcul.</td></tr>';}
+  if(!rows.length){
+    const parFiltre=Object.keys(FILTRES).length&&finfo.total;
+    tb.innerHTML='<tr><td colspan="'+NC+'" class="empty">'
+      +(parFiltre?"Aucune des "+finfo.total+" offres ne satisfait les filtres de garantie. Assouplissez un critère dans le panneau ⚖."
+                 :"Renseigne une année de naissance (ou un âge) pour lancer le calcul.")+'</td></tr>';}
   else{
     tb.innerHTML=rows.map((r,i)=>{
       const rk=r.key+"|"+r.fi;
       const isOpen=openKeys.has(rk);
-      const chips=r.chips.map(c=>'<span class="chip '+c[0]+'">'+c[1]+"</span>").join("");
+      const bud=fbudget();
+      const sur=(bud!=null&&r.total>bud)?[["sur","+"+Math.round((r.total/bud-1)*100)+" % / budget"]]:[];
+      const chips=sur.concat(r.chips).map(c=>'<span class="chip '+c[0]+'">'+c[1]+"</span>").join("");
       const isR=RECO===rk;
       let h='<tr class="offer'+(isOpen?" open":"")+(isR?" reco":"")+'" data-rk="'+rk+'">'+
       '<td><span class="caret">▶</span><input type="checkbox" class="sendchk"'+(SENDSEL.has(rk)?" checked":"")+' data-rk="'+rk+'" title="Cocher pour envoyer par mail / WhatsApp"></td>'+

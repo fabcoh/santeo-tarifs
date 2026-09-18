@@ -49,6 +49,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Adresse à l'import de documents** : un seul choix parmi attestation > RIB > pièce d'identité, validé par le commercial.
 - **Tableau de garantie** : tarifs et prospect affichés d'office, case « Sans tarifs », barre unique
   Télécharger / WhatsApp / Email (+ Déposer dans le CRM). Pas de second aperçu.
+- **Filtre par garantie** (panneau ⚖ sur le bord droit) : un seuil minimum par poste (dentaire, implantologie,
+  orthodontie remboursée / non remboursée, optique, lentilles, hospitalisation, honoraires, chambre, audio,
+  médecines douces) + un **budget mensuel** avec tolérance **+15 %**. Les seuils proposés sont uniquement les
+  valeurs présentes dans les gammes. Une garantie exprimée dans l'autre unité (% contre €) n'est pas comparable :
+  l'offre est écartée et comptée à part, jamais silencieusement. Sélection mémorisée sur l'appareil.
+  Les offres au-dessus du budget portent une pastille « +x % / budget ».
 - **Après génération** : fenêtre « Faire signer sur Universign » (nom de collecte, signataire à copier, fichiers,
   page Universign intégrée en iframe). Le glisser-déposer d'un fichier vers un autre site est interdit par le navigateur.
 
