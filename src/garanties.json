@@ -1,0 +1,1538 @@
+{
+ "genere": "/tmp/tmpe5ui0_e9.js",
+ "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
+ "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
+ "compagnies": {
+  "MCCINOVA": "MCCI",
+  "FLEXIA": "MCCI",
+  "SOLENCIA": "MCCI",
+  "CAPEVO": "AVENIR M.",
+  "CAPNR": "AVENIR M.",
+  "LPSH": "AVENIR M.",
+  "REV": "AVENIR M.",
+  "RF50": "AVENIR M.",
+  "RF100": "AVENIR M.",
+  "TALIS": "AVENIR M.",
+  "MV": "M. VERTE",
+  "APICIL": "APICIL"
+ },
+ "postes": [
+  {
+   "cle": "hospO",
+   "libelle": "Hospitalisation Optam",
+   "source": "gammes"
+  },
+  {
+   "cle": "hospN",
+   "libelle": "Hospitalisation hors Optam",
+   "source": "gammes"
+  },
+  {
+   "cle": "ch",
+   "libelle": "Chambre particulière",
+   "source": "gammes"
+  },
+  {
+   "cle": "honoO",
+   "libelle": "Consult. spécialistes Optam",
+   "source": "gammes"
+  },
+  {
+   "cle": "honoN",
+   "libelle": "Consult. hors Optam",
+   "source": "gammes"
+  },
+  {
+   "cle": "dent",
+   "libelle": "Dentaire — prothèses",
+   "source": "gammes"
+  },
+  {
+   "cle": "imp",
+   "libelle": "Implantologie",
+   "source": "extras"
+  },
+  {
+   "cle": "orthR",
+   "libelle": "Orthodontie remboursée",
+   "source": "extras"
+  },
+  {
+   "cle": "orthN",
+   "libelle": "Orthodontie non remboursée",
+   "source": "extras"
+  },
+  {
+   "cle": "opt",
+   "libelle": "Optique (équipement)",
+   "source": "gammes"
+  },
+  {
+   "cle": "lentA",
+   "libelle": "Lentilles acceptées",
+   "source": "extras"
+  },
+  {
+   "cle": "lentR",
+   "libelle": "Lentilles refusées",
+   "source": "extras"
+  },
+  {
+   "cle": "aud",
+   "libelle": "Aides auditives",
+   "source": "extras"
+  },
+  {
+   "cle": "md",
+   "libelle": "Médecine douce / bien-être",
+   "source": "gammes"
+  }
+ ],
+ "gammes": {
+  "MCCINOVA": {
+   "label": "MCCINOVA",
+   "resp": false,
+   "ins": "mcci",
+   "names": [
+    "Socle",
+    "Essentielle",
+    "Ajustée",
+    "Maîtrisée"
+   ],
+   "hospO": [
+    "100 %",
+    "130 %",
+    "160 %",
+    "190 %"
+   ],
+   "hospN": [
+    "100 %",
+    "110 %",
+    "140 %",
+    "170 %"
+   ],
+   "honoO": [
+    "100 %",
+    "130 %",
+    "160 %",
+    "190 %"
+   ],
+   "honoN": [
+    "100 %",
+    "110 %",
+    "140 %",
+    "170 %"
+   ],
+   "dent": [
+    "—",
+    "—",
+    "—",
+    "150 %"
+   ],
+   "opt": [
+    "—",
+    "—",
+    "—",
+    "—"
+   ],
+   "aud": [
+    "—",
+    "—",
+    "—",
+    "—"
+   ],
+   "ch": [
+    "—",
+    "30 €/j",
+    "40 €/j",
+    "50 €/j"
+   ],
+   "md": [
+    "—",
+    "—",
+    "—",
+    "—"
+   ]
+  },
+  "FLEXIA": {
+   "label": "FLEXIA",
+   "resp": true,
+   "ins": "mcci",
+   "names": [
+    "Start",
+    "Confort",
+    "Performance",
+    "Premium"
+   ],
+   "hospO": [
+    "100 %",
+    "150 %",
+    "200 %",
+    "300 %"
+   ],
+   "hospN": [
+    "100 %",
+    "130 %",
+    "180 %",
+    "200 %"
+   ],
+   "honoO": [
+    "100 %",
+    "150 %",
+    "200 %",
+    "300 %"
+   ],
+   "honoN": [
+    "100 %",
+    "130 %",
+    "180 %",
+    "200 %"
+   ],
+   "dent": [
+    "100 %",
+    "150 %",
+    "200 %",
+    "300 %"
+   ],
+   "opt": [
+    "100 % BR",
+    "95 €",
+    "110 €",
+    "120 €"
+   ],
+   "aud": [
+    "400 €",
+    "500 €",
+    "600 €",
+    "700 €"
+   ],
+   "ch": [
+    "—",
+    "30 €/j",
+    "45 €/j",
+    "60 €/j"
+   ],
+   "md": [
+    "—",
+    "5×30 €",
+    "5×40 €",
+    "5×50 €"
+   ]
+  },
+  "SOLENCIA": {
+   "label": "SOLENCIA",
+   "resp": true,
+   "ins": "mcci",
+   "names": [
+    "Origine",
+    "Équilibre",
+    "Plénitude",
+    "Absolue"
+   ],
+   "hospO": [
+    "180 %",
+    "200 %",
+    "300 %",
+    "350 %"
+   ],
+   "hospN": [
+    "160 %",
+    "180 %",
+    "200 %",
+    "200 %"
+   ],
+   "honoO": [
+    "180 %",
+    "200 %",
+    "300 %",
+    "350 %"
+   ],
+   "honoN": [
+    "160 %",
+    "180 %",
+    "200 %",
+    "200 %"
+   ],
+   "dent": [
+    "160 %",
+    "200 %",
+    "300 %",
+    "350 %"
+   ],
+   "opt": [
+    "90 €",
+    "120 €",
+    "160 €",
+    "175 €"
+   ],
+   "aud": [
+    "260 %",
+    "310 %",
+    "310 %",
+    "360 %"
+   ],
+   "ch": [
+    "30 €/j",
+    "45 €/j",
+    "60 €/j",
+    "80 €/j"
+   ],
+   "md": [
+    "5×40 €",
+    "5×50 €",
+    "5×50 €",
+    "5×60 €"
+   ]
+  },
+  "CAPEVO": {
+   "label": "CAP EVOLUTION",
+   "resp": true,
+   "ins": "avenir",
+   "names": [
+    "Accès",
+    "Équilibre",
+    "Tranquillité",
+    "Sérénité"
+   ],
+   "hospO": [
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %"
+   ],
+   "hospN": [
+    "100 %",
+    "110 %",
+    "140 %",
+    "180 %"
+   ],
+   "honoO": [
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %"
+   ],
+   "honoN": [
+    "100 %",
+    "110 %",
+    "140 %",
+    "180 %"
+   ],
+   "dent": [
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %"
+   ],
+   "opt": [
+    "100 €",
+    "230 €",
+    "250 €",
+    "300 €"
+   ],
+   "aud": [
+    "200 €",
+    "200 €",
+    "1 000 €",
+    "1 000 €"
+   ],
+   "ch": [
+    "—",
+    "40 €/j",
+    "60 €/j",
+    "80 €/j"
+   ],
+   "md": [
+    "—",
+    "120 €/an",
+    "160 €/an",
+    "200 €/an"
+   ]
+  },
+  "CAPNR": {
+   "label": "CAP NR",
+   "resp": false,
+   "ins": "avenir",
+   "names": [
+    "Cap Essentiel",
+    "Cap 100 NR",
+    "Cap 130 NR",
+    "Cap 160 NR",
+    "Cap 200 NR",
+    "Cap 300 NR",
+    "Cap 400 NR"
+   ],
+   "hospO": [
+    "100 %",
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %",
+    "300 %",
+    "400 %"
+   ],
+   "hospN": [
+    "100 %",
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %",
+    "300 %",
+    "400 %"
+   ],
+   "honoO": [
+    "100 %",
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %",
+    "300 %",
+    "400 %"
+   ],
+   "honoN": [
+    "100 %",
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %",
+    "300 %",
+    "400 %"
+   ],
+   "dent": [
+    "—",
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %",
+    "300 %",
+    "400 %"
+   ],
+   "opt": [
+    "—",
+    "130 €",
+    "200 €",
+    "200 €",
+    "250 €",
+    "350 €",
+    "450 €"
+   ],
+   "aud": [
+    "—",
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %",
+    "200 %",
+    "200 %"
+   ],
+   "ch": [
+    "25 €/j",
+    "30 €/j",
+    "40 €/j",
+    "60 €/j",
+    "80 €/j",
+    "100 €/j",
+    "120 €/j"
+   ],
+   "md": [
+    "—",
+    "30 €",
+    "40 €",
+    "50 €",
+    "75 €",
+    "100 €",
+    "150 €"
+   ]
+  },
+  "REV": {
+   "label": "REVOLUO",
+   "resp": true,
+   "ins": "avenir",
+   "names": [
+    "Rev 1",
+    "Rev 2",
+    "Rev 3",
+    "Rev 4",
+    "Rev 5",
+    "Rev 6",
+    "Rev 7",
+    "Rev 8"
+   ],
+   "hospO": [
+    "100 %",
+    "100 %",
+    "125 %",
+    "150 %",
+    "175 %",
+    "200 %",
+    "250 %",
+    "300 %"
+   ],
+   "hospN": [
+    "100 %",
+    "100 %",
+    "105 %",
+    "130 %",
+    "155 %",
+    "180 %",
+    "200 %",
+    "200 %"
+   ],
+   "honoO": [
+    "100 %",
+    "100 %",
+    "125 %",
+    "150 %",
+    "175 %",
+    "200 %",
+    "250 %",
+    "300 %"
+   ],
+   "honoN": [
+    "100 %",
+    "100 %",
+    "105 %",
+    "130 %",
+    "155 %",
+    "180 %",
+    "200 %",
+    "200 %"
+   ],
+   "dent": [
+    "100 %",
+    "100 %",
+    "125 %",
+    "150 %",
+    "175 %",
+    "200 %",
+    "250 %",
+    "300 %"
+   ],
+   "opt": [
+    "—",
+    "100 €",
+    "125 €",
+    "150 €",
+    "175 €",
+    "225 €",
+    "275 €",
+    "300 €"
+   ],
+   "ch": [
+    "—",
+    "30 €/j",
+    "35 €/j",
+    "40 €/j",
+    "50 €/j",
+    "60 €/j",
+    "70 €/j",
+    "100 €/j"
+   ],
+   "md": [
+    "—",
+    "4×20 €",
+    "4×20 €",
+    "4×20 €",
+    "4×20 €",
+    "4×20 €",
+    "4×20 €",
+    "4×20 €"
+   ]
+  },
+  "RF50": {
+   "label": "REVOLUO RF50",
+   "resp": true,
+   "ins": "avenir",
+   "names": [
+    "Rev 2",
+    "Rev 3",
+    "Rev 4",
+    "Rev 5",
+    "Rev 6",
+    "Rev 7",
+    "Rev 8"
+   ],
+   "hospO": [
+    "100 %",
+    "125 %",
+    "150 %",
+    "175 %",
+    "200 %",
+    "250 %",
+    "300 %"
+   ],
+   "hospN": [
+    "100 %",
+    "105 %",
+    "130 %",
+    "155 %",
+    "180 %",
+    "200 %",
+    "200 %"
+   ],
+   "honoO": [
+    "100 %",
+    "125 %",
+    "150 %",
+    "175 %",
+    "200 %",
+    "250 %",
+    "300 %"
+   ],
+   "honoN": [
+    "100 %",
+    "105 %",
+    "130 %",
+    "155 %",
+    "180 %",
+    "200 %",
+    "200 %"
+   ],
+   "dent": [
+    "150 %",
+    "175 %",
+    "200 %",
+    "225 %",
+    "250 %",
+    "300 %",
+    "350 %"
+   ],
+   "opt": [
+    "150 €",
+    "175 €",
+    "200 €",
+    "225 €",
+    "275 €",
+    "325 €",
+    "350 €"
+   ],
+   "ch": [
+    "30 €/j",
+    "35 €/j",
+    "40 €/j",
+    "50 €/j",
+    "60 €/j",
+    "70 €/j",
+    "100 €/j"
+   ],
+   "md": [
+    "4×20 €",
+    "4×20 €",
+    "4×20 €",
+    "4×20 €",
+    "4×20 €",
+    "4×20 €",
+    "4×20 €"
+   ]
+  },
+  "RF100": {
+   "label": "REVOLUO RF100",
+   "resp": true,
+   "ins": "avenir",
+   "names": [
+    "Rev 2",
+    "Rev 3",
+    "Rev 4",
+    "Rev 5",
+    "Rev 6"
+   ],
+   "hospO": [
+    "100 %",
+    "125 %",
+    "150 %",
+    "175 %",
+    "200 %"
+   ],
+   "hospN": [
+    "100 %",
+    "105 %",
+    "130 %",
+    "155 %",
+    "180 %"
+   ],
+   "honoO": [
+    "100 %",
+    "125 %",
+    "150 %",
+    "175 %",
+    "200 %"
+   ],
+   "honoN": [
+    "100 %",
+    "105 %",
+    "130 %",
+    "155 %",
+    "180 %"
+   ],
+   "dent": [
+    "200 %",
+    "225 %",
+    "250 %",
+    "275 %",
+    "300 %"
+   ],
+   "opt": [
+    "150 €",
+    "175 €",
+    "200 €",
+    "225 €",
+    "275 €"
+   ],
+   "ch": [
+    "30 €/j",
+    "35 €/j",
+    "40 €/j",
+    "50 €/j",
+    "60 €/j"
+   ],
+   "md": [
+    "4×20 €",
+    "4×20 €",
+    "4×20 €",
+    "4×20 €",
+    "4×20 €"
+   ]
+  },
+  "MV": {
+   "label": "M. VERTE GCI",
+   "resp": true,
+   "ins": "mverte",
+   "names": [
+    "GCI 100",
+    "GCI 150",
+    "GCI 200",
+    "GCI 300",
+    "GCI 500"
+   ],
+   "hospO": [
+    "100 %",
+    "160 %",
+    "200 %",
+    "300 %",
+    "500 %"
+   ],
+   "hospN": [
+    "100 %",
+    "140 %",
+    "180 %",
+    "200 %",
+    "200 %"
+   ],
+   "honoO": [
+    "100 %",
+    "160 %",
+    "200 %",
+    "300 %",
+    "500 %"
+   ],
+   "honoN": [
+    "100 %",
+    "140 %",
+    "180 %",
+    "200 %",
+    "200 %"
+   ],
+   "dent": [
+    "100 %",
+    "200 %",
+    "250 %",
+    "400 %",
+    "500 %"
+   ],
+   "opt": [
+    "100 %",
+    "150 €",
+    "250 €",
+    "300 €",
+    "350 €"
+   ],
+   "ch": [
+    "—",
+    "50 €/j",
+    "55 €/j",
+    "65 €/j",
+    "70 €/j"
+   ],
+   "md": [
+    "10 €/s",
+    "20 €/s",
+    "30 €/s",
+    "40 €/s",
+    "50 €/s"
+   ]
+  },
+  "LPSH": {
+   "label": "LPS HOSPI",
+   "resp": false,
+   "ins": "avenir",
+   "names": [
+    "LPS Hospi Santé"
+   ],
+   "ij": [
+    "20 €/jour dès le 1er jour"
+   ],
+   "hospO": [
+    "100 %"
+   ],
+   "hospN": [
+    "100 %"
+   ],
+   "honoO": [
+    "—"
+   ],
+   "honoN": [
+    "—"
+   ],
+   "dent": [
+    "—"
+   ],
+   "opt": [
+    "—"
+   ],
+   "aud": [
+    "—"
+   ],
+   "ch": [
+    "40 €/j"
+   ],
+   "md": [
+    "—"
+   ]
+  },
+  "APICIL": {
+   "label": "API SANTÉ",
+   "resp": true,
+   "ins": "apicil",
+   "names": [
+    "Équilibre 1",
+    "Équilibre 2",
+    "Équilibre 3",
+    "Équilibre 4",
+    "Équilibre 5",
+    "Équilibre 6",
+    "Sérénité 1",
+    "Sérénité 2",
+    "Sérénité 3",
+    "Sérénité 4",
+    "Sérénité 5"
+   ],
+   "hospO": [
+    "100 %",
+    "150 %",
+    "200 %",
+    "250 %",
+    "300 %",
+    "400 %",
+    "150 %",
+    "200 %",
+    "250 %",
+    "300 %",
+    "400 %"
+   ],
+   "hospN": [
+    "100 %",
+    "130 %",
+    "180 %",
+    "200 %",
+    "200 %",
+    "200 %",
+    "130 %",
+    "180 %",
+    "200 %",
+    "200 %",
+    "200 %"
+   ],
+   "honoO": [
+    "100 %",
+    "150 %",
+    "200 %",
+    "220 %",
+    "250 %",
+    "300 %",
+    "150 %",
+    "200 %",
+    "220 %",
+    "250 %",
+    "300 %"
+   ],
+   "honoN": [
+    "100 %",
+    "130 %",
+    "180 %",
+    "200 %",
+    "200 %",
+    "200 %",
+    "130 %",
+    "180 %",
+    "200 %",
+    "200 %",
+    "200 %"
+   ],
+   "dent": [
+    "100 %",
+    "150 %",
+    "200 %",
+    "250 %",
+    "350 %",
+    "500 %",
+    "200 %",
+    "250 %",
+    "350 %",
+    "350 %",
+    "500 %"
+   ],
+   "opt": [
+    "100 % BR",
+    "100 €",
+    "200 €",
+    "250 €",
+    "300 €",
+    "420 €",
+    "100 €",
+    "200 €",
+    "250 €",
+    "300 €",
+    "420 €"
+   ],
+   "aud": [
+    "100 % BR",
+    "100 €/oreille",
+    "200 €/oreille",
+    "300 €/oreille",
+    "400 €/oreille",
+    "500 €/oreille",
+    "100 €/oreille",
+    "300 €/oreille",
+    "500 €/oreille",
+    "700 €/oreille",
+    "800 €/oreille"
+   ],
+   "ch": [
+    "—",
+    "30 €/j",
+    "50 €/j",
+    "60 €/j",
+    "80 €/j",
+    "100 €/j",
+    "30 €/j",
+    "50 €/j",
+    "60 €/j",
+    "80 €/j",
+    "100 €/j"
+   ],
+   "md": [
+    "—",
+    "—",
+    "—",
+    "—",
+    "—",
+    "—",
+    "—",
+    "—",
+    "—",
+    "—",
+    "—"
+   ]
+  },
+  "TALIS": {
+   "label": "TALIS",
+   "resp": false,
+   "ins": "avenir",
+   "names": [
+    "Talis",
+    "Talis +"
+   ],
+   "hospO": [
+    "+50 %",
+    "+100 %"
+   ],
+   "hospN": [
+    "+50 %",
+    "+100 %"
+   ],
+   "honoO": [
+    "+25 %",
+    "+50 %"
+   ],
+   "honoN": [
+    "+25 %",
+    "+50 %"
+   ],
+   "dent": [
+    "50 €/dent",
+    "100 €/dent"
+   ],
+   "opt": [
+    "50 €",
+    "100 €"
+   ],
+   "aud": [
+    "—",
+    "100 €"
+   ],
+   "ch": [
+    "20 €/j",
+    "30 €/j"
+   ],
+   "md": [
+    "3×15 €",
+    "3×20 €"
+   ]
+  }
+ },
+ "extras": {
+  "MCCINOVA": {
+   "aud": [
+    "—",
+    "—",
+    "—",
+    "—"
+   ],
+   "imp": [
+    "—",
+    "—",
+    "—",
+    "150 %"
+   ],
+   "orthR": [
+    "—",
+    "—",
+    "—",
+    "—"
+   ],
+   "orthN": [
+    "—",
+    "—",
+    "—",
+    "—"
+   ],
+   "lentA": [
+    "—",
+    "—",
+    "—",
+    "—"
+   ],
+   "lentR": [
+    "—",
+    "—",
+    "—",
+    "—"
+   ]
+  },
+  "FLEXIA": {
+   "aud": [
+    "400 €",
+    "500 €",
+    "600 €",
+    "700 €"
+   ],
+   "imp": [
+    "—",
+    "—",
+    "—",
+    "300 €"
+   ],
+   "orthR": [
+    "100 %",
+    "150 %",
+    "200 %",
+    "300 %"
+   ],
+   "orthN": [
+    "—",
+    "—",
+    "150 €",
+    "250 €"
+   ],
+   "lentA": [
+    "100 % BR",
+    "60 €",
+    "80 €",
+    "100 €"
+   ],
+   "lentR": [
+    "100 % BR",
+    "60 €",
+    "80 €",
+    "100 €"
+   ]
+  },
+  "SOLENCIA": {
+   "aud": [
+    "260 %",
+    "310 %",
+    "310 %",
+    "360 %"
+   ],
+   "imp": [
+    "—",
+    "150 €",
+    "200 €",
+    "400 €"
+   ],
+   "orthR": [
+    "160 %",
+    "200 %",
+    "300 %",
+    "350 %"
+   ],
+   "orthN": [
+    "—",
+    "150 €",
+    "200 €",
+    "300 €"
+   ],
+   "lentA": [
+    "—",
+    "50 €",
+    "70 €",
+    "100 €"
+   ],
+   "lentR": [
+    "—",
+    "50 €",
+    "70 €",
+    "100 €"
+   ]
+  },
+  "CAPEVO": {
+   "aud": [
+    "200 €",
+    "200 €",
+    "1 000 €",
+    "1 000 €"
+   ],
+   "imp": [
+    "—",
+    "300 €",
+    "500 €",
+    "700 €"
+   ],
+   "orthR": [
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %"
+   ],
+   "orthN": [
+    "—",
+    "—",
+    "160 €",
+    "200 €"
+   ],
+   "lentA": [
+    "100 €/an",
+    "100 €/an",
+    "260 €/an",
+    "300 €/an"
+   ],
+   "lentR": [
+    "100 €/an",
+    "100 €/an",
+    "260 €/an",
+    "300 €/an"
+   ]
+  },
+  "CAPNR": {
+   "aud": [
+    "—",
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %",
+    "200 %",
+    "200 %"
+   ],
+   "imp": [
+    "—",
+    "—",
+    "—",
+    "160 €",
+    "200 €",
+    "300 €",
+    "400 €"
+   ],
+   "orthR": [
+    "—",
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %",
+    "300 %",
+    "400 %"
+   ],
+   "orthN": [
+    "—",
+    "—",
+    "—",
+    "160 €",
+    "200 €",
+    "300 €",
+    "400 €"
+   ],
+   "lentA": [
+    "incl. opt.",
+    "incl. opt.",
+    "incl. opt.",
+    "incl. opt.",
+    "incl. opt.",
+    "incl. opt.",
+    "incl. opt."
+   ],
+   "lentR": [
+    "incl. opt.",
+    "incl. opt.",
+    "incl. opt.",
+    "incl. opt.",
+    "incl. opt.",
+    "incl. opt.",
+    "incl. opt."
+   ]
+  },
+  "REV": {
+   "aud": [
+    "100 %",
+    "+50 €",
+    "+100 €",
+    "+150 €",
+    "+200 €",
+    "+250 €",
+    "+300 €",
+    "+350 €"
+   ],
+   "imp": [
+    "—",
+    "40 €",
+    "60 €",
+    "80 €",
+    "100 €",
+    "150 €",
+    "200 €",
+    "250 €"
+   ],
+   "orthR": [
+    "100 %",
+    "100 %",
+    "125 %",
+    "150 %",
+    "175 %",
+    "200 %",
+    "250 %",
+    "300 %"
+   ],
+   "orthN": [
+    "—",
+    "—",
+    "25 %",
+    "50 %",
+    "75 %",
+    "100 %",
+    "150 %",
+    "200 %"
+   ],
+   "lentA": [
+    "100 %",
+    "100 % +100 €",
+    "100 % +125 €",
+    "100 % +150 €",
+    "100 % +175 €",
+    "100 % +225 €",
+    "100 % +275 €",
+    "100 % +300 €"
+   ],
+   "lentR": [
+    "—",
+    "+100 €",
+    "+125 €",
+    "+150 €",
+    "+175 €",
+    "+225 €",
+    "+275 €",
+    "+300 €"
+   ]
+  },
+  "RF50": {
+   "aud": [
+    "+50 €",
+    "+100 €",
+    "+150 €",
+    "+200 €",
+    "+250 €",
+    "+300 €",
+    "+350 €"
+   ],
+   "imp": [
+    "40 €",
+    "60 €",
+    "80 €",
+    "100 €",
+    "150 €",
+    "200 €",
+    "250 €"
+   ],
+   "orthR": [
+    "150 %",
+    "175 %",
+    "200 %",
+    "225 %",
+    "250 %",
+    "300 %",
+    "350 %"
+   ],
+   "orthN": [
+    "50 %",
+    "75 %",
+    "100 %",
+    "125 %",
+    "150 %",
+    "200 %",
+    "250 %"
+   ],
+   "lentA": [
+    "100 % +150 €",
+    "100 % +175 €",
+    "100 % +200 €",
+    "100 % +225 €",
+    "100 % +275 €",
+    "100 % +325 €",
+    "100 % +350 €"
+   ],
+   "lentR": [
+    "+150 €",
+    "+175 €",
+    "+200 €",
+    "+225 €",
+    "+275 €",
+    "+325 €",
+    "+350 €"
+   ]
+  },
+  "RF100": {
+   "aud": [
+    "+50 €",
+    "+100 €",
+    "+150 €",
+    "+200 €",
+    "+250 €"
+   ],
+   "imp": [
+    "40 €",
+    "60 €",
+    "80 €",
+    "100 €",
+    "150 €"
+   ],
+   "orthR": [
+    "200 %",
+    "225 %",
+    "250 %",
+    "275 %",
+    "300 %"
+   ],
+   "orthN": [
+    "100 %",
+    "125 %",
+    "150 %",
+    "175 %",
+    "200 %"
+   ],
+   "lentA": [
+    "100 % +150 €",
+    "100 % +175 €",
+    "100 % +200 €",
+    "100 % +225 €",
+    "100 % +275 €"
+   ],
+   "lentR": [
+    "+150 €",
+    "+175 €",
+    "+200 €",
+    "+225 €",
+    "+275 €"
+   ]
+  },
+  "MV": {
+   "aud": [
+    "100 %",
+    "150 %",
+    "200 %",
+    "300 %",
+    "500 %"
+   ],
+   "imp": [
+    "—",
+    "300 €",
+    "350 €",
+    "400 €",
+    "500 €"
+   ],
+   "orthR": [
+    "100 %",
+    "200 %",
+    "250 %",
+    "400 %",
+    "500 %"
+   ],
+   "orthN": [
+    "—",
+    "300 €",
+    "350 €",
+    "400 €",
+    "500 €"
+   ],
+   "lentA": [
+    "100 % +50 €",
+    "100 % +100 €",
+    "100 % +150 €",
+    "100 % +150 €",
+    "100 % +200 €"
+   ],
+   "lentR": [
+    "+50 €",
+    "+100 €",
+    "+150 €",
+    "+150 €",
+    "+200 €"
+   ]
+  },
+  "LPSH": {
+   "aud": [
+    "—"
+   ],
+   "imp": [
+    "—"
+   ],
+   "orthR": [
+    "—"
+   ],
+   "orthN": [
+    "—"
+   ],
+   "lentA": [
+    "—"
+   ],
+   "lentR": [
+    "—"
+   ]
+  },
+  "APICIL": {
+   "aud": [
+    "100 % BR",
+    "100 €/oreille",
+    "200 €/oreille",
+    "300 €/oreille",
+    "400 €/oreille",
+    "500 €/oreille",
+    "100 €/oreille",
+    "300 €/oreille",
+    "500 €/oreille",
+    "700 €/oreille",
+    "800 €/oreille"
+   ],
+   "imp": [
+    "—",
+    "—",
+    "—",
+    "250 €/impl",
+    "500 €/impl",
+    "700 €/impl",
+    "—",
+    "250 €/impl",
+    "500 €/impl",
+    "500 €/impl",
+    "700 €/impl"
+   ],
+   "orthR": [
+    "100 %",
+    "150 %",
+    "200 %",
+    "300 %",
+    "400 %",
+    "500 %",
+    "200 %",
+    "300 %",
+    "400 %",
+    "400 %",
+    "500 %"
+   ],
+   "orthN": [
+    "—",
+    "—",
+    "—",
+    "—",
+    "—",
+    "—",
+    "—",
+    "—",
+    "—",
+    "—",
+    "—"
+   ],
+   "lentA": [
+    "100 % BR",
+    "100 % BR",
+    "125 €",
+    "175 €",
+    "185 €",
+    "300 €",
+    "100 % BR",
+    "125 €",
+    "175 €",
+    "185 €",
+    "300 €"
+   ],
+   "lentR": [
+    "—",
+    "—",
+    "125 €",
+    "175 €",
+    "185 €",
+    "300 €",
+    "—",
+    "125 €",
+    "175 €",
+    "185 €",
+    "300 €"
+   ]
+  },
+  "TALIS": {
+   "aud": [
+    "—",
+    "100 €"
+   ],
+   "imp": [
+    "200 €/impl",
+    "300 €/impl"
+   ],
+   "orthR": [
+    "100 €/sem",
+    "200 €/sem"
+   ],
+   "orthN": [
+    "100 €/sem",
+    "150 €/sem"
+   ],
+   "lentA": [
+    "25 €/an",
+    "50 €/an"
+   ],
+   "lentR": [
+    "25 €/an",
+    "50 €/an"
+   ]
+  }
+ },
+ "notes": {
+  "MCCINOVA": "Grille MCCINOVA (18–90 ans, tarif national). Pas d’optique, d’audio ni de 100 % Santé. Chambre particulière à partir du 4ᵉ jour. 30 premiers jours limités à la formule Socle. Statut responsable à confirmer auprès de MCCI.",
+  "FLEXIA": "Contrat solidaire et responsable, 100 % Santé. Plafond prothèses 2 500 €/an (Confort+). Capital obsèques 1 500 € avant 65 ans. Souscription 18–84 ans.",
+  "SOLENCIA": "Contrat solidaire et responsable, 100 % Santé. Souscription 62–99 ans. Plafond dentaire 2 000 €/an. Cures 100–300 %, prévention 50–200 €/an.",
+  "CAPEVO": "Contrat responsable. Plafonds dentaires progressifs 600–1 300 € selon ancienneté. Audio enfant −20 ans : 840–1 700 €. Pharmacie non remb. 30 €/an (Équilibre+).",
+  "CAPNR": "Contrat NON responsable. Souscription 16–100 ans, zonage AVENIR. Plafonds dentaires 600–1 500 € selon ancienneté et formule. Lentilles incluses dans le forfait optique global (130–450 €). Fidélité optique dès la 3ᵉ année. Frais funéraires 200–1 000 €.",
+  "REV": "Contrat responsable et solidaire, 100 % Santé. Souscription 19–80 ans (Rev 7/8 : 70 ans max), pas de DOM-TOM. Plafond dentaire 1 400 € (Rev 7) / 2 000 € (Rev 8). Chambre limitée 90 j (30 j psy).",
+  "RF50": "REVOLUO + Renfort 50 : +50 % sur soins/prothèses/orthodontie dentaires, +50 € verres et lentilles. Éligible Rev 2 à 8.",
+  "RF100": "REVOLUO + Renfort 100 : +100 % dentaire, +50 € verres et lentilles. Éligible Rev 2 à 6.",
+  "MV": "La Mutuelle Verte, gamme Courtage GCI. Âge réel, 18 ans minimum. GCI 100–300 responsables ; GCI 500 NON responsable, sans 100 % Santé. Plafonds dentaires 750–2 400 €/12 mois. Audio max 1 700 €/acte/48 mois. Prévention plafonnée 30–150 €/an. Délais de stage applicables (GCI 500 notamment).",
+  "LPSH": "Contrat NON responsable limité aux frais d’hospitalisation : aucun remboursement en ville (consultations, pharmacie, dentaire, optique, audio). Inclus : frais de séjour et honoraires 100 % BR (OPTAM et non OPTAM), forfait journalier 100 % FR, chambre particulière 40 €/jour, lit d’accompagnant enfant de moins de 16 ans 15 €/nuit, indemnités journalières 20 €/jour dès le 1er jour, forfait patient urgence et participation actes lourds 100 % FR, transport 100 % BR, « Mon soutien psy » 100 % BR. Assistance RMA, téléconsultation, Noé Santé, deuxième avis. Pas de réseau Kalixia. Forfait journalier et chambre particulière limités à 30 j la 1re année, 60 j la 2e, 90 j ensuite ; long séjour, maison de retraite et gériatrie exclus. Adhésion sans questionnaire médical, 16 à 100 ans, zonage AVENIR.",
+  "TALIS": "Surcomplémentaire (non responsable) : intervient après la Sécu ET une complémentaire principale. Carence 90 j dentaire/optique. Plafond dentaire 600/900 €/an. Chambre 90 j (30 j psy). Sans questionnaire de santé."
+ }
+}

@@ -11,7 +11,7 @@ Produit dans dist/ :
   index.html              page GitHub Pages — import automatique par le lien, copie d'image directe,
                           bulletin PDF derrière un code d'accès (ADH_PASSWORD ci-dessous)
 """
-import base64, hashlib, pathlib, datetime
+import base64, hashlib, json, pathlib, datetime, subprocess, tempfile
 # Horodatage de construction : ISO en UTC, la page l'affiche dans l'heure locale du navigateur
 BUILD = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -31,9 +31,84 @@ SRC, DIST = ROOT/"src", ROOT/"dist"
 DIST.mkdir(exist_ok=True)
 
 tpl  = (SRC/"comparateur.html").read_text(encoding="utf-8")
+
+# ---------------------------------------------------------------- garanties.json
+# Les garanties par formule vivent dans comparateur.html (objets F, EX, COMP, TGNOTE,
+# TGROWS) : c'est la page qui les affiche, c'est elle qui fait foi. On les republie
+# telles quelles en JSON pour que le CRM WhatsApp lise les memes valeurs, sans jamais
+# les recopier a la main. La page, elle, ne depend pas de ce fichier.
+
+def _bloc(nom, ligne_debut):
+    """Texte d'une declaration JS, de sa ligne d'ouverture au « }; » en debut de ligne."""
+    i = tpl.find(ligne_debut)
+    if i < 0:
+        raise SystemExit("build.py : declaration introuvable dans comparateur.html — " + nom)
+    fin = tpl.find("\n};", i)
+    if fin < 0:                      # declaration tenant sur une seule ligne
+        fin = tpl.find("\n", i)
+        return tpl[i:fin]
+    return tpl[i:fin + 3]
+
+def ecrire_garanties():
+    decls = "\n".join([
+        _bloc("F", "const F = {"),
+        _bloc("EX", "const EX={"),
+        _bloc("TGNOTE", "const TGNOTE={"),
+        _bloc("TGROWS", "const TGROWS=["),
+        _bloc("COMP", "const COMP={"),
+    ])
+    dump = decls + """
+const postes = TGROWS.map(([libelle, src]) => src.startsWith("x:")
+  ? {cle: src.slice(2), libelle, source: "extras"}
+  : {cle: src, libelle, source: "gammes"});
+console.log(JSON.stringify({
+  genere: process.argv[1],
+  source: "src/comparateur.html — objets F, EX, COMP, TGNOTE",
+  avertissement: "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
+  compagnies: COMP, postes, gammes: F, extras: EX, notes: TGNOTE,
+}, null, 1));
+"""
+    with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as fh:
+        fh.write(dump)
+        chemin = fh.name
+    try:
+        sortie = subprocess.run(["node", chemin, BUILD], capture_output=True, text=True)
+    except FileNotFoundError:
+        print("build.py : node absent — src/garanties.json laisse en l'etat.")
+        return
+    finally:
+        pathlib.Path(chemin).unlink(missing_ok=True)
+    if sortie.returncode:
+        print("build.py : extraction des garanties impossible — src/garanties.json laisse en l'etat.")
+        print(sortie.stderr.strip()[:500])
+        return
+    # Reecrit seulement si le contenu change, pour ne pas polluer l'historique a chaque build.
+    cible, neuf = SRC/"garanties.json", sortie.stdout
+    ancien = cible.read_text(encoding="utf-8") if cible.exists() else None
+    def sans_date(t):
+        try: d = json.loads(t); d.pop("genere", None); return json.dumps(d, sort_keys=True)
+        except Exception: return t
+    if ancien is None or sans_date(ancien) != sans_date(neuf):
+        cible.write_text(neuf, encoding="utf-8")
+        print("src/garanties.json regenere :", len(json.loads(neuf)["gammes"]), "gammes")
+
+ecrire_garanties()
+
 data = (SRC/"tarifs_all.json").read_text(encoding="utf-8")
 b64  = base64.b64encode((SRC/"bulletin_avenir.pdf").read_bytes()).decode()
-base = tpl.replace("__DATA__", data).replace("__BULLETIN__", b64)
+
+# Modules partages avec le serveur du CRM : recopies dans la page pour qu'elle reste
+# un fichier unique, et publies tels quels dans dist/ pour etre charges par Node.
+MODULES = ["moteur.js", "tableau.js"]
+modules = "\n".join((SRC/m).read_text(encoding="utf-8") for m in MODULES if (SRC/m).exists())
+for m in MODULES:
+    if (SRC/m).exists():
+        (DIST/m).write_text((SRC/m).read_text(encoding="utf-8"), encoding="utf-8")
+if (SRC/"garanties.json").exists():
+    (DIST/"garanties.json").write_text((SRC/"garanties.json").read_text(encoding="utf-8"), encoding="utf-8")
+
+base = (tpl.replace("/*__MODULES__*/", modules)
+           .replace("__DATA__", data).replace("__BULLETIN__", b64))
 
 URL = {
   "clients":  "https://claude.ai/code/artifact/6be994e8-c859-47e4-952f-b11dec7e44b7",
