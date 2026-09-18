@@ -55,6 +55,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   valeurs présentes dans les gammes. Une garantie exprimée dans l'autre unité (% contre €) n'est pas comparable :
   l'offre est écartée et comptée à part, jamais silencieusement. Sélection mémorisée sur l'appareil.
   Les offres au-dessus du budget portent une pastille « +x % / budget ».
+  En tête du panneau, un bouton **périmètre** bascule entre toutes les compagnies (API SANTÉ comprise) et
+  la sélection du volet « Compagnies & gammes », qu'il tient synchronisée : filtrer n'a de sens que si l'on
+  sait sur quel catalogue on filtre.
 - **Documents par formule** : APICIL publie une plaquette par gamme Équilibre et une seule pour toutes les
   Sérénité. `docsDe(r)` ne propose que le tableau de garantie de la formule affichée, son IPID et la notice.
   Le bouton « Infos » ne s'affiche que si la gamme a des données dans `INFO`.

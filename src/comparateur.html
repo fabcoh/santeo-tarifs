@@ -200,6 +200,10 @@ tr.offer.reco:hover td{background:var(--best)}
 .frow{display:flex;align-items:center;gap:7px;padding:3px 0}
 .frow label{flex:1;font:600 13px 'IBM Plex Sans',sans-serif}
 .frow select{width:104px;padding:5px 6px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:600 12.5px 'IBM Plex Sans',sans-serif}
+#fportee{width:100%;display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);font:700 12.5px 'Archivo',sans-serif;cursor:pointer;text-align:left}
+#fportee.on{border-color:var(--accent);background:var(--best)}
+#fportee b{margin-left:auto;font:800 12px 'Archivo',sans-serif;color:var(--muted)}
+#fportee.on b{color:var(--accent)}
 #fbud{display:flex;align-items:center;gap:7px;padding:10px 0 4px;border-bottom:1px solid var(--line);margin-bottom:2px}
 #fbud label{flex:1;font:800 13px 'Archivo',sans-serif}
 #fbud input{width:88px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:700 13px 'IBM Plex Sans',sans-serif;text-align:right}
@@ -2138,7 +2142,8 @@ function fseuils(cle){
 function fconstruit(){
   const c=document.getElementById("fcorps"); if(!c||c.dataset.pret)return;
   c.dataset.pret="1";
-  c.innerHTML='<div id="fbud"><label for="f_budget">Budget mensuel</label>'
+  c.innerHTML='<button type="button" id="fportee"></button>'
+    +'<div id="fbud"><label for="f_budget">Budget mensuel</label>'
     +'<input id="f_budget" inputmode="decimal" placeholder="—" value="'+(FILTRES.budget||"")+'"></div>'
     +'<div id="fbudnote">Les offres jusqu\'à 15 % au-dessus restent affichées, signalées dans le tableau.</div>'
     +FPOSTES.map(([titre,postes])=>'<h4>'+titre+'</h4>'+postes.map(([cle,lib])=>{
@@ -2148,6 +2153,15 @@ function fconstruit(){
       +'<option value="">aucun</option>'
       +opts.map(o=>'<option value="'+o[0]+'">≥ '+o[1]+'</option>').join("")+'</select></div>';
   }).join("")).join("");
+  const bp=c.querySelector("#fportee");
+  bp.addEventListener("click",()=>{
+    const tout=Object.keys(sel).every(k=>sel[k]);
+    for(const k in sel) sel[k]=!tout;            // tout cocher, ou tout décocher
+    saveSel();
+    document.querySelectorAll('#gsel input[data-k]').forEach(i=>{i.checked=sel[i.dataset.k];});
+    fporteeMaj(); calc();
+  });
+  fporteeMaj();
   const bud=c.querySelector("#f_budget");
   bud.classList.toggle("on",!!bud.value);
   bud.addEventListener("input",e=>{
@@ -2195,7 +2209,23 @@ function fapplique(rows){
   const gardees=rows.filter(r=>{const t=ftest(r); if(t.incomparable)incomp++; return t.ok;});
   return {rows:gardees,total:rows.length,hors:rows.length-gardees.length-incomp,incomp:incomp};
 }
+// Le périmètre du filtre, c'est la sélection de compagnies : sans elle, on ne filtre qu'un catalogue partiel.
+function fporteeMaj(){
+  const b=document.getElementById("fportee"); if(!b)return;
+  const cles=Object.keys(sel), n=cles.filter(k=>sel[k]).length, tout=n===cles.length;
+  b.classList.toggle("on",tout);
+  const lib = tout ? "🏢 Toutes les compagnies"
+            : n   ? "🏢 Périmètre restreint"
+                  : "🏢 Toutes sauf API SANTÉ";
+  const cpt = tout ? cles.length+" / "+cles.length
+            : n   ? n+" / "+cles.length
+                  : (cles.length-1)+" / "+cles.length;
+  b.innerHTML=lib+"<b>"+cpt+"</b>";
+  b.title=tout?"Cliquer pour revenir à la sélection vide (toutes les gammes sauf API SANTÉ)"
+              :"Cliquer pour filtrer sur toutes les compagnies, API SANTÉ comprise";
+}
 function fmaj(info){
+  fporteeMaj();
   const n=Object.keys(FILTRES).length;
   const nb=document.getElementById("f_budget");
   if(nb&&nb.value!==(FILTRES.budget||""))nb.value=FILTRES.budget||"";
