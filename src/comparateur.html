@@ -1561,6 +1561,30 @@ function logoHTML(key){
   return '<img class="tglogo" src="'+LOGOBASE+f+'" alt="'+nom+'" '
        + 'onerror="this.outerHTML=\'<span class=&quot;tglogo-txt&quot;>'+nom+'</span>\'">';
 }
+// Bas du tableau de garantie. Une note par gamme laissait croire qu'une compagnie
+// etait commentee et pas les autres : on annonce plutot les atouts de la formule
+// conseillee, poste par poste. Hospitalisation et honoraires sont donnes au
+// parcours OPTAM, le cas courant et le seul comparable d'une compagnie a l'autre.
+const TGAVANT=[["hospitalisation","hospO"],["honoraires spécialistes","honoO"],
+  ["chambre particulière","ch"],["dentaire","dent"],["implantologie","x:imp"],
+  ["orthodontie","x:orthR"],["optique","opt"],["lentilles","x:lentA"],
+  ["aides auditives","x:aud"],["médecines douces","md"]];
+function avantagesTG(key,fi){
+  const bits=TGAVANT.map(([lab,src])=>{const v=tgVal(key,fi,src);
+    return (v&&v!=="—")?lab+" <b>"+v+"</b>":"";}).filter(Boolean);
+  if(!bits.length)return "";
+  return 'Ce produit correspond à votre demande — <b>'+F[key].label+' '+F[key].names[fi]
+        +'</b> : '+bits.join(", ")+'. <span style="opacity:.8">(hospitalisation et honoraires : parcours OPTAM)</span>';
+}
+function tgFoot(cols,note){
+  const c=cols.find(x=>RECO===(x.key+"|"+x.fi));
+  const av=c?avantagesTG(c.key,c.fi):"";
+  if(!av)return note;
+  // Le caractere non responsable d'un contrat reste signale : l'information est due au prospect.
+  const nr=[...new Set(cols.map(x=>x.key))].filter(k=>F[k]&&F[k].resp===false)
+        .map(k=>F[k].label+" : contrat NON responsable.");
+  return av+(nr.length?'<div style="margin-top:5px">'+nr.join(" ")+'</div>':"");
+}
 function renderTG(cols,title,sub,note,single){
   const multi=cols.some(c=>c.key!==cols[0].key);
   const isReco=c=>RECO===(c.key+"|"+c.fi);
@@ -1573,7 +1597,7 @@ function renderTG(cols,title,sub,note,single){
     +(multi?'<span style="display:block;font-size:11px;opacity:.75">'+F[c.key].label+'</span>':'')+F[c.key].names[c.fi]+'</th>').join('')+'</tr>';
   let body=ROWS.map(([lab,src])=>'<tr><td>'+lab+'</td>'+cols.map((c,ci)=>'<td'+(isReco(c)?' class="reco"':'')+'>'+tgVal(c.key,c.fi,src)+'</td>').join('')+'</tr>').join('');
   const ov=document.createElement('div');ov.id='tgov';
-  ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+note+'</div></div>';
+  ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+tgFoot(cols,note)+'</div></div>';
   ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
   document.body.appendChild(ov);
   // Touchez le nom d'une formule pour la mettre en avant (et l'annoncer dans l'envoi)
@@ -1597,6 +1621,8 @@ function renderTG(cols,title,sub,note,single){
       }
       tbl.querySelectorAll('tbody tr').forEach(tr=>{const td=tr.children[ci+1];if(td)td.classList.toggle('reco',on);});
     });
+    // Les atouts annonces suivent l'etoile : changer de conseil change le bas du tableau.
+    const ft=ov.querySelector('#tgbox .foot'); if(ft)ft.innerHTML=tgFoot(cols,note);
   }
   ov.querySelectorAll('#tgbox thead th.pick').forEach(th=>th.addEventListener('click',()=>{
     const c=cols[+th.dataset.ci], id=c.key+"|"+c.fi;
