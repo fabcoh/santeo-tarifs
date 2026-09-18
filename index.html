@@ -273,7 +273,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-18T10:36:33Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-18T10:36:33Z</div>
+  <div id="buildstamp" data-build="2026-09-18T11:14:58Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-18T11:14:58Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -373,8 +373,13 @@ const F = {
     dent:["—"],opt:["—"],aud:["—"],ch:["40 €/j"],md:["—"]},
   APICIL:{label:"API SANTÉ",resp:true,ins:"apicil",
     names:["Équilibre 1","Équilibre 2","Équilibre 3","Équilibre 4","Équilibre 5","Équilibre 6","Sérénité 1","Sérénité 2","Sérénité 3","Sérénité 4","Sérénité 5"],
-    hospO:["—","—","—","—","—","—","—","—","—","—","—"],hospN:["—","—","—","—","—","—","—","—","—","—","—"],honoO:["—","—","—","—","—","—","—","—","—","—","—"],honoN:["—","—","—","—","—","—","—","—","—","—","—"],
-    dent:["—","—","—","—","—","—","—","—","—","—","—"],opt:["—","—","—","—","—","—","—","—","—","—","—"],aud:["—","—","—","—","—","—","—","—","—","—","—"],ch:["—","—","—","—","—","—","—","—","—","—","—"],md:["—","—","—","—","—","—","—","—","—","—","—"]},
+    hospO:["100 %","150 %","200 %","250 %","300 %","400 %","—","—","—","—","—"],hospN:["100 %","130 %","180 %","200 %","200 %","200 %","—","—","—","—","—"],
+    honoO:["100 %","150 %","200 %","220 %","250 %","300 %","—","—","—","—","—"],honoN:["100 %","130 %","180 %","200 %","200 %","200 %","—","—","—","—","—"],
+    dent:["100 %","150 %","200 %","250 %","350 %","500 %","—","—","—","—","—"],
+    opt:["100 % BR","100 €","200 €","250 €","300 €","420 €","—","—","—","—","—"],
+    aud:["100 % BR","100 €/oreille","200 €/oreille","300 €/oreille","400 €/oreille","500 €/oreille","—","—","—","—","—"],
+    ch:["—","30 €/j","50 €/j","60 €/j","80 €/j","100 €/j","—","—","—","—","—"],
+    md:["—","—","—","—","—","—","—","—","—","—","—"]},
   TALIS:{label:"TALIS",resp:false,ins:"avenir",names:["Talis","Talis +"],
     hospO:["+50 %","+100 %"],hospN:["+50 %","+100 %"],
     honoO:["+25 %","+50 %"],honoN:["+25 %","+50 %"],
@@ -393,7 +398,12 @@ const EX={
     orthR:["100 %","200 %","250 %","400 %","500 %"],orthN:["—","300 €","350 €","400 €","500 €"],
     lentA:["100 % +50 €","100 % +100 €","100 % +150 €","100 % +150 €","100 % +200 €"],lentR:["+50 €","+100 €","+150 €","+150 €","+200 €"]},
   LPSH:{aud:["—"],imp:["—"],orthR:["—"],orthN:["—"],lentA:["—"],lentR:["—"]},
-  APICIL:{aud:["—","—","—","—","—","—","—","—","—","—","—"],imp:["—","—","—","—","—","—","—","—","—","—","—"],orthR:["—","—","—","—","—","—","—","—","—","—","—"],orthN:["—","—","—","—","—","—","—","—","—","—","—"],lentA:["—","—","—","—","—","—","—","—","—","—","—"],lentR:["—","—","—","—","—","—","—","—","—","—","—"]},
+  APICIL:{aud:["100 % BR","100 €/oreille","200 €/oreille","300 €/oreille","400 €/oreille","500 €/oreille","—","—","—","—","—"],
+    imp:["—","—","—","250 €/impl","500 €/impl","700 €/impl","—","—","—","—","—"],
+    orthR:["100 %","150 %","200 %","300 %","400 %","500 %","—","—","—","—","—"],
+    orthN:["—","—","—","—","—","—","—","—","—","—","—"],
+    lentA:["100 % BR","100 % BR","125 €","175 €","185 €","300 €","—","—","—","—","—"],
+    lentR:["—","—","125 €","175 €","185 €","300 €","—","—","—","—","—"]},
   TALIS:{aud:["—","100 €"],imp:["200 €/impl","300 €/impl"],orthR:["100 €/sem","200 €/sem"],orthN:["100 €/sem","150 €/sem"],lentA:["25 €/an","50 €/an"],lentR:["25 €/an","50 €/an"]}
 };
 const EXD=[["proth","Prothèses dent."],["imp","Implantologie"],["orthR","Ortho remb."],["orthN","Ortho non remb."]];
@@ -436,6 +446,7 @@ const DOCS={
   SOLENCIA:{"TG PDF":"https://fabcoh.github.io/santeo-tarifs/docs/solencia_tg_2026.pdf"},
   MV:{"TG PDF (GCI 100-300)":"https://fabcoh.github.io/santeo-tarifs/docs/mv_tg_2026.pdf"},
   TALIS:{"TG PDF":"https://fabcoh.github.io/santeo-tarifs/docs/talis_tg_2026.pdf","IPID":"https://fabcoh.github.io/santeo-tarifs/docs/talis_ipid_2026.pdf"},
+  APICIL:{"TG Équilibre 1":"https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq1_tg_2026.pdf","TG Équilibre 2":"https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq2_tg_2026.pdf","TG Équilibre 3":"https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq3_tg_2026.pdf","TG Équilibre 4":"https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq4_tg_2026.pdf","TG Équilibre 5":"https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq5_tg_2026.pdf","TG Équilibre 6":"https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq6_tg_2026.pdf","IPID":"https://fabcoh.github.io/santeo-tarifs/docs/apisante_ipid_2026.pdf","Notice":"https://fabcoh.github.io/santeo-tarifs/docs/apisante_notice_2026.pdf"},
   LPSH:{"Garanties + IPID":"https://fabcoh.github.io/santeo-tarifs/docs/lps_hospi_2026.pdf"},
   CAPEVO:{"TG PDF":"https://drive.google.com/file/d/1_I_J2OVVyU8ho6ACdObVhftg6ia-2w1h/view","IPID":"https://drive.google.com/file/d/1lFy7NnQ-cKUjndo1qhYjK3yHhkxuljyg/view","Notice":"https://drive.google.com/file/d/11w23LL6Zg6VdI7iAxagVWyx4zBkGeDwu/view"}
 };
@@ -1928,7 +1939,7 @@ function calc(){
         });
         if(!n) warns.push("API SANTÉ : aucune formule éligible pour ce profil.");
         else{
-          warns.push("API SANTÉ : garanties non encore saisies dans le comparateur (colonnes « — ») ; les tarifs, eux, viennent d'APICIL.");
+          if(APICIL_CODES.slice(6).some(c=>APICIL.tarifs[c]!=null)) warns.push("API SANTÉ : garanties des gammes Sérénité non encore saisies (colonnes « — ») — plaquettes à récupérer.");
           if(kids>0) warns.push("API SANTÉ : les mineurs sont transmis à 10 ans, le comparateur ne demandant pas leur âge — tarif à confirmer.");
           if(apicilApproche) warns.push("API SANTÉ : date de naissance ramenée au 1ᵉʳ janvier faute de date exacte — saisir la date complète dans la fiche pour un tarif certain.");
           if(!/^\d{5}$/.test(document.getElementById("cp").value.trim())) warns.push("API SANTÉ : code postal complété en "+profil.codePostalAssure+" à partir du département — saisir les 5 chiffres pour un tarif exact.");
