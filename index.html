@@ -113,7 +113,7 @@ tr.offer:hover td{background:var(--soft)}
 tr.open .caret{transform:rotate(90deg)}
 .gamme{display:flex;align-items:center;gap:7px}
 .dot{width:9px;height:9px;border-radius:3px;flex:none}
-.dot.mcci{background:var(--mcci)} .dot.avenir{background:var(--avenir)} .dot.mverte{background:#3FA34D}
+.dot.mcci{background:var(--mcci)} .dot.avenir{background:var(--avenir)} .dot.mverte{background:#3FA34D} .dot.apicil{background:#0E7C86}
 .gsel label.g{flex-direction:column;gap:1px;align-items:center}
 .gsel label.g .comp{font-size:8.5px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
 .gsel label.g .top{display:inline-flex;align-items:center;gap:6px}
@@ -243,7 +243,7 @@ tr.offer.reco:hover td{background:var(--best)}
         <option value="TNSRL">TNS RL</option>
       </select></div>
     <div class="f"><label for="cp">Département</label>
-      <input id="cp" value="75" maxlength="3">
+      <input id="cp" value="75" maxlength="5" title="Département ou code postal complet — les 5 chiffres sont nécessaires à un tarif APICIL exact">
       </div>
     <div class="f"><label for="kids">Mineurs</label>
       <select id="kids"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
@@ -273,7 +273,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-16T12:51:11Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-16T12:51:11Z</div>
+  <div id="buildstamp" data-build="2026-09-18T10:05:21Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-18T10:05:21Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -371,6 +371,10 @@ const F = {
     hospO:["100 %"],hospN:["100 %"],
     honoO:["—"],honoN:["—"],
     dent:["—"],opt:["—"],aud:["—"],ch:["40 €/j"],md:["—"]},
+  APICIL:{label:"API SANTÉ",resp:true,ins:"apicil",
+    names:["Équilibre 1","Équilibre 2","Équilibre 3","Équilibre 4","Équilibre 5","Équilibre 6","Sérénité 1","Sérénité 2","Sérénité 3","Sérénité 4","Sérénité 5"],
+    hospO:["—","—","—","—","—","—","—","—","—","—","—"],hospN:["—","—","—","—","—","—","—","—","—","—","—"],honoO:["—","—","—","—","—","—","—","—","—","—","—"],honoN:["—","—","—","—","—","—","—","—","—","—","—"],
+    dent:["—","—","—","—","—","—","—","—","—","—","—"],opt:["—","—","—","—","—","—","—","—","—","—","—"],aud:["—","—","—","—","—","—","—","—","—","—","—"],ch:["—","—","—","—","—","—","—","—","—","—","—"],md:["—","—","—","—","—","—","—","—","—","—","—"]},
   TALIS:{label:"TALIS",resp:false,ins:"avenir",names:["Talis","Talis +"],
     hospO:["+50 %","+100 %"],hospN:["+50 %","+100 %"],
     honoO:["+25 %","+50 %"],honoN:["+25 %","+50 %"],
@@ -389,6 +393,7 @@ const EX={
     orthR:["100 %","200 %","250 %","400 %","500 %"],orthN:["—","300 €","350 €","400 €","500 €"],
     lentA:["100 % +50 €","100 % +100 €","100 % +150 €","100 % +150 €","100 % +200 €"],lentR:["+50 €","+100 €","+150 €","+150 €","+200 €"]},
   LPSH:{aud:["—"],imp:["—"],orthR:["—"],orthN:["—"],lentA:["—"],lentR:["—"]},
+  APICIL:{aud:["—","—","—","—","—","—","—","—","—","—","—"],imp:["—","—","—","—","—","—","—","—","—","—","—"],orthR:["—","—","—","—","—","—","—","—","—","—","—"],orthN:["—","—","—","—","—","—","—","—","—","—","—"],lentA:["—","—","—","—","—","—","—","—","—","—","—"],lentR:["—","—","—","—","—","—","—","—","—","—","—"]},
   TALIS:{aud:["—","100 €"],imp:["200 €/impl","300 €/impl"],orthR:["100 €/sem","200 €/sem"],orthN:["100 €/sem","150 €/sem"],lentA:["25 €/an","50 €/an"],lentR:["25 €/an","50 €/an"]}
 };
 const EXD=[["proth","Prothèses dent."],["imp","Implantologie"],["orthR","Ortho remb."],["orthN","Ortho non remb."]];
@@ -1622,8 +1627,8 @@ function renderTG(cols,title,sub,note,single){
 }
 const REGLBL={SAL:"Salarié",TNS:"TNS",RL:"Salarié régime local",TNSRL:"TNS régime local"};
 const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
-const sel={MCCINOVA:false,FLEXIA:false,SOLENCIA:false,CAPEVO:false,CAPNR:false,LPSH:false,REV:false,RF50:false,RF100:false,MV:false,TALIS:false};
-const COMP={MCCINOVA:'MCCI',FLEXIA:'MCCI',SOLENCIA:'MCCI',CAPEVO:'AVENIR M.',CAPNR:'AVENIR M.',LPSH:'AVENIR M.',REV:'AVENIR M.',RF50:'AVENIR M.',RF100:'AVENIR M.',TALIS:'AVENIR M.',MV:'M. VERTE'};
+const sel={MCCINOVA:false,FLEXIA:false,SOLENCIA:false,CAPEVO:false,CAPNR:false,LPSH:false,REV:false,RF50:false,RF100:false,MV:false,TALIS:false,APICIL:false};
+const COMP={MCCINOVA:'MCCI',FLEXIA:'MCCI',SOLENCIA:'MCCI',CAPEVO:'AVENIR M.',CAPNR:'AVENIR M.',LPSH:'AVENIR M.',REV:'AVENIR M.',RF50:'AVENIR M.',RF100:'AVENIR M.',TALIS:'AVENIR M.',MV:'M. VERTE',APICIL:'APICIL'};
 const on=k=>Object.values(sel).some(v=>v)?sel[k]:true; // aucune coche = toutes les gammes ; coche(s) = uniquement celles-là
 let openKeys=new Set();
 
@@ -1662,6 +1667,54 @@ for(const k of Object.keys(F)){
   l.innerHTML='<span class="top"><input type="checkbox" data-k="'+k+'"'+(sel[k]?" checked":"")+'> '+F[k].label+'</span><span class="comp">'+COMP[k]+"</span>";
   l.querySelector("input").addEventListener("change",e=>{sel[k]=e.target.checked;saveSel();calc();});
   gsel.appendChild(l);
+}
+
+// ---- API SANTÉ (APICIL) : tarifs demandés en direct à l'assureur ----------------
+// La page n'appelle jamais APICIL : elle interroge notre relais sur capisante.fr,
+// qui seul détient les identifiants et le code apporteur. Rien de secret ici.
+const APICIL_URL="https://capisante.fr/apicil-tarif.php";
+const APICIL_CODES=["siApiSanteEquilibre1","siApiSanteEquilibre2","siApiSanteEquilibre3","siApiSanteEquilibre4","siApiSanteEquilibre5","siApiSanteEquilibre6","siApiSanteSerenite1","siApiSanteSerenite2","siApiSanteSerenite3","siApiSanteSerenite4","siApiSanteSerenite5"];
+// régime du comparateur → couple (regimeSocial, situationProfessionnelle) attendu par APICIL
+const APICIL_REG={SAL:["GENERAL","SALARIE"],TNS:["SSI","ACTIF"],RL:["ALSACEMOSELLE","SALARIE"],TNSRL:["ALSACEMOSELLE","ACTIF"]};
+let APICIL={cle:"",etat:"vide",tarifs:null,message:""};
+let apicilTimer=null;
+
+// Le comparateur ne connaît qu'un âge : on retient le 1er janvier, soit l'âge atteint dans l'année.
+const apicilNaiss=age=>(YEAR-age)+"-01-01";
+function apicilEffet(){                        // 1er du mois suivant, toujours dans la plage J−30 / J+1 an
+  const d=new Date(); d.setDate(1); d.setMonth(d.getMonth()+1);
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-01";
+}
+function apicilProfil(age,cnjAge,hasCnj,kids,reg,cpBrut,dept){
+  const r=APICIL_REG[reg]||APICIL_REG.SAL;
+  const brut=(cpBrut||"").trim();
+  const cp=/^\d{5}$/.test(brut)?brut:(/^\d{2}$/.test(dept||"")?dept+"000":null);
+  if(!cp)return null;
+  const b=[{role:"ASSUR",dateNaissance:apicilNaiss(age),regimeSocial:r[0]}];
+  if(hasCnj&&cnjAge!=null)b.push({role:"CONJT",dateNaissance:apicilNaiss(cnjAge),regimeSocial:r[0]});
+  for(let i=0;i<Math.min(kids,8);i++)b.push({role:"ENFNT",dateNaissance:apicilNaiss(10),regimeSocial:r[0]});
+  return {codePostalAssure:cp,dateEffetContrat:apicilEffet(),situationProfessionnelle:r[1],beneficiaires:b};
+}
+function apicilDemande(profil,cle){             // temporisation : on n'appelle pas à chaque frappe
+  APICIL={cle:cle,etat:"attente",tarifs:null,message:""};
+  clearTimeout(apicilTimer);
+  apicilTimer=setTimeout(()=>apicilCharge(profil,cle),500);
+}
+async function apicilCharge(profil,cle){
+  let etat;
+  try{
+    const rp=await fetch(APICIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(profil)});
+    const txt=await rp.text();
+    let d=null; try{d=JSON.parse(txt)}catch(e){}
+    if(!rp.ok) etat={cle:cle,etat:"erreur",tarifs:null,message:(d&&d.erreur)?d.erreur:"service indisponible (HTTP "+rp.status+")"};
+    else if(!d||!Array.isArray(d.Formules)) etat={cle:cle,etat:"erreur",tarifs:null,message:"réponse inattendue du service"};
+    else{
+      const t={};
+      d.Formules.forEach(f=>{const v=parseFloat(f.TarifFormule); if(!isNaN(v))t[f.LibelleFormule]=v;});
+      etat={cle:cle,etat:"ok",tarifs:t,message:""};
+    }
+  }catch(e){ etat={cle:cle,etat:"erreur",tarifs:null,message:"service injoignable"}; }
+  if(APICIL.cle===cle){ APICIL=etat; calc(); }   // une réponse périmée est ignorée
 }
 
 function calc(){
@@ -1835,6 +1888,37 @@ function calc(){
   if(isRL) warns.push("Régime local Alsace-Moselle : grilles MCCI non applicables (taux spécifiques, consulter MCCI) — restent CAP EVOLUTION RL, CAP NR RL et TALIS.");
   if(kids>0&&on("LPSH")) warns.push("LPS HOSPI : pas de tarif enfant dans la grille 2026 — total affiché hors mineurs pour cette gamme.");
   if(kids>0&&on("MCCINOVA")&&!isRL) warns.push("MCCINOVA : les mineurs sont tarifés au tarif 18 ans, sans gratuité à partir du 3ᵉ enfant.");
+  // API SANTÉ (APICIL) — tarif demandé à l'assureur, pas de grille locale à maintenir
+  // À la différence des grilles locales, APICIL est interrogé en ligne sous notre code apporteur :
+  // la gamme ne se calcule que si le conseiller la coche explicitement.
+  if(sel.APICIL){
+    const profil=apicilProfil(age,cnjAge,hasCnj,kids,reg,document.getElementById("cp").value,dept);
+    if(!profil) warns.push("API SANTÉ : code postal ou département requis.");
+    else{
+      const cle=JSON.stringify(profil);
+      if(APICIL.cle!==cle) apicilDemande(profil,cle);
+      if(APICIL.cle===cle&&APICIL.etat==="ok"&&APICIL.tarifs){
+        const chips=[["resp","Responsable"]].concat(chMadelin);
+        if(hasCnj||kids>0) chips.push(["info","Tarif foyer"]);
+        let n=0;
+        APICIL_CODES.forEach((code,i)=>{
+          const t=APICIL.tarifs[code]; if(t==null)return;   // l'API ne renvoie que les formules éligibles
+          n++;
+          rows.push({key:"APICIL",fi:i,ins:"apicil",resp:true,gamme:F.APICIL.label,formule:F.APICIL.names[i],
+            hospO:"—",hospN:"—",honoO:"—",honoN:"—",dent:"—",opt:"—",aud:"—",ch:"—",md:"—",
+            chips:chips.slice(),pA:t,pC:null,pK:null,kidNote:"",total:t,incomplete:false,foyer:(hasCnj||kids>0)});
+        });
+        if(!n) warns.push("API SANTÉ : aucune formule éligible pour ce profil.");
+        else{
+          warns.push("API SANTÉ : garanties non encore saisies dans le comparateur (colonnes « — ») ; les tarifs, eux, viennent d'APICIL.");
+          if(kids>0) warns.push("API SANTÉ : les mineurs sont transmis à 10 ans, le comparateur ne demandant pas leur âge — tarif à confirmer.");
+          if(!/^\d{5}$/.test(document.getElementById("cp").value.trim())) warns.push("API SANTÉ : code postal complété en "+profil.codePostalAssure+" à partir du département — saisir les 5 chiffres pour un tarif exact.");
+        }
+      }
+      else if(APICIL.cle===cle&&APICIL.etat==="attente") warns.push("API SANTÉ : tarifs en cours d'interrogation…");
+      else if(APICIL.cle===cle&&APICIL.etat==="erreur")  warns.push("API SANTÉ : "+APICIL.message+".");
+    }
+  }
   rows.sort((x,y)=>x.total-y.total);
   render(rows,warns);
 }
@@ -1963,7 +2047,7 @@ function render(rows,warns){
       '<td class="g">'+r.md+"</td></tr>";
       if(isOpen){
         h+='<tr class="detail"><td colspan="'+NC+'"><div class="bk">'+
-        '<div><span class="who">Assuré</span><b>'+eur(r.pA)+"</b></div>"+
+        '<div><span class="who">'+(r.foyer?"Foyer":"Assuré")+'</span><b>'+eur(r.pA)+"</b></div>"+
         (r.pC!==null?'<div><span class="who">Conjoint</span><b>'+(r.pC===undefined?"non éligible":eur(r.pC))+"</b></div>":"")+
         (r.kidNote?'<div><span class="who">Mineurs</span><b>'+(r.pK!=null?eur(r.pK):"—")+"</b> <span style=\"color:var(--muted)\">("+r.kidNote+")</span></div>":"")+
         '<div><span class="who">Total foyer</span><b>'+eur(r.total)+"</b></div>"+
