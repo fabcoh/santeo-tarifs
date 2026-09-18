@@ -212,6 +212,21 @@ tr.offer.reco:hover td{background:var(--best)}
 #fportee.on{border-color:var(--accent);background:var(--best)}
 #fportee b{margin-left:auto;font:800 12px 'Archivo',sans-serif;color:var(--muted)}
 #fportee.on b{color:var(--accent)}
+#dvov{position:fixed;inset:0;background:rgba(10,20,35,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
+#dvbox{background:var(--card);color:var(--ink);border-radius:14px;max-width:470px;width:100%;max-height:92vh;overflow:auto;padding:18px 20px;box-shadow:0 18px 50px rgba(0,0,0,.35);font-family:'Archivo',sans-serif}
+#dvbox h3{margin:0 0 3px;font:800 16.5px 'Archivo',sans-serif}
+#dvbox .sub{font:600 12.5px 'IBM Plex Sans',sans-serif;color:var(--muted);margin-bottom:12px}
+#dvbox .gr{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:9px}
+#dvbox label{display:block;font:700 11.5px 'Archivo',sans-serif;color:var(--muted);margin-bottom:3px}
+#dvbox input,#dvbox select{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:600 13px 'IBM Plex Sans',sans-serif}
+#dvbox input.ko{border-color:var(--warn);background:var(--best)}
+#dvbox .pied{display:flex;gap:8px;align-items:center;margin-top:14px}
+#dvbox .pied button{border:0;border-radius:9px;padding:9px 14px;font:800 13px 'Archivo',sans-serif;cursor:pointer}
+#dvok{background:var(--accent);color:var(--accent-ink)}
+#dvno{background:transparent;color:var(--muted);border:1px solid var(--line)!important}
+#dvmsg{margin-top:11px;font:600 12.5px 'IBM Plex Sans',sans-serif;line-height:1.5}
+#dvmsg a{color:var(--accent);font-weight:800}
+.dvwarn{color:var(--warn)}
 #fcomp{display:grid;grid-template-columns:1fr 1fr;gap:1px 8px;padding:5px 2px 7px;border-bottom:1px solid var(--line);margin-bottom:3px}
 #fcomp[hidden]{display:none}
 #fcomp label{display:flex;align-items:center;gap:5px;padding:2px 3px;border-radius:5px;font:600 11.5px 'IBM Plex Sans',sans-serif;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -314,7 +329,7 @@ tr.offer.reco:hover td{background:var(--best)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-18T15:00:19Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-18T15:00:19Z</div>
+  <div id="buildstamp" data-build="2026-09-18T16:44:27Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-18T16:44:27Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2300,6 +2315,99 @@ function fmaj(info){
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&p.classList.contains("ouvert"))ouvre(false);});
 })();
 
+
+// ---- Création d'un devis APICIL ----------------------------------------------
+// Le devis est enregistré chez l'assureur et consultable dans MyVERALTI : il engage
+// notre code apporteur. D'où la fenêtre de contrôle avant envoi, jamais d'envoi direct.
+const DEVIS_URL="https://capisante.fr/apicil-devis.php";
+const dvEch=t=>String(t==null?"":t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function dvVal(id){const e=document.getElementById(id);return e?e.value.trim():"";}
+
+function devisFenetre(r){
+  const pro = (typeof PRO!=="undefined"&&PRO)?PRO:{};
+  const age = parseAge(document.getElementById("naiss").value);
+  const cnjAge = parseAge(document.getElementById("cnj").value);
+  const hasCnj = document.getElementById("cnj").value.trim()!=="";
+  const kids = +document.getElementById("kids").value;
+  const reg = document.getElementById("regime").value;
+  const cpBrut = document.getElementById("cp").value.trim();
+  const cp5 = /^\d{5}$/.test(cpBrut)?cpBrut:(pro.cp5||pro.cp||"");
+  const ddn = apicilNaiss(age, apicilDDNAssure());
+
+  const prev=document.getElementById("dvov"); if(prev)prev.remove();
+  const ov=document.createElement("div"); ov.id="dvov";
+  ov.innerHTML='<div id="dvbox">'
+   +'<h3>Créer le devis chez APICIL</h3>'
+   +'<div class="sub">'+dvEch(F.APICIL.label+" · "+r.formule)+' — '+eur(r.total)+' par mois</div>'
+   +'<div class="gr"><div><label for="dv_civ">Civilité</label><select id="dv_civ">'
+     +'<option value="MME"'+((pro.civ||"").toUpperCase().startsWith("M")&&!/^M[RC]?$/i.test(pro.civ||"")?" selected":"")+'>Madame</option>'
+     +'<option value="MR">Monsieur</option></select></div>'
+   +'<div><label for="dv_ddn">Date de naissance</label><input id="dv_ddn" value="'+dvEch(ddn)+'" placeholder="AAAA-MM-JJ"></div></div>'
+   +'<div class="gr"><div><label for="dv_nom">Nom</label><input id="dv_nom" value="'+dvEch(pro.nom||"")+'"></div>'
+   +'<div><label for="dv_pre">Prénom</label><input id="dv_pre" value="'+dvEch(pro.prenom||"")+'"></div></div>'
+   +'<div class="gr"><div><label for="dv_cp">Code postal (5 chiffres)</label><input id="dv_cp" maxlength="5" value="'+dvEch(cp5)+'"></div>'
+   +'<div><label for="dv_eff">Date d\'effet</label><input id="dv_eff" value="'+apicilEffet()+'"></div></div>'
+   +'<div class="gr"><div><label for="dv_mail">E-mail (facultatif)</label><input id="dv_mail" value="'+dvEch(pro.email||"")+'"></div>'
+   +'<div><label for="dv_tel">Téléphone (facultatif)</label><input id="dv_tel" value="'+dvEch(pro.tel||"")+'"></div></div>'
+   +'<div class="sub" style="margin:8px 0 0">Composition transmise : '
+     +(1+(hasCnj?1:0)+kids)+' personne'+((1+(hasCnj?1:0)+kids)>1?'s':'')
+     +(hasCnj?', conjoint compris':'')+(kids?', '+kids+' mineur'+(kids>1?'s':''):'')+'.</div>'
+   +'<div class="pied"><button id="dvok">Créer le devis</button><button id="dvno">Annuler</button></div>'
+   +'<div id="dvmsg"></div></div>';
+  document.body.appendChild(ov);
+  ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
+  document.getElementById("dvno").addEventListener("click",()=>ov.remove());
+  document.getElementById("dvok").addEventListener("click",()=>devisEnvoi(r,{reg:reg,hasCnj:hasCnj,cnjAge:cnjAge,kids:kids}));
+}
+
+async function devisEnvoi(r,ctx){
+  const msg=document.getElementById("dvmsg"), bt=document.getElementById("dvok");
+  const manque=[];
+  [["dv_nom","le nom"],["dv_pre","le prénom"]].forEach(([id,lib])=>{
+    const e=document.getElementById(id); const vide=!e.value.trim();
+    e.classList.toggle("ko",vide); if(vide)manque.push(lib);
+  });
+  const cp=dvVal("dv_cp"), eff=dvVal("dv_eff"), ddn=dvVal("dv_ddn");
+  const ko=(id,bon)=>{document.getElementById(id).classList.toggle("ko",!bon);return bon;};
+  if(!ko("dv_cp",/^\d{5}$/.test(cp))) manque.push("un code postal à cinq chiffres");
+  if(!ko("dv_eff",/^\d{4}-\d{2}-\d{2}$/.test(eff))) manque.push("une date d'effet au format AAAA-MM-JJ");
+  if(!ko("dv_ddn",/^\d{4}-\d{2}-\d{2}$/.test(ddn))) manque.push("une date de naissance au format AAAA-MM-JJ");
+  if(manque.length){ msg.innerHTML='<span class="dvwarn">Il manque '+manque.join(", ")+'.</span>'; return; }
+
+  const rg=(APICIL_REG[ctx.reg]||APICIL_REG.SAL)[0];
+  const benefs=[{role:"ASSUR",civilite:dvVal("dv_civ"),nom:dvVal("dv_nom"),prenom:dvVal("dv_pre"),
+                 dateNaissance:ddn,regimeSocial:rg}];
+  if(ctx.hasCnj&&ctx.cnjAge!=null)
+    benefs.push({role:"CONJT",dateNaissance:apicilNaiss(ctx.cnjAge,apicilDDNConjoint()),regimeSocial:rg});
+  for(let i=0;i<Math.min(ctx.kids,8);i++)
+    benefs.push({role:"ENFNT",dateNaissance:(YEAR-10)+"-01-01",regimeSocial:rg});
+
+  const corps={dateEffetContrat:eff,codePostal:cp,situationProfessionnelle:(APICIL_REG[ctx.reg]||APICIL_REG.SAL)[1],
+    beneficiaires:benefs,formules:[{formuleSelectionnee:APICIL_CODES[r.fi]}],
+    email:dvVal("dv_mail"),telephone:dvVal("dv_tel")};
+
+  bt.disabled=true; const old=bt.textContent; bt.textContent="Envoi…";
+  msg.innerHTML="Transmission à APICIL…";
+  try{
+    const rp=await fetch(DEVIS_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(corps)});
+    const txt=await rp.text(); let d=null; try{d=JSON.parse(txt);}catch(e){}
+    if(!rp.ok){
+      msg.innerHTML='<span class="dvwarn">'+dvEch((d&&d.erreur)?d.erreur:"Le devis n'a pas pu être créé (HTTP "+rp.status+").")+'</span>'
+        +((d&&d.detail)?'<div style="color:var(--muted);margin-top:5px">'+dvEch(String(d.detail).slice(0,180))+'</div>':"");
+      bt.disabled=false; bt.textContent=old; return;
+    }
+    const id=d&&(d.IdOpportunite||d.idOpportunite||d.IdOpportunité);
+    const url=d&&(d.Url||d.url||d.UrlDevis||d.urlDevis);
+    msg.innerHTML='<b>Devis créé.</b>'+(id?'<div>Référence : '+dvEch(id)+'</div>':"")
+      +(url?'<div style="margin-top:6px"><a href="'+dvEch(url)+'" target="_blank" rel="noopener">Ouvrir le devis dans MyVERALTI ↗</a></div>'
+           :'<div style="margin-top:6px;color:var(--muted)">Retrouvez-le dans votre espace MyVERALTI.</div>');
+    bt.textContent="Devis créé";
+  }catch(e){
+    msg.innerHTML='<span class="dvwarn">Service injoignable. Le devis n\'a pas été créé.</span>';
+    bt.disabled=false; bt.textContent=old;
+  }
+}
+
 function render(rows,warns){
   const finfo=fapplique(rows);
   rows=finfo.rows; fmaj(finfo);
@@ -2345,6 +2453,7 @@ function render(rows,warns){
         Object.entries(docsDe(r)).map(([n,u])=>'<a class="tgbtn doc" href="'+u+'" target="_blank" rel="noopener" onclick="event.stopPropagation();try{var w=window.open(this.href,\'docwin\',\'popup,width=980,height=860,left=120,top=60\');if(w){event.preventDefault();w.focus();}}catch(e){}">'+n+' ↗</a>').join('')+
         ((INFO[r.key]&&INFO[r.key].length)?'<button class="tgbtn ibtn" data-info="'+i+'" title="Limites, plafonds et exclusions" aria-label="Informations"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16.5"></line><circle cx="12" cy="7.6" r="1.1" fill="currentColor" stroke="none"></circle></svg><span>Infos</span></button>':'')+
         (true&&["CAPEVO","CAPNR","TALIS","MV","REV","RF50","RF100"].includes(r.key)?'<button class="tgbtn" data-adh="'+i+'">📝 Adhésion</button>':'')+
+        (r.key==="APICIL"?'<button class="tgbtn" data-devis="'+i+'" title="Enregistrer ce devis chez APICIL">🧾 Devis</button>':'')+
         '<button class="tgbtn" data-tg="'+r.key+'">📄 Tableau de garantie</button></div>'+
         "</div></td></tr>";
       }
@@ -2354,6 +2463,7 @@ function render(rows,warns){
       btn.addEventListener("click",ev=>{
         ev.stopPropagation();
         if(btn.dataset.info!==undefined){ showInfo(LASTROWS[+btn.dataset.info]); return; }
+        if(btn.dataset.devis!==undefined){ devisFenetre(LASTROWS[+btn.dataset.devis]); return; }
         if(btn.dataset.adh!==undefined) withAdhGate(()=>showAdh(LASTROWS[+btn.dataset.adh]));
         else if(btn.dataset.tg){ if(SENDSEL.size) showTGSel(); else showTG(btn.dataset.tg); } // formules cochées → tableau de la sélection (toutes gammes)
       });
