@@ -1664,7 +1664,7 @@ for(const k of Object.keys(F)){
 // ---- API SANTÉ (APICIL) : tarifs demandés en direct à l'assureur ----------------
 // La page n'appelle jamais APICIL : elle interroge notre relais sur capisante.fr,
 // qui seul détient les identifiants et le code apporteur. Rien de secret ici.
-const APICIL_URL="https://capisante.fr/apicil-tarif.php";
+const APICIL_URL="https://capisante.fr/apicil.php";
 const APICIL_CODES=["siApiSanteEquilibre1","siApiSanteEquilibre2","siApiSanteEquilibre3","siApiSanteEquilibre4","siApiSanteEquilibre5","siApiSanteEquilibre6","siApiSanteSerenite1","siApiSanteSerenite2","siApiSanteSerenite3","siApiSanteSerenite4","siApiSanteSerenite5"];
 // régime du comparateur → couple (regimeSocial, situationProfessionnelle) attendu par APICIL
 const APICIL_REG={SAL:["GENERAL","SALARIE"],TNS:["SSI","ACTIF"],RL:["ALSACEMOSELLE","SALARIE"],TNSRL:["ALSACEMOSELLE","ACTIF"]};
