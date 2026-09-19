@@ -117,17 +117,18 @@ function libelleDoc(k){
   return "Tableau de garantie";
 }
 
-// Documents de la formule affichée. APICIL publie une plaquette par gamme Équilibre et
-// une seule pour toutes les Sérénité : on ne propose que celle qui la concerne.
+// Documents de la formule affichée. Une adresse vaut pour toute la gamme ; un tableau
+// est indexé sur la formule, pour les documents qui en dépendent — APICIL publie une
+// plaquette par gamme Équilibre et une seule pour toutes les Sérénité, et l'IPID de
+// La Mutuelle Verte ne couvre que GCI 500. Un document absent n'apparaît pas.
 function documents(G,key,fi){
   const d=(G.documents||{})[key]; if(!d) return [];
-  if(key==="APICIL"){
-    const ser=fi>=6;
-    const l=[[ser?"TG Sérénité":"TG Équilibre "+(fi+1),"Tableau de garantie"],
-             [ser?"IPID Sérénité":"IPID Équilibre","IPID"],["Notice","Notice"]];
-    return l.filter(([k])=>d[k]).map(([k,lib])=>({libelle:lib,url:d[k]}));
+  const out=[];
+  for(const k of Object.keys(d)){
+    const v=d[k], url=Array.isArray(v)?v[fi]:v;
+    if(url) out.push({libelle:libelleDoc(k),url:url});
   }
-  return Object.keys(d).map(k=>({libelle:libelleDoc(k),url:d[k]}));
+  return out;
 }
 
 // Limites et délais de carence : une chaîne pour la gamme, ou une par formule.

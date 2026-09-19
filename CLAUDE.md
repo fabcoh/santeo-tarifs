@@ -39,7 +39,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `bulletin_mv_2026.pdf` (Mutuelle Verte, 22 p.), `bulletin_revoluo_2026.pdf` (24 p.) + `sepa_revoluo_2026.pdf`.
   Formulaires AcroForm remplis côté navigateur avec pdf-lib ; les PDF ont été allégés (pikepdf/qpdf),
   widgets orphelins rattachés, noms de champs en double suffixés `_2`.
-- Tableaux de garantie / IPID par gamme (`*_tg_2026.pdf`, `*_ipid_2026.pdf`, `lps_hospi_2026.pdf`).
+- Tableaux de garantie / IPID / notices par gamme (`*_tg_2026.pdf`, `*_ipid_2026.pdf`, `*_notice_2026.pdf`,
+  `lps_hospi_2026.pdf`). **`mv_ipid_gci500_2026.pdf` ne couvre que GCI 500** (l'IPID le dit en titre) : il est
+  rattaché à cette seule formule. Manquent encore : IPID et notice de MCCINOVA, FLEXIA, SOLENCIA (gammes MCCI,
+  pas encore vendues), IPID des GCI 100–300, notices de TALIS et LPS HOSPI.
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
 
 ## Règles métier à ne pas casser
@@ -83,8 +86,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   sait sur quel catalogue on filtre. **TALIS, surcomplémentaire, n'apparaît que si elle est cochée** : son tarif ne couvre
   qu'un complément et la mêler aux complémentaires fausserait la comparaison. LPS Hospi reste dans le lot,
   sa pastille « Hospitalisation seule » suffisant à la distinguer.
-- **Documents par formule** : APICIL publie une plaquette par gamme Équilibre et une seule pour toutes les
-  Sérénité. `docsDe(r)` ne propose que le tableau de garantie de la formule affichée, son IPID et la notice.
+- **Documents par formule** : dans `DOCS`, une valeur est une adresse valable pour toute la gamme, ou un
+  **tableau indexé sur la formule** quand le document en dépend — APICIL publie une plaquette par gamme
+  Équilibre et une seule pour toutes les Sérénité, et l'IPID de La Mutuelle Verte ne vaut que pour GCI 500.
+  Un document absent (`null`) n'apparaît pas : jamais de lien vers un document qui ne concerne pas la formule.
+  `docsDe(r)` et le bas du tableau passent tous deux par `Tableau.documents(...)` — une seule règle de choix.
   Le bouton « Infos » ne s'affiche que si la gamme a des données dans `INFO`.
 - **Devis APICIL** : bouton 🧾 dans le détail d'une formule API SANTÉ, à côté d'Adhésion, **sur le comparateur
   public**. Il ouvre une fenêtre de contrôle (civilité, nom, prénom, date de naissance, code postal à 5 chiffres,
