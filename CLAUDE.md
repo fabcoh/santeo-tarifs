@@ -142,8 +142,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Appelants autorisés** : les sites listés dans `apicil-config.php`, plus, déclarés dans `apicil.php`,
   l'hôte du CRM WhatsApp (le comparateur y est hébergé, il appelle depuis le navigateur) et les **appelants
   serveur**. Un serveur n'envoyant ni `Origin` ni `Referer`, il présente une clé dans l'en-tête
-  **`X-Cle-Serveur`** ; la clé vit dans `apicil.php`, jamais dans une page. Quota propre de 600 appels/heure,
-  compté par appelant et non par IP — le CRM sert de nombreuses conversations derrière une seule adresse.
+  **`X-Cle-Serveur`**. **Cette clé n'est écrite nulle part ailleurs que sur le serveur** : `apicil.php` la
+  fabrique lui-même au premier appel (`random_bytes`) et la range dans `apicil-cle.txt`, **hors du dossier
+  web** — ni dans ce dépôt, ni dans une page, ni dans une conversation. Pour la lire :
+  `curl -u capisaf ftp://ftp.cluster129.hosting.ovh.net/apicil-cle.txt`. Pour la révoquer : supprimer ce
+  fichier, le relais en fabrique une autre au prochain appel. Quota propre de 600 appels/heure, compté par
+  appelant et non par IP — le CRM sert de nombreuses conversations derrière une seule adresse.
 - Accès : `ftp.cluster129.hosting.ovh.net`, login `capisaf`. **SFTP (port 22) est refusé** — la connexion se
   ferme juste après l'authentification, SSH n'étant pas ouvert sur ce compte. Le **FTP simple fonctionne** ;
   depuis un Mac, sans rien installer, une ligne suffit dans le Terminal :
