@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmpe5ui0_e9.js",
+ "genere": "/tmp/tmphrstq_q_.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -1534,5 +1534,97 @@
   "MV": "La Mutuelle Verte, gamme Courtage GCI. Âge réel, 18 ans minimum. GCI 100–300 responsables ; GCI 500 NON responsable, sans 100 % Santé. Plafonds dentaires 750–2 400 €/12 mois. Audio max 1 700 €/acte/48 mois. Prévention plafonnée 30–150 €/an. Délais de stage applicables (GCI 500 notamment).",
   "LPSH": "Contrat NON responsable limité aux frais d’hospitalisation : aucun remboursement en ville (consultations, pharmacie, dentaire, optique, audio). Inclus : frais de séjour et honoraires 100 % BR (OPTAM et non OPTAM), forfait journalier 100 % FR, chambre particulière 40 €/jour, lit d’accompagnant enfant de moins de 16 ans 15 €/nuit, indemnités journalières 20 €/jour dès le 1er jour, forfait patient urgence et participation actes lourds 100 % FR, transport 100 % BR, « Mon soutien psy » 100 % BR. Assistance RMA, téléconsultation, Noé Santé, deuxième avis. Pas de réseau Kalixia. Forfait journalier et chambre particulière limités à 30 j la 1re année, 60 j la 2e, 90 j ensuite ; long séjour, maison de retraite et gériatrie exclus. Adhésion sans questionnaire médical, 16 à 100 ans, zonage AVENIR.",
   "TALIS": "Surcomplémentaire (non responsable) : intervient après la Sécu ET une complémentaire principale. Carence 90 j dentaire/optique. Plafond dentaire 600/900 €/an. Chambre 90 j (30 j psy). Sans questionnaire de santé."
+ },
+ "limites": {
+  "MCCINOVA": "Ni optique, ni audio, ni 100 % Santé. Chambre particulière à partir du 4ᵉ jour. 30 premiers jours limités à la formule Socle. Souscription 18–90 ans.",
+  "FLEXIA": "Plafond prothèses 2 500 €/an (Confort+). Souscription 18–84 ans.",
+  "SOLENCIA": "Plafond dentaire 2 000 €/an. Prévention 50–200 €/an. Souscription 62–99 ans.",
+  "CAPEVO": "Plafonds dentaires 600–1 300 € selon l'ancienneté du contrat. Audio enfant de moins de 20 ans : 840–1 700 €. Souscription dès 16 ans.",
+  "CAPNR": "Contrat NON responsable. Plafonds dentaires 600–1 500 € selon l'ancienneté et la formule. Lentilles comprises dans le forfait optique global (130–450 €). Fidélité optique à partir de la 3ᵉ année. Souscription 16–100 ans.",
+  "REV": [
+   "Souscription 19–80 ans, hors DOM-TOM. Chambre particulière limitée à 90 jours (30 jours en psychiatrie).",
+   "Souscription 19–80 ans, hors DOM-TOM. Chambre particulière limitée à 90 jours (30 jours en psychiatrie).",
+   "Souscription 19–80 ans, hors DOM-TOM. Chambre particulière limitée à 90 jours (30 jours en psychiatrie).",
+   "Souscription 19–80 ans, hors DOM-TOM. Chambre particulière limitée à 90 jours (30 jours en psychiatrie).",
+   "Souscription 19–80 ans, hors DOM-TOM. Chambre particulière limitée à 90 jours (30 jours en psychiatrie).",
+   "Souscription 19–80 ans, hors DOM-TOM. Chambre particulière limitée à 90 jours (30 jours en psychiatrie).",
+   "Souscription 19–80 ans (70 ans max), hors DOM-TOM. Plafond dentaire 1 400 €. Chambre particulière limitée à 90 jours (30 jours en psychiatrie).",
+   "Souscription 19–80 ans (70 ans max), hors DOM-TOM. Plafond dentaire 2 000 €. Chambre particulière limitée à 90 jours (30 jours en psychiatrie)."
+  ],
+  "RF50": "Renfort en plus de REVOLUO : +50 % dentaire, +50 € verres et lentilles. Éligible Rev 2 à 8. Limites de la formule REVOLUO retenue.",
+  "RF100": "Renfort en plus de REVOLUO : +100 % dentaire, +50 € verres et lentilles. Éligible Rev 2 à 6. Limites de la formule REVOLUO retenue.",
+  "MV": [
+   "Délais de stage applicables. Plafonds dentaires 750–2 400 € par 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Âge réel, 18 ans minimum.",
+   "Délais de stage applicables. Plafonds dentaires 750–2 400 € par 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Âge réel, 18 ans minimum.",
+   "Délais de stage applicables. Plafonds dentaires 750–2 400 € par 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Âge réel, 18 ans minimum.",
+   "Délais de stage applicables. Plafonds dentaires 750–2 400 € par 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Âge réel, 18 ans minimum.",
+   "GCI 500 : contrat NON responsable, sans 100 % Santé, délais de stage renforcés. Plafonds dentaires 750–2 400 € par 12 mois. Audio 1 700 €/acte tous les 48 mois. Âge réel, 18 ans minimum."
+  ],
+  "LPSH": "Hospitalisation seule : aucun remboursement en ville (consultations, pharmacie, dentaire, optique, audio). Forfait journalier et chambre limités à 30 jours la 1ʳᵉ année, 60 la 2ᵉ, 90 ensuite. Long séjour, maison de retraite et gériatrie exclus. Sans questionnaire médical, 16–100 ans.",
+  "TALIS": "Surcomplémentaire : intervient après une complémentaire principale, jamais à sa place. Carence de 90 jours en dentaire et en optique. Plafond dentaire 600 €/an (Talis) ou 900 €/an (Talis +). Sans questionnaire de santé.",
+  "APICIL": [
+   "Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans.",
+   "Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
+   "Plafond dentaire 500 € la 1ʳᵉ année, 800 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
+   "Plafond dentaire 700 € la 1ʳᵉ année, 1 000 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
+   "Plafond dentaire 800 € la 1ʳᵉ année, 1 200 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
+   "Plafond dentaire 1 000 € la 1ʳᵉ année, 1 500 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
+   "Réservée aux plus de 50 ans. Plafond dentaire 500 € la 1ʳᵉ année, 800 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
+   "Réservée aux plus de 50 ans. Plafond dentaire 700 € la 1ʳᵉ année, 1 000 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
+   "Réservée aux plus de 50 ans. Plafond dentaire 800 € la 1ʳᵉ année, 1 200 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
+   "Réservée aux plus de 50 ans. Plafond dentaire 800 € la 1ʳᵉ année, 1 200 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
+   "Réservée aux plus de 50 ans. Plafond dentaire 1 000 € la 1ʳᵉ année, 1 500 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS)."
+  ]
+ },
+ "documents": {
+  "CAPNR": {
+   "TG PDF": "https://fabcoh.github.io/santeo-tarifs/docs/capnr_tg_2026.pdf",
+   "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/capnr_ipid_2026.pdf"
+  },
+  "REV": {
+   "TG + notice": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_tg_2026.pdf"
+  },
+  "RF50": {
+   "TG + notice": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_tg_2026.pdf"
+  },
+  "RF100": {
+   "TG + notice": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_tg_2026.pdf"
+  },
+  "MCCINOVA": {
+   "TG PDF": "https://fabcoh.github.io/santeo-tarifs/docs/mccinova_tg_2026.pdf"
+  },
+  "FLEXIA": {
+   "TG PDF": "https://fabcoh.github.io/santeo-tarifs/docs/flexia_tg_2026.pdf"
+  },
+  "SOLENCIA": {
+   "TG PDF": "https://fabcoh.github.io/santeo-tarifs/docs/solencia_tg_2026.pdf"
+  },
+  "MV": {
+   "TG PDF (GCI 100-300)": "https://fabcoh.github.io/santeo-tarifs/docs/mv_tg_2026.pdf"
+  },
+  "TALIS": {
+   "TG PDF": "https://fabcoh.github.io/santeo-tarifs/docs/talis_tg_2026.pdf",
+   "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/talis_ipid_2026.pdf"
+  },
+  "APICIL": {
+   "TG Équilibre 1": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq1_tg_2026.pdf",
+   "TG Équilibre 2": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq2_tg_2026.pdf",
+   "TG Équilibre 3": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq3_tg_2026.pdf",
+   "TG Équilibre 4": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq4_tg_2026.pdf",
+   "TG Équilibre 5": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq5_tg_2026.pdf",
+   "TG Équilibre 6": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq6_tg_2026.pdf",
+   "TG Sérénité": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_tg_2026.pdf",
+   "IPID Équilibre": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_ipid_2026.pdf",
+   "IPID Sérénité": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_ipid_2026.pdf",
+   "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_notice_2026.pdf"
+  },
+  "LPSH": {
+   "Garanties + IPID": "https://fabcoh.github.io/santeo-tarifs/docs/lps_hospi_2026.pdf"
+  },
+  "CAPEVO": {
+   "TG PDF": "https://drive.google.com/file/d/1_I_J2OVVyU8ho6ACdObVhftg6ia-2w1h/view",
+   "IPID": "https://drive.google.com/file/d/1lFy7NnQ-cKUjndo1qhYjK3yHhkxuljyg/view",
+   "Notice": "https://drive.google.com/file/d/11w23LL6Zg6VdI7iAxagVWyx4zBkGeDwu/view"
+  }
  }
 }

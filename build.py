@@ -54,6 +54,8 @@ def ecrire_garanties():
         _bloc("F", "const F = {"),
         _bloc("EX", "const EX={"),
         _bloc("TGNOTE", "const TGNOTE={"),
+        _bloc("LIMITES", "const LIMITES={"),
+        _bloc("DOCS", "const DOCS={"),
         _bloc("COMP", "const COMP={"),
     ])
     # Les lignes du tableau vivent desormais dans src/tableau.js, partage avec le serveur.
@@ -66,6 +68,7 @@ console.log(JSON.stringify({
   source: "src/comparateur.html — objets F, EX, COMP, TGNOTE",
   avertissement: "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
   compagnies: COMP, postes, gammes: F, extras: EX, notes: TGNOTE,
+  limites: LIMITES, documents: DOCS,
 }, null, 1));
 """
     with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as fh:

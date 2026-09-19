@@ -42,6 +42,11 @@ const LOGOBASE="https://fabcoh.github.io/santeo-tarifs/docs/";
 
 const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
 
+// « M. VERTE GCI » + « GCI 100 » donne « M. VERTE GCI GCI 100 » : on ôte la répétition.
+function nomComplet(G,key,fi){
+  return (G.gammes[key].label+" "+G.gammes[key].names[fi]).replace(/\b(\S+) \1\b/,"$1");
+}
+
 function valeur(G,key,fi,src){
   const f=G.gammes[key], e=(G.extras||{})[key]||{};
   if(src.startsWith("x:")){const k=src.slice(2);return (e[k]&&e[k][fi]!==undefined)?e[k][fi]:"—";}
@@ -99,20 +104,60 @@ function atouts(G,key,fi){
   const bits=ATOUTS.map(([lab,src])=>{const v=valeur(G,key,fi,src);
     return (v&&v!=="—")?lab+" <b>"+v+"</b>":"";}).filter(Boolean);
   if(!bits.length)return "";
-  return 'Ce produit correspond à votre demande — <b>'+G.gammes[key].label+' '+G.gammes[key].names[fi]
+  return 'Ce produit correspond à votre demande — <b>'+nomComplet(G,key,fi)
         +'</b> : '+bits.join(", ")+'. <span style="opacity:.8">(hospitalisation et honoraires : parcours OPTAM)</span>';
 }
 
-// Sans formule conseillée, la note de gamme fournie par l'appelant reste affichée.
+// Libellés normalisés : le prospect cherche « le tableau de garantie », pas « TG PDF ».
+function libelleDoc(k){
+  if(/^IPID/.test(k)) return "IPID";
+  if(/^Notice/i.test(k)) return "Notice";
+  if(/notice/i.test(k)) return "Tableau de garantie + notice";
+  if(/IPID/.test(k)) return "Garanties + IPID";
+  return "Tableau de garantie";
+}
+
+// Documents de la formule affichée. APICIL publie une plaquette par gamme Équilibre et
+// une seule pour toutes les Sérénité : on ne propose que celle qui la concerne.
+function documents(G,key,fi){
+  const d=(G.documents||{})[key]; if(!d) return [];
+  if(key==="APICIL"){
+    const ser=fi>=6;
+    const l=[[ser?"TG Sérénité":"TG Équilibre "+(fi+1),"Tableau de garantie"],
+             [ser?"IPID Sérénité":"IPID Équilibre","IPID"],["Notice","Notice"]];
+    return l.filter(([k])=>d[k]).map(([k,lib])=>({libelle:lib,url:d[k]}));
+  }
+  return Object.keys(d).map(k=>({libelle:libelleDoc(k),url:d[k]}));
+}
+
+// Limites et délais de carence : une chaîne pour la gamme, ou une par formule.
+function limites(G,key,fi){
+  const l=(G.limites||{})[key];
+  if(Array.isArray(l)) return l[fi]||"";
+  return l||"";
+}
+
+// Bas du tableau : ce que le prospect doit voir de chaque formule comparée — ses
+// documents contractuels et ce qui borne ses remboursements. Sans formule conseillée,
+// la note de gamme fournie par l'appelant reste affichée.
 function pied(G,cols,note,reco){
   const c=cols.find(x=>estReco(reco,x));
   const av=c?atouts(G,c.key,c.fi):"";
-  if(!av)return note||"";
-  // Le caractère non responsable d'un contrat reste signalé : l'information est due au prospect.
-  const nr=cols.map(x=>x.key).filter((k,i,t)=>t.indexOf(k)===i)
-    .filter(k=>G.gammes[k]&&G.gammes[k].resp===false)
-    .map(k=>G.gammes[k].label+" : contrat NON responsable.");
-  return av+(nr.length?'<div style="margin-top:5px">'+nr.join(" ")+'</div>':"");
+  const blocs=cols.map(x=>{
+    const g=G.gammes[x.key]; if(!g) return "";
+    const liens=documents(G,x.key,x.fi)
+      .map(d=>'<a class="tgdoc" href="'+d.url+'" target="_blank" rel="noopener">'+d.libelle+'</a>')
+      .join(' <span class="tgsep">·</span> ');
+    const lim=limites(G,x.key,x.fi);
+    const nr=g.resp===false?'<b class="tgnr">Contrat NON responsable.</b> ':'';
+    if(!liens&&!lim&&!nr) return "";
+    return '<div class="tglim"><b>'+nomComplet(G,x.key,x.fi)+'</b>'
+      +(liens?' <span class="tgsep">—</span> '+liens:"")
+      +((nr||lim)?'<div class="tgcar">'+nr+lim+'</div>':"")
+      +'</div>';
+  }).filter(Boolean).join("");
+  if(!av&&!blocs) return note||"";
+  return av+blocs;
 }
 
 const MENTION=' · synthèse d’après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.';
@@ -149,6 +194,9 @@ exporter.lignes=lignes;
 exporter.entete=entete;
 exporter.corps=corps;
 exporter.atouts=atouts;
+exporter.nomComplet=nomComplet;
+exporter.documents=documents;
+exporter.limites=limites;
 exporter.pied=pied;
 exporter.bloc=bloc;
 exporter.document=documentHTML;

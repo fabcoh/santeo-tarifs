@@ -58,12 +58,18 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Adresse à l'import de documents** : un seul choix parmi attestation > RIB > pièce d'identité, validé par le commercial.
 - **Tableau de garantie** : tarifs et prospect affichés d'office, case « Sans tarifs », barre unique
   Télécharger / WhatsApp / Email (+ Déposer dans le CRM). Pas de second aperçu.
-  **Bas du tableau** : pas de note par gamme (une seule compagnie commentée laissait croire à un parti pris),
-  mais les atouts de la formule marquée de l'⭐, poste par poste — hospitalisation, honoraires, chambre,
-  dentaire, implantologie, orthodontie, optique, lentilles, audio, médecines douces ; les postes sans garantie
-  sont omis. **Hospitalisation et honoraires au parcours OPTAM** : le cas courant, et le seul comparable d'une
-  compagnie à l'autre. Un contrat **non responsable** reste signalé, l'information étant due au prospect.
-  La phrase suit l'étoile. Sans formule conseillée, l'ancienne note de gamme s'affiche.
+  **Bas du tableau**, dans cet ordre :
+  1. les atouts de la formule marquée de l'⭐, poste par poste — hospitalisation, honoraires, chambre, dentaire,
+     implantologie, orthodontie, optique, lentilles, audio, médecines douces ; les postes sans garantie sont
+     omis. **Hospitalisation et honoraires au parcours OPTAM** : le cas courant, et le seul comparable d'une
+     compagnie à l'autre. La phrase suit l'étoile.
+  2. **un bloc par colonne** : nom de la formule, ses documents (tableau de garantie, IPID, notice) en liens,
+     puis en petit ses **limites et délais de carence** (`LIMITES`, une chaîne par gamme ou un tableau indexé
+     sur la formule). Un contrat **non responsable** y est signalé, l'information étant due au prospect.
+     Pas de note de gamme : une seule compagnie commentée laissait croire à un parti pris.
+  Dans la page, ces liens **ouvrent le PDF dans une fenêtre par-dessus** (`showDoc`) : le commercial ne quitte
+  pas son comparatif pour montrer une garantie. **Une image n'est jamais cliquable** : les mêmes liens et les
+  mêmes limites sont donc repris dans le texte WhatsApp / e-mail qui accompagne l'image (`offreTxt`).
 - **Filtre par garantie** (panneau ⚖ sur le bord droit) : un seuil minimum par poste (dentaire, implantologie,
   orthodontie remboursée / non remboursée, optique, lentilles, hospitalisation, honoraires, chambre, audio,
   médecines douces) + un **budget mensuel** avec tolérance **+15 %**. Les seuils proposés sont uniquement les
