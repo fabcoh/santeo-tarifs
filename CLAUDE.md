@@ -93,10 +93,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **L'appel dure 25 à 60 s** (enregistrement dans MyVERALTI) : relais à 120 s, compteur affiché dans la
   fenêtre. En cas de dépassement le devis peut avoir été créé quand même — vérifier MyVERALTI avant de
   recommencer, jamais relancer à l'aveugle.
-- **Logos dans le tableau de garantie** : `logoHTML(key)` place le logo de l'assureur au-dessus de l'étoile,
-  en tête de colonne. Fichiers attendus dans `docs/` : `logo_mcci.png`, `logo_avenir.png`, `logo_mverte.png`,
-  `logo_apicil.png` (PNG transparent, affichés en 34 px de haut). **Tant qu'un fichier manque, le nom de la
-  compagnie s'affiche à sa place** — aucune image cassée. Le logo est reposé à chaque mise en avant d'une formule.
+- **Logos dans le tableau de garantie** : `Tableau.logo(...)` place le logo de l'assureur au-dessus de l'étoile,
+  en tête de colonne. Fichiers dans `docs/` : `logo_mcci.png`, `logo_avenir.png`, `logo_mverte.png`,
+  `logo_apicil.png` — PNG à fond transparent, normalisés à 160 px de haut, affichés en **42 px** (à 34 px un
+  logo carré comme celui d'Avenir devenait illisible). Avenir, Mutuelle Verte et APICIL sont tirés des
+  documents de `docs/` ; MCCI vient du fichier fourni par Fabrice, ses plaquettes ne publiant le logo qu'en
+  blanc sur fond sombre. **Tant qu'un fichier manque, le nom de la compagnie s'affiche à sa place** — aucune
+  image cassée. Le logo est reposé à chaque mise en avant d'une formule.
 - **Après génération** : fenêtre « Faire signer sur Universign » (nom de collecte, signataire à copier, fichiers,
   page Universign intégrée en iframe). Le glisser-déposer d'un fichier vers un autre site est interdit par le navigateur.
 
