@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmp3wp6dod5.js",
+ "genere": "/tmp/tmpyub68v_s.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -1561,7 +1561,7 @@
    "Contrat NON responsable, sans 100 % Santé : les soins non remboursés par l'Assurance maladie et non prévus à la garantie restent à charge. Chambre particulière limitée à 90 jours en médecine et soins de suite, 30 jours en psychiatrie, illimitée en chirurgie. Optique : 1 équipement tous les 24 mois, 12 mois avant 16 ans ou si la vue évolue. Plafonds dentaires par bénéficiaire et par période de 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Délais de stage applicables. Âge réel, 18 ans minimum."
   ],
   "LPSH": "Hospitalisation seule : aucun remboursement en ville (consultations, pharmacie, dentaire, optique, audio). Forfait journalier et chambre limités à 30 jours la 1ʳᵉ année, 60 la 2ᵉ, 90 ensuite. Long séjour, maison de retraite et gériatrie exclus. Sans questionnaire médical, 16–100 ans.",
-  "TALIS": "Surcomplémentaire : intervient après une complémentaire principale, jamais à sa place. Carence de 90 jours en dentaire et en optique. Plafond dentaire 600 €/an (Talis) ou 900 €/an (Talis +). Sans questionnaire de santé.",
+  "TALIS": "Surcomplémentaire : intervient après une complémentaire principale, jamais à sa place. Carence de 90 jours en dentaire et en optique. Plafond dentaire annuel par bénéficiaire, 600 € (Talis) ou 900 € (Talis +), hors soins. Optique : 1 équipement par an et par bénéficiaire. Chambre particulière 90 jours par an (30 jours en psychiatrie). Actes non conventionnés remboursés au seul ticket modérateur. Un même niveau pour toute la famille. Exclus : maison de retraite, MAS et établissements médico-sociaux. Sans questionnaire de santé.",
   "APICIL": [
    "Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans.",
    "Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
@@ -1652,7 +1652,8 @@
   },
   "TALIS": {
    "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/talis_tg_2026.pdf",
-   "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/talis_ipid_2026.pdf"
+   "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/talis_ipid_2026.pdf",
+   "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/talis_notice_2026.pdf"
   }
  }
 }

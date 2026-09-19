@@ -42,7 +42,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - Tableaux de garantie / IPID / notices par gamme (`*_tg_2026.pdf`, `*_ipid_2026.pdf`, `*_notice_2026.pdf`,
   `lps_hospi_2026.pdf`). **`mv_ipid_gci500_2026.pdf` ne couvre que GCI 500** (l'IPID le dit en titre) : il est
   rattaché à cette seule formule. Manquent encore : IPID et notice de MCCINOVA, FLEXIA, SOLENCIA (gammes MCCI,
-  pas encore vendues), IPID des GCI 100–300, notices de TALIS et LPS HOSPI.
+  pas encore vendues), IPID des GCI 100–300, notice de LPS HOSPI.
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
 
 ## Règles métier à ne pas casser
