@@ -40,10 +40,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Formulaires AcroForm remplis côté navigateur avec pdf-lib ; les PDF ont été allégés (pikepdf/qpdf),
   widgets orphelins rattachés, noms de champs en double suffixés `_2`.
 - Tableaux de garantie / IPID / notices par gamme (`*_tg_2026.pdf`, `*_ipid_2026.pdf`, `*_notice_2026.pdf`,
-  `lps_hospi_2026.pdf`). **`mv_ipid_gci500_2026.pdf`** porte en titre « Gamme Courtage (GCI 500) » et indique
-  que le produit ne respecte pas les conditions du contrat responsable ; Fabrice confirme qu'il vaut pour
-  **toute la gamme, GCI 100 à GCI 500**, il est donc rattaché aux cinq formules. À faire confirmer à
-  La Mutuelle Verte : le comparateur présente GCI 100–300 comme responsables, ce que ce document contredit.
+  `lps_hospi_2026.pdf`). **La Mutuelle Verte édite deux IPID**, chacun rattaché à ses formules :
+  `mv_ipid_gci100_300_2026.pdf` (GCI 100 à 300, « respecte les conditions légales des contrats responsables »)
+  et `mv_ipid_gci500_2026.pdf` (GCI 500, « ne respecte pas »). Ils confirment les pastilles du comparateur.
   Manquent encore : IPID et notice de MCCINOVA, FLEXIA, SOLENCIA (gammes MCCI, pas encore vendues),
   notice de LPS HOSPI.
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
@@ -91,7 +90,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   sa pastille « Hospitalisation seule » suffisant à la distinguer.
 - **Documents par formule** : dans `DOCS`, une valeur est une adresse valable pour toute la gamme, ou un
   **tableau indexé sur la formule** quand le document en dépend — APICIL publie une plaquette par gamme
-  Équilibre et une seule pour toutes les Sérénité.
+  Équilibre et une seule pour toutes les Sérénité, La Mutuelle Verte un IPID pour GCI 100–300 et un autre
+  pour GCI 500.
   Un document absent (`null`) n'apparaît pas : jamais de lien vers un document qui ne concerne pas la formule.
   `docsDe(r)` et le bas du tableau passent tous deux par `Tableau.documents(...)` — une seule règle de choix.
   Le bouton « Infos » ne s'affiche que si la gamme a des données dans `INFO`.
