@@ -339,7 +339,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-19T04:54:02Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-19T04:54:02Z</div>
+  <div id="buildstamp" data-build="2026-09-19T04:56:23Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-19T04:56:23Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -988,7 +988,7 @@ function buildHead(){
   return 10+ad.length+ao.length;
 }
 // Documents contractuels par gamme. Une valeur est une adresse, ou un tableau indexé
-// sur la formule quand le document en dépend (plaquettes APICIL, IPID GCI 500).
+// sur la formule quand le document en dépend (plaquettes APICIL par gamme Équilibre).
 const DOCS={
   MCCINOVA:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/mccinova_tg_2026.pdf"},
   FLEXIA:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/flexia_tg_2026.pdf"},
@@ -998,7 +998,7 @@ const DOCS={
   REV:{"Tableau de garantie + notice": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_ipid_2026.pdf"},
   RF50:{"Tableau de garantie + notice": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_ipid_2026.pdf"},
   RF100:{"Tableau de garantie + notice": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_ipid_2026.pdf"},
-  MV:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/mv_tg_2026.pdf", "IPID": [null, null, null, null, "https://fabcoh.github.io/santeo-tarifs/docs/mv_ipid_gci500_2026.pdf"]},
+  MV:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/mv_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/mv_ipid_gci500_2026.pdf"},
   LPSH:{"Garanties + IPID": "https://fabcoh.github.io/santeo-tarifs/docs/lps_hospi_2026.pdf"},
   APICIL:{"Tableau de garantie": ["https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq1_tg_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq2_tg_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq3_tg_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq4_tg_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq5_tg_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_eq6_tg_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_tg_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_tg_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_tg_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_tg_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_tg_2026.pdf"], "IPID": ["https://fabcoh.github.io/santeo-tarifs/docs/apisante_ipid_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_ipid_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_ipid_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_ipid_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_ipid_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_ipid_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_ipid_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_ipid_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_ipid_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_ipid_2026.pdf", "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_ipid_2026.pdf"], "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_notice_2026.pdf"},
   TALIS:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/talis_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/talis_ipid_2026.pdf", "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/talis_notice_2026.pdf"},
