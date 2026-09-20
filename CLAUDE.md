@@ -87,10 +87,15 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   En tête du panneau, un bouton **périmètre** tourne en trois temps — toutes les compagnies, aucune, puis le
   choix compagnie par compagnie (cases à cocher sur deux colonnes sous le bouton, avec raccourcis
   « Toutes » / « Aucune » ; le nom de la compagnie passe en infobulle, la pastille du tableau le donnant
-  déjà). L'ouverture du détail est retenue sur l'appareil, comme la sélection. Il reste synchronisé avec le volet « Compagnies & gammes » : filtrer n'a de sens que si l'on
-  sait sur quel catalogue on filtre. **TALIS, surcomplémentaire, n'apparaît que si elle est cochée** : son tarif ne couvre
+  déjà). L'ouverture du détail est retenue sur l'appareil, comme la sélection.
+  **Le périmètre ne se règle que là** : le volet « Compagnies & gammes » du haut de page a été retiré, deux
+  endroits pour le même réglage se désynchronisant et mangeant la place des résultats.
+  **TALIS, surcomplémentaire, n'apparaît que si elle est cochée** : son tarif ne couvre
   qu'un complément et la mêler aux complémentaires fausserait la comparaison. LPS Hospi reste dans le lot,
   sa pastille « Hospitalisation seule » suffisant à la distinguer.
+  **À l'arrivée d'une fiche**, `filtresApercu()` ouvre le panneau **6 secondes** puis le referme : le
+  commercial voit qu'il repart vierge sans avoir à aller le vérifier. Dès qu'il y touche — bouton ⚖, clic ou
+  saisie dans le panneau — le minuteur est annulé et le panneau lui appartient.
 - **Documents par formule** : dans `DOCS`, une valeur est une adresse valable pour toute la gamme, ou un
   **tableau indexé sur la formule** quand le document en dépend — APICIL publie une plaquette par gamme
   Équilibre et une seule pour toutes les Sérénité, La Mutuelle Verte un IPID pour GCI 100–300 et un autre

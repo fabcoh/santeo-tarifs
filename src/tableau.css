@@ -33,12 +33,12 @@ body{background:var(--ground);color:var(--ink);font:14.5px/1.5 "IBM Plex Sans",s
 header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:22px 2px 12px}
 h1{font-family:"Archivo",system-ui,sans-serif;font-weight:800;font-size:25px;margin:0;letter-spacing:-.01em}
 .sub{color:var(--muted);font-size:12.5px}
-.topflex{display:flex;gap:14px;align-items:stretch;flex-wrap:wrap;margin-top:10px}
+.topflex{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;margin-top:6px}
 .topflex .bar{flex:1 1 560px;max-width:860px;min-width:320px}
-.topflex .rightcol{flex:1 1 380px;display:flex;flex-direction:column;gap:10px}
+.topflex .rightcol{flex:1 1 300px;display:flex;flex-direction:column;gap:6px}
 .topflex .rightcol .gsel{margin-top:0;align-content:flex-start;flex:1}
-.bar{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px}
-.bar .row{display:grid;gap:12px}
+.bar{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:7px}
+.bar .row{display:grid;gap:8px}
 .bar .row1{grid-template-columns:1fr 1fr}
 .bar .row2{grid-template-columns:1.4fr 1fr .8fr}
 @media (max-width:620px){
@@ -65,11 +65,11 @@ h1{font-family:"Archivo",system-ui,sans-serif;font-weight:800;font-size:25px;mar
   table{min-width:812px}
   .tblwrap{max-height:76vh}
 }
-.f label{display:block;font-family:"Archivo",sans-serif;font-weight:500;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
-.f input,.f select{font-weight:700;font-size:16px;width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
+.f label{display:block;font-family:"Archivo",sans-serif;font-weight:500;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.f input,.f select{font-weight:700;font-size:14px;width:100%;padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
 .f input:focus,.f select:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
-.ageout{font-size:11.5px;color:var(--muted);margin-top:4px}
-.gsel{margin-top:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;gap:8px 14px;flex-wrap:wrap;align-items:center}
+.ageout{font-size:10.5px;color:var(--muted);margin-top:2px}
+.gsel{margin-top:6px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:7px 10px;display:flex;gap:6px 10px;flex-wrap:wrap;align-items:center}
 .gsel .lbl{font-family:"Archivo",sans-serif;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .gsel label.g{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:3px 8px;border-radius:7px;border:1px solid var(--line);background:var(--ground)}
 .gsel label.g input{accent-color:var(--accent)}
@@ -247,7 +247,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 #fcount small{display:block;font:600 11.5px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 #fraz{margin-left:auto;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);padding:7px 10px;font:700 12.5px 'Archivo',sans-serif;cursor:pointer}
 @media print{#fbtn,#fpan{display:none}}
-.volet{width:100%;display:flex;align-items:center;gap:8px;text-align:left;padding:11px 14px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--ink);font:800 14px 'Archivo',sans-serif;cursor:pointer;margin-bottom:6px}
+.volet{width:100%;display:flex;align-items:center;gap:8px;text-align:left;padding:7px 11px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink);font:800 12.5px 'Archivo',sans-serif;cursor:pointer;margin-bottom:4px}
 .volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 .volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
 .volet.open .chev{transform:rotate(180deg)}
