@@ -2103,6 +2103,21 @@ function fapplique(rows){
   return {rows:gardees,total:rows.length,hors:rows.length-gardees.length-incomp,incomp:incomp};
 }
 // Le périmètre du filtre, c'est la sélection de compagnies : sans elle, on ne filtre qu'un catalogue partiel.
+// Remise à zéro du panneau : seuils, budget, et périmètre des compagnies.
+// Les filtres sont mémorisés sur l'appareil pour la durée d'une étude ; les garder
+// d'un prospect à l'autre ferait disparaître des offres sans que personne comprenne
+// pourquoi. Ils sont donc effacés dès qu'une nouvelle fiche arrive.
+function filtresRAZ(){
+  for(const k in FILTRES) delete FILTRES[k];
+  try{ localStorage.removeItem("santeo_filtres"); }catch(e){}
+  for(const k in sel) sel[k]=false;          // aucune coche = toutes les compagnies
+  try{ localStorage.removeItem("santeo_sel"); }catch(e){}
+  document.querySelectorAll('input[type="checkbox"][data-k]').forEach(i=>{i.checked=false;});
+  document.querySelectorAll("#fcorps select[data-f]").forEach(x=>{x.value="";x.classList.remove("on");});
+  const bu=document.getElementById("f_budget"); if(bu){bu.value="";bu.classList.remove("on");}
+  try{ fporteeMaj(); }catch(e){}
+}
+
 function fporteeMaj(){
   const b=document.getElementById("fportee"); if(!b)return;
   const cles=Object.keys(sel), n=cles.filter(k=>sel[k]).length, tout=n===cles.length;
@@ -2136,13 +2151,7 @@ function fmaj(info){
   const ouvre=o=>{p.classList.toggle("ouvert",o);p.setAttribute("aria-hidden",o?"false":"true");if(o)fconstruit();};
   b.addEventListener("click",()=>ouvre(!p.classList.contains("ouvert")));
   document.getElementById("fx").addEventListener("click",()=>ouvre(false));
-  document.getElementById("fraz").addEventListener("click",()=>{
-    for(const k in FILTRES)delete FILTRES[k];
-    try{localStorage.removeItem("santeo_filtres");}catch(e){}
-    document.querySelectorAll("#fcorps select[data-f]").forEach(s=>{s.value="";s.classList.remove("on");});
-    const bu=document.getElementById("f_budget"); if(bu){bu.value="";bu.classList.remove("on");}
-    calc();
-  });
+  document.getElementById("fraz").addEventListener("click",()=>{ filtresRAZ(); calc(); });
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&p.classList.contains("ouvert"))ouvre(false);});
 })();
 
@@ -2392,6 +2401,9 @@ function applyImport(raw){
   let nomTxt="";
   const nom=P.get("nom");
   if(nom)nomTxt=decodeURIComponent(nom).replace(/\+/g," ");
+  // Nouvelle fiche = nouvelle étude : le panneau de filtres repart de zéro, sans quoi
+  // les seuils du prospect précédent écarteraient des offres à l'insu du commercial.
+  if(imported.length||nomTxt) filtresRAZ();
   // Ligne récapitulative permanente en haut : toutes les infos importées
   if(imported.length||nomTxt){
     const PR=typeof PRO!=="undefined"?PRO:{};

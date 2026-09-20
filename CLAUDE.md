@@ -79,7 +79,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   orthodontie remboursée / non remboursée, optique, lentilles, hospitalisation, honoraires, chambre, audio,
   médecines douces) + un **budget mensuel** avec tolérance **+15 %**. Les seuils proposés sont uniquement les
   valeurs présentes dans les gammes. Une garantie exprimée dans l'autre unité (% contre €) n'est pas comparable :
-  l'offre est écartée et comptée à part, jamais silencieusement. Sélection mémorisée sur l'appareil.
+  l'offre est écartée et comptée à part, jamais silencieusement. Sélection mémorisée sur l'appareil, mais
+  **`filtresRAZ()` remet tout à zéro — seuils, budget et périmètre — dès qu'une nouvelle fiche arrive**
+  (`applyImport` avec des données) : garder les seuils d'un prospect pour le suivant ferait disparaître des
+  offres sans que personne comprenne pourquoi. Le bouton « Tout effacer » appelle la même fonction.
   Les offres au-dessus du budget portent une pastille « +x % / budget ».
   En tête du panneau, un bouton **périmètre** tourne en trois temps — toutes les compagnies, aucune, puis le
   choix compagnie par compagnie (cases à cocher sur deux colonnes sous le bouton, avec raccourcis
