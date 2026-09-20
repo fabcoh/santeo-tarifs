@@ -39,12 +39,15 @@ h1{font-family:"Archivo",system-ui,sans-serif;font-weight:800;font-size:25px;mar
 .topflex .rightcol .gsel{margin-top:0;align-content:flex-start;flex:1}
 .bar{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:7px}
 .bar .row{display:grid;gap:8px}
-.bar .row1{grid-template-columns:1fr 1fr}
-.bar .row2{grid-template-columns:1.4fr 1fr .8fr}
+.bar .row1{grid-template-columns:1fr 1fr 1.2fr 1fr .8fr;align-items:start}
+/* Les âges retenus s'inscrivent sous leur champ sans pousser la ligne suivante. */
+.bar .row1 .f{position:relative;padding-bottom:13px}
+.bar .row1 .ageout{position:absolute;left:0;right:0;bottom:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:620px){
   body{padding:0 8px 40px}
   .bar{padding:10px;gap:8px}
   .bar .row{gap:8px}
+  .bar .row1{grid-template-columns:1fr 1fr 1fr}
   .f label{font-size:9.5px;font-weight:500;letter-spacing:.04em;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .f input,.f select{padding:7px 8px;font-size:15px}
   .ageout{font-size:10.5px;margin-top:2px}
@@ -251,7 +254,14 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 .volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 .volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
 .volet.open .chev{transform:rotate(180deg)}
-#gsel[hidden],#expanel[hidden]{display:none}
+#tgbox .optgrp{margin-top:12px}
+#tgbox .optgrp h3{font:800 11px 'Archivo',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0 0 7px}
+#tgbox label.opt{display:flex;align-items:center;gap:9px;padding:9px 11px;margin-bottom:6px;border:1px solid var(--line);border-radius:9px;background:var(--ground);font:600 14px 'IBM Plex Sans',sans-serif;cursor:pointer}
+#tgbox label.opt:hover{border-color:var(--accent)}
+#tgbox label.opt.on{background:var(--soft);border-color:var(--accent);font-weight:700}
+#tgbox label.opt input{accent-color:var(--accent);width:17px;height:17px}
+#tgbox #optpied{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+#tgbox .tgbtn.ok{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .volet.mini{padding:8px 11px;font:800 13px 'Archivo',sans-serif;margin:4px 0 3px}
 .volet.mini .chev{font-size:12px}
 .apanel{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:4px 12px;padding:2px 2px 8px}

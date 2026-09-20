@@ -40,12 +40,15 @@ h1{font-family:"Archivo",system-ui,sans-serif;font-weight:800;font-size:25px;mar
 .topflex .rightcol .gsel{margin-top:0;align-content:flex-start;flex:1}
 .bar{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:7px}
 .bar .row{display:grid;gap:8px}
-.bar .row1{grid-template-columns:1fr 1fr}
-.bar .row2{grid-template-columns:1.4fr 1fr .8fr}
+.bar .row1{grid-template-columns:1fr 1fr 1.2fr 1fr .8fr;align-items:start}
+/* Les âges retenus s'inscrivent sous leur champ sans pousser la ligne suivante. */
+.bar .row1 .f{position:relative;padding-bottom:13px}
+.bar .row1 .ageout{position:absolute;left:0;right:0;bottom:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:620px){
   body{padding:0 8px 40px}
   .bar{padding:10px;gap:8px}
   .bar .row{gap:8px}
+  .bar .row1{grid-template-columns:1fr 1fr 1fr}
   .f label{font-size:9.5px;font-weight:500;letter-spacing:.04em;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .f input,.f select{padding:7px 8px;font-size:15px}
   .ageout{font-size:10.5px;margin-top:2px}
@@ -252,7 +255,14 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 .volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 .volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
 .volet.open .chev{transform:rotate(180deg)}
-#gsel[hidden],#expanel[hidden]{display:none}
+#tgbox .optgrp{margin-top:12px}
+#tgbox .optgrp h3{font:800 11px 'Archivo',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0 0 7px}
+#tgbox label.opt{display:flex;align-items:center;gap:9px;padding:9px 11px;margin-bottom:6px;border:1px solid var(--line);border-radius:9px;background:var(--ground);font:600 14px 'IBM Plex Sans',sans-serif;cursor:pointer}
+#tgbox label.opt:hover{border-color:var(--accent)}
+#tgbox label.opt.on{background:var(--soft);border-color:var(--accent);font-weight:700}
+#tgbox label.opt input{accent-color:var(--accent);width:17px;height:17px}
+#tgbox #optpied{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+#tgbox .tgbtn.ok{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .volet.mini{padding:8px 11px;font:800 13px 'Archivo',sans-serif;margin:4px 0 3px}
 .volet.mini .chev{font-size:12px}
 .apanel{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:4px 12px;padding:2px 2px 8px}
@@ -279,14 +289,12 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 <div class="topflex">
 <div class="bar">
   <div class="row row1">
-    <div class="f"><label for="naiss">Assuré — année / âge</label>
-      <input id="naiss" inputmode="numeric" value="1966">
+    <div class="f"><label for="naiss">Assuré</label>
+      <input id="naiss" inputmode="numeric" value="1966" title="Année de naissance ou âge">
       <div class="ageout" id="ageinfo"></div></div>
-    <div class="f"><label for="cnj">Conjoint — année / âge</label>
-      <input id="cnj" inputmode="numeric" placeholder="aucun" value="">
+    <div class="f"><label for="cnj">Conjoint</label>
+      <input id="cnj" inputmode="numeric" placeholder="aucun" value="" title="Année de naissance ou âge du conjoint">
       <div class="ageout" id="cnjinfo"></div></div>
-  </div>
-  <div class="row row2">
     <div class="f"><label for="regime">Régime</label>
       <select id="regime">
         <option value="SAL">Salarié</option>
@@ -294,7 +302,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
         <option value="RL">Salarié RL</option>
         <option value="TNSRL">TNS RL</option>
       </select></div>
-    <div class="f"><label for="cp">Département</label>
+    <div class="f"><label for="cp">Dépt / CP</label>
       <input id="cp" value="75" maxlength="5" title="Département ou code postal complet — les 5 chiffres sont nécessaires à un tarif APICIL exact">
       </div>
     <div class="f"><label for="kids">Mineurs</label>
@@ -309,8 +317,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
   <div id="fpied"><span id="fcount"></span><button type="button" id="fraz">Tout effacer</button></div>
 </aside>
 <div class="rightcol">
-  <button type="button" class="volet" id="vx">➕ Options par poste <span class="vsum" id="vxsum"></span><span class="chev">▾</span></button>
-  <div class="gsel" id="expanel" hidden><span id="exchecks" style="display:contents"></span></div>
+  <button type="button" class="volet" id="vx">➕ Options par poste <span class="vsum" id="vxsum"></span></button>
 </div>
 </div>
 
@@ -2362,26 +2369,41 @@ function render(rows,warns){
   }
   document.getElementById("warns").innerHTML=warns.map(w=>'<div class="warnbox">'+w+"</div>").join("");
 }
-{
-  const ec=document.getElementById("exchecks");
-  for(const [k,l] of EXTRAS){
-    const lab=document.createElement("label"); lab.className="g";
-    lab.innerHTML='<input type="checkbox" data-x="'+k+'"> '+l;
-    lab.querySelector("input").addEventListener("change",e=>{exOn[k]=e.target.checked;calc();});
-    ec.appendChild(lab);
-  }
-}
-// Volets rétractables : compagnies/gammes et options par poste, fermés par défaut
 function voletsSum(){
   const vx=document.getElementById("vxsum"); if(!vx)return;
   const x=Object.values(exOn).filter(Boolean).length;
-  vx.textContent=x?x+" activée"+(x>1?"s":""):"";
+  vx.textContent=x?x+" colonne"+(x>1?"s":"")+" ajoutée"+(x>1?"s":""):"";
+  document.getElementById("vx").classList.toggle("open",x>0);
 }
-for(const [bid,pid] of [["vx","expanel"]]){
-  const b=document.getElementById(bid),p=document.getElementById(pid);
-  b.addEventListener("click",()=>{p.hidden=!p.hidden;b.classList.toggle("open",!p.hidden);});
+
+// Options par poste : chaque case ajoute une colonne au tableau des résultats.
+// Une fenêtre par-dessus plutôt qu'un volet : au repos elle ne mange rien, et
+// le commercial voit d'un coup les six postes au lieu de les chercher en ligne.
+function ouvrirOptions(){
+  const groupes=[["Dentaire",EXD],["Optique et audio",EXO]];
+  const ov=overlay('<button class="close">Fermer ✕</button>'
+    +'<h2>➕ Options par poste</h2>'
+    +'<div class="src">Chaque option ajoute une colonne au tableau des résultats.</div>'
+    +groupes.map(([titre,liste])=>'<div class="optgrp"><h3>'+titre+'</h3>'
+        +liste.map(([k,l])=>'<label class="opt'+(exOn[k]?" on":"")+'">'
+            +'<input type="checkbox" data-x="'+k+'"'+(exOn[k]?" checked":"")+'>'+l+'</label>').join("")
+        +'</div>').join("")
+    +'<div id="optpied"><button type="button" class="tgbtn" id="optraz">Tout décocher</button>'
+    +'<button type="button" class="tgbtn ok close">Terminé</button></div>', 480);
+  const applique=()=>{
+    ov.querySelectorAll('input[data-x]').forEach(i=>{
+      exOn[i.dataset.x]=i.checked;
+      i.closest("label").classList.toggle("on",i.checked);
+    });
+    voletsSum(); calc();
+  };
+  ov.addEventListener("change",e=>{ if(e.target.matches('input[data-x]')) applique(); });
+  ov.querySelector("#optraz").addEventListener("click",()=>{
+    ov.querySelectorAll('input[data-x]').forEach(i=>{i.checked=false;});
+    applique();
+  });
 }
-document.getElementById("expanel").addEventListener("change",voletsSum);
+document.getElementById("vx").addEventListener("click",ouvrirOptions);
 voletsSum();
 // ---- Préremplissage par lien (ex: #naiss=1966&dept=66&regime=SAL&cnj=1968&kids=2&nom=DUPONT%20Marie) ----
 function applyImport(raw){

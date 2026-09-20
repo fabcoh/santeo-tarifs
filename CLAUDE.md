@@ -96,6 +96,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **À l'arrivée d'une fiche**, `filtresApercu()` ouvre le panneau **6 secondes** puis le referme : le
   commercial voit qu'il repart vierge sans avoir à aller le vérifier. Dès qu'il y touche — bouton ⚖, clic ou
   saisie dans le panneau — le minuteur est annulé et le panneau lui appartient.
+- **Haut de page** : une seule ligne — assuré, conjoint, régime, département/CP, mineurs — les âges retenus
+  inscrits sous leur champ en position absolue, pour ne pas pousser la ligne. Le tableau démarre à 136 px
+  au lieu de 255 avant ce resserrement. **Options par poste** ouvre une fenêtre par-dessus (`ouvrirOptions`) :
+  six cases en deux groupes, chacune ajoutant une colonne au tableau, plus « Tout décocher ». Au repos elle
+  ne prend aucune place.
 - **Documents par formule** : dans `DOCS`, une valeur est une adresse valable pour toute la gamme, ou un
   **tableau indexé sur la formule** quand le document en dépend — APICIL publie une plaquette par gamme
   Équilibre et une seule pour toutes les Sérénité, La Mutuelle Verte un IPID pour GCI 100–300 et un autre
