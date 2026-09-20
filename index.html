@@ -42,12 +42,12 @@ body{background:var(--ground);color:var(--ink);font:14.5px/1.5 "IBM Plex Sans",s
 header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:22px 2px 12px}
 h1{font-family:"Archivo",system-ui,sans-serif;font-weight:800;font-size:25px;margin:0;letter-spacing:-.01em}
 .sub{color:var(--muted);font-size:12.5px}
-.topflex{display:flex;gap:14px;align-items:stretch;flex-wrap:wrap;margin-top:10px}
+.topflex{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;margin-top:6px}
 .topflex .bar{flex:1 1 560px;max-width:860px;min-width:320px}
-.topflex .rightcol{flex:1 1 380px;display:flex;flex-direction:column;gap:10px}
+.topflex .rightcol{flex:1 1 300px;display:flex;flex-direction:column;gap:6px}
 .topflex .rightcol .gsel{margin-top:0;align-content:flex-start;flex:1}
-.bar{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:12px}
-.bar .row{display:grid;gap:12px}
+.bar{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:7px}
+.bar .row{display:grid;gap:8px}
 .bar .row1{grid-template-columns:1fr 1fr}
 .bar .row2{grid-template-columns:1.4fr 1fr .8fr}
 @media (max-width:620px){
@@ -74,11 +74,11 @@ h1{font-family:"Archivo",system-ui,sans-serif;font-weight:800;font-size:25px;mar
   table{min-width:812px}
   .tblwrap{max-height:76vh}
 }
-.f label{display:block;font-family:"Archivo",sans-serif;font-weight:500;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
-.f input,.f select{font-weight:700;font-size:16px;width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
+.f label{display:block;font-family:"Archivo",sans-serif;font-weight:500;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.f input,.f select{font-weight:700;font-size:14px;width:100%;padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
 .f input:focus,.f select:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
-.ageout{font-size:11.5px;color:var(--muted);margin-top:4px}
-.gsel{margin-top:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:flex;gap:8px 14px;flex-wrap:wrap;align-items:center}
+.ageout{font-size:10.5px;color:var(--muted);margin-top:2px}
+.gsel{margin-top:6px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:7px 10px;display:flex;gap:6px 10px;flex-wrap:wrap;align-items:center}
 .gsel .lbl{font-family:"Archivo",sans-serif;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .gsel label.g{display:inline-flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:3px 8px;border-radius:7px;border:1px solid var(--line);background:var(--ground)}
 .gsel label.g input{accent-color:var(--accent)}
@@ -256,7 +256,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 #fcount small{display:block;font:600 11.5px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 #fraz{margin-left:auto;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);padding:7px 10px;font:700 12.5px 'Archivo',sans-serif;cursor:pointer}
 @media print{#fbtn,#fpan{display:none}}
-.volet{width:100%;display:flex;align-items:center;gap:8px;text-align:left;padding:11px 14px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--ink);font:800 14px 'Archivo',sans-serif;cursor:pointer;margin-bottom:6px}
+.volet{width:100%;display:flex;align-items:center;gap:8px;text-align:left;padding:7px 11px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink);font:800 12.5px 'Archivo',sans-serif;cursor:pointer;margin-bottom:4px}
 .volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 .volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
 .volet.open .chev{transform:rotate(180deg)}
@@ -317,14 +317,12 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
   <div id="fpied"><span id="fcount"></span><button type="button" id="fraz">Tout effacer</button></div>
 </aside>
 <div class="rightcol">
-  <button type="button" class="volet" id="vg">🏢 Compagnies &amp; gammes <span class="vsum" id="vgsum"></span><span class="chev">▾</span></button>
-  <div class="gsel" id="gsel" hidden></div>
   <button type="button" class="volet" id="vx">➕ Options par poste <span class="vsum" id="vxsum"></span><span class="chev">▾</span></button>
   <div class="gsel" id="expanel" hidden><span id="exchecks" style="display:contents"></span></div>
 </div>
 </div>
 
-<div id="prospect" hidden style="margin-top:10px;background:var(--accent);color:var(--accent-ink);border-radius:9px;padding:8px 14px;font:700 15px 'Archivo',sans-serif"></div>
+<div id="prospect" hidden style="margin-top:6px;background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:5px 11px;font:700 12.5px 'Archivo',sans-serif"></div>
 
 <div class="results">
   
@@ -339,7 +337,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-20T10:22:24Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-20T10:22:24Z</div>
+  <div id="buildstamp" data-build="2026-09-20T10:41:24Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-20T10:41:24Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2236,13 +2234,6 @@ try{
   if(s)for(const k in sel)if(k in s)sel[k]=!!s[k];
 }catch(e){}
 function saveSel(){try{localStorage.setItem("santeo_sel",JSON.stringify(sel))}catch(e){}}
-const gsel=document.getElementById("gsel");
-for(const k of Object.keys(F)){
-  const l=document.createElement("label"); l.className="g "+(F[k].resp?"rp":"nrp");
-  l.innerHTML='<span class="top"><input type="checkbox" data-k="'+k+'"'+(sel[k]?" checked":"")+'> '+F[k].label+'</span><span class="comp">'+COMP[k]+"</span>";
-  l.querySelector("input").addEventListener("change",e=>{sel[k]=e.target.checked;saveSel();calc();});
-  gsel.appendChild(l);
-}
 
 // ---- API SANTÉ (APICIL) : tarifs demandés en direct à l'assureur ----------------
 // La page n'appelle jamais APICIL : elle interroge notre relais sur capisante.fr,
@@ -2636,8 +2627,20 @@ function fmaj(info){
   const b=document.getElementById("fbtn"), p=document.getElementById("fpan");
   if(!b||!p)return;
   const ouvre=o=>{p.classList.toggle("ouvert",o);p.setAttribute("aria-hidden",o?"false":"true");if(o)fconstruit();};
-  b.addEventListener("click",()=>ouvre(!p.classList.contains("ouvert")));
-  document.getElementById("fx").addEventListener("click",()=>ouvre(false));
+  // Refermeture automatique : uniquement celle de l'aperçu. Dès que le commercial
+  // touche au panneau, il lui appartient et rien ne se referme derrière lui.
+  let minuteur=null;
+  const annule=()=>{ if(minuteur){clearTimeout(minuteur);minuteur=null;} };
+  // À l'arrivée d'une fiche, le panneau s'ouvre quelques secondes : le commercial
+  // voit qu'il repart vierge, sans avoir à aller le vérifier.
+  window.filtresApercu=function(){
+    annule(); ouvre(true);
+    minuteur=setTimeout(()=>{ minuteur=null; ouvre(false); },6000);
+  };
+  p.addEventListener("pointerdown",annule);
+  p.addEventListener("focusin",annule);
+  b.addEventListener("click",()=>{annule();ouvre(!p.classList.contains("ouvert"));});
+  document.getElementById("fx").addEventListener("click",()=>{annule();ouvre(false);});
   document.getElementById("fraz").addEventListener("click",()=>{ filtresRAZ(); calc(); });
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&p.classList.contains("ouvert"))ouvre(false);});
 })();
@@ -2857,18 +2860,14 @@ function render(rows,warns){
 }
 // Volets rétractables : compagnies/gammes et options par poste, fermés par défaut
 function voletsSum(){
-  const vg=document.getElementById("vgsum"),vx=document.getElementById("vxsum");
-  if(!vg)return;
-  const n=Object.values(sel).filter(Boolean).length;
-  vg.textContent=n?n+" sélectionnée"+(n>1?"s":""):"toutes affichées";
+  const vx=document.getElementById("vxsum"); if(!vx)return;
   const x=Object.values(exOn).filter(Boolean).length;
   vx.textContent=x?x+" activée"+(x>1?"s":""):"";
 }
-for(const [bid,pid] of [["vg","gsel"],["vx","expanel"]]){
+for(const [bid,pid] of [["vx","expanel"]]){
   const b=document.getElementById(bid),p=document.getElementById(pid);
   b.addEventListener("click",()=>{p.hidden=!p.hidden;b.classList.toggle("open",!p.hidden);});
 }
-document.getElementById("gsel").addEventListener("change",voletsSum);
 document.getElementById("expanel").addEventListener("change",voletsSum);
 voletsSum();
 // ---- Préremplissage par lien (ex: #naiss=1966&dept=66&regime=SAL&cnj=1968&kids=2&nom=DUPONT%20Marie) ----
@@ -2890,7 +2889,7 @@ function applyImport(raw){
   if(nom)nomTxt=decodeURIComponent(nom).replace(/\+/g," ");
   // Nouvelle fiche = nouvelle étude : le panneau de filtres repart de zéro, sans quoi
   // les seuils du prospect précédent écarteraient des offres à l'insu du commercial.
-  if(imported.length||nomTxt) filtresRAZ();
+  if(imported.length||nomTxt){ filtresRAZ(); try{ filtresApercu(); }catch(e){} }
   // Ligne récapitulative permanente en haut : toutes les infos importées
   if(imported.length||nomTxt){
     const PR=typeof PRO!=="undefined"?PRO:{};
