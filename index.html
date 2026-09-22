@@ -355,7 +355,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-22T14:16:32Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-22T14:16:32Z</div>
+  <div id="buildstamp" data-build="2026-09-22T14:29:38Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-22T14:29:38Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1276,25 +1276,33 @@ function sameName(a,b){
   if(!A.length||!B.length)return null;         // impossible de conclure
   return A.some(w=>B.includes(w));
 }
-function docDropHTML(){
-  return '<div id="adocs" style="grid-column:1/-1;margin:8px 0 2px;border:1.5px dashed var(--line);border-radius:10px;padding:10px 12px;background:var(--ground)">'
+// Le même dépôt sert l'adhésion (préfixe « a ») et la fenêtre de signature APICIL
+// (préfixe « s ») : un seul lecteur de documents, deux formulaires à remplir.
+function docDropHTML(pfx){
+  pfx=pfx||"a";
+  return '<div id="'+pfx+'docs" style="grid-column:1/-1;margin:8px 0 2px;border:1.5px dashed var(--line);border-radius:10px;padding:10px 12px;background:var(--ground)">'
    +'<div style="font:800 12px \'Archivo\',sans-serif;text-transform:uppercase;letter-spacing:.04em;color:var(--accent)">📎 Remplir depuis un document</div>'
    +'<div style="font-size:12px;color:var(--muted);margin:3px 0 7px">RIB, attestation de droits, pièce d\'identité ou permis (PDF ou photo) : identité, adresse, n° de Sécurité sociale, organisme, IBAN et BIC sont proposés à la reprise, après confirmation. <b>La lecture se fait sur votre appareil : aucun document n\'est envoyé ni conservé.</b></div>'
    +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
-   +'<label class="tgbtn" style="cursor:pointer;margin:0">📄 Choisir un fichier<input id="adocf" type="file" accept="application/pdf,image/*" multiple hidden></label>'
-   +'<span id="adocst" style="font-size:12px;color:var(--muted)"></span></div></div>';
+   +'<label class="tgbtn" style="cursor:pointer;margin:0">📄 Choisir un fichier<input id="'+pfx+'docf" type="file" accept="application/pdf,image/*" multiple hidden></label>'
+   +'<span id="'+pfx+'docst" style="font-size:12px;color:var(--muted)"></span></div></div>';
 }
 // Confirmation avant de recopier : un bloc par document, alerte si le nom ne correspond pas
-function confirmDoc(docs,onDone){
-  const esc=v=>String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
-  const fiche=((document.getElementById("anom")||{}).value||"")+" "+((document.getElementById("apre")||{}).value||"");
-  const LAB={secu:["ass","N° de Sécurité sociale",0],org:["aorg","N° organisme d'affiliation",0],
+const LAB_ADHESION={secu:["ass","N° de Sécurité sociale",0],org:["aorg","N° organisme d'affiliation",0],
     iban:["aiban","IBAN",0],bic:["abic","BIC",0],nom:["anom","Nom",0],prenom:["apre","Prénom",0],
     ddn:["addn","Date de naissance",0],adresse:["aadr","Adresse",1],cp:["acp","Code postal",1],ville:["avil","Ville",1]};
+// Un champ en lecture seule n'est jamais écrasé : dans la fenêtre de signature, nom,
+// prénom, date de naissance et code postal viennent du devis, qu'APICIL recoupe.
+function confirmDoc(docs,onDone,LAB){
+  LAB=LAB||LAB_ADHESION;
+  const val=id=>((document.getElementById(id)||{}).value||"");
+  const libre=id=>{const e=document.getElementById(id);return !!e&&!e.readOnly;};
+  const esc=v=>String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+  const fiche=val(LAB.nom[0])+" "+val(LAB.prenom[0]);
   const rows=[]; let html="";
   // ---- Adresse : un seul choix parmi celles trouvées (attestation > RIB > pièce d'identité), à valider par le commercial ----
   const ADRKEYS=["adresse","cp","ville"];
-  const curAdr={a:((document.getElementById("aadr")||{}).value||"").trim(),c:((document.getElementById("acp")||{}).value||"").trim(),v:((document.getElementById("avil")||{}).value||"").trim()};
+  const curAdr={a:val(LAB.adresse[0]).trim(),c:val(LAB.cp[0]).trim(),v:val(LAB.ville[0]).trim()};
   const RANK={secu:0,rib:1,id:2,autre:3};
   const adrs=[];
   docs.forEach(d=>{const f=d.fields||{}; if(f.adresse||f.cp||f.ville) adrs.push({kind:d.kind,file:d.file,a:f.adresse||"",c:f.cp||"",v:f.ville||"",rank:RANK[d.kind]??9});});
@@ -1316,9 +1324,9 @@ function confirmDoc(docs,onDone){
     html+='<div class="ipost"><h3>'+esc(KINDLBL[d.kind]||"Document")+' <span style="font-weight:500;text-transform:none;color:var(--muted)">'+esc(d.file)+'</span></h3>';
     if(ok===false)html+='<div class="irow iwarn"><span>Nom du document : '+esc(d.holder)+'</span><b>ne correspond pas à la fiche ('+esc(fiche.trim()||"—")+')</b></div>';
     keys.forEach(k=>{
-      const L=LAB[k]; if(!L)return;
+      const L=LAB[k]; if(!L||!libre(L[0]))return;
       let v=d.fields[k]; if(k==="iban")v=v.replace(/(.{4})/g,"$1 ").trim();
-      const cur=((document.getElementById(L[0])||{}).value||"");
+      const cur=val(L[0]);
       const i=rows.length; rows.push({id:L[0],val:v});
       html+='<label class="irow" style="cursor:pointer"><span><input type="checkbox" data-i="'+i+'" '+(L[2]?'':'checked')+' style="margin-right:7px;accent-color:var(--accent)">'+L[1]
         +(cur?'<span style="display:block;font-size:11px;color:var(--muted);margin-left:23px">actuel : '+esc(cur)+'</span>':'')+'</span><b>'+esc(v)+'</b></label>';
@@ -1342,13 +1350,13 @@ function confirmDoc(docs,onDone){
     const pick=ov.querySelector('input[name=adrpick]:checked');
     if(pick&&pick.value!=="cur"&&pick.value!=="none"){
       const o=adrs[+pick.value];
-      [["aadr",o.a],["acp",o.c],["avil",o.v]].forEach(([id,v])=>{const e=document.getElementById(id);if(!e||!v)return;
+      [[LAB.adresse[0],o.a],[LAB.cp[0],o.c],[LAB.ville[0],o.v]].forEach(([id,v])=>{const e=document.getElementById(id);if(!e||!v||e.readOnly)return;
         e.value=v;e.dispatchEvent(new Event("input",{bubbles:true}));e.style.transition="background .4s";const b=e.style.background;e.style.background="#DCF3E6";setTimeout(()=>{e.style.background=b;},1600);n++;});
     }
     ov.querySelectorAll('input[type=checkbox]').forEach(c=>{
       if(!c.checked)return;
       const r=rows[+c.dataset.i], e=document.getElementById(r.id);
-      if(!e)return;
+      if(!e||e.readOnly)return;
       e.value=r.val; e.dispatchEvent(new Event("input",{bubbles:true}));
       e.style.transition="background .4s";const b=e.style.background;e.style.background="#DCF3E6";
       setTimeout(()=>{e.style.background=b;try{paintBank();}catch(_){}},1600); n++;
@@ -1356,9 +1364,10 @@ function confirmDoc(docs,onDone){
     close(n);
   });
 }
-function wireDocDrop(){
-  const box=document.getElementById("adocs"); if(!box)return;
-  const inp=document.getElementById("adocf"), st=document.getElementById("adocst");
+function wireDocDrop(pfx,LAB,fin){
+  pfx=pfx||"a"; fin=fin||"de générer";
+  const box=document.getElementById(pfx+"docs"); if(!box)return;
+  const inp=document.getElementById(pfx+"docf"), st=document.getElementById(pfx+"docst");
   const setv=(id,v)=>{const e=document.getElementById(id);if(!e||!v)return false;e.value=v;e.dispatchEvent(new Event("input",{bubbles:true}));
     e.style.transition="background .4s";const b=e.style.background;e.style.background="#DCF3E6";setTimeout(()=>{e.style.background=b;},1600);return true;};
   const apply=async files=>{
@@ -1367,7 +1376,7 @@ function wireDocDrop(){
     const docs=await scanDocs([...files],st);
     if(!docs.some(d=>Object.keys(d.fields).length)){st.textContent="Aucune information reconnue dans ce document.";return;}
     st.textContent="";
-    confirmDoc(docs,n=>{st.textContent=n?("✅ "+n+" champ"+(n>1?"s":"")+" recopié"+(n>1?"s":"")+" — vérifiez avant de générer."):"Aucun champ repris.";});
+    confirmDoc(docs,n=>{st.textContent=n?("✅ "+n+" champ"+(n>1?"s":"")+" recopié"+(n>1?"s":"")+" — vérifiez avant "+fin+"."):"Aucun champ repris.";},LAB);
   };
   inp.addEventListener("change",()=>apply(inp.files));
   ["dragenter","dragover"].forEach(ev=>box.addEventListener(ev,e=>{e.preventDefault();box.style.borderColor="var(--accent)";}));
@@ -2806,6 +2815,10 @@ function sFld(id,lab,val,o){
     +(o.ro?' readonly tabindex="-1" title="Valeur du devis : elle ne peut plus être changée ici."':"")
     +'>'+(o.hint?'<span class="hint">'+dvEch(o.hint)+'</span>':"")+'</div>';
 }
+const LAB_SIGNATURE={secu:["s_secu","N° de Sécurité sociale",0],org:["s_org","N° organisme d'affiliation",0],
+    iban:["s_iban","IBAN",0],bic:["s_bic","BIC",0],nom:["s_nom","Nom",0],prenom:["s_pre","Prénom",0],
+    ddn:["s_ddn","Date de naissance",0],adresse:["s_adr","Adresse",1],cp:["s_cp","Code postal",1],
+    ville:["s_vil","Ville",1]};
 function sSel(id,lab,opts,val){
   return '<div class="sfld"><label for="'+id+'">'+dvEch(lab)+'</label><select id="'+id+'">'
     +opts.map(x=>'<option value="'+dvEch(x[0])+'"'+(x[0]===val?" selected":"")+'>'+dvEch(x[1])+'</option>').join("")
@@ -2823,6 +2836,7 @@ async function souscrire(o){
     +'<div class="irow iwarn"><span>Tout ce qui est rempli ici est <b>pré-rempli dans le formulaire du client</b> ; '
       +'ce qui manque, il devra le saisir lui-même. Relisez l\'adresse e-mail : elle ne pourra plus être corrigée ensuite.</span>'
       +'<b>Acte engageant</b></div>'
+    +docDropHTML("s")
 
     +'<div class="optgrp"><h3>Informations du prospect</h3>'
     +'<div class="sgrid" style="grid-template-columns:1fr 1fr">'
@@ -2867,6 +2881,9 @@ async function souscrire(o){
     +'<button type="button" class="tgbtn ok" id="sousok">Envoyer l\'e-mail de signature</button></div>'
     +'<div id="sousmsg" style="margin-top:11px;font:600 12.5px \'IBM Plex Sans\',sans-serif"></div>', 880);
 
+  // Même lecteur que l'adhésion : RIB → IBAN et BIC, attestation → Sécurité sociale
+  // et organisme, pièce d'identité → adresse. Tout se lit sur l'appareil.
+  wireDocDrop("s",LAB_SIGNATURE,"d'envoyer");
   const q=id=>ov.querySelector("#"+id);
   const v=id=>{const e=q(id);return e?e.value.trim():"";};
   const bok=q("sousok"), smsg=q("sousmsg"), dest=q("sousdest").querySelector("b");
