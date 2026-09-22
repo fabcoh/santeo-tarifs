@@ -131,9 +131,18 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   le corps porte l'`IdOpportunite` : les deux viennent du devis. Les dates de naissance des bénéficiaires
   doivent être **identiques à celles du devis**, APICIL les recoupe. Le retour (§5.4.4) donne `urlEsignQuote`,
   affichée comme « Suivre la signature ».
-  **IBAN et BIC sont obligatoires en pratique**, contrairement à ce qu'annonce la documentation : sans eux
-  APICIL répond `INTERNAL_SERVER_ERROR` / « Le BIC doit faire 8 ou 11 caractères » — vérifié par appel réel.
-  La fenêtre les demande donc, avec le jour de prélèvement (5 ou 15), et les contrôle avant d'appeler.
+  **Le BIC est obligatoire en pratique**, contrairement à ce qu'annonce la documentation : sans lui APICIL
+  répond `INTERNAL_SERVER_ERROR` / « Le BIC doit faire 8 ou 11 caractères » — vérifié par appel réel.
+  L'IBAN, lui, reste facultatif le temps des essais : le client le saisit dans le parcours de signature.
+  **La fenêtre reprend toute la fiche du prospect** — ce que le formulaire Docapost demanderait sinon à la
+  main : nom/prénom, date de naissance, régime, adresse + CP + ville sur une ligne, téléphone + e-mail,
+  nom/ville/CP de naissance, situation familiale, n° de Sécurité sociale + n° d'organisme sur une ligne,
+  IBAN + BIC sur une ligne, jour de prélèvement. Ce qui vient du devis (nom, prénom, date de naissance,
+  régime, code postal) s'affiche **en pointillé et non modifiable** : APICIL le recoupe.
+  **Alertes ≠ blocage, ici aussi** : seuls l'e-mail et le BIC arrêtent l'envoi ; pour tout le reste, un
+  premier clic énumère ce que le client devra saisir lui-même, un second envoie quand même.
+  **Le n° d'organisme d'affiliation n'a pas de champ chez APICIL** : il part dans `commentaire`, à
+  destination du service de gestion (§5.4.2). Ne pas l'inventer ailleurs.
   **APICIL enveloppe sa vraie phrase dans un JSON d'erreur** : `apicilRaison()` en extrait `errorDescription`
   et l'affiche en entier. Ne jamais tronquer ce message, c'est le seul qui dise ce qui ne va pas.
 - **Logos dans le tableau de garantie** : `Tableau.logo(...)` place le logo de l'assureur au-dessus de l'étoile,
