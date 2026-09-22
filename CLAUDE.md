@@ -61,6 +61,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Alertes ≠ blocage** : à la génération, fenêtre « Informations manquantes » (IBAN, BIC, Sécu, organisme,
   identité…) avec « Compléter » ou « Télécharger quand même ». Jamais de blocage dur.
 - **Adresse à l'import de documents** : un seul choix parmi attestation > RIB > pièce d'identité, validé par le commercial.
+- **Le lecteur de documents sert deux formulaires** : l'adhésion (préfixe d'identifiants « a ») et la
+  fenêtre de signature APICIL (préfixe « s »). `docDropHTML(pfx)`, `wireDocDrop(pfx, LAB, fin)` et
+  `confirmDoc(docs, onDone, LAB)` prennent la table des champs visés en paramètre — `LAB_ADHESION` ou
+  `LAB_SIGNATURE`. **Un champ en lecture seule n'est jamais écrasé** : dans la fenêtre de signature, nom,
+  prénom, date de naissance et code postal viennent du devis, qu'APICIL recoupe ; ils servent seulement au
+  contrôle du titulaire du document.
 - **Tableau de garantie** : tarifs et prospect affichés d'office, case « Sans tarifs », barre unique
   Télécharger / WhatsApp / Email (+ Déposer dans le CRM). Pas de second aperçu.
   **Bas du tableau**, dans cet ordre :
