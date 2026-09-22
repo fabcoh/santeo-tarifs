@@ -148,7 +148,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   IBAN + BIC sur une ligne, jour de prélèvement. Ce qui vient du devis (nom, prénom, date de naissance,
   régime, code postal) s'affiche **en pointillé et non modifiable** : APICIL le recoupe.
   **Alertes ≠ blocage, ici aussi** : seuls l'e-mail et le BIC arrêtent l'envoi ; pour tout le reste, un
-  premier clic énumère ce que le client devra saisir lui-même, un second envoie quand même.
+  premier clic énumère ce que le client devra saisir lui-même, un second envoie quand même. Le **nom de
+  naissance** est proposé égal au nom et n'est jamais signalé : c'est le cas courant.
+  **Téléphone : dix chiffres nationaux, toujours** (`telFR()`). Un numéro venu du CRM arrive en
+  `+33 6 22 19 73 49`, `0033…` ou `33…` ; transmis tel quel, le formulaire de signature répond « Erreur dans
+  la saisie du numéro de téléphone ». La page normalise avant d'envoyer, **dans le devis comme dans la
+  signature**, et réécrit le champ pour que le commercial voie le numéro tel qu'il partira.
+  **La civilité se relit dans la fenêtre de signature**, en tête de la ligne d'identité (M. / Mme) : elle est
+  transmise à APICIL et le devis ne la montre plus une fois créé.
   **Le n° d'organisme d'affiliation n'a pas de champ chez APICIL** : il part dans `commentaire`, à
   destination du service de gestion (§5.4.2). Ne pas l'inventer ailleurs.
   **APICIL enveloppe sa vraie phrase dans un JSON d'erreur** : `apicilRaison()` en extrait `errorDescription`
