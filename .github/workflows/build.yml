@@ -37,6 +37,6 @@ jobs:
             echo "Aucun changement a publier."
             exit 0
           fi
-          git add index.html src/garanties.json
+          git add index.html src/garanties.json src/tableau.css
           git commit -m "Comparateur : construction automatique"
           git push

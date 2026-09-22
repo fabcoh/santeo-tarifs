@@ -257,6 +257,17 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 .volet.open .chev{transform:rotate(180deg)}
 #tgbox .optgrp{margin-top:12px}
 #tgbox .optgrp h3{font:800 11px 'Archivo',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0 0 7px}
+/* Fenêtre de signature APICIL : une ligne par sujet, plusieurs champs côte à côte. */
+#tgbox .sgrid{display:grid;gap:9px 12px;margin:0 0 9px}
+#tgbox .sfld{display:flex;flex-direction:column;gap:3px;min-width:0}
+#tgbox .sfld label{font:700 10px 'Archivo',sans-serif;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+#tgbox .sfld input,#tgbox .sfld select{width:100%;box-sizing:border-box;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:600 13px 'IBM Plex Sans',sans-serif}
+#tgbox .sfld input::placeholder{font-weight:500;color:var(--muted);text-transform:none}
+/* Ce qui vient du devis : bordure pointillée, pour qu'on voie d'un coup d'œil ce qui ne se modifie plus ici. */
+#tgbox .sfld input[readonly]{background:none;border-style:dashed;color:var(--muted);cursor:default}
+#tgbox .sfld input.ko{border-color:var(--warn);background:var(--warn-bg)}
+#tgbox .sfld .hint{font:500 10.5px 'IBM Plex Sans',sans-serif;color:var(--muted);line-height:1.25}
+@media(max-width:760px){#tgbox .sgrid{grid-template-columns:1fr!important}}
 #tgbox label.opt{display:flex;align-items:center;gap:9px;padding:9px 11px;margin-bottom:6px;border:1px solid var(--line);border-radius:9px;background:var(--ground);font:600 14px 'IBM Plex Sans',sans-serif;cursor:pointer}
 #tgbox label.opt:hover{border-color:var(--accent)}
 #tgbox label.opt.on{background:var(--soft);border-color:var(--accent);font-weight:700}
@@ -2270,7 +2281,7 @@ async function devisEnvoi(r,ctx){
     const bs=document.getElementById("dvsign");
     if(bs) bs.addEventListener("click",()=>souscrire({ref:ref,id:id,ctx:ctx,
       email:dvVal("dv_mail"),tel:dvVal("dv_tel"),civ:dvVal("dv_civ"),
-      nom:dvVal("dv_nom"),prenom:dvVal("dv_pre"),msg:msg,bouton:bs}));
+      nom:dvVal("dv_nom"),prenom:dvVal("dv_pre"),ddn:ddn,cp:cp,msg:msg,bouton:bs}));
   }catch(e){
     clearInterval(tic);
     msg.innerHTML='<span class="dvwarn">Service injoignable. Le devis n\'a peut-être pas été créé : vérifiez dans MyVERALTI avant de recommencer.</span>';
@@ -2291,63 +2302,167 @@ function apicilRaison(detail){
   return m?m[1]:t.slice(0,300);
 }
 
+// Libellés de régime : ceux du haut de page, pour que le commercial reconnaisse
+// d'un coup d'œil ce qui a été transmis dans le devis.
+const SOUS_REGLAB={SAL:"Salarié — régime général",TNS:"TNS — SSI",
+                   RL:"Salarié — Alsace-Moselle",TNSRL:"TNS — Alsace-Moselle"};
+
+// Un champ de la fenêtre de signature. « ro » marque ce qui vient du devis :
+// APICIL recoupe ces valeurs, les changer ici ferait échouer la demande.
+function sFld(id,lab,val,o){
+  o=o||{};
+  return '<div class="sfld"><label for="'+id+'">'+dvEch(lab)+'</label>'
+    +'<input id="'+id+'" value="'+dvEch(val||"")+'"'
+    +(o.ph?' placeholder="'+dvEch(o.ph)+'"':"")
+    +(o.max?' maxlength="'+o.max+'"':"")
+    +(o.maj?' style="text-transform:uppercase"':"")
+    +(o.ro?' readonly tabindex="-1" title="Valeur du devis : elle ne peut plus être changée ici."':"")
+    +'>'+(o.hint?'<span class="hint">'+dvEch(o.hint)+'</span>':"")+'</div>';
+}
+function sSel(id,lab,opts,val){
+  return '<div class="sfld"><label for="'+id+'">'+dvEch(lab)+'</label><select id="'+id+'">'
+    +opts.map(x=>'<option value="'+dvEch(x[0])+'"'+(x[0]===val?" selected":"")+'>'+dvEch(x[1])+'</option>').join("")
+    +'</select></div>';
+}
 async function souscrire(o){
-  const mail=(o.email||"").trim();
-  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){
-    o.msg.innerHTML+='<div class="dvwarn" style="margin-top:8px">Une adresse e-mail valide du client est '
-      +'nécessaire pour la signature électronique. Reprenez le devis en la renseignant.</div>';
-    return;
-  }
-  const nom=[o.civ,o.nom,o.prenom].filter(Boolean).join(" ");
+  const pro=(typeof PRO!=="undefined"&&PRO)?PRO:{};
+  const ctx=o.ctx||{};
+  // La fenêtre d'adhésion est parfois ouverte derrière : ce qui y a déjà été saisi
+  // (ou repris d'un RIB, d'une attestation) sert de valeur de départ.
+  const pref=(a,b)=>a||b||"";
+  const nomC=[o.civ==="MME"?"Mme":"M.",o.nom,o.prenom].filter(Boolean).join(" ");
   const ov=overlay('<button class="close">Fermer ✕</button><h2>✍️ Envoyer à la signature</h2>'
-    +'<div class="src">Devis '+dvEch(o.ref)+'</div>'
-    +'<div class="irow"><span>Signataire</span><b>'+dvEch(nom||"—")+'</b></div>'
-    +'<div class="irow"><span>Lien envoyé à</span><b>'+dvEch(mail)+'</b></div>'
-    +'<div class="irow"><span>Mode</span><b>Signature électronique APICIL</b></div>'
-    +'<div class="irow iwarn"><span>Le client va recevoir un e-mail de signature. '
-      +'Vérifiez l\'adresse : elle ne pourra plus être corrigée ensuite.</span><b>Acte engageant</b></div>'
+    +'<div class="src">Devis '+dvEch(o.ref)+' · '+dvEch(nomC||"—")+' · signature électronique APICIL (Docapost)</div>'
+    +'<div class="irow iwarn"><span>Tout ce qui est rempli ici est <b>pré-rempli dans le formulaire du client</b> ; '
+      +'ce qui manque, il devra le saisir lui-même. Relisez l\'adresse e-mail : elle ne pourra plus être corrigée ensuite.</span>'
+      +'<b>Acte engageant</b></div>'
+
+    +'<div class="optgrp"><h3>Informations du prospect</h3>'
+    +'<div class="sgrid" style="grid-template-columns:1fr 1fr">'
+      +sFld("s_nom","Nom",o.nom,{ro:1})+sFld("s_pre","Prénom",o.prenom,{ro:1})+'</div>'
+    +'<div class="sgrid" style="grid-template-columns:1fr 1.2fr 1.2fr">'
+      +sFld("s_ddn","Date de naissance",o.ddn,{ro:1})
+      +sFld("s_reg","Régime",SOUS_REGLAB[ctx.reg]||"Régime général",{ro:1})
+      +sSel("s_sit","Situation familiale",[["","à préciser"],["CELIBATAIRE","Célibataire"],["MARIE","Marié(e)"],
+            ["PACSE","Pacsé(e)"],["UNION LIBRE","Union libre"],["DIVORCE","Divorcé(e)"],
+            ["SEPARE","Séparé(e)"],["VEUF","Veuf(ve)"]],"")+'</div>'
+    +'<div class="sgrid" style="grid-template-columns:2fr .8fr 1.2fr">'
+      +sFld("s_adr","Adresse (n° et voie)",pref(pro.adresse,dvVal("aadr")),{max:38})
+      +sFld("s_cp","Code postal",o.cp,{ro:1})
+      +sFld("s_vil","Ville",pref(pro.ville,dvVal("avil")),{max:40})+'</div>'
+    +'<div class="sgrid" style="grid-template-columns:1fr 1.4fr">'
+      +sFld("s_tel","Téléphone",pref(pro.tel,dvVal("atel")),{ph:"06 12 34 56 78"})
+      +sFld("s_mail","E-mail — destinataire du lien de signature",pref(o.email,pref(pro.email,dvVal("amail"))),
+            {ph:"prenom.nom@exemple.fr"})+'</div>'
+    +'<div class="sgrid" style="grid-template-columns:1fr 1fr .7fr">'
+      +sFld("s_nnais","Nom de naissance",dvVal("annais"),{max:40})
+      +sFld("s_vnais","Ville de naissance","",{max:40})
+      +sFld("s_cpnais","CP de naissance","",{max:5,ph:"5 chiffres"})+'</div></div>'
+
+    +'<div class="optgrp"><h3>Sécurité sociale</h3>'
+    +'<div class="sgrid" style="grid-template-columns:1fr 1fr">'
+      +sFld("s_secu","N° de Sécurité sociale",pref(pro.secu,dvVal("ass")),{ph:"13 chiffres + clé",maj:1})
+      +sFld("s_org","N° organisme d\'affiliation",pref(pro.org,dvVal("aorg")),{ph:"9 chiffres",
+            hint:"APICIL n’a pas de champ dédié : il part en commentaire au service de gestion."})
+      +'</div></div>'
+
     +'<div class="optgrp"><h3>Prélèvement</h3>'
-    +'<div class="frow"><label for="s_iban">IBAN</label>'
-      +'<input id="s_iban" placeholder="FR76 …" style="width:230px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:600 13px \'IBM Plex Sans\',sans-serif;text-transform:uppercase"></div>'
-    +'<div class="frow"><label for="s_bic">BIC</label>'
-      +'<input id="s_bic" placeholder="8 ou 11 caractères" maxlength="11" style="width:230px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:600 13px \'IBM Plex Sans\',sans-serif;text-transform:uppercase"></div>'
-    +'<div class="frow"><label for="s_jour">Jour de prélèvement</label>'
-      +'<select id="s_jour"><option value="5">le 5</option><option value="15">le 15</option></select></div></div>'
-    +'<div id="souspied" style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">'
+    +'<div class="sgrid" style="grid-template-columns:1.7fr 1fr .8fr">'
+      +sFld("s_iban","IBAN",dvVal("aiban"),{ph:"FR76 …",maj:1,
+            hint:"Facultatif pendant les essais — le client peut le saisir lui-même."})
+      +sFld("s_bic","BIC",dvVal("abic"),{ph:"8 ou 11 caractères",max:11,maj:1,
+            hint:"Obligatoire : APICIL refuse la demande sans lui."})
+      +sSel("s_jour","Jour de prélèvement",[["5","le 5"],["15","le 15"]],"5")+'</div></div>'
+
+    +'<div id="sousdest" class="irow" style="margin-top:12px"><span>Lien de signature envoyé à</span><b>—</b></div>'
+    +'<div id="souspied" style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">'
     +'<button type="button" class="tgbtn close">Annuler</button>'
     +'<button type="button" class="tgbtn ok" id="sousok">Envoyer l\'e-mail de signature</button></div>'
-    +'<div id="sousmsg" style="margin-top:11px;font:600 12.5px \'IBM Plex Sans\',sans-serif"></div>', 500);
-  const bok=ov.querySelector("#sousok"), smsg=ov.querySelector("#sousmsg");
+    +'<div id="sousmsg" style="margin-top:11px;font:600 12.5px \'IBM Plex Sans\',sans-serif"></div>', 880);
+
+  const q=id=>ov.querySelector("#"+id);
+  const v=id=>{const e=q(id);return e?e.value.trim():"";};
+  const bok=q("sousok"), smsg=q("sousmsg"), dest=q("sousdest").querySelector("b");
+  const majDest=()=>{dest.textContent=v("s_mail")||"—";};
+  q("s_mail").addEventListener("input",majDest); majDest();
+
+  // Deux clics quand il manque quelque chose : le premier récapitule, le second envoie.
+  // Rien n'est bloqué sauf ce qu'APICIL refuse — l'e-mail et le BIC.
+  let confirme=false;
   bok.addEventListener("click",async()=>{
-    // APICIL refuse la demande sans coordonnées bancaires valides, malgré une
-    // documentation qui les dit facultatives — vérifié par appel réel.
-    const iban=(ov.querySelector("#s_iban").value||"").replace(/\s+/g,"").toUpperCase();
-    const bic =(ov.querySelector("#s_bic").value||"").replace(/\s+/g,"").toUpperCase();
-    if(!/^FR[0-9A-Z]{25}$/.test(iban)){
-      smsg.innerHTML='<span class="dvwarn">IBAN français attendu : FR suivi de 25 caractères.</span>';
-      ov.querySelector("#s_iban").focus(); return;
+    const ko=(id,bon)=>{const e=q(id);if(e)e.classList.toggle("ko",!bon);return bon;};
+    const mail=v("s_mail"), tel=v("s_tel").replace(/[^0-9]/g,"");
+    const iban=v("s_iban").replace(/\s+/g,"").toUpperCase();
+    const bic =v("s_bic").replace(/\s+/g,"").toUpperCase();
+    const secu=v("s_secu").replace(/\s+/g,"").toUpperCase();
+    const org =v("s_org").replace(/[^0-9]/g,"");
+    const adr=v("s_adr"), vil=v("s_vil"), sit=v("s_sit");
+    const nnais=v("s_nnais"), vnais=v("s_vnais"), cpnais=v("s_cpnais").replace(/[^0-9]/g,"");
+
+    // Refus certains d'APICIL : inutile d'envoyer.
+    if(!ko("s_mail",/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail))){
+      smsg.innerHTML='<span class="dvwarn">Une adresse e-mail valide est indispensable : c\'est elle qui reçoit le lien de signature.</span>';
+      q("s_mail").focus(); return;
     }
-    if(!/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(bic)){
-      smsg.innerHTML='<span class="dvwarn">BIC attendu : 8 ou 11 caractères, par exemple CRLYFRPP.</span>';
-      ov.querySelector("#s_bic").focus(); return;
+    if(!ko("s_bic",/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(bic))){
+      smsg.innerHTML='<span class="dvwarn">BIC attendu : 8 ou 11 caractères, par exemple CRLYFRPP. APICIL refuse la demande sans lui.</span>';
+      q("s_bic").focus(); return;
     }
+    if(iban&&!ko("s_iban",/^FR[0-9A-Z]{25}$/.test(iban))){
+      smsg.innerHTML='<span class="dvwarn">IBAN français attendu : FR suivi de 25 caractères. Laissez le champ vide si le client le saisira lui-même.</span>';
+      q("s_iban").focus(); return;
+    }
+
+    // Le reste n'empêche pas la signature : le client complétera ces cases à la main.
+    const reste=[];
+    if(!ko("s_adr",!!adr))   reste.push("l'adresse");
+    if(!ko("s_vil",!!vil))   reste.push("la ville");
+    if(!ko("s_tel",/^0[0-9]{9}$/.test(tel))) reste.push("le téléphone");
+    if(!ko("s_secu",!!secu&&secuOK(secu))) reste.push("le n° de Sécurité sociale");
+    if(!ko("s_org",/^[0-9]{9}$/.test(org))) reste.push("le n° d'organisme");
+    if(!ko("s_nnais",!!nnais)) reste.push("le nom de naissance");
+    if(!ko("s_vnais",!!vnais)) reste.push("la ville de naissance");
+    if(!ko("s_cpnais",/^[0-9]{5}$/.test(cpnais))) reste.push("le code postal de naissance");
+    if(!ko("s_sit",!!sit))   reste.push("la situation familiale");
+    if(!iban) reste.push("l'IBAN");
+    if(reste.length&&!confirme){
+      confirme=true; bok.textContent="Envoyer quand même";
+      smsg.innerHTML='<span class="dvwarn">Le client devra saisir lui-même '+dvEch(reste.join(", "))+'.</span>'
+        +'<div style="color:var(--muted);margin-top:5px">Complétez ce qui est connu, ou renvoyez tel quel : rien n\'est bloqué.</div>';
+      return;
+    }
+
     bok.disabled=true; const vieux=bok.textContent; bok.textContent="Envoi…";
     let sec=0;
     const tic=setInterval(()=>{sec++;smsg.innerHTML='Demande en cours… <b>'+sec+' s</b>';},1000);
     smsg.textContent="Demande en cours…";
     // Conjoint et enfants sont repris du devis : APICIL exige les mêmes dates de naissance.
     const benefs=[];
-    if(o.ctx&&o.ctx.hasCnj&&o.ctx.cnjAge!=null)
-      benefs.push({role:"CONJT",dateNaissance:apicilNaiss(o.ctx.cnjAge,apicilDDNConjoint())});
-    if(o.ctx) for(let i=0;i<Math.min(o.ctx.kids,8);i++)
+    if(ctx.hasCnj&&ctx.cnjAge!=null)
+      benefs.push({role:"CONJT",dateNaissance:apicilNaiss(ctx.cnjAge,apicilDDNConjoint())});
+    for(let i=0;i<Math.min(ctx.kids||0,8);i++)
       benefs.push({role:"ENFNT",dateNaissance:(YEAR-10)+"-01-01"});
+
+    const corps={reference:o.ref,IdOpportunite:o.id,email:mail,civilite:o.civ,
+                 beneficiaires:benefs,BICSepa:bic,pays:"FR",
+                 jourDuMoisDePrelevement:+v("s_jour"),frequencePrelevement:"MENS"};
+    if(/^0[0-9]{9}$/.test(tel)) corps.telephone=tel;
+    if(iban)  corps.IBANSEPA=iban;
+    if(adr)   corps.adresseL4=adr;
+    if(vil)   corps.ville=vil;
+    if(sit)   corps.situationFamiliale=sit;
+    if(nnais) corps.nomDeNaissance=nnais;
+    if(vnais) corps.villeDeNaissance=vnais;
+    if(/^[0-9]{5}$/.test(cpnais)) corps.codePostalDeNaissance=cpnais;
+    if(vnais||cpnais) corps.paysDeNaissance="FR";
+    if(secu&&secuOK(secu)) corps.numeroDeSecuriteSociale=secu;
+    // APICIL n'a pas de champ pour l'organisme d'affiliation : il part en clair au
+    // service de gestion, seul endroit prévu par la documentation (§5.4.2).
+    if(/^[0-9]{9}$/.test(org)) corps.commentaire="N° organisme d'affiliation : "+org;
+
     try{
       const rp=await fetch(SOUS_URL,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({reference:o.ref,IdOpportunite:o.id,email:mail,telephone:o.tel,
-                             civilite:o.civ,beneficiaires:benefs,
-                             IBANSEPA:iban,BICSepa:bic,
-                             jourDuMoisDePrelevement:+ov.querySelector("#s_jour").value,
-                             frequencePrelevement:"MENS"})});
+        body:JSON.stringify(corps)});
       const txt=await rp.text(); let d=null; try{d=JSON.parse(txt);}catch(e){}
       clearInterval(tic);
       if(!rp.ok){

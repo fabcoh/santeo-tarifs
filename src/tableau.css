@@ -256,6 +256,17 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 .volet.open .chev{transform:rotate(180deg)}
 #tgbox .optgrp{margin-top:12px}
 #tgbox .optgrp h3{font:800 11px 'Archivo',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0 0 7px}
+/* Fenêtre de signature APICIL : une ligne par sujet, plusieurs champs côte à côte. */
+#tgbox .sgrid{display:grid;gap:9px 12px;margin:0 0 9px}
+#tgbox .sfld{display:flex;flex-direction:column;gap:3px;min-width:0}
+#tgbox .sfld label{font:700 10px 'Archivo',sans-serif;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+#tgbox .sfld input,#tgbox .sfld select{width:100%;box-sizing:border-box;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:600 13px 'IBM Plex Sans',sans-serif}
+#tgbox .sfld input::placeholder{font-weight:500;color:var(--muted);text-transform:none}
+/* Ce qui vient du devis : bordure pointillée, pour qu'on voie d'un coup d'œil ce qui ne se modifie plus ici. */
+#tgbox .sfld input[readonly]{background:none;border-style:dashed;color:var(--muted);cursor:default}
+#tgbox .sfld input.ko{border-color:var(--warn);background:var(--warn-bg)}
+#tgbox .sfld .hint{font:500 10.5px 'IBM Plex Sans',sans-serif;color:var(--muted);line-height:1.25}
+@media(max-width:760px){#tgbox .sgrid{grid-template-columns:1fr!important}}
 #tgbox label.opt{display:flex;align-items:center;gap:9px;padding:9px 11px;margin-bottom:6px;border:1px solid var(--line);border-radius:9px;background:var(--ground);font:600 14px 'IBM Plex Sans',sans-serif;cursor:pointer}
 #tgbox label.opt:hover{border-color:var(--accent)}
 #tgbox label.opt.on{background:var(--soft);border-color:var(--accent);font-weight:700}
