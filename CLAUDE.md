@@ -250,9 +250,25 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `antony@`, `sandra@`, `caroline@`, `fcohen@`.
 - `sandboxd9ad…mailgun.org` est le bac à sable d'ouverture de compte : zéro envoi, sans usage.
 - Réglages du domaine : rétention des messages **3 jours**, TLS opportuniste, suivi des **clics et des
-  ouvertures activé**, nom d'hôte de suivi `email`. **Le suivi réécrit les liens** : l'adresse « Cette offre
-  m'intéresse » passera par le domaine de suivi de Mailgun, ce qui donne l'événement `clicked` mais change
-  l'adresse affichée au prospect.
+  ouvertures activé**. **Le suivi réécrit les liens** : l'adresse « Cette offre m'intéresse » passera par
+  `email.santeo.net`, ce qui donne l'événement `clicked` sans montrer un domaine étranger au prospect.
+- **DNS, état vérifié le 22/09/2026** — tout ce qui sert à l'envoi est en place :
+
+  | Enregistrement | Hôte | État |
+  |---|---|---|
+  | TXT (SPF) | `santeo.net` → `v=spf1 include:mailgun.org ~all` | ✅ Verified |
+  | TXT (DKIM) | `smtp._domainkey.santeo.net` | ✅ Active |
+  | CNAME (suivi) | `email.santeo.net` → `mailgun.org` | ✅ Verified |
+  | MX | `santeo.net` → `mxa`/`mxb.mailgun.org` | 🟠 Unverified — **et c'est voulu** |
+
+  **Ne jamais poser les MX Mailgun sur `santeo.net`** : le domaine reçoit déjà le courrier du cabinet par un
+  autre fournisseur. Les poser couperait `fcohen@`, `gestion@`, `sandra@`, `caroline@`, `antony@`. Mailgun le
+  dit lui-même (« unless your domain already uses another provider for receiving email »). L'orange est le
+  bon état. Les e-mails de leads arrivent donc au webhook par une **route** Mailgun ou une redirection depuis
+  la messagerie, pas par les MX : à retrouver dans Receiving → Routes avant toute retouche du DNS.
+- **SPF en `~all` et un seul `v=spf1` par domaine** : si `santeo.net` envoie aussi depuis la messagerie du
+  cabinet, l'enregistrement doit inclure ce fournisseur **en plus** de `include:mailgun.org`. Non vérifié :
+  le DNS n'est pas interrogeable depuis une session Claude (proxy).
 - **Mailgun ne sert aujourd'hui qu'à recevoir** dans le CRM (`POST /api/mailgun/incoming`, webhook qui crée
   les fiches depuis les e-mails de leads). L'envoi sortant existe dans **l'autre comparateur** de Manus
   (`santeocomp-ktjuxhxk.manus.space`, `server/email.ts`), pas dans le CRM ni ici.
