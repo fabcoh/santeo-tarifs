@@ -139,7 +139,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   affichée comme « Suivre la signature ».
   **Le BIC est obligatoire en pratique**, contrairement à ce qu'annonce la documentation : sans lui APICIL
   répond `INTERNAL_SERVER_ERROR` / « Le BIC doit faire 8 ou 11 caractères » — vérifié par appel réel.
-  L'IBAN, lui, reste facultatif le temps des essais : le client le saisit dans le parcours de signature.
+  L'IBAN, lui, **est bien facultatif** : vérifié par appel réel le 22/09/2026 sur `DEV-2026-3315706`,
+  BIC `CRLYFRPPPOI` seul, sans `IBANSEPA` — APICIL renvoie `success` et l'`urlEsignQuote`. Le client saisit
+  son IBAN dans le parcours de signature.
   **La fenêtre reprend toute la fiche du prospect** — ce que le formulaire Docapost demanderait sinon à la
   main : nom/prénom, date de naissance, régime, adresse + CP + ville sur une ligne, téléphone + e-mail,
   nom/ville/CP de naissance, situation familiale, n° de Sécurité sociale + n° d'organisme sur une ligne,
