@@ -2251,7 +2251,7 @@ async function devisEnvoi(r,ctx){
     clearInterval(tic);
     if(!rp.ok){
       msg.innerHTML='<span class="dvwarn">'+dvEch((d&&d.erreur)?d.erreur:"Le devis n'a pas pu être créé (HTTP "+rp.status+").")+'</span>'
-        +((d&&d.detail)?'<div style="color:var(--muted);margin-top:5px">'+dvEch(String(d.detail).slice(0,180))+'</div>':"");
+        +((d&&d.detail)?'<div style="color:var(--muted);margin-top:5px">'+dvEch(apicilRaison(d.detail))+'</div>':"");
       bt.disabled=false; bt.textContent=old; return;
     }
     // Retour documenté §5.2.4 : IdOpportunite (le projet) + relatedQuotes[] (les devis).
@@ -2282,6 +2282,15 @@ async function devisEnvoi(r,ctx){
 // APICIL envoie au client un lien de signature Docapost. C'est un acte engageant,
 // irréversible du point de vue du client : il n'est jamais déclenché d'un seul clic,
 // et jamais sans que le commercial ait relu l'adresse de destination.
+// APICIL enveloppe sa vraie phrase dans un JSON d'erreur. C'est elle qui compte :
+// « Le BIC doit faire 8 ou 11 caractères », « Email de contact invalide »…
+function apicilRaison(detail){
+  const t=String(detail==null?"":detail);
+  try{ const d=JSON.parse(t); if(d&&d.error&&d.error.errorDescription) return d.error.errorDescription; }catch(e){}
+  const m=/"errorDescription"\s*:\s*"([^"]+)"/.exec(t);
+  return m?m[1]:t.slice(0,300);
+}
+
 async function souscrire(o){
   const mail=(o.email||"").trim();
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){
@@ -2297,12 +2306,31 @@ async function souscrire(o){
     +'<div class="irow"><span>Mode</span><b>Signature électronique APICIL</b></div>'
     +'<div class="irow iwarn"><span>Le client va recevoir un e-mail de signature. '
       +'Vérifiez l\'adresse : elle ne pourra plus être corrigée ensuite.</span><b>Acte engageant</b></div>'
+    +'<div class="optgrp"><h3>Prélèvement</h3>'
+    +'<div class="frow"><label for="s_iban">IBAN</label>'
+      +'<input id="s_iban" placeholder="FR76 …" style="width:230px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:600 13px \'IBM Plex Sans\',sans-serif;text-transform:uppercase"></div>'
+    +'<div class="frow"><label for="s_bic">BIC</label>'
+      +'<input id="s_bic" placeholder="8 ou 11 caractères" maxlength="11" style="width:230px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:600 13px \'IBM Plex Sans\',sans-serif;text-transform:uppercase"></div>'
+    +'<div class="frow"><label for="s_jour">Jour de prélèvement</label>'
+      +'<select id="s_jour"><option value="5">le 5</option><option value="15">le 15</option></select></div></div>'
     +'<div id="souspied" style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">'
     +'<button type="button" class="tgbtn close">Annuler</button>'
     +'<button type="button" class="tgbtn ok" id="sousok">Envoyer l\'e-mail de signature</button></div>'
     +'<div id="sousmsg" style="margin-top:11px;font:600 12.5px \'IBM Plex Sans\',sans-serif"></div>', 500);
   const bok=ov.querySelector("#sousok"), smsg=ov.querySelector("#sousmsg");
   bok.addEventListener("click",async()=>{
+    // APICIL refuse la demande sans coordonnées bancaires valides, malgré une
+    // documentation qui les dit facultatives — vérifié par appel réel.
+    const iban=(ov.querySelector("#s_iban").value||"").replace(/\s+/g,"").toUpperCase();
+    const bic =(ov.querySelector("#s_bic").value||"").replace(/\s+/g,"").toUpperCase();
+    if(!/^FR[0-9A-Z]{25}$/.test(iban)){
+      smsg.innerHTML='<span class="dvwarn">IBAN français attendu : FR suivi de 25 caractères.</span>';
+      ov.querySelector("#s_iban").focus(); return;
+    }
+    if(!/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(bic)){
+      smsg.innerHTML='<span class="dvwarn">BIC attendu : 8 ou 11 caractères, par exemple CRLYFRPP.</span>';
+      ov.querySelector("#s_bic").focus(); return;
+    }
     bok.disabled=true; const vieux=bok.textContent; bok.textContent="Envoi…";
     let sec=0;
     const tic=setInterval(()=>{sec++;smsg.innerHTML='Demande en cours… <b>'+sec+' s</b>';},1000);
@@ -2316,12 +2344,15 @@ async function souscrire(o){
     try{
       const rp=await fetch(SOUS_URL,{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({reference:o.ref,IdOpportunite:o.id,email:mail,telephone:o.tel,
-                             civilite:o.civ,beneficiaires:benefs})});
+                             civilite:o.civ,beneficiaires:benefs,
+                             IBANSEPA:iban,BICSepa:bic,
+                             jourDuMoisDePrelevement:+ov.querySelector("#s_jour").value,
+                             frequencePrelevement:"MENS"})});
       const txt=await rp.text(); let d=null; try{d=JSON.parse(txt);}catch(e){}
       clearInterval(tic);
       if(!rp.ok){
         smsg.innerHTML='<span class="dvwarn">'+dvEch((d&&d.erreur)?d.erreur:"La souscription n'a pas pu être lancée (HTTP "+rp.status+").")+'</span>'
-          +((d&&d.detail)?'<div style="color:var(--muted);margin-top:5px">'+dvEch(String(d.detail).slice(0,180))+'</div>':"");
+          +((d&&d.detail)?'<div style="color:var(--muted);margin-top:5px">'+dvEch(apicilRaison(d.detail))+'</div>':"");
         bok.disabled=false; bok.textContent=vieux; return;
       }
       // §5.4.4 : urlEsignQuote n'est renvoyée qu'en signature électronique.

@@ -130,8 +130,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   L'adresse du service porte la **référence commerciale** (`/api/souscriptions/DEV-AAAA-NNNNNNN/demande`) et
   le corps porte l'`IdOpportunite` : les deux viennent du devis. Les dates de naissance des bénéficiaires
   doivent être **identiques à celles du devis**, APICIL les recoupe. Le retour (§5.4.4) donne `urlEsignQuote`,
-  affichée comme « Suivre la signature ». Sans IBAN transmis, le client renseigne ses coordonnées bancaires
-  dans le parcours de signature.
+  affichée comme « Suivre la signature ».
+  **IBAN et BIC sont obligatoires en pratique**, contrairement à ce qu'annonce la documentation : sans eux
+  APICIL répond `INTERNAL_SERVER_ERROR` / « Le BIC doit faire 8 ou 11 caractères » — vérifié par appel réel.
+  La fenêtre les demande donc, avec le jour de prélèvement (5 ou 15), et les contrôle avant d'appeler.
+  **APICIL enveloppe sa vraie phrase dans un JSON d'erreur** : `apicilRaison()` en extrait `errorDescription`
+  et l'affiche en entier. Ne jamais tronquer ce message, c'est le seul qui dise ce qui ne va pas.
 - **Logos dans le tableau de garantie** : `Tableau.logo(...)` place le logo de l'assureur au-dessus de l'étoile,
   en tête de colonne. Fichiers dans `docs/` : `logo_mcci.png`, `logo_avenir.png`, `logo_mverte.png`,
   `logo_apicil.png` — PNG à fond transparent, normalisés à 160 px de haut, affichés en **42 px** (à 34 px un
