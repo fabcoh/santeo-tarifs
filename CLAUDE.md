@@ -239,6 +239,29 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - Retour au CRM après dépôt : `crmBack()` (opener → `back=` → fermeture).
 - Recherche par e-mail : côté Manus, renvoie `404 Aucune fiche Santéo trouvée` — à corriger chez lui.
 
+## Envoi d'e-mails (Mailgun)
+
+- Compte **Sinch Mailgun**, organisation « COHEN / capi finance ». Domaine d'envoi : **`santeo.net`**
+  (le domaine racine, pas un sous-domaine), **vérifié**, en **région US** — donc
+  `https://api.mailgun.net/v3/santeo.net`. Une clé de région EU sur l'adresse US échoue sans rien expliquer :
+  c'est l'erreur d'intégration la plus fréquente.
+- Le domaine est chaud : 6 918 messages acceptés en septembre 2026, 99,12 % délivrés, 0,74 % de rebonds,
+  79,08 % d'ouvertures, 0,04 % de plaintes. Toute adresse `@santeo.net` peut donc servir d'expéditeur —
+  `antony@`, `sandra@`, `caroline@`, `fcohen@`.
+- `sandboxd9ad…mailgun.org` est le bac à sable d'ouverture de compte : zéro envoi, sans usage.
+- Réglages du domaine : rétention des messages **3 jours**, TLS opportuniste, suivi des **clics et des
+  ouvertures activé**, nom d'hôte de suivi `email`. **Le suivi réécrit les liens** : l'adresse « Cette offre
+  m'intéresse » passera par le domaine de suivi de Mailgun, ce qui donne l'événement `clicked` mais change
+  l'adresse affichée au prospect.
+- **Mailgun ne sert aujourd'hui qu'à recevoir** dans le CRM (`POST /api/mailgun/incoming`, webhook qui crée
+  les fiches depuis les e-mails de leads). L'envoi sortant existe dans **l'autre comparateur** de Manus
+  (`santeocomp-ktjuxhxk.manus.space`, `server/email.ts`), pas dans le CRM ni ici.
+- **Les deux comparateurs sont conservés** : `santeocomp` (CAP Évolution, CAP NR / CAP Liberté Santé, TALIS)
+  et celui-ci. La politique tarifaire devient donc **une par source**, jamais une règle unique.
+- Clés : **une clé d'envoi dédiée, à privilèges minimaux**, dans le coffre de celui qui envoie. Jamais dans
+  ce dépôt, jamais dans une page, jamais dans une conversation. La clé de signature des webhooks est une
+  clé **distincte** de la clé d'envoi.
+
 ## Couleurs
 
 - Les variables de thème sont déclarées **trois fois** : `:root`, le bloc `prefers-color-scheme: dark` et
