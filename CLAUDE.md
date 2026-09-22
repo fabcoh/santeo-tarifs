@@ -230,6 +230,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - Retour au CRM après dépôt : `crmBack()` (opener → `back=` → fermeture).
 - Recherche par e-mail : côté Manus, renvoie `404 Aucune fiche Santéo trouvée` — à corriger chez lui.
 
+## Couleurs
+
+- Les variables de thème sont déclarées **trois fois** : `:root`, le bloc `prefers-color-scheme: dark` et
+  `:root[data-theme="dark"]`. **Une variable ajoutée doit l'être aux trois**, sinon `var(--x)` est invalide
+  dans le thème oublié et la propriété disparaît. C'est ce qui rendait les fenêtres transparentes :
+  `--card` était utilisée (fond de `#dvbox`, des champs du panneau de filtres) sans avoir jamais été
+  définie — on lisait le tableau au travers. `--card` = `#FFFFFF` en clair, `#232B3A` en sombre.
+
 ## Sécurité
 
 - Codes d'accès à l'adhésion : seules les empreintes SHA-256 dans `build.py`. Ne jamais écrire les codes en clair
