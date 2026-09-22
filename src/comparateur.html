@@ -1673,6 +1673,7 @@ function renderTG(cols,title,sub,note,single){
     +'<button data-a="dl" style="'+bst+'">⬇️ Télécharger</button>'
     +'<button data-a="wa" style="'+bst+';background:#25D366;color:#0b2b16;border-color:#25D366">💬 WhatsApp</button>'
     +'<button data-a="mail" style="'+bst+'">✉️ Email</button>'
+    +'<button data-a="mel" style="'+bst+';background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">📮 Envoyer au prospect</button>'
     +(window.CRMLINK?'<button data-a="crm" style="'+bst+';background:#059669;color:#fff;border-color:#059669">📲 Déposer dans le CRM</button>':'')
     +'<span id="tgstat" style="font:600 12.5px \'Archivo\',sans-serif;color:var(--accent);margin-left:4px"></span>';
   ov.querySelector('#tgbox .rectip').after(bar);
@@ -1742,6 +1743,8 @@ function renderTG(cols,title,sub,note,single){
         try{const dl2=await CUSE("downloads");if(dl2){await dl2.save({filename:fname,data:new Uint8Array(await blob.arrayBuffer())});saved=true;}}catch(_){}
         if(!saved){const a2=document.createElement('a');a2.href=URL.createObjectURL(blob);a2.download=fname;document.body.appendChild(a2);a2.click();a2.remove();}
         stat("✅ Image téléchargée");
+      } else if(a==="mel"){
+        mailFenetre(blob,mailOffres(cols),PR); stat("");
       } else if(a==="crm"){
         btn.textContent="⏳ Dépôt…";
         const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);});
@@ -2185,6 +2188,88 @@ function fmaj(info){
   document.addEventListener("keydown",e=>{if(e.key==="Escape"&&p.classList.contains("ouvert"))ouvre(false);});
 })();
 
+
+// ---- Envoi du comparatif au prospect, par e-mail -----------------------------
+// La page ne sait pas envoyer de courrier : elle remet le tableau, les formules et
+// la fiche au relais « santeo-mail.php », qui compose le message et le donne à
+// Mailgun. La clé vit sur le serveur, jamais ici : cette page est publique.
+const MAIL_URL="https://capisante.fr/santeo-mail.php";
+const EXPEDITEURS=[["fcohen@santeo.net","Fabrice Cohen"],["sandra@santeo.net","Sandra"],
+                   ["caroline@santeo.net","Caroline Viallet"],["antony@santeo.net","Antony"]];
+
+// Ce que le prospect doit lire de chaque formule : son nom, son tarif, ses documents
+// et ce qui borne ses remboursements — la même règle qu'au bas du tableau.
+function mailOffres(cols){
+  return cols.map(c=>{
+    const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi);
+    const g=F[c.key];
+    const lim=Tableau.limites(GAR,c.key,c.fi);
+    // La mention « non responsable » est due au prospect, mais certaines gammes la
+    // portent déjà dans leurs limites : on ne l'écrit pas deux fois.
+    const nr=(g&&g.resp===false&&!/non responsable/i.test(lim||""))?"Contrat NON responsable. ":"";
+    return {titre:Tableau.nomComplet(GAR,c.key,c.fi),
+            prix:r?eur(r.total)+" / mois":"",
+            docs:Tableau.documents(GAR,c.key,c.fi),
+            limites:nr+(lim||"")};
+  });
+}
+
+function mailFenetre(blob,offres,PR){
+  let expChoisi=EXPEDITEURS[0][0];
+  try{const m=localStorage.getItem("santeo_exp"); if(m&&EXPEDITEURS.some(e=>e[0]===m))expChoisi=m;}catch(e){}
+  const ov=overlay('<button class="close">Fermer ✕</button><h2>📮 Envoyer le comparatif au prospect</h2>'
+    +'<div class="src">Le tableau part en image dans le corps du message, avec les liens vers les documents de chaque formule.</div>'
+    +'<div class="optgrp"><h3>Message</h3>'
+    +'<div class="sgrid" style="grid-template-columns:1fr 1fr">'
+      +sSel("m_exp","De la part de",EXPEDITEURS.map(e=>[e[0],e[1]+" — "+e[0]]),expChoisi)
+      +sFld("m_dest","Adresse du prospect",(PR&&PR.email)||"",{ph:"prenom.nom@exemple.fr"})+'</div>'
+    +'<div class="sgrid" style="grid-template-columns:1fr 1.4fr">'
+      +sFld("m_prov","Site d\'origine",(PR&&PR.provenance)||"santeo.net",{max:60})
+      +sFld("m_obj","Objet","Votre offre de mutuelle santé",{max:120})+'</div></div>'
+    +'<div class="irow"><span>Formules envoyées</span><b>'+offres.length+'</b></div>'
+    +'<div class="irow"><span>Tableau comparatif</span><b>'+(blob?Math.round(blob.size/1024)+" Ko":"absent")+'</b></div>'
+    +'<div class="irow iwarn"><span>Le message part réellement au prospect, avec une copie cachée à '
+      +'fcohen@santeo.net et au conseiller. Relisez l\'adresse.</span><b>Envoi réel</b></div>'
+    +'<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">'
+    +'<button type="button" class="tgbtn close">Annuler</button>'
+    +'<button type="button" class="tgbtn ok" id="melok">Envoyer</button></div>'
+    +'<div id="melmsg" style="margin-top:11px;font:600 12.5px \'IBM Plex Sans\',sans-serif"></div>', 640);
+  const q=id=>ov.querySelector("#"+id), v=id=>{const e=q(id);return e?e.value.trim():"";};
+  const bok=q("melok"), msg=q("melmsg");
+  bok.addEventListener("click",async()=>{
+    const dest=v("m_dest"), exp=v("m_exp");
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(dest)){
+      q("m_dest").classList.add("ko");
+      msg.innerHTML='<span class="dvwarn">Une adresse valide est nécessaire pour envoyer le comparatif.</span>';
+      q("m_dest").focus(); return;
+    }
+    q("m_dest").classList.remove("ko");
+    try{localStorage.setItem("santeo_exp",exp);}catch(e){}
+    bok.disabled=true; const vieux=bok.textContent; bok.textContent="Envoi…";
+    msg.textContent="Envoi en cours…";
+    try{
+      const b64=blob?await new Promise((res,rej)=>{const fr=new FileReader();
+        fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);}):"";
+      const rp=await fetch(MAIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({expediteur:exp,destinataire:dest,
+          civilite:/^mme$/i.test((PR&&PR.civ)||"")?"MME":"MR",
+          nom:(PR&&PR.nom)||"",prenom:(PR&&PR.prenom)||"",
+          provenance:v("m_prov"),objet:v("m_obj"),offres:offres,image:b64})});
+      const txt=await rp.text(); let d=null; try{d=JSON.parse(txt);}catch(e){}
+      if(!rp.ok){
+        msg.innerHTML='<span class="dvwarn">'+dvEch((d&&d.erreur)?d.erreur:"L'envoi a échoué (HTTP "+rp.status+").")+'</span>'
+          +((d&&d.detail)?'<div style="color:var(--muted);margin-top:5px">'+dvEch(d.detail)+'</div>':"");
+        bok.disabled=false; bok.textContent=vieux; return;
+      }
+      msg.innerHTML='<b>Comparatif envoyé à '+dvEch(dest)+'.</b>'
+        +'<div style="color:var(--muted);margin-top:5px">Copie cachée au conseiller et à la direction.</div>';
+      bok.textContent="Envoyé";
+    }catch(e){
+      msg.innerHTML='<span class="dvwarn">Service injoignable. Le message n\'est pas parti : réessayez.</span>';
+      bok.disabled=false; bok.textContent=vieux;
+    }
+  });
+}
 
 // ---- Création d'un devis APICIL ----------------------------------------------
 // Le devis est enregistré chez l'assureur et consultable dans MyVERALTI : il engage

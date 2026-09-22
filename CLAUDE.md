@@ -278,6 +278,27 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   ce dépôt, jamais dans une page, jamais dans une conversation. La clé de signature des webhooks est une
   clé **distincte** de la clé d'envoi.
 
+### Envoi du comparatif depuis la page — `santeo-mail.php`
+
+- Bouton **📮 Envoyer au prospect** dans la barre du tableau de garantie. La page capture le tableau, réunit
+  les formules affichées et remet le tout au relais ; **elle n'envoie jamais elle-même**, une page publique
+  ne peut pas porter de clé Mailgun.
+- Fichiers dans `www/` : `santeo-mail.php` + `santeo-mail-config.php` (**clé, hors dépôt**).
+- **L'expéditeur est choisi dans une liste fermée côté serveur** (`fcohen@`, `sandra@`, `caroline@`,
+  `antony@`) : la page n'envoie qu'une adresse, le relais refuse tout ce qui n'est pas dans la liste. Sinon
+  n'importe qui pourrait écrire au nom de Santéo. Le choix est mémorisé sur l'appareil (`santeo_exp`).
+- **Les liens des documents sont filtrés par le relais** : seuls `fabcoh.github.io`, `santeo.net` et
+  `capisante.fr` passent. Un lien fourni par l'appelant pourrait sinon envoyer le prospect ailleurs, sous
+  notre nom.
+- **Le tableau part en pièce jointe en ligne** (`inline`, `cid:comparatif.png`) et non en image distante :
+  Outlook et Gmail bloquent les images distantes par défaut. Version texte jointe, exigée par les filtres.
+- **Copie cachée systématique** au conseiller et à `fcohen@santeo.net` : toute offre partie laisse une trace.
+- **« Cette offre m'intéresse » est un `mailto:`** vers le conseiller, avec copie à la direction. Pas de
+  jeton, pas de page à héberger, fonctionne depuis n'importe quelle boîte. Un lien signé à durée longue,
+  traçable, reste la bonne cible — il demande un serveur qui tienne un instantané de devis (voir la note
+  d'intégration avec Manus).
+- Quota **30 envois/heure/IP**, message limité à 4 Mo, image à 2,5 Mo.
+
 ## Couleurs
 
 - Les variables de thème sont déclarées **trois fois** : `:root`, le bloc `prefers-color-scheme: dark` et
