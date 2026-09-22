@@ -2170,6 +2170,7 @@ function fmaj(info){
 // Le devis est enregistré chez l'assureur et consultable dans MyVERALTI : il engage
 // notre code apporteur. D'où la fenêtre de contrôle avant envoi, jamais d'envoi direct.
 const DEVIS_URL="https://capisante.fr/apicil-devis.php";
+const SOUS_URL="https://capisante.fr/apicil-souscription.php";
 const dvEch=t=>String(t==null?"":t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function dvVal(id){const e=document.getElementById(id);return e?e.value.trim():"";}
 
@@ -2263,13 +2264,80 @@ async function devisEnvoi(r,ctx){
       +(ref?'<div>Référence : <b>'+dvEch(ref)+'</b></div>':"")
       +(url?'<div style="margin-top:6px"><a href="'+dvEch(url)+'" target="_blank" rel="noopener">Ouvrir le devis dans MyVERALTI ↗</a></div>'
            :'<div style="margin-top:6px;color:var(--muted)">Retrouvez-le dans votre espace MyVERALTI.</div>')
-      +(id?'<div style="color:var(--muted);margin-top:5px;font-size:11.5px">Projet '+dvEch(id)+'</div>':"");
+      +(id?'<div style="color:var(--muted);margin-top:5px;font-size:11.5px">Projet '+dvEch(id)+'</div>':"")
+      +((ref&&id)?'<div style="margin-top:10px"><button type="button" class="tgbtn ok" id="dvsign">✍️ Envoyer à la signature</button></div>':"");
     bt.textContent="Devis créé";
+    const bs=document.getElementById("dvsign");
+    if(bs) bs.addEventListener("click",()=>souscrire({ref:ref,id:id,ctx:ctx,
+      email:dvVal("dv_mail"),tel:dvVal("dv_tel"),civ:dvVal("dv_civ"),
+      nom:dvVal("dv_nom"),prenom:dvVal("dv_pre"),msg:msg,bouton:bs}));
   }catch(e){
     clearInterval(tic);
     msg.innerHTML='<span class="dvwarn">Service injoignable. Le devis n\'a peut-être pas été créé : vérifiez dans MyVERALTI avant de recommencer.</span>';
     bt.disabled=false; bt.textContent=old;
   }
+}
+
+// ---- Démarrer la souscription (signature électronique par e-mail) ------------
+// APICIL envoie au client un lien de signature Docapost. C'est un acte engageant,
+// irréversible du point de vue du client : il n'est jamais déclenché d'un seul clic,
+// et jamais sans que le commercial ait relu l'adresse de destination.
+async function souscrire(o){
+  const mail=(o.email||"").trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){
+    o.msg.innerHTML+='<div class="dvwarn" style="margin-top:8px">Une adresse e-mail valide du client est '
+      +'nécessaire pour la signature électronique. Reprenez le devis en la renseignant.</div>';
+    return;
+  }
+  const nom=[o.civ,o.nom,o.prenom].filter(Boolean).join(" ");
+  const ov=overlay('<button class="close">Fermer ✕</button><h2>✍️ Envoyer à la signature</h2>'
+    +'<div class="src">Devis '+dvEch(o.ref)+'</div>'
+    +'<div class="irow"><span>Signataire</span><b>'+dvEch(nom||"—")+'</b></div>'
+    +'<div class="irow"><span>Lien envoyé à</span><b>'+dvEch(mail)+'</b></div>'
+    +'<div class="irow"><span>Mode</span><b>Signature électronique APICIL</b></div>'
+    +'<div class="irow iwarn"><span>Le client va recevoir un e-mail de signature. '
+      +'Vérifiez l\'adresse : elle ne pourra plus être corrigée ensuite.</span><b>Acte engageant</b></div>'
+    +'<div id="souspied" style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">'
+    +'<button type="button" class="tgbtn close">Annuler</button>'
+    +'<button type="button" class="tgbtn ok" id="sousok">Envoyer l\'e-mail de signature</button></div>'
+    +'<div id="sousmsg" style="margin-top:11px;font:600 12.5px \'IBM Plex Sans\',sans-serif"></div>', 500);
+  const bok=ov.querySelector("#sousok"), smsg=ov.querySelector("#sousmsg");
+  bok.addEventListener("click",async()=>{
+    bok.disabled=true; const vieux=bok.textContent; bok.textContent="Envoi…";
+    let sec=0;
+    const tic=setInterval(()=>{sec++;smsg.innerHTML='Demande en cours… <b>'+sec+' s</b>';},1000);
+    smsg.textContent="Demande en cours…";
+    // Conjoint et enfants sont repris du devis : APICIL exige les mêmes dates de naissance.
+    const benefs=[];
+    if(o.ctx&&o.ctx.hasCnj&&o.ctx.cnjAge!=null)
+      benefs.push({role:"CONJT",dateNaissance:apicilNaiss(o.ctx.cnjAge,apicilDDNConjoint())});
+    if(o.ctx) for(let i=0;i<Math.min(o.ctx.kids,8);i++)
+      benefs.push({role:"ENFNT",dateNaissance:(YEAR-10)+"-01-01"});
+    try{
+      const rp=await fetch(SOUS_URL,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({reference:o.ref,IdOpportunite:o.id,email:mail,telephone:o.tel,
+                             civilite:o.civ,beneficiaires:benefs})});
+      const txt=await rp.text(); let d=null; try{d=JSON.parse(txt);}catch(e){}
+      clearInterval(tic);
+      if(!rp.ok){
+        smsg.innerHTML='<span class="dvwarn">'+dvEch((d&&d.erreur)?d.erreur:"La souscription n'a pas pu être lancée (HTTP "+rp.status+").")+'</span>'
+          +((d&&d.detail)?'<div style="color:var(--muted);margin-top:5px">'+dvEch(String(d.detail).slice(0,180))+'</div>':"");
+        bok.disabled=false; bok.textContent=vieux; return;
+      }
+      // §5.4.4 : urlEsignQuote n'est renvoyée qu'en signature électronique.
+      const lien=d&&(d.urlEsignQuote||d.UrlEsignQuote);
+      smsg.innerHTML='<b>E-mail de signature envoyé à '+dvEch(mail)+'.</b>'
+        +(lien?'<div style="margin-top:6px"><a href="'+dvEch(lien)+'" target="_blank" rel="noopener">Suivre la signature ↗</a></div>':"")
+        +'<div style="color:var(--muted);margin-top:5px">Le client signe depuis son e-mail ; le dossier part ensuite en gestion chez APICIL.</div>';
+      bok.textContent="Envoyé";
+      if(o.bouton){o.bouton.disabled=true;o.bouton.textContent="✍️ Signature envoyée";}
+    }catch(e){
+      clearInterval(tic);
+      smsg.innerHTML='<span class="dvwarn">Service injoignable. La demande n\'a peut-être pas abouti : '
+        +'vérifiez le devis '+dvEch(o.ref)+' dans MyVERALTI avant de recommencer.</span>';
+      bok.disabled=false; bok.textContent=vieux;
+    }
+  });
 }
 
 function render(rows,warns){

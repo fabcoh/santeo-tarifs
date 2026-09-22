@@ -121,6 +121,17 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **L'appel dure 25 à 60 s** (enregistrement dans MyVERALTI) : relais à 120 s, compteur affiché dans la
   fenêtre. En cas de dépassement le devis peut avoir été créé quand même — vérifier MyVERALTI avant de
   recommencer, jamais relancer à l'aveugle.
+- **Souscription APICIL** : bouton « ✍️ Envoyer à la signature », affiché **seulement après la création du
+  devis**, dans la même fenêtre. Il ouvre une confirmation qui rappelle le signataire, **l'adresse de
+  destination** et la nature de l'acte : APICIL envoie au client un lien de signature Docapost, irréversible
+  une fois parti. Jamais d'envoi en un clic. Relais `apicil-souscription.php`, **10 demandes/heure/IP**.
+  **`modeSouscription` est figé à `ELECTRONIQUEMAIL` côté serveur** — PAPIER et ELECTRONIQUESMS ne sont pas
+  ouverts. `contactPartenaire` (l'adresse du compte MyVERALTI) vit dans le relais, jamais dans la page.
+  L'adresse du service porte la **référence commerciale** (`/api/souscriptions/DEV-AAAA-NNNNNNN/demande`) et
+  le corps porte l'`IdOpportunite` : les deux viennent du devis. Les dates de naissance des bénéficiaires
+  doivent être **identiques à celles du devis**, APICIL les recoupe. Le retour (§5.4.4) donne `urlEsignQuote`,
+  affichée comme « Suivre la signature ». Sans IBAN transmis, le client renseigne ses coordonnées bancaires
+  dans le parcours de signature.
 - **Logos dans le tableau de garantie** : `Tableau.logo(...)` place le logo de l'assureur au-dessus de l'étoile,
   en tête de colonne. Fichiers dans `docs/` : `logo_mcci.png`, `logo_avenir.png`, `logo_mverte.png`,
   `logo_apicil.png` — PNG à fond transparent, normalisés à 160 px de haut, affichés en **42 px** (à 34 px un
@@ -219,6 +230,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (transmis à 10 ans faute de champ). **Création de devis en place** ; restent la souscription et la signature
   électronique APICIL (`modeSouscription` PAPIER / ELECTRONIQUEMAIL / ELECTRONIQUESMS — la signature est
   fournie par APICIL, Universign n'est pas nécessaire pour cette compagnie).
+  **Démarrer souscription est en place** (`apicil-souscription.php`, mode ELECTRONIQUEMAIL) ; restent le
+  téléchargement de la liasse, le suivi de l'état du devis et la validation de souscription.
 - Date de naissance APICIL : celle de la fiche si elle est cohérente avec l'âge saisi, sinon 1ᵉʳ janvier
   (âge atteint dans l'année). Demander à Manus la date exacte dans ses exports.
 - Autres compagnies : aucune n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
