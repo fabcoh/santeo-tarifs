@@ -311,11 +311,18 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - Bouton **📮 Envoyer au prospect** dans la barre du tableau de garantie. La page capture le tableau, réunit
   les formules affichées et remet le tout au relais ; **elle n'envoie jamais elle-même**, une page publique
   ne peut pas porter de clé Mailgun. **En ligne et vérifié par envoi réel le 23/09/2026.**
-- **Le courrier reprend la présentation du message WhatsApp** (`offreTxt`) : une fiche par formule avec ses
-  garanties **poste par poste**, les postes sans garantie omis, puis les documents en liens et les limites
-  sous « À noter ». La formule marquée de l'⭐ porte un bandeau « Ma recommandation » en tête du message et
-  un cadre accentué sur sa fiche. La version texte du courrier est le message WhatsApp, à l'identique.
-  Ne pas se contenter du titre et du tarif : le prospect compare sur les garanties.
+- **Le corps du courrier reproduit le tableau de garantie**, celui que le prospect reçoit en image sur
+  WhatsApp : même titre, même ligne prospect, même sous-titre, mêmes colonnes (gamme, formule, tarif) et
+  mêmes lignes, puis le même pied — un bloc par formule avec ses documents et ses limites. **Ce n'est pas
+  une liste de fiches** : le prospect compare en lisant une ligne de gauche à droite.
+  La page envoie `entete` et `soustitre` **relus dans le cadre affiché** (`.tghdr`, `.src`), pas reconstruits :
+  le courrier dit exactement ce que le commercial a sous les yeux.
+  **La différence avec l'image : les documents sont cliquables.** C'est la raison d'être du courrier.
+  Une ligne vide sur toutes les colonnes est omise ; la formule ⭐ a sa colonne teintée et la mention
+  « CONSEILLÉE ». Au-delà de **cinq colonnes** le relais s'arrête : au-delà le tableau déborde sur téléphone.
+  Le PNG capturé part en **pièce jointe ordinaire** (plus en image intégrée) : le corps le reproduit déjà.
+  **Attention aux variables dans le relais** : la boucle des colonnes écrasait `$nom`, le nom du prospect, et
+  le courrier disait « Bonjour Monsieur MCCINOVA ESSENTIELLE ». Les variables de colonne sont préfixées.
 - Fichiers dans `www/` : `santeo-mail.php` + `santeo-mail-config.php` (**clé, hors dépôt**).
 - **L'expéditeur est choisi dans une liste fermée côté serveur** (`fcohen@`, `sandra@`, `caroline@`,
   `antony@`) : la page n'envoie qu'une adresse, le relais refuse tout ce qui n'est pas dans la liste. Sinon
