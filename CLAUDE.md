@@ -353,9 +353,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (voir la note d'intégration avec Manus). Le bouton est en **10 px**, deux lignes, et non un pavé : trois
   colonnes doivent tenir côte à côte sur un téléphone. **Aucune phrase sous les boutons** : « Un clic
   prévient votre conseiller » n'apprenait rien que le bouton ne dise déjà, et poussait le pied plus bas.
-- **Le cartouche du tableau tient sur une seule échelle** : titre 14 px gras, ligne prospect 11 px, source
-  10 px — trois tailles voisines au lieu de 20 / 14 / 11,5, qui faisaient un titre de journal au-dessus d'un
-  tableau à 14 px.
+- **Le cartouche du tableau tient sur une seule échelle, centré et collé au tableau** : titre 14 px gras,
+  ligne prospect 11 px, au lieu de 20 / 14, qui faisaient un titre de journal au-dessus d'un tableau à 14 px.
+  Le **sous-titre de source** (« AVENIR M. · MCCI · synthèse d'après le tableau de garantie officiel… »)
+  n'est plus affiché : la même mention figure déjà au pied, formule par formule. Le relais accepte toujours
+  `soustitre`, il ne l'imprime plus.
+- **La phrase d'accroche ne date ni ne source l'offre** : « Je fais suite à votre demande de devis, voici mes
+  propositions. » Le site de provenance et la mention « valable 15 jours » ont été retirés — décision de
+  Fabrice, 23/09/2026. `$prov` et `$dateFr` restent calculés dans le relais, prêts à resservir.
 - **Les documents de chaque formule sont sous sa colonne** — « Tableau de garantie - IPID - Notice » sur une
   seule ligne, en **10 px**, cliquables, juste au-dessus de son bouton. Le pied ne garde que le **nom de la
   formule et ses limites**, trop longues pour une colonne : les répéter aux deux endroits ne faisait que du
