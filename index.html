@@ -355,7 +355,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-23T16:38:34Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T16:38:34Z</div>
+  <div id="buildstamp" data-build="2026-09-23T17:38:28Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T17:38:28Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1509,10 +1509,13 @@ function signPopup(files,g,r){
     });
   });
 }
-function overlay(html,wide){
+function overlay(html,wide,collante){
   const ov=document.createElement("div");ov.id="tgov";ov.style.zIndex=1005;
   ov.innerHTML='<div id="tgbox" style="max-width:'+(wide||520)+'px">'+html+'</div>';
-  ov.addEventListener("click",e=>{if(e.target===ov||e.target.classList.contains("close"))ov.remove();});
+  // « collante » : la fenêtre ne se ferme que par son bouton. Un clic à côté ne doit
+  // pas effacer un formulaire à demi rempli.
+  ov.addEventListener("click",e=>{
+    if(e.target.classList.contains("close")||(!collante&&e.target===ov))ov.remove();});
   document.body.appendChild(ov);return ov;
 }
 // Alerte après génération : le bulletin est déjà produit, on signale seulement ce qui reste à compléter
@@ -2891,7 +2894,7 @@ function devisFenetre(r){
    +'<div class="pied"><button id="dvok">Créer le devis</button><button id="dvno">Annuler</button></div>'
    +'<div id="dvmsg"></div></div>';
   document.body.appendChild(ov);
-  ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
+  // Fermeture par « Annuler » seulement : un clic à côté effaçait la saisie.
   masqueDate(document.getElementById("dv_ddn")); masqueDate(document.getElementById("dv_eff"));
   masqueTel(document.getElementById("dv_tel")); masqueDate(document.getElementById("dv_dcr"));
   document.getElementById("dvno").addEventListener("click",()=>ov.remove());
@@ -3079,7 +3082,7 @@ async function souscrire(o){
     +'<div id="souspied" style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">'
     +'<button type="button" class="tgbtn close">Annuler</button>'
     +'<button type="button" class="tgbtn ok" id="sousok">Envoyer l\'e-mail de signature</button></div>'
-    +'<div id="sousmsg" style="margin-top:11px;font:600 12.5px \'IBM Plex Sans\',sans-serif"></div>', 880);
+    +'<div id="sousmsg" style="margin-top:11px;font:600 12.5px \'IBM Plex Sans\',sans-serif"></div>', 880, true);
 
   // Même lecteur que l'adhésion : RIB → IBAN et BIC, attestation → Sécurité sociale
   // et organisme, pièce d'identité → adresse. Tout se lit sur l'appareil.
@@ -3397,8 +3400,13 @@ function applyImport(raw){
     }catch(e){}
     location.reload();
   };
-  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&Date.now()-t0>FRESH)refresh();});
-  window.addEventListener("pageshow",e=>{if(e.persisted&&Date.now()-t0>FRESH)refresh();});
+  // Une fenetre ouverte n'est jamais rechargee par-dessus : le commercial qui va
+  // consulter MyVERALTI ou sa messagerie retrouve sa saisie en revenant. Sans ce
+  // garde-fou, la souscription a demi remplie disparaissait au retour sur l'onglet.
+  const fenetreOuverte=()=>!!document.querySelector("#tgov,#dvov,#impov");
+  document.addEventListener("visibilitychange",()=>{
+    if(document.visibilityState==="visible"&&Date.now()-t0>FRESH&&!fenetreOuverte())refresh();});
+  window.addEventListener("pageshow",e=>{if(e.persisted&&Date.now()-t0>FRESH&&!fenetreOuverte())refresh();});
 })();
 const urlImported=(function(){
   PRO=PRO||{}; // le lien peut arriver avant l'initialisation plus bas
