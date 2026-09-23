@@ -344,8 +344,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Cinq formules au maximum par courrier** — décision de Fabrice, 23/09/2026. Au-delà le tableau déborde sur
   téléphone ; le relais s'arrête aux cinq premières colonnes.
 - **Copie cachée systématique** au conseiller et à `fcohen@santeo.net` : toute offre partie laisse une trace.
-- **« Cette offre m'intéresse » est un `mailto:`** vers le conseiller, avec copie à la direction. Pas de
-  jeton, pas de page à héberger, fonctionne depuis n'importe quelle boîte. Un lien signé à durée longue,
+- **« Cette offre m'intéresse » : un bouton sous chaque formule**, dans la dernière ligne du tableau, et
+  non un seul bouton en bas du courrier — le prospect dit ainsi **laquelle** l'intéresse, le conseiller n'a
+  pas à le rappeler pour le lui demander. C'est un `mailto:` vers le conseiller expéditeur (`antony@`,
+  `fcohen@`…) avec copie à `fcohen@santeo.net` ; l'objet et le corps portent le nom de la formule et celui
+  du prospect. Pas de jeton, pas de page à héberger, fonctionne depuis n'importe quelle boîte.
+- **Les documents de chaque formule sont sous sa colonne** (tableau de garantie, IPID, notice), en 11 px et
+  cliquables, juste au-dessus de son bouton. Le pied ne garde que le **nom de la formule et ses limites**,
+  trop longues pour tenir dans une colonne : les répéter aux deux endroits ne faisait que du bruit. Un lien signé à durée longue,
   traçable, reste la bonne cible — il demande un serveur qui tienne un instantané de devis (voir la note
   d'intégration avec Manus).
 - Quota **30 envois/heure/IP**, message limité à 4 Mo, image à 2,5 Mo.
