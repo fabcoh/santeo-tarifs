@@ -2278,6 +2278,38 @@ const DEVIS_URL="https://capisante.fr/apicil-devis.php";
 const SOUS_URL="https://capisante.fr/apicil-souscription.php";
 const dvEch=t=>String(t==null?"":t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function dvVal(id){const e=document.getElementById(id);return e?e.value.trim():"";}
+
+// Les dates se lisent et se saisissent en jj/mm/aaaa — le format du métier et des
+// bulletins papier. APICIL, lui, n'accepte que AAAA-MM-JJ : la conversion se fait
+// au moment de l'appel, jamais sous les yeux du commercial.
+const dateFR=iso=>{const m=/^((?:19|20)\d{2})-(\d{2})-(\d{2})$/.exec(String(iso||""));
+  return m?m[3]+"/"+m[2]+"/"+m[1]:String(iso||"");};
+// Renvoie "" si la date n'existe pas (31/02, 00/00…) : le contrôle appelant s'en sert.
+function isoDate(v){
+  const t=String(v||"").trim(); let j,m,a,x;
+  if((x=/^(\d{2})\/(\d{2})\/((?:19|20)\d{2})$/.exec(t))){j=+x[1];m=+x[2];a=+x[3];}
+  else if((x=/^((?:19|20)\d{2})-(\d{2})-(\d{2})$/.exec(t))){a=+x[1];m=+x[2];j=+x[3];}
+  else return "";
+  const d=new Date(Date.UTC(a,m-1,j));
+  if(d.getUTCFullYear()!==a||d.getUTCMonth()!==m-1||d.getUTCDate()!==j)return "";
+  return a+"-"+String(m).padStart(2,"0")+"-"+String(j).padStart(2,"0");
+}
+// Masque de saisie : on tape des chiffres, les barres s'écrivent seules. Aucune barre
+// n'est ajoutée en fin de champ, sinon on ne pourrait plus effacer.
+function masqueDate(e){
+  if(!e)return;
+  e.setAttribute("maxlength","10"); e.setAttribute("inputmode","numeric");
+  e.setAttribute("placeholder","jj/mm/aaaa");
+  const fmt=()=>{
+    const fin=e.selectionStart===e.value.length;
+    const d=e.value.replace(/\D/g,"").slice(0,8);
+    let v=d.slice(0,2);
+    if(d.length>2)v+="/"+d.slice(2,4);
+    if(d.length>4)v+="/"+d.slice(4,8);
+    if(v!==e.value){e.value=v; if(fin)try{e.setSelectionRange(v.length,v.length);}catch(_){}}
+  };
+  e.addEventListener("input",fmt); fmt();
+}
 // APICIL et le formulaire de signature veulent dix chiffres nationaux. Un numéro
 // venu d'un CRM arrive souvent en +33 6 22 19 73 49, 0033… ou 33… : tout revient
 // à 0622197349. Transmis tel quel, il était refusé (« Erreur dans la saisie du
@@ -2311,11 +2343,11 @@ function devisFenetre(r){
    +'<div class="gr"><div><label for="dv_civ">Civilité</label><select id="dv_civ">'
      +'<option value="MME"'+((pro.civ||"").toUpperCase().startsWith("M")&&!/^M[RC]?$/i.test(pro.civ||"")?" selected":"")+'>Madame</option>'
      +'<option value="MR">Monsieur</option></select></div>'
-   +'<div><label for="dv_ddn">Date de naissance</label><input id="dv_ddn" value="'+dvEch(ddn)+'" placeholder="AAAA-MM-JJ"></div></div>'
+   +'<div><label for="dv_ddn">Date de naissance</label><input id="dv_ddn" value="'+dvEch(dateFR(ddn))+'" placeholder="jj/mm/aaaa"></div></div>'
    +'<div class="gr"><div><label for="dv_nom">Nom</label><input id="dv_nom" value="'+dvEch(pro.nom||"")+'"></div>'
    +'<div><label for="dv_pre">Prénom</label><input id="dv_pre" value="'+dvEch(pro.prenom||"")+'"></div></div>'
    +'<div class="gr"><div><label for="dv_cp">Code postal (5 chiffres)</label><input id="dv_cp" maxlength="5" value="'+dvEch(cp5)+'"></div>'
-   +'<div><label for="dv_eff">Date d\'effet</label><input id="dv_eff" value="'+apicilEffet()+'"></div></div>'
+   +'<div><label for="dv_eff">Date d\'effet</label><input id="dv_eff" value="'+dateFR(apicilEffet())+'"></div></div>'
    +'<div class="gr"><div><label for="dv_mail">E-mail (facultatif)</label><input id="dv_mail" value="'+dvEch(pro.email||"")+'"></div>'
    +'<div><label for="dv_tel">Téléphone (facultatif)</label><input id="dv_tel" value="'+dvEch(pro.tel||"")+'"></div></div>'
    +'<div class="sub" style="margin:8px 0 0">Composition transmise : '
@@ -2325,6 +2357,7 @@ function devisFenetre(r){
    +'<div id="dvmsg"></div></div>';
   document.body.appendChild(ov);
   ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
+  masqueDate(document.getElementById("dv_ddn")); masqueDate(document.getElementById("dv_eff"));
   document.getElementById("dvno").addEventListener("click",()=>ov.remove());
   document.getElementById("dvok").addEventListener("click",()=>devisEnvoi(r,{reg:reg,hasCnj:hasCnj,cnjAge:cnjAge,kids:kids}));
 }
@@ -2336,11 +2369,11 @@ async function devisEnvoi(r,ctx){
     const e=document.getElementById(id); const vide=!e.value.trim();
     e.classList.toggle("ko",vide); if(vide)manque.push(lib);
   });
-  const cp=dvVal("dv_cp"), eff=dvVal("dv_eff"), ddn=dvVal("dv_ddn");
+  const cp=dvVal("dv_cp"), eff=isoDate(dvVal("dv_eff")), ddn=isoDate(dvVal("dv_ddn"));
   const ko=(id,bon)=>{document.getElementById(id).classList.toggle("ko",!bon);return bon;};
   if(!ko("dv_cp",/^\d{5}$/.test(cp))) manque.push("un code postal à cinq chiffres");
-  if(!ko("dv_eff",/^\d{4}-\d{2}-\d{2}$/.test(eff))) manque.push("une date d'effet au format AAAA-MM-JJ");
-  if(!ko("dv_ddn",/^\d{4}-\d{2}-\d{2}$/.test(ddn))) manque.push("une date de naissance au format AAAA-MM-JJ");
+  if(!ko("dv_eff",!!eff)) manque.push("une date d'effet valable, au format jj/mm/aaaa");
+  if(!ko("dv_ddn",!!ddn)) manque.push("une date de naissance valable, au format jj/mm/aaaa");
   if(manque.length){ msg.innerHTML='<span class="dvwarn">Il manque '+manque.join(", ")+'.</span>'; return; }
 
   const rg=(APICIL_REG[ctx.reg]||APICIL_REG.SAL)[0];
@@ -2456,7 +2489,7 @@ async function souscrire(o){
       +sSel("s_civ","Civilité",[["MR","M."],["MME","Mme"]],o.civ==="MR"?"MR":"MME")
       +sFld("s_nom","Nom",o.nom,{ro:1})+sFld("s_pre","Prénom",o.prenom,{ro:1})+'</div>'
     +'<div class="sgrid" style="grid-template-columns:1fr 1.2fr 1.2fr">'
-      +sFld("s_ddn","Date de naissance",o.ddn,{ro:1})
+      +sFld("s_ddn","Date de naissance",dateFR(o.ddn),{ro:1})
       +sFld("s_reg","Régime",SOUS_REGLAB[ctx.reg]||"Régime général",{ro:1})
       +sSel("s_sit","Situation familiale",[["","à préciser"],["CELIBATAIRE","Célibataire"],["MARIE","Marié(e)"],
             ["PACSE","Pacsé(e)"],["UNION LIBRE","Union libre"],["DIVORCE","Divorcé(e)"],

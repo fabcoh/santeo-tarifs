@@ -150,6 +150,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Alertes ≠ blocage, ici aussi** : seuls l'e-mail et le BIC arrêtent l'envoi ; pour tout le reste, un
   premier clic énumère ce que le client devra saisir lui-même, un second envoie quand même. Le **nom de
   naissance** est proposé égal au nom et n'est jamais signalé : c'est le cas courant.
+  **Dates : `jj/mm/aaaa` à l'écran, `AAAA-MM-JJ` pour APICIL.** `masqueDate()` pose le masque de saisie —
+  on tape des chiffres, les barres s'écrivent seules, et aucune barre n'est ajoutée en fin de champ, sinon
+  on ne pourrait plus effacer. `dateFR()` affiche, `isoDate()` convertit à l'envoi et **renvoie une chaîne
+  vide pour une date qui n'existe pas** (31/02, 30/02, 00/00) : le contrôle s'appuie là-dessus plutôt que sur
+  une expression régulière, qui laissait passer le 31 février. Concerne la date de naissance et la date
+  d'effet de la fenêtre de devis, et la date de naissance rappelée dans la fenêtre de signature.
   **Téléphone : dix chiffres nationaux, toujours** (`telFR()`). Un numéro venu du CRM arrive en
   `+33 6 22 19 73 49`, `0033…` ou `33…` ; transmis tel quel, le formulaire de signature répond « Erreur dans
   la saisie du numéro de téléphone ». La page normalise avant d'envoyer, **dans le devis comme dans la
