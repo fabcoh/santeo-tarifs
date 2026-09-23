@@ -136,7 +136,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Alsace-Moselle TNS part en `ALSACEMOSELLE`, la règle ne s'y applique pas. **Le champ n'est pas ajouté et
   rien n'est bloqué** — décision de Fabrice : la fenêtre affiche un **avertissement en orange** dès que le
   régime est TNS, et, si APICIL refuse pour ce motif, une phrase en français avant la sienne. Pour ces
-  profils, le devis se crée depuis MyVERALTI.
+  profils, le devis se crée depuis MyVERALTI, où le SIRET est saisi ensuite — **ne pas ajouter le champ tant
+  que Fabrice ne le demande pas** (décision du 23/09/2026).
   **L'appel dure 25 à 60 s** (enregistrement dans MyVERALTI) : relais à 120 s, compteur affiché dans la
   fenêtre. En cas de dépassement le devis peut avoir été créé quand même — vérifier MyVERALTI avant de
   recommencer, jamais relancer à l'aveugle.
