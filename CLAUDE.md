@@ -139,23 +139,17 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   affichée comme « Suivre la signature ».
   **Le BIC est obligatoire en pratique**, contrairement à ce qu'annonce la documentation : sans lui APICIL
   répond `INTERNAL_SERVER_ERROR` / « Le BIC doit faire 8 ou 11 caractères » — vérifié par appel réel.
-  Côté API l'IBAN **est bien facultatif** : vérifié par appel réel le 22/09/2026 sur `DEV-2026-3315706`,
-  BIC `CRLYFRPPPOI` seul, sans `IBANSEPA` — APICIL renvoie `success` et l'`urlEsignQuote`. **La page l'exige
-  quand même depuis le passage en production** : un mandat de prélèvement sans IBAN se solde par un dossier
-  incomplet en gestion. Le relais, lui, reste permissif — c'est un transport, pas une règle métier.
+  L'IBAN, lui, **est bien facultatif** : vérifié par appel réel le 22/09/2026 sur `DEV-2026-3315706`,
+  BIC `CRLYFRPPPOI` seul, sans `IBANSEPA` — APICIL renvoie `success` et l'`urlEsignQuote`. Le client saisit
+  son IBAN dans le parcours de signature.
   **La fenêtre reprend toute la fiche du prospect** — ce que le formulaire Docapost demanderait sinon à la
   main : nom/prénom, date de naissance, régime, adresse + CP + ville sur une ligne, téléphone + e-mail,
   nom/ville/CP de naissance, situation familiale, n° de Sécurité sociale + n° d'organisme sur une ligne,
   IBAN + BIC sur une ligne, jour de prélèvement. Ce qui vient du devis (nom, prénom, date de naissance,
   régime, code postal) s'affiche **en pointillé et non modifiable** : APICIL le recoupe.
-  **Cinq champs bloquent l'envoi, en plus de l'e-mail et du BIC** — seule exception à la règle
-  « Alertes ≠ blocage », posée au passage en production : **n° de Sécurité sociale** (clé contrôlée),
-  **n° d'organisme d'affiliation** (9 chiffres), **IBAN**, **nom de naissance**, **ville de naissance**.
-  Le dossier part en gestion chez APICIL : sans elles il revient par le service de gestion, jamais par le
-  client, et la signature est perdue. Le **nom de naissance** reste proposé égal au nom — c'est le cas
-  courant, et il suffit de le laisser.
-  **Le reste demeure une alerte** : adresse, ville, téléphone, CP de naissance, situation familiale. Un
-  premier clic les énumère, un second envoie quand même.
+  **Alertes ≠ blocage, ici aussi** : seuls l'e-mail et le BIC arrêtent l'envoi ; pour tout le reste, un
+  premier clic énumère ce que le client devra saisir lui-même, un second envoie quand même. Le **nom de
+  naissance** est proposé égal au nom et n'est jamais signalé : c'est le cas courant.
   **Téléphone : dix chiffres nationaux, toujours** (`telFR()`). Un numéro venu du CRM arrive en
   `+33 6 22 19 73 49`, `0033…` ou `33…` ; transmis tel quel, le formulaire de signature répond « Erreur dans
   la saisie du numéro de téléphone ». La page normalise avant d'envoyer, **dans le devis comme dans la
