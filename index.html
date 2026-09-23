@@ -355,7 +355,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-23T09:28:11Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T09:28:11Z</div>
+  <div id="buildstamp" data-build="2026-09-23T09:39:07Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T09:39:07Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2235,7 +2235,8 @@ function renderTG(cols,title,sub,note,single){
         if(!saved){const a2=document.createElement('a');a2.href=URL.createObjectURL(blob);a2.download=fname;document.body.appendChild(a2);a2.click();a2.remove();}
         stat("✅ Image téléchargée");
       } else if(a==="mel"){
-        mailFenetre(blob,mailOffres(cols),PR); stat("");
+        const t=el=>{const e=box.querySelector(el);return e?e.textContent.trim():"";};
+        mailFenetre(blob,mailTableau(cols),PR,{entete:t('.tghdr'),soustitre:t('.src')}); stat("");
       } else if(a==="crm"){
         btn.textContent="⏳ Dépôt…";
         const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);});
@@ -2690,31 +2691,32 @@ const EXPEDITEURS=[["fcohen@santeo.net","Fabrice Cohen"],["sandra@santeo.net","S
 
 // Ce que le prospect doit lire de chaque formule : son nom, son tarif, ses documents
 // et ce qui borne ses remboursements — la même règle qu'au bas du tableau.
-function mailOffres(cols){
-  return cols.map(c=>{
-    const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi);
-    const g=F[c.key];
+// Le courrier reprend le tableau tel que le prospect le reçoit sur WhatsApp : mêmes
+// colonnes, mêmes lignes, même pied de page. La différence est qu'ici les documents
+// sont cliquables — une image ne l'est jamais.
+function mailTableau(cols){
+  const lignes=[];
+  for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
+    const vals=cols.map(c=>String(Tableau.valeur(GAR,c.key,c.fi,src)||"—"));
+    // Une ligne vide sur toutes les colonnes n'apprend rien : le tableau de la page la
+    // garde pour l'alignement, le courrier s'en passe.
+    if(vals.some(v=>v&&v!=="—")) lignes.push([lab,vals]);
+  }
+  const colonnes=cols.map(c=>{
+    const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi), g=F[c.key];
     const lim=Tableau.limites(GAR,c.key,c.fi);
-    // Mêmes lignes et même ordre que le message WhatsApp : les postes sans garantie
-    // sont omis, sinon le prospect lit une colonne de tirets.
-    const postes=[];
-    for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
-      const v=Tableau.valeur(GAR,c.key,c.fi,src);
-      if(v&&v!=="—")postes.push([lab,String(v)]);
-    }
     // La mention « non responsable » est due au prospect, mais certaines gammes la
     // portent déjà dans leurs limites : on ne l'écrit pas deux fois.
     const nr=(g&&g.resp===false&&!/non responsable/i.test(lim||""))?"Contrat NON responsable. ":"";
-    return {titre:Tableau.nomComplet(GAR,c.key,c.fi),
-            prix:r?eur(r.total)+" par mois":"",
-            postes:postes,
-            reco:RECO===(c.key+"|"+c.fi),
-            docs:Tableau.documents(GAR,c.key,c.fi),
-            limites:nr+(lim||"")};
+    return {gamme:g.label, formule:g.names[c.fi], nom:Tableau.nomComplet(GAR,c.key,c.fi),
+            prix:r?eur(r.total):"", reco:RECO===(c.key+"|"+c.fi),
+            docs:Tableau.documents(GAR,c.key,c.fi), limites:nr+(lim||"")};
   });
+  return {colonnes:colonnes,lignes:lignes};
 }
 
-function mailFenetre(blob,offres,PR){
+function mailFenetre(blob,tg,PR,tetes){
+  const offres=tg.colonnes;
   let expChoisi=EXPEDITEURS[0][0];
   try{const m=localStorage.getItem("santeo_exp"); if(m&&EXPEDITEURS.some(e=>e[0]===m))expChoisi=m;}catch(e){}
   const ov=overlay('<button class="close">Fermer ✕</button><h2>📮 Envoyer le comparatif au prospect</h2>'
@@ -2727,6 +2729,7 @@ function mailFenetre(blob,offres,PR){
       +sFld("m_prov","Site d\'origine",(PR&&PR.provenance)||"santeo.net",{max:60})
       +sFld("m_obj","Objet","Votre offre de mutuelle santé",{max:120})+'</div></div>'
     +'<div class="irow"><span>Formules envoyées</span><b>'+offres.length+'</b></div>'
+    +'<div class="irow"><span>Lignes de garanties</span><b>'+tg.lignes.length+'</b></div>'
     +'<div class="irow"><span>Tableau comparatif</span><b>'+(blob?Math.round(blob.size/1024)+" Ko":"absent")+'</b></div>'
     +'<div class="irow iwarn"><span>Le message part réellement au prospect, avec une copie cachée à '
       +'fcohen@santeo.net et au conseiller. Relisez l\'adresse.</span><b>Envoi réel</b></div>'
@@ -2754,7 +2757,9 @@ function mailFenetre(blob,offres,PR){
         body:JSON.stringify({expediteur:exp,destinataire:dest,
           civilite:/^mme$/i.test((PR&&PR.civ)||"")?"MME":"MR",
           nom:(PR&&PR.nom)||"",prenom:(PR&&PR.prenom)||"",
-          provenance:v("m_prov"),objet:v("m_obj"),offres:offres,image:b64})});
+          provenance:v("m_prov"),objet:v("m_obj"),
+          entete:(tetes&&tetes.entete)||"",soustitre:(tetes&&tetes.soustitre)||"",
+          colonnes:tg.colonnes,lignes:tg.lignes,image:b64})});
       const txt=await rp.text(); let d=null; try{d=JSON.parse(txt);}catch(e){}
       if(!rp.ok){
         msg.innerHTML='<span class="dvwarn">'+dvEch((d&&d.erreur)?d.erreur:"L'envoi a échoué (HTTP "+rp.status+").")+'</span>'
