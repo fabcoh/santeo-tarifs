@@ -354,7 +354,17 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   non un seul bouton en bas du courrier — le prospect dit ainsi **laquelle** l'intéresse, le conseiller n'a
   pas à le rappeler pour le lui demander. C'est un `mailto:` vers le conseiller expéditeur (`antony@`,
   `fcohen@`…) avec copie à `fcohen@santeo.net` ; l'objet et le corps portent le nom de la formule et celui
-  du prospect. Pas de jeton, pas de page à héberger, fonctionne depuis n'importe quelle boîte. Un lien signé
+  du prospect. **Le corps reprend la forme des demandes de prospect du CRM** : « Nouvelle demande de prospect
+  suite à email », puis `Destinataire`, `Conversation`, `Option`, `Tarif`, et la fiche du prospect —
+  civilité, nom, prénom, e-mail, téléphone. Le conseiller sait ainsi **qui** appeler, **pour quelle formule**,
+  **à quel tarif**, et retourne à la conversation d'un clic.
+  **`conversation` est l'adresse `&back=` du lien d'arrivée** (`window.CRMLINK.back`), transmise par la page.
+  Elle est filtrée côté relais comme les liens de documents — nos hôtes plus celui du CRM, et `https` seul :
+  elle repart dans un courrier signé Santéo, un appelant ne doit pas pouvoir y glisser une autre adresse.
+  Hors CRM, la ligne est simplement absente. **Il n'y a pas de numéro de fiche** : le comparateur n'en reçoit
+  aucun, ni du lien ni de la fiche importée. Si le `EditFiche.asp?ID=…` de `santeo.dyndns.org` doit y figurer,
+  il faut que le CRM transmette cet identifiant.
+  Pas de jeton, pas de page à héberger, fonctionne depuis n'importe quelle boîte. Un lien signé
   à durée longue, traçable, reste la bonne cible — il demande un serveur qui tienne un instantané de devis
   (voir la note d'intégration avec Manus). Le bouton est en **10 px**, deux lignes, et non un pavé : trois
   colonnes doivent tenir côte à côte sur un téléphone. **Aucune phrase sous les boutons** : « Un clic

@@ -2268,6 +2268,10 @@ function mailFenetre(blob,tg,PR,tetes){
         body:JSON.stringify({expediteur:exp,destinataire:dest,
           civilite:/^mme$/i.test((PR&&PR.civ)||"")?"MME":"MR",
           nom:(PR&&PR.nom)||"",prenom:(PR&&PR.prenom)||"",
+          telephone:telFR((PR&&PR.tel)||"")||((PR&&PR.tel)||""),
+          // Adresse exacte de la conversation d'où vient la fiche : le conseiller
+          // qui reçoit « Cette offre m'intéresse » y retourne d'un clic.
+          conversation:(window.CRMLINK&&window.CRMLINK.back)||"",
           provenance:v("m_prov"),objet:v("m_obj"),
           entete:(tetes&&tetes.entete)||"",soustitre:(tetes&&tetes.soustitre)||"",
           colonnes:tg.colonnes,lignes:tg.lignes,image:b64})});
