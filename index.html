@@ -355,7 +355,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-23T16:25:27Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T16:25:27Z</div>
+  <div id="buildstamp" data-build="2026-09-23T16:29:01Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T16:29:01Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2869,6 +2869,10 @@ function devisFenetre(r){
    +'<div class="sub" style="margin:8px 0 0">Composition transmise : '
      +(1+(hasCnj?1:0)+kids)+' personne'+((1+(hasCnj?1:0)+kids)>1?'s':'')
      +(hasCnj?', conjoint compris':'')+(kids?', '+kids+' mineur'+(kids>1?'s':''):'')+'.</div>'
+   // APICIL exige un SIRET pour un assure au regime SSI qui n'est pas retraite.
+   // On previent, on ne bloque pas : le commercial decide d'essayer ou non.
+   +(reg==="TNS"?'<div class="sub" style="margin:6px 0 0;color:#B26A00">⚠ Régime TNS (SSI) : APICIL '
+     +'demande un n° SIRET pour ce profil, sauf retraité. Le devis peut être refusé pour ce motif.</div>':'')
    +'<div class="pied"><button id="dvok">Créer le devis</button><button id="dvno">Annuler</button></div>'
    +'<div id="dvmsg"></div></div>';
   document.body.appendChild(ov);
@@ -2920,8 +2924,15 @@ async function devisEnvoi(r,ctx){
     const txt=await rp.text(); let d=null; try{d=JSON.parse(txt);}catch(e){}
     clearInterval(tic);
     if(!rp.ok){
+      const raison=(d&&d.detail)?apicilRaison(d.detail):"";
+      // Le motif le plus courant en TNS, dit en francais avant la phrase d'APICIL.
+      const siret=/siret/i.test(raison)
+        ? '<div style="margin-top:5px">APICIL demande un <b>n° SIRET</b> pour un assuré au régime SSI qui '
+          +'n\'est pas retraité. Ce champ n\'existe pas encore dans le comparateur : le devis doit être créé '
+          +'depuis MyVERALTI pour ce profil.</div>' : "";
       msg.innerHTML='<span class="dvwarn">'+dvEch((d&&d.erreur)?d.erreur:"Le devis n'a pas pu être créé (HTTP "+rp.status+").")+'</span>'
-        +((d&&d.detail)?'<div style="color:var(--muted);margin-top:5px">'+dvEch(apicilRaison(d.detail))+'</div>':"");
+        +siret
+        +(raison?'<div style="color:var(--muted);margin-top:5px">'+dvEch(raison)+'</div>':"");
       bt.disabled=false; bt.textContent=old; return;
     }
     // Retour documenté §5.2.4 : IdOpportunite (le projet) + relatedQuotes[] (les devis).
