@@ -61,6 +61,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Alertes ≠ blocage** : à la génération, fenêtre « Informations manquantes » (IBAN, BIC, Sécu, organisme,
   identité…) avec « Compléter » ou « Télécharger quand même ». Jamais de blocage dur.
 - **Adresse à l'import de documents** : un seul choix parmi attestation > RIB > pièce d'identité, validé par le commercial.
+- **Toutes les dates se saisissent en `jj/mm/aaaa`, avec le même masque** (`masqueDate()`) : bulletin
+  d'adhésion (`addn`, `cddn`, `kddn0`–`kddn3`, `aeff`, `asig`) et fenêtres APICIL. Le masque **ne remplace
+  pas un indice déjà posé** — `addn` garde son `jj/mm/1985`, qui rappelle l'année saisie en haut de page.
+  **`apicilNaiss()` passe par `isoDate()`** : une date impossible (31/02) ne part plus vers APICIL, elle
+  retombe sur le 1ᵉʳ janvier de l'année d'âge, comme une date absente. Avant, l'expression régulière la
+  laissait passer et l'API la refusait sans rien expliquer.
 - **Le lecteur de documents sert deux formulaires** : l'adhésion (préfixe d'identifiants « a ») et la
   fenêtre de signature APICIL (préfixe « s »). `docDropHTML(pfx)`, `wireDocDrop(pfx, LAB, fin)` et
   `confirmDoc(docs, onDone, LAB)` prennent la table des champs visés en paramètre — `LAB_ADHESION` ou
