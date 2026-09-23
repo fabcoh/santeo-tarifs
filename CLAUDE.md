@@ -179,6 +179,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   documents de `docs/` ; MCCI vient du fichier fourni par Fabrice, ses plaquettes ne publiant le logo qu'en
   blanc sur fond sombre. **Tant qu'un fichier manque, le nom de la compagnie s'affiche à sa place** — aucune
   image cassée. Le logo est reposé à chaque mise en avant d'une formule.
+  **Dans le courrier, la taille n'est pas une hauteur commune mais un encombrement commun** : les logos n'ont
+  pas la même forme — Avenir est presque carré (211 × 160), MCCI un long bandeau (545 × 160). À 34 px de haut
+  tous les deux, MCCI faisait 116 px de large contre 45 à Avenir, et écrasait la colonne voisine. Le relais
+  lit les dimensions du PNG téléchargé (`getimagesizefromstring`) et égalise la **moyenne géométrique**
+  (√(l × h) ≈ 46 px), bornée à 40 px de haut et 92 px de large : Avenir sort en 53 × 40, MCCI en 85 × 25.
+  Les attributs `width` et `height` sont posés en plus du style, le CSS seul ne suffisant pas sous Outlook.
 - **Après génération** : fenêtre « Faire signer sur Universign » (nom de collecte, signataire à copier, fichiers,
   page Universign intégrée en iframe). Le glisser-déposer d'un fichier vers un autre site est interdit par le navigateur.
 
