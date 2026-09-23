@@ -130,6 +130,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `beneficiaires` ne contient que conjoint, enfants et ayants droit — y mettre l'assuré fait échouer l'appel.
   Le retour (§5.2.4) place la référence commerciale et le lien MyVERALTI dans `relatedQuotes[0]`
   (`reference`, `accessURL`), `IdOpportunite` n'étant que l'identifiant du projet.
+  **SIRET : APICIL refuse le devis d'un assuré au régime SSI qui n'est pas retraité s'il n'a pas de SIRET**
+  (« siret obligatoire si le regime SOCIAL de l'assure est SSI et la situation Professionnelle differente de
+  RETAITE », message réel du 23/09/2026). Le comparateur envoie `SSI` + `ACTIF` pour le régime **TNS** ;
+  Alsace-Moselle TNS part en `ALSACEMOSELLE`, la règle ne s'y applique pas. **Le champ n'est pas ajouté et
+  rien n'est bloqué** — décision de Fabrice : la fenêtre affiche un **avertissement en orange** dès que le
+  régime est TNS, et, si APICIL refuse pour ce motif, une phrase en français avant la sienne. Pour ces
+  profils, le devis se crée depuis MyVERALTI.
   **L'appel dure 25 à 60 s** (enregistrement dans MyVERALTI) : relais à 120 s, compteur affiché dans la
   fenêtre. En cas de dépassement le devis peut avoir été créé quand même — vérifier MyVERALTI avant de
   recommencer, jamais relancer à l'aveugle.
