@@ -2208,11 +2208,20 @@ function mailOffres(cols){
     const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi);
     const g=F[c.key];
     const lim=Tableau.limites(GAR,c.key,c.fi);
+    // Mêmes lignes et même ordre que le message WhatsApp : les postes sans garantie
+    // sont omis, sinon le prospect lit une colonne de tirets.
+    const postes=[];
+    for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
+      const v=Tableau.valeur(GAR,c.key,c.fi,src);
+      if(v&&v!=="—")postes.push([lab,String(v)]);
+    }
     // La mention « non responsable » est due au prospect, mais certaines gammes la
     // portent déjà dans leurs limites : on ne l'écrit pas deux fois.
     const nr=(g&&g.resp===false&&!/non responsable/i.test(lim||""))?"Contrat NON responsable. ":"";
     return {titre:Tableau.nomComplet(GAR,c.key,c.fi),
-            prix:r?eur(r.total)+" / mois":"",
+            prix:r?eur(r.total)+" par mois":"",
+            postes:postes,
+            reco:RECO===(c.key+"|"+c.fi),
             docs:Tableau.documents(GAR,c.key,c.fi),
             limites:nr+(lim||"")};
   });

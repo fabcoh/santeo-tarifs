@@ -310,7 +310,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 
 - Bouton **📮 Envoyer au prospect** dans la barre du tableau de garantie. La page capture le tableau, réunit
   les formules affichées et remet le tout au relais ; **elle n'envoie jamais elle-même**, une page publique
-  ne peut pas porter de clé Mailgun.
+  ne peut pas porter de clé Mailgun. **En ligne et vérifié par envoi réel le 23/09/2026.**
+- **Le courrier reprend la présentation du message WhatsApp** (`offreTxt`) : une fiche par formule avec ses
+  garanties **poste par poste**, les postes sans garantie omis, puis les documents en liens et les limites
+  sous « À noter ». La formule marquée de l'⭐ porte un bandeau « Ma recommandation » en tête du message et
+  un cadre accentué sur sa fiche. La version texte du courrier est le message WhatsApp, à l'identique.
+  Ne pas se contenter du titre et du tarif : le prospect compare sur les garanties.
 - Fichiers dans `www/` : `santeo-mail.php` + `santeo-mail-config.php` (**clé, hors dépôt**).
 - **L'expéditeur est choisi dans une liste fermée côté serveur** (`fcohen@`, `sandra@`, `caroline@`,
   `antony@`) : la page n'envoie qu'une adresse, le relais refuse tout ce qui n'est pas dans la liste. Sinon
