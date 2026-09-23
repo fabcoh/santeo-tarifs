@@ -166,6 +166,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `+33 6 22 19 73 49`, `0033…` ou `33…` ; transmis tel quel, le formulaire de signature répond « Erreur dans
   la saisie du numéro de téléphone ». La page normalise avant d'envoyer, **dans le devis comme dans la
   signature**, et réécrit le champ pour que le commercial voie le numéro tel qu'il partira.
+  **`masqueTel()` pose la règle sur le champ lui-même** : à l'ouverture de la fenêtre et à chaque sortie du
+  champ, `dv_tel` et `s_tel` repassent au format national. Avant, la réécriture n'avait lieu qu'au clic sur
+  « Créer le devis » : la fenêtre affichait encore `+33768517874`, et on ne pouvait pas savoir si le numéro
+  partirait bon. Un champ vide reste vide, un numéro incomplet (`06 22 19`) est laissé tel quel — au
+  commercial de le corriger, jamais de le perdre.
   **La civilité se relit dans la fenêtre de signature**, en tête de la ligne d'identité (M. / Mme) : elle est
   transmise à APICIL et le devis ne la montre plus une fois créé.
   **Le n° d'organisme d'affiliation n'a pas de champ chez APICIL** : il part dans `commentaire`, à

@@ -2334,6 +2334,15 @@ function masqueDate(e){
 // venu d'un CRM arrive souvent en +33 6 22 19 73 49, 0033… ou 33… : tout revient
 // à 0622197349. Transmis tel quel, il était refusé (« Erreur dans la saisie du
 // numéro de téléphone »).
+// Repose le numero au format national des que le commercial quitte le champ : un
+// « +33 6 22 19 73 49 » venu du CRM se lit desormais 0622197349 A L'ECRAN, et plus
+// seulement dans ce qui part. Un champ vide reste vide, un numero incomprehensible
+// est laisse tel quel — a lui de le corriger, jamais de le perdre.
+function masqueTel(e){
+  if(!e)return;
+  const fmt=()=>{const t=telFR(e.value); if(t&&t!==e.value)e.value=t;};
+  e.addEventListener("blur",fmt); e.addEventListener("change",fmt); fmt();
+}
 function telFR(v){
   let t=String(v||"").replace(/[^\d+]/g,"");
   if(t.indexOf("+33")===0)       t="0"+t.slice(3);
@@ -2369,7 +2378,7 @@ function devisFenetre(r){
    +'<div class="gr"><div><label for="dv_cp">Code postal (5 chiffres)</label><input id="dv_cp" maxlength="5" value="'+dvEch(cp5)+'"></div>'
    +'<div><label for="dv_eff">Date d\'effet</label><input id="dv_eff" value="'+dateFR(apicilEffet())+'"></div></div>'
    +'<div class="gr"><div><label for="dv_mail">E-mail (facultatif)</label><input id="dv_mail" value="'+dvEch(pro.email||"")+'"></div>'
-   +'<div><label for="dv_tel">Téléphone (facultatif)</label><input id="dv_tel" value="'+dvEch(pro.tel||"")+'"></div></div>'
+   +'<div><label for="dv_tel">Téléphone (facultatif)</label><input id="dv_tel" value="'+dvEch(telFR(pro.tel||"")||pro.tel||"")+'"></div></div>'
    +'<div class="sub" style="margin:8px 0 0">Composition transmise : '
      +(1+(hasCnj?1:0)+kids)+' personne'+((1+(hasCnj?1:0)+kids)>1?'s':'')
      +(hasCnj?', conjoint compris':'')+(kids?', '+kids+' mineur'+(kids>1?'s':''):'')+'.</div>'
@@ -2378,6 +2387,7 @@ function devisFenetre(r){
   document.body.appendChild(ov);
   ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
   masqueDate(document.getElementById("dv_ddn")); masqueDate(document.getElementById("dv_eff"));
+  masqueTel(document.getElementById("dv_tel"));
   document.getElementById("dvno").addEventListener("click",()=>ov.remove());
   document.getElementById("dvok").addEventListener("click",()=>devisEnvoi(r,{reg:reg,hasCnj:hasCnj,cnjAge:cnjAge,kids:kids}));
 }
@@ -2519,7 +2529,7 @@ async function souscrire(o){
       +sFld("s_cp","Code postal",o.cp,{ro:1})
       +sFld("s_vil","Ville",pref(pro.ville,dvVal("avil")),{max:40})+'</div>'
     +'<div class="sgrid" style="grid-template-columns:1fr 1.4fr">'
-      +sFld("s_tel","Téléphone",pref(pro.tel,dvVal("atel")),{ph:"06 12 34 56 78"})
+      +sFld("s_tel","Téléphone",(function(t){return telFR(t)||t;})(pref(pro.tel,dvVal("atel"))),{ph:"06 12 34 56 78"})
       +sFld("s_mail","E-mail — destinataire du lien de signature",pref(o.email,pref(pro.email,dvVal("amail"))),
             {ph:"prenom.nom@exemple.fr"})+'</div>'
     +'<div class="sgrid" style="grid-template-columns:1fr 1fr .7fr">'
@@ -2551,6 +2561,7 @@ async function souscrire(o){
   // Même lecteur que l'adhésion : RIB → IBAN et BIC, attestation → Sécurité sociale
   // et organisme, pièce d'identité → adresse. Tout se lit sur l'appareil.
   wireDocDrop("s",LAB_SIGNATURE,"d'envoyer");
+  masqueTel(document.getElementById("s_tel"));
   const q=id=>ov.querySelector("#"+id);
   const v=id=>{const e=q(id);return e?e.value.trim():"";};
   const bok=q("sousok"), smsg=q("sousmsg"), dest=q("sousdest").querySelector("b");
