@@ -355,7 +355,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-23T09:01:20Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T09:01:20Z</div>
+  <div id="buildstamp" data-build="2026-09-23T09:28:11Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T09:28:11Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2695,11 +2695,20 @@ function mailOffres(cols){
     const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi);
     const g=F[c.key];
     const lim=Tableau.limites(GAR,c.key,c.fi);
+    // Mêmes lignes et même ordre que le message WhatsApp : les postes sans garantie
+    // sont omis, sinon le prospect lit une colonne de tirets.
+    const postes=[];
+    for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
+      const v=Tableau.valeur(GAR,c.key,c.fi,src);
+      if(v&&v!=="—")postes.push([lab,String(v)]);
+    }
     // La mention « non responsable » est due au prospect, mais certaines gammes la
     // portent déjà dans leurs limites : on ne l'écrit pas deux fois.
     const nr=(g&&g.resp===false&&!/non responsable/i.test(lim||""))?"Contrat NON responsable. ":"";
     return {titre:Tableau.nomComplet(GAR,c.key,c.fi),
-            prix:r?eur(r.total)+" / mois":"",
+            prix:r?eur(r.total)+" par mois":"",
+            postes:postes,
+            reco:RECO===(c.key+"|"+c.fi),
             docs:Tableau.documents(GAR,c.key,c.fi),
             limites:nr+(lim||"")};
   });
