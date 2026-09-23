@@ -355,7 +355,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-23T12:39:15Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T12:39:15Z</div>
+  <div id="buildstamp" data-build="2026-09-23T13:42:09Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T13:42:09Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2755,6 +2755,10 @@ function mailFenetre(blob,tg,PR,tetes){
         body:JSON.stringify({expediteur:exp,destinataire:dest,
           civilite:/^mme$/i.test((PR&&PR.civ)||"")?"MME":"MR",
           nom:(PR&&PR.nom)||"",prenom:(PR&&PR.prenom)||"",
+          telephone:telFR((PR&&PR.tel)||"")||((PR&&PR.tel)||""),
+          // Adresse exacte de la conversation d'où vient la fiche : le conseiller
+          // qui reçoit « Cette offre m'intéresse » y retourne d'un clic.
+          conversation:(window.CRMLINK&&window.CRMLINK.back)||"",
           provenance:v("m_prov"),objet:v("m_obj"),
           entete:(tetes&&tetes.entete)||"",soustitre:(tetes&&tetes.soustitre)||"",
           colonnes:tg.colonnes,lignes:tg.lignes,image:b64})});
