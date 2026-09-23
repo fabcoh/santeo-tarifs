@@ -2382,16 +2382,31 @@ function devisFenetre(r){
    +'<div class="sub" style="margin:8px 0 0">Composition transmise : '
      +(1+(hasCnj?1:0)+kids)+' personne'+((1+(hasCnj?1:0)+kids)>1?'s':'')
      +(hasCnj?', conjoint compris':'')+(kids?', '+kids+' mineur'+(kids>1?'s':''):'')+'.</div>'
-   // APICIL exige un SIRET pour un assure au regime SSI qui n'est pas retraite.
-   // On previent, on ne bloque pas : le commercial decide d'essayer ou non.
-   +(reg==="TNS"?'<div class="sub" style="margin:6px 0 0;color:#B26A00">⚠ Régime TNS (SSI) : APICIL '
-     +'demande un n° SIRET pour ce profil, sauf retraité. Le devis peut être refusé pour ce motif.</div>':'')
+   // Au regime SSI, APICIL reclame l'entreprise : SIRET, raison sociale, date de
+   // creation, code postal et statut social. Sans eux, le devis est refuse.
+   +(reg==="TNS"?
+     '<div class="gr"><div><label for="dv_siret">SIRET (obligatoire)</label>'
+      +'<input id="dv_siret" maxlength="17" inputmode="numeric" placeholder="14 chiffres"></div>'
+     +'<div><label for="dv_rs">Raison sociale</label><input id="dv_rs" maxlength="60"></div></div>'
+     +'<div class="gr"><div><label for="dv_dcr">Création de l\'entreprise</label>'
+      +'<input id="dv_dcr" placeholder="jj/mm/aaaa"></div>'
+     +'<div><label for="dv_cppm">Code postal de l\'entreprise</label>'
+      +'<input id="dv_cppm" maxlength="5" inputmode="numeric" value="'+dvEch(cp5)+'"></div></div>'
+     +'<div class="gr"><div><label for="dv_stat">Statut social</label><select id="dv_stat">'
+      +'<option value="ArtisanCommercant">Artisan / commerçant</option>'
+      +'<option value="ProfessionLiberaleNonMedicale">Profession libérale non médicale</option>'
+      +'<option value="ProfessionLiberaleMedicale">Profession libérale médicale</option>'
+      +'<option value="MicroEntrepreneur">Micro-entrepreneur</option>'
+      +'<option value="ProfessionAgricole">Profession agricole</option></select></div>'
+     +'<div><label for="dv_mad">Loi Madelin</label><select id="dv_mad">'
+      +'<option value="1">Oui</option><option value="0">Non</option></select></div></div>'
+     :'')
    +'<div class="pied"><button id="dvok">Créer le devis</button><button id="dvno">Annuler</button></div>'
    +'<div id="dvmsg"></div></div>';
   document.body.appendChild(ov);
   ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
   masqueDate(document.getElementById("dv_ddn")); masqueDate(document.getElementById("dv_eff"));
-  masqueTel(document.getElementById("dv_tel"));
+  masqueTel(document.getElementById("dv_tel")); masqueDate(document.getElementById("dv_dcr"));
   document.getElementById("dvno").addEventListener("click",()=>ov.remove());
   document.getElementById("dvok").addEventListener("click",()=>devisEnvoi(r,{reg:reg,hasCnj:hasCnj,cnjAge:cnjAge,kids:kids}));
 }
@@ -2421,6 +2436,22 @@ async function devisEnvoi(r,ctx){
   const corps={dateEffetContrat:eff,codePostal:cp,situationProfessionnelle:(APICIL_REG[ctx.reg]||APICIL_REG.SAL)[1],
     beneficiaires:benefs,formules:[{formuleSelectionnee:APICIL_CODES[r.fi]}],
     email:dvVal("dv_mail"),telephone:telFR(dvVal("dv_tel"))};
+  // Regime SSI : APICIL veut l'entreprise. Les cinq champs sont exiges comme le nom.
+  if(ctx.reg==="TNS"){
+    const sir=dvVal("dv_siret").replace(/\D/g,"");
+    [["dv_siret","le SIRET",sir.length===14],["dv_rs","la raison sociale",!!dvVal("dv_rs")],
+     ["dv_dcr","la date de création",!!isoDate(dvVal("dv_dcr"))],
+     ["dv_cppm","le code postal de l'entreprise",/^\d{5}$/.test(dvVal("dv_cppm"))]]
+      .forEach(([id,lib,ok])=>{const e=document.getElementById(id);
+        if(e)e.classList.toggle("ko",!ok); if(!ok)manque.push(lib);});
+    corps.siret=sir; corps.raisonSociale=dvVal("dv_rs");
+    corps.dateCreation=isoDate(dvVal("dv_dcr")); corps.codePostalPM=dvVal("dv_cppm");
+    corps.statutSocial=dvVal("dv_stat"); corps.defiscalisationMadelin=dvVal("dv_mad")==="1";
+  }
+  if(manque.length){
+    msg.innerHTML='<span class="dvwarn">Il manque '+dvEch(manque.join(", "))+'.</span>';
+    return;
+  }
   const eTel=document.getElementById("dv_tel");
   if(eTel&&corps.telephone) eTel.value=corps.telephone;
 
@@ -2438,13 +2469,7 @@ async function devisEnvoi(r,ctx){
     clearInterval(tic);
     if(!rp.ok){
       const raison=(d&&d.detail)?apicilRaison(d.detail):"";
-      // Le motif le plus courant en TNS, dit en francais avant la phrase d'APICIL.
-      const siret=/siret/i.test(raison)
-        ? '<div style="margin-top:5px">APICIL demande un <b>n° SIRET</b> pour un assuré au régime SSI qui '
-          +'n\'est pas retraité. Ce champ n\'existe pas encore dans le comparateur : le devis doit être créé '
-          +'depuis MyVERALTI pour ce profil.</div>' : "";
       msg.innerHTML='<span class="dvwarn">'+dvEch((d&&d.erreur)?d.erreur:"Le devis n'a pas pu être créé (HTTP "+rp.status+").")+'</span>'
-        +siret
         +(raison?'<div style="color:var(--muted);margin-top:5px">'+dvEch(raison)+'</div>':"");
       bt.disabled=false; bt.textContent=old; return;
     }

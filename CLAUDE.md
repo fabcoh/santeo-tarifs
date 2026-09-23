@@ -130,14 +130,17 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `beneficiaires` ne contient que conjoint, enfants et ayants droit — y mettre l'assuré fait échouer l'appel.
   Le retour (§5.2.4) place la référence commerciale et le lien MyVERALTI dans `relatedQuotes[0]`
   (`reference`, `accessURL`), `IdOpportunite` n'étant que l'identifiant du projet.
-  **SIRET : APICIL refuse le devis d'un assuré au régime SSI qui n'est pas retraité s'il n'a pas de SIRET**
-  (« siret obligatoire si le regime SOCIAL de l'assure est SSI et la situation Professionnelle differente de
-  RETAITE », message réel du 23/09/2026). Le comparateur envoie `SSI` + `ACTIF` pour le régime **TNS** ;
-  Alsace-Moselle TNS part en `ALSACEMOSELLE`, la règle ne s'y applique pas. **Le champ n'est pas ajouté et
-  rien n'est bloqué** — décision de Fabrice : la fenêtre affiche un **avertissement en orange** dès que le
-  régime est TNS, et, si APICIL refuse pour ce motif, une phrase en français avant la sienne. Pour ces
-  profils, le devis se crée depuis MyVERALTI, où le SIRET est saisi ensuite — **ne pas ajouter le champ tant
-  que Fabrice ne le demande pas** (décision du 23/09/2026).
+  **Régime SSI : la fenêtre porte un bloc « entreprise »**, affiché seulement si le régime est **TNS**.
+  APICIL refuse sinon (« siret obligatoire si le regime SOCIAL de l'assure est SSI et la situation
+  Professionnelle differente de RETAITE », message réel du 23/09/2026). La doc v1.8 §5.2.2 en exige **six**,
+  pas un seul : `siret` (14 chiffres), `raisonSociale`, `dateCreation`, `codePostalPM`, `statutSocial`
+  (ArtisanCommercant / ProfessionLiberaleMedicale / ProfessionLiberaleNonMedicale / MicroEntrepreneur /
+  ProfessionAgricole) et `defiscalisationMadelin`. Les cinq premiers sont **exigés comme le nom** dans cette
+  fenêtre — c'est la seule qui bloque, APICIL rejetant de toute façon l'appel ; le code postal de l'entreprise
+  est proposé égal à celui du prospect, la loi Madelin à « Oui ». **Aucun commentaire ni avertissement
+  autour** (décision de Fabrice, 23/09/2026) : les champs parlent d'eux-mêmes, et le refus d'APICIL n'est plus
+  commenté, seule sa phrase s'affiche. Alsace-Moselle TNS part en `ALSACEMOSELLE`, pas en `SSI` : le bloc ne
+  s'affiche pas. Le relais `apicil-devis.php` transmet les six champs après contrôle de format.
   **L'appel dure 25 à 60 s** (enregistrement dans MyVERALTI) : relais à 120 s, compteur affiché dans la
   fenêtre. En cas de dépassement le devis peut avoir été créé quand même — vérifier MyVERALTI avant de
   recommencer, jamais relancer à l'aveugle.
