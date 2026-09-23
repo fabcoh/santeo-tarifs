@@ -2923,7 +2923,7 @@ function applyFicheJSON(d){
   const put=(k,v)=>{if(v!==null&&v!==undefined&&v!=="")PRO[k]=v;};
   put("civ",d.civilite); put("nom",d.nom); put("prenom",d.prenom);
   put("adresse",d.adresse); put("ville",d.ville); put("cp5",d.cp);
-  put("email",d.email); put("tel",d.telephone);
+  put("email",d.email); put("tel",telFR(d.telephone)||d.telephone);
   put("secu",d.secu); put("org",d.organisme); put("situation",d.situation);
   const ddn=ISO2FR(d.naissance); if(ddn){PRO.ddn=ddn;P.set("naiss",ddn.slice(-4));}
   if(d.cp)P.set("dept",String(d.cp));
@@ -2999,11 +2999,9 @@ function parseFiche(t){
   // Coordonnées pour le formulaire d'adhésion (lignes étiquetées ou texte libre)
   const em=T.match(/[\w.+\-]+@[\w\-]+\.[A-Za-z]{2,}/); if(em)PRO.email=em[0];
   // Téléphone : accepte 06…, +33 6…, 33 6… (avec ou sans séparateurs), normalisé en 0X XX XX XX XX
-  const ph2=T.replace(em?em[0]:"","").match(/\b(?:\+?33[\s.\-]?[1-9]|0[1-9])(?:[\s.\-]?\d{2}){4}\b/);
+  const ph2=T.replace(em?em[0]:"","").match(/\b(?:(?:\+?33|0033)[\s.\-]?[1-9]|0[1-9])(?:[\s.\-]?\d{2}){4}\b/);
   if(ph2){
-    let tt=ph2[0].replace(/\D/g,"");
-    if(tt.length===11&&tt.slice(0,2)==="33")tt="0"+tt.slice(2);
-    PRO.tel=tt.length===10?tt.replace(/(\d{2})(?=\d)/g,"$1 ").trim():ph2[0].trim();
+    PRO.tel=telFR(ph2[0])||ph2[0].trim();
   }
   const adl=T.match(/^[\s]*adresse\s*:?\s*(.+)$/im);
   if(adl)PRO.adresse=adl[1].trim();

@@ -179,6 +179,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   « Créer le devis » : la fenêtre affichait encore `+33768517874`, et on ne pouvait pas savoir si le numéro
   partirait bon. Un champ vide reste vide, un numéro incomplet (`06 22 19`) est laissé tel quel — au
   commercial de le corriger, jamais de le perdre.
+  **Le numéro est rangé au format dès l'import**, dans `applyFicheJSON` (fiche JSON du CRM) comme dans
+  `parseFiche` (fiche en texte) : `PRO.tel` vaut `0622197349`, et non plus `+33768517874` ni `06 22 19 73 49`.
+  Toutes les fenêtres — le récapitulatif « Données importées du CRM », le devis, la signature — lisent donc
+  déjà le bon format. `parseFiche` accepte aussi `0033…`, que son expression régulière laissait passer.
   **La civilité se relit dans la fenêtre de signature**, en tête de la ligne d'identité (M. / Mme) : elle est
   transmise à APICIL et le devis ne la montre plus une fois créé.
   **Le n° d'organisme d'affiliation n'a pas de champ chez APICIL** : il part dans `commentaire`, à
