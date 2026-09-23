@@ -407,6 +407,17 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   et notices n'existent pas encore. CAP NR, CAP ÉVOLUTION, TALIS et API SANTÉ affichent bien les trois.
 - Quota **30 envois/heure/IP**, message limité à 4 Mo, image à 2,5 Mo.
 
+## Fenêtres (popups)
+
+- **Une fenêtre qui porte une saisie ne se ferme que par son bouton** : `overlay(html, largeur, collante)`
+  avec `collante = true` pour la signature APICIL, et la fenêtre de devis n'écoute plus le clic sur le fond.
+  Un clic à côté effaçait un formulaire à demi rempli — adresse, IBAN, BIC, n° de Sécu — sans prévenir.
+  Les fenêtres de lecture (Infos, documents, options) gardent la fermeture au clic sur le fond : rien à perdre.
+- **Le rechargement automatique ne passe jamais par-dessus une fenêtre ouverte.** La page se recharge quand
+  on revient dessus après **6 heures** (`FRESH`), pour ne pas servir une version périmée. Le garde-fou
+  `fenetreOuverte()` (`#tgov`, `#dvov`, `#impov`) suspend ce rechargement : le commercial qui va consulter
+  MyVERALTI ou sa messagerie retrouve sa souscription telle qu'il l'a laissée.
+
 ## Couleurs
 
 - Les variables de thème sont déclarées **trois fois** : `:root`, le bloc `prefers-color-scheme: dark` et
