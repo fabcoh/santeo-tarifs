@@ -355,7 +355,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-23T09:39:07Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T09:39:07Z</div>
+  <div id="buildstamp" data-build="2026-09-23T12:39:15Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T12:39:15Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2697,10 +2697,7 @@ const EXPEDITEURS=[["fcohen@santeo.net","Fabrice Cohen"],["sandra@santeo.net","S
 function mailTableau(cols){
   const lignes=[];
   for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
-    const vals=cols.map(c=>String(Tableau.valeur(GAR,c.key,c.fi,src)||"—"));
-    // Une ligne vide sur toutes les colonnes n'apprend rien : le tableau de la page la
-    // garde pour l'alignement, le courrier s'en passe.
-    if(vals.some(v=>v&&v!=="—")) lignes.push([lab,vals]);
+    lignes.push([lab,cols.map(c=>String(Tableau.valeur(GAR,c.key,c.fi,src)||"—"))]);
   }
   const colonnes=cols.map(c=>{
     const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi), g=F[c.key];
@@ -2709,6 +2706,7 @@ function mailTableau(cols){
     // portent déjà dans leurs limites : on ne l'écrit pas deux fois.
     const nr=(g&&g.resp===false&&!/non responsable/i.test(lim||""))?"Contrat NON responsable. ":"";
     return {gamme:g.label, formule:g.names[c.fi], nom:Tableau.nomComplet(GAR,c.key,c.fi),
+            logo:g.ins?("logo_"+g.ins+".png"):"", compagnie:(COMP[c.key]||""),
             prix:r?eur(r.total):"", reco:RECO===(c.key+"|"+c.fi),
             docs:Tableau.documents(GAR,c.key,c.fi), limites:nr+(lim||"")};
   });
