@@ -330,8 +330,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Les liens des documents sont filtrés par le relais** : seuls `fabcoh.github.io`, `santeo.net` et
   `capisante.fr` passent. Un lien fourni par l'appelant pourrait sinon envoyer le prospect ailleurs, sous
   notre nom.
-- **Le tableau part en pièce jointe en ligne** (`inline`, `cid:comparatif.png`) et non en image distante :
-  Outlook et Gmail bloquent les images distantes par défaut. Version texte jointe, exigée par les filtres.
+- **Aucune image distante dans le courrier** : Outlook et Gmail les bloquent par défaut, le prospect verrait
+  un cadre vide. Le tableau est donc du HTML, et le PNG capturé une pièce jointe ordinaire. Version texte
+  jointe, exigée par les filtres anti-spam.
+- **Cinq formules au maximum par courrier** — décision de Fabrice, 23/09/2026. Au-delà le tableau déborde sur
+  téléphone ; le relais s'arrête aux cinq premières colonnes.
 - **Copie cachée systématique** au conseiller et à `fcohen@santeo.net` : toute offre partie laisse une trace.
 - **« Cette offre m'intéresse » est un `mailto:`** vers le conseiller, avec copie à la direction. Pas de
   jeton, pas de page à héberger, fonctionne depuis n'importe quelle boîte. Un lien signé à durée longue,
