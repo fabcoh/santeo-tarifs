@@ -318,8 +318,16 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   La page envoie `entete` et `soustitre` **relus dans le cadre affiché** (`.tghdr`, `.src`), pas reconstruits :
   le courrier dit exactement ce que le commercial a sous les yeux.
   **La différence avec l'image : les documents sont cliquables.** C'est la raison d'être du courrier.
-  Une ligne vide sur toutes les colonnes est omise ; la formule ⭐ a sa colonne teintée et la mention
-  « CONSEILLÉE ». Au-delà de **cinq colonnes** le relais s'arrête : au-delà le tableau déborde sur téléphone.
+  **Le rendu suit la capture, sans rien y ajouter ni en retirer** : toutes les lignes, y compris celles où
+  aucune formule ne garantit rien (le prospect voit que le poste existe et n'est pas couvert) ; ni colonne
+  teintée ni mention « conseillée », que la capture ne porte pas — une ligne de plus dans un en-tête
+  désalignait les tarifs d'une colonne à l'autre.
+  **Les logos des compagnies sont téléchargés par le relais** depuis `docs/` et joints en ligne (`cid:`) :
+  une image distante serait bloquée par Outlook et Gmail. Un téléchargement qui échoue laisse le nom de la
+  compagnie à sa place, jamais d'image cassée. La page ne fournit qu'un **nom de fichier**, contrôlé par
+  `^logo_[a-z]+\.png$` — elle ne choisit pas une adresse.
+  Largeur **100 %, plafonnée à 960 px** ; texte courant à 13,5 px, libellés et valeurs du tableau à 14 px.
+  Au-delà de **cinq colonnes** le relais s'arrête : le tableau déborderait sur téléphone.
   Le PNG capturé part en **pièce jointe ordinaire** (plus en image intégrée) : le corps le reproduit déjà.
   **Attention aux variables dans le relais** : la boucle des colonnes écrasait `$nom`, le nom du prospect, et
   le courrier disait « Bonjour Monsieur MCCINOVA ESSENTIELLE ». Les variables de colonne sont préfixées.

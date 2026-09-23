@@ -2210,10 +2210,7 @@ const EXPEDITEURS=[["fcohen@santeo.net","Fabrice Cohen"],["sandra@santeo.net","S
 function mailTableau(cols){
   const lignes=[];
   for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
-    const vals=cols.map(c=>String(Tableau.valeur(GAR,c.key,c.fi,src)||"—"));
-    // Une ligne vide sur toutes les colonnes n'apprend rien : le tableau de la page la
-    // garde pour l'alignement, le courrier s'en passe.
-    if(vals.some(v=>v&&v!=="—")) lignes.push([lab,vals]);
+    lignes.push([lab,cols.map(c=>String(Tableau.valeur(GAR,c.key,c.fi,src)||"—"))]);
   }
   const colonnes=cols.map(c=>{
     const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi), g=F[c.key];
@@ -2222,6 +2219,7 @@ function mailTableau(cols){
     // portent déjà dans leurs limites : on ne l'écrit pas deux fois.
     const nr=(g&&g.resp===false&&!/non responsable/i.test(lim||""))?"Contrat NON responsable. ":"";
     return {gamme:g.label, formule:g.names[c.fi], nom:Tableau.nomComplet(GAR,c.key,c.fi),
+            logo:g.ins?("logo_"+g.ins+".png"):"", compagnie:(COMP[c.key]||""),
             prix:r?eur(r.total):"", reco:RECO===(c.key+"|"+c.fi),
             docs:Tableau.documents(GAR,c.key,c.fi), limites:nr+(lim||"")};
   });
