@@ -224,6 +224,22 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   pour Équilibre, « Séniors » (`...ConfortSereniteSBase1/2/3`) pour Équilibre et Sérénité.
 - **Les libellés du référentiel §6.1.2 font foi** ; l'exemple §5.1.4 de la documentation contient une coquille
   (`...ConfortEquilibreSBase...`), vérifié par appel réel.
+  **À reprendre** : la tarification de production renvoie pourtant bien
+  `siApiSanteConfortEquilibreSBase1/2/3` sous les formules Équilibre, pour un profil de 60 ans
+  (appel réel du 23/09/2026, CP 75011, né en 1966). Le libellé du pack « Séniors » sur la gamme Équilibre
+  n'est donc pas celui que ces notes annonçaient. À confirmer avant de coder les Packs Confort.
+
+### Production
+
+- **En production depuis le 23/09/2026** : `apicil-config.php` porte `environnement => 'production'`,
+  l'adresse `https://api.apicil.com/p0/…` et le jeu `p0-parcours-souscription-xapi-CAPI-FINANCE`. Les valeurs
+  de recette y restent en commentaire, pour revenir en arrière en ôtant quatre `//`.
+- Les trois relais annoncent `production` et `contactPartenaire` vaut `fcohen@santeo.net` ; l'échappatoire de
+  recette (`essais`) est fermée.
+- **La production est bien plus rapide que la recette** : une tarification revient en **0,95 s**, contre
+  plusieurs secondes et des `INTERNAL_SERVER_ERROR` intermittents en recette. Les coupures observées
+  (« Connection reset by peer », « Timeout exceeded » sur leurs services internes) étaient donc propres à la
+  recette : ne pas les attribuer à nos données.
 - L'API ne renvoie **que les formules éligibles au profil** : inutile de coder les règles d'éligibilité.
 - Limites : 1 assuré, 1 conjoint, 8 enfants, 8 ayants droit ; date d'effet entre J−30 et J+1 an.
 - Régimes : `GENERAL` / `ALSACEMOSELLE` / `SSI`. La tarification **n'enregistre rien** dans le SI d'APICIL.
