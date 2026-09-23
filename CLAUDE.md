@@ -348,12 +348,16 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   non un seul bouton en bas du courrier — le prospect dit ainsi **laquelle** l'intéresse, le conseiller n'a
   pas à le rappeler pour le lui demander. C'est un `mailto:` vers le conseiller expéditeur (`antony@`,
   `fcohen@`…) avec copie à `fcohen@santeo.net` ; l'objet et le corps portent le nom de la formule et celui
-  du prospect. Pas de jeton, pas de page à héberger, fonctionne depuis n'importe quelle boîte.
-- **Les documents de chaque formule sont sous sa colonne** (tableau de garantie, IPID, notice), en 11 px et
-  cliquables, juste au-dessus de son bouton. Le pied ne garde que le **nom de la formule et ses limites**,
-  trop longues pour tenir dans une colonne : les répéter aux deux endroits ne faisait que du bruit. Un lien signé à durée longue,
-  traçable, reste la bonne cible — il demande un serveur qui tienne un instantané de devis (voir la note
-  d'intégration avec Manus).
+  du prospect. Pas de jeton, pas de page à héberger, fonctionne depuis n'importe quelle boîte. Un lien signé
+  à durée longue, traçable, reste la bonne cible — il demande un serveur qui tienne un instantané de devis
+  (voir la note d'intégration avec Manus). Le bouton est en **10 px**, deux lignes, et non un pavé : trois
+  colonnes doivent tenir côte à côte sur un téléphone.
+- **Les documents de chaque formule sont sous sa colonne** — « Tableau de garantie - IPID - Notice » sur une
+  seule ligne, en **10 px**, cliquables, juste au-dessus de son bouton. Le pied ne garde que le **nom de la
+  formule et ses limites**, trop longues pour une colonne : les répéter aux deux endroits ne faisait que du
+  bruit. **Ce qui manque n'est pas un défaut du courrier mais du dossier** : `DOCS` ne publie qu'un tableau
+  de garantie pour MCCINOVA, FLEXIA et SOLENCIA, et un seul « Garanties + IPID » pour LPS HOSPI — leurs IPID
+  et notices n'existent pas encore. CAP NR, CAP ÉVOLUTION, TALIS et API SANTÉ affichent bien les trois.
 - Quota **30 envois/heure/IP**, message limité à 4 Mo, image à 2,5 Mo.
 
 ## Couleurs
