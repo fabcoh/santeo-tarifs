@@ -2484,7 +2484,7 @@ async function souscrire(o){
     +'<div class="optgrp"><h3>Prélèvement</h3>'
     +'<div class="sgrid" style="grid-template-columns:1.7fr 1fr .8fr">'
       +sFld("s_iban","IBAN",dvVal("aiban"),{ph:"FR76 …",maj:1,
-            hint:"Facultatif pendant les essais — le client peut le saisir lui-même."})
+            hint:"Obligatoire : le mandat de prélèvement en dépend."})
       +sFld("s_bic","BIC",dvVal("abic"),{ph:"8 ou 11 caractères",max:11,maj:1,
             hint:"Obligatoire : APICIL refuse la demande sans lui."})
       +sSel("s_jour","Jour de prélèvement",[["5","le 5"],["15","le 15"]],"5")+'</div></div>'
@@ -2527,9 +2527,23 @@ async function souscrire(o){
       smsg.innerHTML='<span class="dvwarn">BIC attendu : 8 ou 11 caractères, par exemple CRLYFRPP. APICIL refuse la demande sans lui.</span>';
       q("s_bic").focus(); return;
     }
-    if(iban&&!ko("s_iban",/^FR[0-9A-Z]{25}$/.test(iban))){
-      smsg.innerHTML='<span class="dvwarn">IBAN français attendu : FR suivi de 25 caractères. Laissez le champ vide si le client le saisira lui-même.</span>';
-      q("s_iban").focus(); return;
+    // Le dossier part en gestion chez APICIL : ces cinq-la y sont exigees, et un
+    // dossier incomplet revient par le service de gestion, jamais par le client.
+    // Elles bloquent donc l'envoi — seule exception a la regle « alertes ≠ blocage ».
+    const dur=[];
+    if(!ko("s_secu",!!secu&&secuOK(secu))) dur.push("le n° de Sécurité sociale");
+    if(!ko("s_org",/^[0-9]{9}$/.test(org))) dur.push("le n° d'organisme d'affiliation");
+    if(!ko("s_iban",/^FR[0-9A-Z]{25}$/.test(iban))) dur.push("l'IBAN");
+    if(!ko("s_nnais",!!nnais)) dur.push("le nom de naissance");
+    if(!ko("s_vnais",!!vnais)) dur.push("la ville de naissance");
+    if(dur.length){
+      smsg.innerHTML='<span class="dvwarn">Il manque '+dvEch(dur.join(", "))+'.</span>'
+        +'<div style="color:var(--muted);margin-top:5px">Ces informations sont exigées par APICIL : '
+        +'sans elles le dossier repart en gestion et la signature est perdue.</div>';
+      const e1=q(["s_secu","s_org","s_iban","s_nnais","s_vnais"].find(id=>q(id).classList.contains("ko")));
+      if(e1)e1.focus();
+      confirme=false; bok.textContent="Envoyer l'e-mail de signature";
+      return;
     }
 
     // Le reste n'empêche pas la signature : le client complétera ces cases à la main.
@@ -2537,12 +2551,8 @@ async function souscrire(o){
     if(!ko("s_adr",!!adr))   reste.push("l'adresse");
     if(!ko("s_vil",!!vil))   reste.push("la ville");
     if(!ko("s_tel",!!tel)) reste.push("le téléphone");
-    if(!ko("s_secu",!!secu&&secuOK(secu))) reste.push("le n° de Sécurité sociale");
-    if(!ko("s_org",/^[0-9]{9}$/.test(org))) reste.push("le n° d'organisme");
-    if(!ko("s_vnais",!!vnais)) reste.push("la ville de naissance");
     if(!ko("s_cpnais",/^[0-9]{5}$/.test(cpnais))) reste.push("le code postal de naissance");
     if(!ko("s_sit",!!sit))   reste.push("la situation familiale");
-    if(!iban) reste.push("l'IBAN");
     if(reste.length&&!confirme){
       confirme=true; bok.textContent="Envoyer quand même";
       smsg.innerHTML='<span class="dvwarn">Le client devra saisir lui-même '+dvEch(reste.join(", "))+'.</span>'
@@ -2565,7 +2575,7 @@ async function souscrire(o){
                  beneficiaires:benefs,BICSepa:bic,pays:"FR",
                  jourDuMoisDePrelevement:+v("s_jour"),frequencePrelevement:"MENS"};
     if(tel) corps.telephone=tel;
-    if(iban)  corps.IBANSEPA=iban;
+    corps.IBANSEPA=iban;
     if(adr)   corps.adresseL4=adr;
     if(vil)   corps.ville=vil;
     if(sit)   corps.situationFamiliale=sit;
