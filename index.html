@@ -355,7 +355,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-23T08:51:08Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T08:51:08Z</div>
+  <div id="buildstamp" data-build="2026-09-23T09:01:20Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T09:01:20Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1637,6 +1637,10 @@ function showAdh(r){
   ov.addEventListener("click",ev=>{if(ev.target===ov||ev.target.classList.contains("close"))ov.remove();});
   document.body.appendChild(ov);
   try{if(HOSTED)wireDocDrop();}catch(e){}
+  // Toutes les dates du bulletin passent par le meme masque jj/mm/aaaa : ce sont
+  // celles que le commercial tape le plus, et celles qui alimentent APICIL.
+  ["addn","cddn","aeff","asig","kddn0","kddn1","kddn2","kddn3"]
+    .forEach(id=>{try{masqueDate(document.getElementById(id));}catch(e){}});
   // Date d'effet en rouge et gras pour qu'elle ne passe pas inaperçue
   const effEl=document.getElementById("aeff");
   effEl.style.color="#c62828"; effEl.style.fontWeight="800"; effEl.style.borderColor="#c62828";
@@ -2279,8 +2283,8 @@ let apicilTimer=null;
 // sinon le 1er janvier — l'âge atteint dans l'année, comme au reste du comparateur.
 const champ=id=>{try{const e=document.getElementById(id);return e?e.value:""}catch(e){return ""}};
 function apicilNaiss(age,ddn){
-  const m=/^(\d{2})\/(\d{2})\/((?:19|20)\d\d)$/.exec(String(ddn||"").trim());
-  if(m&&YEAR-(+m[3])===age) return m[3]+"-"+m[2]+"-"+m[1];
+  const iso=isoDate(ddn);
+  if(iso&&YEAR-(+iso.slice(0,4))===age) return iso;
   return (YEAR-age)+"-01-01";
 }
 const apicilDDNAssure =()=>(typeof PRO!=="undefined"&&PRO&&PRO.ddn)?PRO.ddn:champ("addn");
@@ -2786,7 +2790,7 @@ function isoDate(v){
 function masqueDate(e){
   if(!e)return;
   e.setAttribute("maxlength","10"); e.setAttribute("inputmode","numeric");
-  e.setAttribute("placeholder","jj/mm/aaaa");
+  if(!e.getAttribute("placeholder")) e.setAttribute("placeholder","jj/mm/aaaa");
   const fmt=()=>{
     const fin=e.selectionStart===e.value.length;
     const d=e.value.replace(/\D/g,"").slice(0,8);
