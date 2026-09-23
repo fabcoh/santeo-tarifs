@@ -359,8 +359,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   n'est plus affiché : la même mention figure déjà au pied, formule par formule. Le relais accepte toujours
   `soustitre`, il ne l'imprime plus.
 - **La phrase d'accroche ne date ni ne source l'offre** : « Je fais suite à votre demande de devis, voici mes
-  propositions. » Le site de provenance et la mention « valable 15 jours » ont été retirés — décision de
-  Fabrice, 23/09/2026. `$prov` et `$dateFr` restent calculés dans le relais, prêts à resservir.
+  propositions. » Le site de provenance a été retiré — décision de Fabrice, 23/09/2026 ; `$prov` reste
+  calculé dans le relais, prêt à resservir. **La date, elle, est sous le tableau**, en 10 px centré :
+  « Tarifs au 23 septembre 2026, valables 15 jours. » Sans elle, rien ne bornerait l'offre dans le temps —
+  un prospect revenant trois mois plus tard avec ce courrier n'aurait vu nulle part que les tarifs changent.
 - **Les documents de chaque formule sont sous sa colonne** — « Tableau de garantie - IPID - Notice » sur une
   seule ligne, en **10 px**, cliquables, juste au-dessus de son bouton. Le pied ne garde que le **nom de la
   formule et ses limites**, trop longues pour une colonne : les répéter aux deux endroits ne faisait que du
