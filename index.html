@@ -355,7 +355,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-25T11:33:18Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-25T11:33:18Z</div>
+  <div id="buildstamp" data-build="2026-09-25T13:08:36Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-25T13:08:36Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2766,6 +2766,12 @@ function mailFenetre(blob,tg,PR,tetes){
           civilite:/^mme$/i.test((PR&&PR.civ)||"")?"MME":"MR",
           nom:(PR&&PR.nom)||"",prenom:(PR&&PR.prenom)||"",
           telephone:telFR((PR&&PR.tel)||"")||((PR&&PR.tel)||""),
+          // La fiche complète du prospect, pour le récapitulatif de la page « Cette offre
+          // m'intéresse » : le relais la chiffre dans le lien, rien n'en est lisible.
+          fiche:{ddn:(PR&&PR.ddn)||"",regime:document.getElementById("regime").value,
+                 adresse:(PR&&PR.adresse)||"",cp:(PR&&(PR.cp5||PR.cp))||"",ville:(PR&&PR.ville)||"",
+                 conjoint:(PR&&PR.conjoint&&PR.conjoint.ddn)||(document.getElementById("cnj").value.trim()||""),
+                 enfants:(PR&&Array.isArray(PR.enfants))?PR.enfants.map(e=>e.ddn||"").filter(Boolean):[]},
           // Adresse exacte de la conversation d'où vient la fiche : le conseiller
           // qui reçoit « Cette offre m'intéresse » y retourne d'un clic.
           conversation:(window.CRMLINK&&window.CRMLINK.back)||"",
