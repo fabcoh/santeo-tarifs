@@ -405,6 +405,19 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   bruit. **Ce qui manque n'est pas un défaut du courrier mais du dossier** : `DOCS` ne publie qu'un tableau
   de garantie pour MCCINOVA, FLEXIA et SOLENCIA, et un seul « Garanties + IPID » pour LPS HOSPI — leurs IPID
   et notices n'existent pas encore. CAP NR, CAP ÉVOLUTION, TALIS et API SANTÉ affichent bien les trois.
+- **Ni bandeau ni pied par formule** (décision de Fabrice, 25/09/2026) : le courrier commence par « Bonjour »,
+  sans le cartouche SANTÉO / ORIAS en tête, et les limites par formule n'y figurent plus — trop longues, elles
+  faisaient cinq paragraphes identiques sous un tableau Mutuelle Verte. Elles restent dans la page et dans le
+  texte WhatsApp. À la place, **les mentions de Fabrice suivent la date**, dans le même 10 px gris, en un
+  seul paragraphe : forfaits par an et par assuré, pourcentages sur la base de remboursement Sécu comprise,
+  tableau sans valeur contractuelle, taxes d'État, OPTAM / OPTAM-CO, optique sur 2 ans, offres non
+  exhaustives, jamais plus que la dépense réelle, calcul sur les renseignements fournis. Deux mots adaptés au
+  courrier : les conditions sont « accessibles par les liens sous chaque formule » (elles ne sont pas jointes
+  en PDF) et les renseignements sont « ci-dessus » (le cartouche), pas « ci-dessous ».
+  **Régression corrigée le 25/09** : la réécriture du corps de « Cette offre m'intéresse » avait emporté le
+  bloc `$tdoc` — la ligne des documents sous les colonnes — parce qu'il était logé entre `$lienInteret` et
+  le commentaire « La derniere ligne du tableau ». PHP se tait sur une variable absente : le courrier partait
+  sans ses liens, sans erreur. Quand on remplace un bloc par ses bornes, relire ce qu'il y a entre.
 - Quota **30 envois/heure/IP**, message limité à 4 Mo, image à 2,5 Mo.
 
 ## Fenêtres (popups)
