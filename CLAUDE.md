@@ -377,12 +377,35 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Copie cachée systématique** au conseiller et à `fcohen@santeo.net` : toute offre partie laisse une trace.
 - **« Cette offre m'intéresse » : un bouton sous chaque formule**, dans la dernière ligne du tableau, et
   non un seul bouton en bas du courrier — le prospect dit ainsi **laquelle** l'intéresse, le conseiller n'a
-  pas à le rappeler pour le lui demander. C'est un `mailto:` vers le conseiller expéditeur (`antony@`,
-  `fcohen@`…) avec copie à `fcohen@santeo.net` ; l'objet et le corps portent le nom de la formule et celui
-  du prospect. **Le corps reprend la forme des demandes de prospect du CRM** : « Nouvelle demande de prospect
-  suite à email », puis `Destinataire`, `Conversation`, `Option`, `Tarif`, et la fiche du prospect —
-  civilité, nom, prénom, e-mail, téléphone. Le conseiller sait ainsi **qui** appeler, **pour quelle formule**,
-  **à quel tarif**, et retourne à la conversation d'un clic.
+  pas à le rappeler pour le lui demander. **Ce n'est plus un `mailto:`** (décision de Fabrice, 25/09/2026 :
+  le prospect ne doit pas avoir à ouvrir sa messagerie) mais un lien vers **`interet.php`**, page hébergée
+  sur `capisante.fr`, avec un **jeton signé** dans l'adresse — formule (`key`, `fi`, que la page envoie
+  désormais dans chaque colonne), tarif, fiche du prospect, conseiller expéditeur, conversation CRM ; 30 jours
+  de validité, HMAC-SHA256 avec `interet-cle.txt`, fabriquée au premier appel et rangée **hors du dossier
+  web** comme `apicil-cle.txt` (`curl -u capisaf ftp://ftp.cluster129.hosting.ovh.net/interet-cle.txt`
+  pour la lire, la supprimer pour la révoquer — tous les liens déjà envoyés cessent alors de fonctionner).
+  Aucune base de données : le lien se suffit à lui-même.
+  **`interet.php`, deux étapes** : (1) « Nous avons bien pris en compte votre intérêt pour la formule… »,
+  l'essentiel des garanties lu dans `garanties.json` (hospitalisation et honoraires OPTAM, chambre, dentaire
+  prothèses, implantologie, orthodontie, optique, lentilles, audio, médecine douce — **il n'existe pas de
+  poste « soins dentaires » dans les données**), les documents, puis « Je souhaite adhérer au : » pré-rempli
+  **au lendemain**, en bleu gras, modifiable, jamais antérieur au lendemain (contrôle serveur) → VALIDER
+  envoie au conseiller le **mail « Intérêt confirmé »** ; (2) « Afin de valider votre demande » : pièce
+  d'identité, attestation de Sécurité sociale, RIB (photo ou PDF) → ENVOYER envoie le **mail « Pièces
+  reçues »** avec les fichiers en pièces jointes. **Les pièces ne sont jamais conservées sur le serveur** :
+  transmises à Mailgun puis effacées. Les photos sont réduites dans le navigateur (1600 px, JPEG) avant
+  l'envoi — l'hébergement OVH plafonne un fichier (`upload_max_filesize`, lisible sur `interet.php` sans
+  paramètre). Sur les deux pages, « Vous avez une question avant de souscrire ? » : **WhatsApp vers le mobile
+  du conseiller** (celui de `santeo-mail-config.php`) et le **01 53 19 86 46** du CRM.
+  Les deux mails vont au **conseiller expéditeur du courrier**, copie `fcohen@` ; `Reply-To` = le prospect ;
+  même compte Mailgun, même `santeo-mail-config.php` — **aucune clé nouvelle**. 20 envois/heure/IP.
+  **Le corps reprend la forme des demandes de prospect du CRM** : « Nouvelle demande de prospect
+  suite à email », puis `Destinataire`, `Conversation`, `Option`, `Tarif`, la date d'adhésion souhaitée, et
+  la fiche du prospect — civilité, nom, prénom, e-mail, téléphone. Le conseiller sait ainsi **qui** appeler,
+  **pour quelle formule**, **à quel tarif**, et retourne à la conversation d'un clic.
+  **Test en local** : `interet-apercu.php` définit `APERCU` (les mails vont dans un fichier JSON au lieu de
+  Mailgun), `jeton.php` fabrique un lien signé avec la clé du scratchpad ; `garanties.json` doit être copié
+  dans `/tmp/santeo_garanties.json`, `fabcoh.github.io` étant bloqué depuis une session.
   **`conversation` est l'adresse `&back=` du lien d'arrivée** (`window.CRMLINK.back`), transmise par la page.
   Elle est filtrée côté relais comme les liens de documents — nos hôtes plus celui du CRM, et `https` seul :
   elle repart dans un courrier signé Santéo, un appelant ne doit pas pouvoir y glisser une autre adresse.
