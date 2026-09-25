@@ -389,8 +389,15 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (voir la note d'intégration avec Manus). Le bouton est en **10 px**, deux lignes, et non un pavé : trois
   colonnes doivent tenir côte à côte sur un téléphone. **Aucune phrase sous les boutons** : « Un clic
   prévient votre conseiller » n'apprenait rien que le bouton ne dise déjà, et poussait le pied plus bas.
-- **Le cartouche du tableau tient sur une seule échelle, centré et collé au tableau** : titre 14 px gras,
-  ligne prospect 11 px, au lieu de 20 / 14, qui faisaient un titre de journal au-dessus d'un tableau à 14 px.
+- **Le cartouche du tableau est dans la cellule de gauche de l'en-tête, à hauteur des logos** — titre 14 px
+  gras, ligne prospect 11 px — et non au-dessus : trois étages (cartouche, logos, tarifs) faisaient un haut
+  de courrier trop chargé (Fabrice, 25/09/2026). **Le tarif ferme le tableau** : ligne « TARIF MENSUEL », un
+  cartouche gris clair par formule, chiffre en 14 px teal, puis les documents, puis les boutons — la
+  disposition du comparateur historique, dans nos couleurs. Le bouton est en **9 px**, chaque ligne en
+  `white-space:nowrap` : deux lignes toujours, jamais trois, même à cinq colonnes sous Apple Mail.
+  **Pas de ligne « Indemnités journalières hospitalisation »** dans le courrier : `mailTableau` ne l'ajoute
+  plus et le relais l'écarte par son libellé — hors sujet pour comparer des complémentaires ; la page, elle,
+  la garde. **Plus de ligne « Toute l'équipe Santéo »** sous le conseiller.
   Le **sous-titre de source** (« AVENIR M. · MCCI · synthèse d'après le tableau de garantie officiel… »)
   n'est plus affiché : la même mention figure déjà au pied, formule par formule. Le relais accepte toujours
   `soustitre`, il ne l'imprime plus.
