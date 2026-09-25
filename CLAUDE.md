@@ -406,6 +406,17 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   une valeur fausse bloque, et il faut **au moins un téléphone ou un e-mail**. Le mail « Intérêt confirmé »
   reprend toute la fiche confirmée, la liste **NON FOURNI PAR LE PROSPECT**, et **CORRECTIONS DU PROSPECT**,
   champ par champ, `ancienne → nouvelle`. **Rien n'est écrit dans le CRM** : le conseiller reporte.
+  **Le tarif suit les corrections** (Fabrice, 25/09/2026) : quand le prospect change sa date de naissance, son
+  régime, son code postal, son conjoint ou ses enfants, la page recalcule la cotisation **avec `src/moteur.js`
+  chargé depuis GitHub Pages** — le même code que le comparateur, jamais une copie (vérifié : 461,77 € sur la
+  page = 461,77 € par le moteur sous Node, même profil). Une fenêtre annonce « Vous avez modifié votre date de
+  naissance — votre nouvelle cotisation mensuelle : X € au lieu de Y € ». Pas de fenêtre si le prix ne change
+  pas ; « formule non proposée » si le profil la rend inéligible. API SANTÉ passe par `apicil.php`, qui
+  accepte désormais `https://capisante.fr` dans `$ORIGINES_EN_PLUS`. Le prix recalculé part dans le mail
+  sous **TARIF RECALCULÉ PAR LA PAGE (à vérifier)** — calculé dans le navigateur, il n'est pas une preuve.
+  Le jeton porte `nk`, le **nombre de mineurs du haut de page** : il a fait le tarif même quand leurs dates
+  ne sont pas connues ; le recalcul les ajoute aux enfants datés. Un conjoint connu par sa seule **année**
+  s'affiche au 1ᵉʳ janvier dans le champ et n'est pas compté comme correction s'il n'est pas touché.
   **`interet.php`, deux étapes** : (1) « Nous avons bien pris en compte votre intérêt pour la formule… »,
   l'essentiel des garanties lu dans `garanties.json` (hospitalisation et honoraires OPTAM, chambre, dentaire
   prothèses, implantologie, orthodontie, optique, lentilles, audio, médecine douce — **il n'existe pas de

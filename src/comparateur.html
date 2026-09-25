@@ -2284,7 +2284,10 @@ function mailFenetre(blob,tg,PR,tetes){
           fiche:{ddn:(PR&&PR.ddn)||"",regime:document.getElementById("regime").value,
                  adresse:(PR&&PR.adresse)||"",cp:(PR&&(PR.cp5||PR.cp))||"",ville:(PR&&PR.ville)||"",
                  conjoint:(PR&&PR.conjoint&&PR.conjoint.ddn)||(document.getElementById("cnj").value.trim()||""),
-                 enfants:(PR&&Array.isArray(PR.enfants))?PR.enfants.map(e=>e.ddn||"").filter(Boolean):[]},
+                 enfants:(PR&&Array.isArray(PR.enfants))?PR.enfants.map(e=>e.ddn||"").filter(Boolean):[],
+                 // Le nombre de mineurs du haut de page : c'est lui qui a fait le tarif, même
+                 // quand leurs dates de naissance ne sont pas connues.
+                 kids:+document.getElementById("kids").value||0},
           // Adresse exacte de la conversation d'où vient la fiche : le conseiller
           // qui reçoit « Cette offre m'intéresse » y retourne d'un clic.
           conversation:(window.CRMLINK&&window.CRMLINK.back)||"",
