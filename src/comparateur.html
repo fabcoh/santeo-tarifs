@@ -2279,6 +2279,12 @@ function mailFenetre(blob,tg,PR,tetes){
           civilite:/^mme$/i.test((PR&&PR.civ)||"")?"MME":"MR",
           nom:(PR&&PR.nom)||"",prenom:(PR&&PR.prenom)||"",
           telephone:telFR((PR&&PR.tel)||"")||((PR&&PR.tel)||""),
+          // La fiche complète du prospect, pour le récapitulatif de la page « Cette offre
+          // m'intéresse » : le relais la chiffre dans le lien, rien n'en est lisible.
+          fiche:{ddn:(PR&&PR.ddn)||"",regime:document.getElementById("regime").value,
+                 adresse:(PR&&PR.adresse)||"",cp:(PR&&(PR.cp5||PR.cp))||"",ville:(PR&&PR.ville)||"",
+                 conjoint:(PR&&PR.conjoint&&PR.conjoint.ddn)||(document.getElementById("cnj").value.trim()||""),
+                 enfants:(PR&&Array.isArray(PR.enfants))?PR.enfants.map(e=>e.ddn||"").filter(Boolean):[]},
           // Adresse exacte de la conversation d'où vient la fiche : le conseiller
           // qui reçoit « Cette offre m'intéresse » y retourne d'un clic.
           conversation:(window.CRMLINK&&window.CRMLINK.back)||"",

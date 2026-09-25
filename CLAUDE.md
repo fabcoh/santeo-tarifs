@@ -386,10 +386,26 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   le prospect ne doit pas avoir à ouvrir sa messagerie) mais un lien vers **`interet.php`**, page hébergée
   sur `capisante.fr`, avec un **jeton signé** dans l'adresse — formule (`key`, `fi`, que la page envoie
   désormais dans chaque colonne), tarif, fiche du prospect, conseiller expéditeur, conversation CRM ; 30 jours
-  de validité, HMAC-SHA256 avec `interet-cle.txt`, fabriquée au premier appel et rangée **hors du dossier
+  de validité, clé `interet-cle.txt`, fabriquée au premier appel et rangée **hors du dossier
   web** comme `apicil-cle.txt` (`curl -u capisaf ftp://ftp.cluster129.hosting.ovh.net/interet-cle.txt`
   pour la lire, la supprimer pour la révoquer — tous les liens déjà envoyés cessent alors de fonctionner).
   Aucune base de données : le lien se suffit à lui-même.
+  **Jeton v2, chiffré (AES-256-GCM), depuis le 25/09/2026** — `t=2.<iv|tag|chiffré>` en base64url ; la clé de
+  chiffrement est `sha256("aes|" + interet-cle.txt)`, un seul secret sur le serveur. Décodé en base64, un lien
+  v2 ne révèle **rien** (vérifié : ni nom, ni e-mail, ni téléphone, ni formule). Le v1 (signé HMAC, lisible en
+  base64) est encore accepté jusqu'à son expiration de 30 jours — ceux du 25/09 au matin — puis plus jamais.
+  Il porte désormais **toute la fiche** : civilité, nom, prénom, e-mail, téléphone, date de naissance, régime,
+  adresse / CP / ville, conjoint, enfants — la page envoie `fiche` au relais (`PRO.ddn`, `PRO.adresse`,
+  `PRO.cp5`, `PRO.ville`, `PRO.conjoint.ddn`, `PRO.enfants[].ddn`, le régime du haut de page).
+  **Récapitulatif en tête de page** : 3 ou 4 lignes (identité · naissance · régime, téléphone · e-mail, adresse,
+  assurés en années), puis « Corriger mes informations » qui déplie les champs. « INCONNU » n'est jamais
+  affiché : le nom vaut vide, le libellé devient « Votre nom » en orange et le bloc s'ouvre d'office — de même
+  dès qu'il manque le nom, la date de naissance, le téléphone ou l'e-mail. **Contrôles serveur** : date de
+  naissance réelle et 16–110 ans, téléphone français (`telFR`), e-mail, CP à 5 chiffres, enfants de moins de
+  35 ans ; message sous le champ, saisie conservée. **Un champ vide ne bloque pas** (alertes ≠ blocage) — seule
+  une valeur fausse bloque, et il faut **au moins un téléphone ou un e-mail**. Le mail « Intérêt confirmé »
+  reprend toute la fiche confirmée, la liste **NON FOURNI PAR LE PROSPECT**, et **CORRECTIONS DU PROSPECT**,
+  champ par champ, `ancienne → nouvelle`. **Rien n'est écrit dans le CRM** : le conseiller reporte.
   **`interet.php`, deux étapes** : (1) « Nous avons bien pris en compte votre intérêt pour la formule… »,
   l'essentiel des garanties lu dans `garanties.json` (hospitalisation et honoraires OPTAM, chambre, dentaire
   prothèses, implantologie, orthodontie, optique, lentilles, audio, médecine douce — **il n'existe pas de
