@@ -355,7 +355,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-25T09:11:24Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-25T09:11:24Z</div>
+  <div id="buildstamp" data-build="2026-09-25T11:17:29Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-25T11:17:29Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2714,7 +2714,8 @@ function mailTableau(cols){
     // La mention « non responsable » est due au prospect, mais certaines gammes la
     // portent déjà dans leurs limites : on ne l'écrit pas deux fois.
     const nr=(g&&g.resp===false&&!/non responsable/i.test(lim||""))?"Contrat NON responsable. ":"";
-    return {gamme:g.label, formule:g.names[c.fi], nom:Tableau.nomComplet(GAR,c.key,c.fi),
+    // key et fi : le relais en fait le jeton signé du lien « Cette offre m'intéresse ».
+    return {key:c.key, fi:c.fi, gamme:g.label, formule:g.names[c.fi], nom:Tableau.nomComplet(GAR,c.key,c.fi),
             logo:g.ins?("logo_"+g.ins+".png"):"", compagnie:(COMP[c.key]||""),
             prix:r?eur(r.total):"", reco:RECO===(c.key+"|"+c.fi),
             docs:Tableau.documents(GAR,c.key,c.fi), limites:nr+(lim||"")};
