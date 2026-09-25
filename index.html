@@ -355,7 +355,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-23T17:38:28Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-23T17:38:28Z</div>
+  <div id="buildstamp" data-build="2026-09-25T05:38:14Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-25T05:38:14Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2378,7 +2378,9 @@ function offreTxt(r,full){
   let s=("• "+f.label+" "+r.formule).replace(/\b(\S+) \1\b/,"$1")+" : "+eur(r.total)+" par mois";
   if(full){
     const lines=[];
-    for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
+    // Pas de ligne « indemnités journalières » dans le courrier : hors sujet pour
+  // comparer des complémentaires (Fabrice, 25/09/2026). Le tableau de la page la garde.
+  for(const [lab,src] of TGROWS){
       let v;
       if(src.startsWith("x:")){const k2=src.slice(2);v=(e[k2]&&e[k2][r.fi]!==undefined)?e[k2][r.fi]:"—";}
       else v=(f[src]&&f[src][r.fi]!==undefined)?f[src][r.fi]:"—";
