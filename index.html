@@ -355,7 +355,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-25T13:08:36Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-25T13:08:36Z</div>
+  <div id="buildstamp" data-build="2026-09-25T13:18:15Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-25T13:18:15Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2771,7 +2771,10 @@ function mailFenetre(blob,tg,PR,tetes){
           fiche:{ddn:(PR&&PR.ddn)||"",regime:document.getElementById("regime").value,
                  adresse:(PR&&PR.adresse)||"",cp:(PR&&(PR.cp5||PR.cp))||"",ville:(PR&&PR.ville)||"",
                  conjoint:(PR&&PR.conjoint&&PR.conjoint.ddn)||(document.getElementById("cnj").value.trim()||""),
-                 enfants:(PR&&Array.isArray(PR.enfants))?PR.enfants.map(e=>e.ddn||"").filter(Boolean):[]},
+                 enfants:(PR&&Array.isArray(PR.enfants))?PR.enfants.map(e=>e.ddn||"").filter(Boolean):[],
+                 // Le nombre de mineurs du haut de page : c'est lui qui a fait le tarif, même
+                 // quand leurs dates de naissance ne sont pas connues.
+                 kids:+document.getElementById("kids").value||0},
           // Adresse exacte de la conversation d'où vient la fiche : le conseiller
           // qui reçoit « Cette offre m'intéresse » y retourne d'un clic.
           conversation:(window.CRMLINK&&window.CRMLINK.back)||"",
