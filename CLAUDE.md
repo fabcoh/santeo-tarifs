@@ -61,6 +61,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   2 enfants payants max, pas de DOM-TOM, jusqu'à 80 ans. Grille alignée sur le tarificateur showcase : ×0,999 au centime.
   Renfort 50 éligible Rev 2–8, Renfort 100 éligible Rev 2–6. Option « Souscripteur non assuré » (enfants seuls) :
   bloc adhérent rempli, ligne « Adhérent » des assurés vide, cotisation recalculée. Génération = 2 PDF (bulletin + SEPA).
+- **Lentilles : le forfait seul, en euros** (Fabrice, 25/09/2026). `EX.*.lentA` / `lentR` portaient « 100 % +50 € »
+  et « +50 € » pour Mutuelle Verte, RÉVOLUO et les renforts ; c'est désormais « 50 € ». La part Sécu (100 %) est
+  implicite, les mentions du courrier la rappellent. Un « 100 % » seul (Rev 1) ou « 100 % BR » (FLEXIA, APICIL)
+  reste tel quel : il n'y a pas de forfait à isoler. Modifié **dans la page**, donc partout — tableau, image
+  WhatsApp, courrier, `garanties.json`.
 - **Assurés** : l'adhérent n'est jamais repris en conjoint ni en enfant ; un mineur est toujours un enfant ;
   alertes à la génération (conjoint = adhérent, conjoint mineur, enfant ≥ 28 ans).
 - **Alertes ≠ blocage** : à la génération, fenêtre « Informations manquantes » (IBAN, BIC, Sécu, organisme,
