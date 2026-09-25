@@ -1699,9 +1699,13 @@ function renderTG(cols,title,sub,note,single){
       box.querySelectorAll('table tr').forEach(tr2=>{[...tr2.children].forEach((cell,ci)=>{if(ci>0&&!selFi.includes(ci-1)){hidden.push([cell,cell.style.display]);cell.style.display="none";}});});
     }
     const tbl2=box.querySelector('table'); box.style.width=(tbl2.offsetWidth+40)+"px";
+    // L'image ne dépasse jamais ~2000 px de large : API SANTÉ, à 11 formules, sortait en
+    // 3392 px et 1 Mo — trop lourd pour le dépôt CRM (1,36 Mo une fois encodé) et illisible
+    // dans WhatsApp, qui la réduit à la largeur de l'écran. Cinq colonnes gardent le ×2.
+    const scale=Math.min(2,Math.max(1,2000/(tbl2.offsetWidth+40)));
     let canvas;
     try{
-      canvas=await html2canvas(box,{scale:2,backgroundColor:"#ffffff",ignoreElements:el=>el.classList&&(el.classList.contains('close')||el.classList.contains('tgactions')||el.classList.contains('rectip')||el.classList.contains('star'))});
+      canvas=await html2canvas(box,{scale:scale,backgroundColor:"#ffffff",ignoreElements:el=>el.classList&&(el.classList.contains('close')||el.classList.contains('tgactions')||el.classList.contains('rectip')||el.classList.contains('star'))});
     }finally{hidden.forEach(h2=>{h2[0].style.display=h2[1];});box.classList.remove("capwide");box.style.width="";if(wrap2)wrap2.style.cssText=savedWrap;}
     const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
     const fname='garanties_'+f.label.replace(/[^\wÀ-ÿ]+/g,'_')+'.png';
@@ -1891,9 +1895,7 @@ function offreTxt(r,full){
   let s=("• "+f.label+" "+r.formule).replace(/\b(\S+) \1\b/,"$1")+" : "+eur(r.total)+" par mois";
   if(full){
     const lines=[];
-    // Pas de ligne « indemnités journalières » dans le courrier : hors sujet pour
-  // comparer des complémentaires (Fabrice, 25/09/2026). Le tableau de la page la garde.
-  for(const [lab,src] of TGROWS){
+    for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
       let v;
       if(src.startsWith("x:")){const k2=src.slice(2);v=(e[k2]&&e[k2][r.fi]!==undefined)?e[k2][r.fi]:"—";}
       else v=(f[src]&&f[src][r.fi]!==undefined)?f[src][r.fi]:"—";
@@ -2214,7 +2216,9 @@ const EXPEDITEURS=[["fcohen@santeo.net","Fabrice Cohen"],["sandra@santeo.net","S
 // sont cliquables — une image ne l'est jamais.
 function mailTableau(cols){
   const lignes=[];
-  for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
+  // Pas de ligne « indemnités journalières » dans le courrier : hors sujet pour
+  // comparer des complémentaires (Fabrice, 25/09/2026). Le tableau de la page la garde.
+  for(const [lab,src] of TGROWS){
     lignes.push([lab,cols.map(c=>String(Tableau.valeur(GAR,c.key,c.fi,src)||"—"))]);
   }
   const colonnes=cols.map(c=>{

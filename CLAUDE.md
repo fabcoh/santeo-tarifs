@@ -23,6 +23,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   commit avec `index.html`. Ils sont servis par GitHub Pages : `https://fabcoh.github.io/santeo-tarifs/src/…`.
 - **L'image du tableau reste une capture** : la page avec html2canvas, un serveur avec un navigateur sans
   écran (Playwright) sur `Tableau.document(...)`. Aucune image identique n'est possible sans moteur de rendu.
+  **Sa largeur est plafonnée à ~2000 px** : `scale = min(2, 2000 / largeur du tableau)`. Cinq colonnes
+  (Mutuelle Verte : 1996 px, 715 ko) gardent le ×2 ; API SANTÉ, à **onze formules**, sortait en 3392 px et
+  1 Mo — 1,36 Mo une fois encodé en base64 pour le dépôt CRM, et une vignette illisible dans WhatsApp
+  (mesuré le 25/09/2026). Pour tester la capture en local : `npm install html2canvas@1.4.1` dans le
+  scratchpad, puis `addScriptTag` — cdnjs est bloqué depuis une session.
 - `build.py` fabrique `dist/` : `index.html` (hébergé, `HOSTED=true`, adhésion derrière code), `clients.html`,
   `crm-public.html`, `adhesion-privee.html`, `comparateur-claude.html`. Il tourne depuis la racine ou depuis `src/`.
 - **Publication = pousser `src/comparateur.html` sur `main`** : l'Action `.github/workflows/build.yml`
@@ -396,8 +401,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   disposition du comparateur historique, dans nos couleurs. Le bouton est en **9 px**, chaque ligne en
   `white-space:nowrap` : deux lignes toujours, jamais trois, même à cinq colonnes sous Apple Mail.
   **Pas de ligne « Indemnités journalières hospitalisation »** dans le courrier : `mailTableau` ne l'ajoute
-  plus et le relais l'écarte par son libellé — hors sujet pour comparer des complémentaires ; la page, elle,
-  la garde. **Plus de ligne « Toute l'équipe Santéo »** sous le conseiller.
+  plus et le relais l'écarte par son libellé — hors sujet pour comparer des complémentaires ; la page et le
+  texte WhatsApp (`offreTxt`), eux, la gardent. **Piège** : `offreTxt` et `mailTableau` ouvrent la même
+  boucle `for(const [lab,src] of [["Indemnités…","ij"]].concat(TGROWS))` ; un remplacement « première
+  occurrence » tombe sur `offreTxt`, qui vient avant. C'est arrivé le 25/09, corrigé le jour même. **Plus de ligne « Toute l'équipe Santéo »** sous le conseiller.
   Le **sous-titre de source** (« AVENIR M. · MCCI · synthèse d'après le tableau de garantie officiel… »)
   n'est plus affiché : la même mention figure déjà au pied, formule par formule. Le relais accepte toujours
   `soustitre`, il ne l'imprime plus.
