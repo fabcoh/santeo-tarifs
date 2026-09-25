@@ -427,8 +427,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   reçues »** avec les fichiers en pièces jointes. **Les pièces ne sont jamais conservées sur le serveur** :
   transmises à Mailgun puis effacées. Les photos sont réduites dans le navigateur (1600 px, JPEG) avant
   l'envoi — l'hébergement OVH plafonne un fichier (`upload_max_filesize`, lisible sur `interet.php` sans
-  paramètre). Sur les deux pages, « Vous avez une question avant de souscrire ? » : **WhatsApp vers le mobile
-  du conseiller** (celui de `santeo-mail-config.php`) et le **01 53 19 86 46** du CRM.
+  paramètre). En bas des deux pages, deux lignes simples : « Vous avez une question avant de souscrire ? »
+  suivi de l'**icône WhatsApp officielle et du 01 53 19 86 36**, qui ouvre WhatsApp, puis « Besoin d'un
+  renseignement ? **01 53 19 86 36** » en noir, qui lance l'appel. **Un seul numéro, la ligne du CRM**, pour les
+  deux (Fabrice, 25/09/2026 — le 86 46 cité la veille et le 86 34 vu dans l'en-tête du CRM ne sont pas les bons).
   Les deux mails vont au **conseiller expéditeur du courrier**, copie `fcohen@` ; `Reply-To` = le prospect ;
   même compte Mailgun, même `santeo-mail-config.php` — **aucune clé nouvelle**. 20 envois/heure/IP.
   **Le corps reprend la forme des demandes de prospect du CRM** : « Nouvelle demande de prospect
