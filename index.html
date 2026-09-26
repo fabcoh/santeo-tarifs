@@ -361,7 +361,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-26T18:02:02Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T18:02:02Z</div>
+  <div id="buildstamp" data-build="2026-09-26T18:11:02Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T18:11:02Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2308,18 +2308,23 @@ function renderTG(cols,title,sub,note,single){
         // part seule : jamais de blocage.
         let mailMsg="", attente=1200;
         const dest=String((PR&&PR.email)||"").trim();
-        if(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(dest)){
+        const tgm=mailTableau(cols), cleM=envoiCle(dest,tgm), dejaM=envoiRecent(cleM);
+        const adrOk=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(dest);
+        // Le même comparatif est déjà parti à cette adresse il y a moins de 10 minutes : l'image est
+        // déposée, le mail n'est pas renvoyé (« Envoyer par mail » permet de le renvoyer, après confirmation).
+        if(adrOk&&dejaM){mailMsg=" · mail déjà envoyé à "+dest+" à "+envoiHeure(dejaM)+", pas renvoyé";attente=3500;}
+        else if(adrOk){
           btn.textContent="⏳ Mail…";
           try{
             let exp=EXPEDITEURS[0][0];
             try{const m=localStorage.getItem("santeo_exp");if(m&&EXPEDITEURS.some(e=>e[0]===m))exp=m;}catch(_){}
             const t=el=>{const e=box.querySelector(el);return e?e.textContent.trim():"";};
             const rp=await fetch(MAIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},
-              body:JSON.stringify(corpsMail({tg:mailTableau(cols),PR,tetes:{entete:t('.tghdr'),soustitre:t('.src')},dest,exp,b64,
+              body:JSON.stringify(corpsMail({tg:tgm,PR,tetes:{entete:t('.tghdr'),soustitre:t('.src')},dest,exp,b64,
                 prov:(PR&&PR.provenance)||"santeo.net",objet:"Votre offre de mutuelle santé",copie:true}))});
             const d=await rp.json().catch(()=>null);
             if(rp.ok&&d&&d.envoye){
-              mailMsg=" · mail envoyé à "+dest;
+              mailMsg=" · mail envoyé à "+dest; envoiNote(cleM);
               const cp=await copieCRM(d);
               mailMsg+=cp.ok?", "+cp.txt:" · ⚠ "+cp.txt; if(!cp.ok)attente=5000;
             } else {mailMsg=" · ⚠ mail non envoyé : "+((d&&d.erreur)||("HTTP "+rp.status));attente=5000;}
@@ -2853,6 +2858,18 @@ function bandeauOk(texte){
   setTimeout(()=>{b.style.opacity="0";},3200); setTimeout(()=>b.remove(),3700);
 }
 // autre = true : petite fenêtre « autre destinataire » — même courrier, adresse saisie à la main.
+// Anti-doublon (Fabrice, 26/09/2026 : deux courriers identiques partis à la même minute) : le même
+// comparatif — mêmes formules — au même destinataire dans les 10 minutes n'est pas renvoyé sans le
+// dire. Retenu sur l'appareil (l'onglet ↗ compris), et en mémoire si le navigateur refuse le stockage.
+const DOUBLON_MS=10*60*1000, ENVOIS={};
+function envoiCle(dest,tg){return String(dest).trim().toLowerCase()+"|"+tg.colonnes.map(c=>c.key+"|"+c.fi).join(",");}
+function envoisLus(){let m={};try{m=JSON.parse(localStorage.getItem("santeo_envois")||"{}")||{};}catch(_){}
+  return Object.assign(m,ENVOIS);}
+function envoiRecent(cle){const t=envoisLus()[cle];return (t&&Date.now()-t<DOUBLON_MS)?t:0;}
+function envoiNote(cle){const m=envoisLus(),now=Date.now();
+  for(const k in m)if(now-m[k]>DOUBLON_MS)delete m[k];
+  m[cle]=ENVOIS[cle]=now; try{localStorage.setItem("santeo_envois",JSON.stringify(m));}catch(_){}}
+function envoiHeure(t){const d=new Date(t);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");}
 function mailFenetre(blob,tg,PR,tetes,autre){
   const offres=tg.colonnes;
   let expChoisi=EXPEDITEURS[0][0];
@@ -2888,6 +2905,7 @@ function mailFenetre(blob,tg,PR,tetes,autre){
   const q=id=>ov.querySelector("#"+id), v=id=>{const e=q(id);return e?e.value.trim():"";};
   const bok=q("melok"), msg=q("melmsg");
   if(autre)setTimeout(()=>{try{q("m_dest").focus();}catch(e){}},50);
+  let renvoiOk="";
   bok.addEventListener("click",async()=>{
     const dest=v("m_dest"), exp=v("m_exp");
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(dest)){
@@ -2896,6 +2914,14 @@ function mailFenetre(blob,tg,PR,tetes,autre){
       q("m_dest").focus(); return;
     }
     q("m_dest").classList.remove("ko");
+    // Déjà parti il y a moins de 10 minutes : on le dit, un second clic renvoie quand même.
+    const cle=envoiCle(dest,tg), deja=envoiRecent(cle);
+    if(deja&&renvoiOk!==cle){
+      renvoiOk=cle;
+      msg.innerHTML='<span class="dvwarn">Ce comparatif est déjà parti à '+dvEch(dest)+' à '+envoiHeure(deja)
+        +' (il y a '+Math.max(1,Math.round((Date.now()-deja)/60000))+' min). Cliquez à nouveau pour le renvoyer.</span>';
+      return;
+    }
     try{localStorage.setItem("santeo_exp",exp);}catch(e){}
     bok.disabled=true; const vieux=bok.textContent; bok.textContent="Envoi…";
     msg.textContent="Envoi en cours…";
@@ -2910,7 +2936,7 @@ function mailFenetre(blob,tg,PR,tetes,autre){
           +((d&&d.detail)?'<div style="color:var(--muted);margin-top:5px">'+dvEch(d.detail)+'</div>':"");
         bok.disabled=false; bok.textContent=vieux; return;
       }
-      bok.textContent="Envoyé";
+      bok.textContent="Envoyé"; envoiNote(cle);
       msg.innerHTML='<b>Comparatif envoyé à '+dvEch(dest)+'.</b>'
         +'<div style="color:var(--muted);margin-top:5px">Copie cachée au conseiller et à la direction.'
         +(window.CRMLINK?' Dépôt de la copie dans le CRM…':'')+'</div>';
