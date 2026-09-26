@@ -192,6 +192,8 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox.capwide thead th{font-size:14.5px}
 #tgbox.capwide h2{font-size:21px}
 #tgbox.capwide .src{display:block;font-size:13px}
+/* Une image n'est pas cliquable : les liens des documents (et leur tiret) n'y figurent pas. */
+#tgbox.capwide .tglim .tgdoc,#tgbox.capwide .tglim .tgsep{display:none}
 #tgbox.capwide .foot{font-size:13px;line-height:1.55}
 .f input,.f select{font-weight:800 !important;color:var(--ink)}
 #reload{position:fixed;top:10px;right:10px;z-index:50;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--accent);font-size:19px;line-height:1;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center}
@@ -355,7 +357,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-26T07:47:08Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T07:47:08Z</div>
+  <div id="buildstamp" data-build="2026-09-26T07:56:03Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T07:56:03Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -786,8 +788,9 @@ function pied(G,cols,note,reco){
     const liens=documents(G,x.key,x.fi)
       .map(d=>'<a class="tgdoc" href="'+d.url+'" target="_blank" rel="noopener">'+d.libelle+'</a>')
       .join(' <span class="tgsep">·</span> ');
-    const lim=limites(G,x.key,x.fi);
     const nr=g.resp===false?'<b class="tgnr">Contrat NON responsable.</b> ':'';
+    // Les limites de certaines gammes commencent déjà par la mention : on ne la répète pas.
+    const lim=nr?String(limites(G,x.key,x.fi)||"").replace(/^\s*Contrat NON responsable\.\s*/i,""):limites(G,x.key,x.fi);
     if(!liens&&!lim&&!nr) return "";
     return '<div class="tglim"><b>'+nomComplet(G,x.key,x.fi)+'</b>'
       +(liens?' <span class="tgsep">—</span> '+liens:"")
