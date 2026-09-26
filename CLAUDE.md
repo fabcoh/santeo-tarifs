@@ -497,10 +497,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   ouvrir le filtre à `drive.google.com`, qui héberge les fichiers de n'importe qui.
   **Ces documents sont ceux des salariés.** Chez Avenir, **Cap Evolution TNS est un autre produit** (autre
   caisse, autre kit — Fabrice, 26/09/2026 ; le bulletin propose ☐ Cap Evolution / ☐ Cap Evolution TNS).
-  `DOCS.CAPEVO_TNS` porte ses documents ; **vide tant qu'ils ne sont pas reçus**, il n'affiche rien plutôt que
-  les documents salariés. `Tableau.documents(G, key, fi, reg)` et `Tableau.pied(…, reg)` prennent le régime
+  `DOCS.CAPEVO_TNS` porte ses documents (reçus le 26/09/2026) : `capevo_tns_tg_2026.pdf` (13 p., « ACCÈS TNS…
+  SÉRÉNITÉ TNS », 04/2024) et `capevo_tns_notice_2026.pdf` (kit TNS, 81 p., notice « EVO PRO et CAP TNS ») ; l'IPID
+  est **commun**, millésime 2024 (`capevo_ipid_2026.pdf`, qui remplace l'IPID 2023 encore chargé des niveaux ZEN).
+  **Garanties TNS = garanties salariés**, chiffre pour chiffre (comparaison ligne à ligne des deux tableaux) :
+  seuls changent des libellés (MonPsy, Médecin direct, actes de prévention). Le **bulletin d'adhésion** est le
+  même `bulletin_avenir_2026.pdf` : la page coche `EVO TNS` au lieu de `EVO SAL` pour un TNS. Le kit TNS n'a
+  aucun champ de formulaire. Une entrée `CLE_TNS` vide n'afficherait rien plutôt que les documents salariés. `Tableau.documents(G, key, fi, reg)` et `Tableau.pied(…, reg)` prennent le régime
   (`regimeActuel()` dans la page, `TNS` ou `TNSRL`) ; `interet.php` fait de même avec le régime du jeton.
-  Les **garanties** TNS restent celles des salariés dans le comparateur : à vérifier sur le tableau TNS.
 - **Ni bandeau ni pied par formule** (décision de Fabrice, 25/09/2026) : le courrier commence par « Bonjour »,
   sans le cartouche SANTÉO / ORIAS en tête, et les limites par formule n'y figurent plus — trop longues, elles
   faisaient cinq paragraphes identiques sous un tableau Mutuelle Verte. Elles restent dans la page et dans le
