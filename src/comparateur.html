@@ -173,6 +173,10 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox td.reco,#tgbox th.reco{background:var(--best);border-left:2px solid var(--warn);border-right:2px solid var(--warn)}
 #tgbox thead th.reco{border-top:2px solid var(--warn)}
 #tgbox tbody tr:last-child td.reco{border-bottom:2px solid var(--warn)}
+/* Lignes mises en avant (clic sur le libellé) : fond jaune pâle et valeurs en gras, dans la fenêtre et l'image. */
+#tgbox tbody td:first-child{cursor:pointer}
+#tgbox tbody tr.avant td{background:rgba(255,196,0,.22);font-weight:800}
+#tgbox tbody tr.avant td:first-child{box-shadow:inset 4px 0 0 var(--warn)}
 #tgbox .recolbl{display:block;font:800 10.5px 'Archivo',sans-serif;letter-spacing:.03em;color:var(--warn);margin-bottom:2px;text-transform:none}
 #tgbox .rectip{font-size:11px;color:var(--muted);margin:-4px 0 8px}
 #tgbox .star{display:block;font-size:16px;line-height:1;color:var(--muted);opacity:.55;margin-bottom:2px}
@@ -1634,6 +1638,7 @@ function showTGSel(){
 }
 // cols = [{key,fi}] ; single = clé de gamme si tableau mono-gamme (sinon null)
 var RECO=null; // formule conseillée : "cle|indice"
+const LIGNES_AVANT=new Set(); // libellés des lignes mises en avant dans le tableau de garantie
 function logoHTML(key){ return Tableau.logo(GAR,key); }
 // Bas du tableau : les atouts de la formule marquée de l'étoile — voir src/tableau.js.
 function tgFoot(cols,note){ return Tableau.pied(GAR,cols,note,RECO,regimeActuel()); }
@@ -1671,6 +1676,18 @@ function renderTG(cols,title,sub,note,single){
     if(!a)return;
     ev.preventDefault();
     showDoc(a.textContent.trim(),a.getAttribute('href'));
+  });
+  // Mise en avant d'une ou plusieurs lignes (orthodontie, prothèses…) : clic sur le libellé. Retenue le temps
+  // de la page, reprise dans l'image et dans le courrier (mailTableau).
+  ov.querySelectorAll('#tgbox tbody tr').forEach(tr=>{
+    const td=tr.firstElementChild; if(!td)return;
+    const lab=td.textContent.trim();
+    td.title="Mettre cette ligne en avant (cliquer à nouveau pour l\u2019enlever)";
+    tr.classList.toggle('avant',LIGNES_AVANT.has(lab));
+    td.addEventListener('click',()=>{
+      LIGNES_AVANT.has(lab)?LIGNES_AVANT.delete(lab):LIGNES_AVANT.add(lab);
+      tr.classList.toggle('avant',LIGNES_AVANT.has(lab));
+    });
   });
   ov.querySelectorAll('#tgbox thead th.pick').forEach(th=>th.addEventListener('click',()=>{
     const c=cols[+th.dataset.ci], id=c.key+"|"+c.fi;
@@ -2270,7 +2287,7 @@ function mailTableau(cols){
   // Pas de ligne « indemnités journalières » dans le courrier : hors sujet pour
   // comparer des complémentaires (Fabrice, 25/09/2026). Le tableau de la page la garde.
   for(const [lab,src] of TGROWS){
-    lignes.push([lab,cols.map(c=>String(Tableau.valeur(GAR,c.key,c.fi,src)||"—"))]);
+    lignes.push([lab,cols.map(c=>String(Tableau.valeur(GAR,c.key,c.fi,src)||"—")),LIGNES_AVANT.has(lab)?1:0]);
   }
   const colonnes=cols.map(c=>{
     const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi), g=F[c.key];

@@ -126,6 +126,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **La capture ne porte pas ces liens** (Fabrice, 26/09/2026) : `#tgbox.capwide .tglim .tgdoc` et `.tgsep`
   sont cachés pendant la capture — nom de la formule et limites seulement. La fenêtre, elle, les garde.
   « Contrat NON responsable. » n'est plus écrit deux fois quand les limites de la gamme commencent déjà par lui.
+  **Mise en avant de lignes** (Fabrice, 26/09/2026) : un clic sur le libellé d'une ligne (orthodontie, prothèses…)
+  la surligne — fond jaune pâle, valeurs en gras, filet orange à gauche ; second clic pour l'enlever. Plusieurs
+  lignes possibles, retenues le temps de la page (`LIGNES_AVANT`, par libellé). Reprise **dans l'image** et **dans
+  le courrier** : `mailTableau` ajoute un 3ᵉ élément à chaque ligne (`[libellé, valeurs, 1|0]`), que
+  `santeo-mail.php` rend avec le même fond (`#FFF3C4`) ; la version texte marque ces lignes d'un `*`. Un relais
+  plus ancien ignore ce 3ᵉ élément sans erreur.
 - **Filtre par garantie** (panneau ⚖ sur le bord droit) : un seuil minimum par poste (dentaire, implantologie,
   orthodontie remboursée / non remboursée, optique, lentilles, hospitalisation, honoraires, chambre, audio,
   médecines douces) + un **budget mensuel** avec tolérance **+15 %**. Les seuils proposés sont uniquement les
