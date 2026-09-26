@@ -118,6 +118,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   échec ne bloque jamais l'envoi, déjà parti. Hors CRM, `copie` n'est pas demandée. **Dans la copie seulement**,
   le relais intègre les logos en `data:image/png;base64` (le CRM n'affiche aucune image distante) ; le courrier du
   prospect garde `cid:`. Le GET du relais annonce `version` et `copie` : c'est ainsi qu'on vérifie qu'il est à jour.
+  **Anti-doublon** (26/09/2026 — deux courriers identiques reçus à 19:53 par M. CHENEVARIN : « Envoyer par mail » puis
+  « Envoyer dans le CRM », qui envoie aussi le mail) : le même comparatif (mêmes formules) au même destinataire
+  dans les **10 minutes** — `envoiCle`/`envoiRecent`/`envoiNote`, retenu sur l'appareil (`santeo_envois`) — n'est
+  pas renvoyé sans le dire. Fenêtre d'envoi : un premier clic affiche « déjà parti à HH:MM », un second renvoie.
+  « Envoyer dans le CRM » / « 📲 Capture » : l'image est déposée, le mail n'est pas renvoyé (« mail déjà envoyé à
+  HH:MM, pas renvoyé »). Un autre destinataire ou d'autres formules ne sont pas concernés.
   **Après un envoi réussi, les fenêtres se ferment seules** (Fabrice, 26/09/2026) : 1,6 s après « Comparatif
   envoyé », la fenêtre d'envoi et le tableau de garantie (`fermerTableaux()`, `#tgov.tgmain`) disparaissent, et
   un bandeau vert (`bandeauOk`) confirme l'envoi 3 s. Même chose après un dépôt CRM réussi, juste avant le
