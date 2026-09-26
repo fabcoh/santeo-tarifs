@@ -361,7 +361,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-26T11:23:13Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T11:23:13Z</div>
+  <div id="buildstamp" data-build="2026-09-26T18:02:02Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T18:02:02Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2320,11 +2320,8 @@ function renderTG(cols,title,sub,note,single){
             const d=await rp.json().catch(()=>null);
             if(rp.ok&&d&&d.envoye){
               mailMsg=" · mail envoyé à "+dest;
-              if(d.copie){
-                try{await crmDepot({kind:"email",subject:d.copie.objet,from:d.copie.de,to:d.copie.a,date:d.copie.date,html:d.copie.html,text:d.copie.texte});
-                    mailMsg+=", copie dans le CRM";}
-                catch(_){mailMsg+=" (copie non déposée dans le CRM)";attente=4000;}
-              }
+              const cp=await copieCRM(d);
+              mailMsg+=cp.ok?", "+cp.txt:" · ⚠ "+cp.txt; if(!cp.ok)attente=5000;
             } else {mailMsg=" · ⚠ mail non envoyé : "+((d&&d.erreur)||("HTTP "+rp.status));attente=5000;}
           }catch(_){mailMsg=" · ⚠ mail non envoyé : service injoignable";attente=5000;}
         } else {mailMsg=" · mail non envoyé : pas d'adresse";attente=3500;}
@@ -2500,6 +2497,20 @@ async function crmDepot(payload){
     const e=new Error("HTTP "+resp.status+(t?" · "+t:"")); e.status=resp.status; throw e;
   }
   return true;
+}
+// Copie d'un courrier envoyé, déposée dans la conversation du CRM (demande du CRM, 26/09/2026) :
+// tout envoi réussi depuis une page ouverte par le CRM, quel que soit le destinataire. Renvoie la
+// mention à afficher ; un échec ne bloque jamais l'envoi, déjà parti.
+async function copieCRM(d){
+  if(!window.CRMLINK) return {ok:true,txt:""};
+  if(!d||!d.copie) return {ok:false,txt:"copie non déposée dans le CRM (relais sans copie, à mettre à jour)"};
+  try{
+    await crmDepot({kind:"email",subject:d.copie.objet,from:d.copie.de,to:d.copie.a,date:d.copie.date,html:d.copie.html,text:d.copie.texte});
+    return {ok:true,txt:"copie dans le CRM"};
+  }catch(e){
+    const r=(e&&(e.status===401||e.status===403))?"lien du CRM expiré, rouvrez-le depuis la conversation":((e&&e.message)||"CRM injoignable");
+    return {ok:false,txt:"copie non déposée dans le CRM ("+r+")"};
+  }
 }
 // Retour au CRM : on remet la fenêtre d'origine au premier plan, puis on ferme celle-ci.
 function crmBack(){
@@ -2892,19 +2903,25 @@ function mailFenetre(blob,tg,PR,tetes,autre){
       const b64=blob?await new Promise((res,rej)=>{const fr=new FileReader();
         fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);}):"";
       const rp=await fetch(MAIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(corpsMail({tg,PR,tetes,dest,exp,b64,prov:v("m_prov"),objet:v("m_obj")}))});
+        body:JSON.stringify(corpsMail({tg,PR,tetes,dest,exp,b64,prov:v("m_prov"),objet:v("m_obj"),copie:!!window.CRMLINK}))});
       const txt=await rp.text(); let d=null; try{d=JSON.parse(txt);}catch(e){}
       if(!rp.ok){
         msg.innerHTML='<span class="dvwarn">'+dvEch((d&&d.erreur)?d.erreur:"L'envoi a échoué (HTTP "+rp.status+").")+'</span>'
           +((d&&d.detail)?'<div style="color:var(--muted);margin-top:5px">'+dvEch(d.detail)+'</div>':"");
         bok.disabled=false; bok.textContent=vieux; return;
       }
-      msg.innerHTML='<b>Comparatif envoyé à '+dvEch(dest)+'.</b>'
-        +'<div style="color:var(--muted);margin-top:5px">Copie cachée au conseiller et à la direction.</div>';
       bok.textContent="Envoyé";
+      msg.innerHTML='<b>Comparatif envoyé à '+dvEch(dest)+'.</b>'
+        +'<div style="color:var(--muted);margin-top:5px">Copie cachée au conseiller et à la direction.'
+        +(window.CRMLINK?' Dépôt de la copie dans le CRM…':'')+'</div>';
+      // Ouverte par le CRM, la page y dépose la copie du courrier, quel que soit le destinataire.
+      const cp=await copieCRM(d);
+      if(cp.txt) msg.innerHTML='<b>Comparatif envoyé à '+dvEch(dest)+'.</b>'
+        +'<div style="color:var(--muted);margin-top:5px">Copie cachée au conseiller et à la direction.</div>'
+        +'<div style="margin-top:5px"'+(cp.ok?'':' class="dvwarn"')+'>'+(cp.ok?'✅ ':'⚠ ')+dvEch(cp.txt[0].toUpperCase()+cp.txt.slice(1))+'.</div>';
       // Envoi fait : les fenêtres se referment seules (Fabrice, 26/09/2026) — la fenêtre d'envoi et le
-      // tableau de garantie ; un bandeau confirme l'envoi quelques secondes.
-      setTimeout(()=>{ov.remove();fermerTableaux();bandeauOk("✅ Comparatif envoyé à "+dest);},1600);
+      // tableau de garantie ; un bandeau confirme l'envoi quelques secondes. Un avertissement reste lisible plus longtemps.
+      setTimeout(()=>{ov.remove();fermerTableaux();bandeauOk("✅ Comparatif envoyé à "+dest+(cp.txt?" · "+(cp.ok?"":"⚠ ")+cp.txt:""));},cp.ok?1600:5000);
     }catch(e){
       msg.innerHTML='<span class="dvwarn">Service injoignable. Le message n\'est pas parti : réessayez.</span>';
       bok.disabled=false; bok.textContent=vieux;
