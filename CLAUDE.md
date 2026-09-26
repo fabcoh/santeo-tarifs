@@ -159,6 +159,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `resultats`, `results`, `fiches`, `items`, `data`, `liste`, `prospects`, ou le premier tableau d'objets de la
   réponse. Avant, tout objet était pris pour une fiche : « Fiche reçue mais vide ». Ce message affiche
   désormais le diagnostic (adresse appelée, réponse brute) pour voir ce que le CRM a vraiment renvoyé.
+  **Sur un mot seul (« cohen »), le CRM renvoie ses 50 dernières fiches sans filtrer** (constaté le 26/09/2026 ;
+  « cohen marc » filtre bien). La page **trie donc elle-même** toute recherche sans chiffre ni @ : elle ne garde
+  que les fiches dont nom + prénom contiennent chaque mot tapé (sans accents ni casse), dit « Aucune fiche »
+  si rien ne correspond, et prévient quand la réponse atteint 50 fiches (d'autres peuvent manquer). Le vrai
+  correctif est côté CRM : demande transmise à Fabrice pour le Claude du CRM.
 - **Haut de page** : une seule ligne — assuré, conjoint, régime, département/CP, mineurs — les âges retenus
   inscrits sous leur champ en position absolue, pour ne pas pousser la ligne. Le tableau démarre à 136 px
   au lieu de 255 avant ce resserrement. **Options par poste** ouvre une fenêtre par-dessus (`ouvrirOptions`) :
