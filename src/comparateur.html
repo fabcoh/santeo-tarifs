@@ -546,6 +546,9 @@ const DOCS={
   FLEXIA:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/flexia_tg_2026.pdf"},
   SOLENCIA:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/solencia_tg_2026.pdf"},
   CAPEVO:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/capevo_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/capevo_ipid_2026.pdf", "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/capevo_notice_2026.pdf"},
+  // Cap Evolution TNS est un autre produit Avenir, avec ses propres documents (pas encore reçus) :
+  // vide, il n'affiche rien plutôt que les documents des salariés.
+  CAPEVO_TNS:{},
   CAPNR:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/capnr_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/capnr_ipid_2026.pdf", "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/capnr_notice_2026.pdf"},
   REV:{"Tableau de garantie + notice": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_ipid_2026.pdf"},
   RF50:{"Tableau de garantie + notice": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/revoluo_ipid_2026.pdf"},
@@ -588,9 +591,11 @@ const INFO={"APICIL":[["Adhésion", [["Âge d'adhésion", ["16 ans et plus", "16
 // Popup « i » : limites, plafonds et exclusions du poste, pour la formule choisie
 // Documents à proposer pour une formule précise : APICIL publie une plaquette par gamme
 // Équilibre et une seule pour toutes les Sérénité — n'afficher que celle qui la concerne.
+// Régime du haut de page : il choisit les documents des gammes vendues à part aux TNS.
+function regimeActuel(){ const e=document.getElementById("regime"); return e?e.value:"SAL"; }
 function docsDe(r){
   const o={};
-  for(const d of Tableau.documents(GAR,r.key,r.fi)) o[d.libelle]=d.url;
+  for(const d of Tableau.documents(GAR,r.key,r.fi,regimeActuel())) o[d.libelle]=d.url;
   return o;
 }
 
@@ -1629,7 +1634,7 @@ function showTGSel(){
 var RECO=null; // formule conseillée : "cle|indice"
 function logoHTML(key){ return Tableau.logo(GAR,key); }
 // Bas du tableau : les atouts de la formule marquée de l'étoile — voir src/tableau.js.
-function tgFoot(cols,note){ return Tableau.pied(GAR,cols,note,RECO); }
+function tgFoot(cols,note){ return Tableau.pied(GAR,cols,note,RECO,regimeActuel()); }
 function avantagesTG(key,fi){ return Tableau.atouts(GAR,key,fi); }
 function renderTG(cols,title,sub,note,single){
   const multi=cols.some(c=>c.key!==cols[0].key);
@@ -1927,7 +1932,7 @@ function offreTxt(r,full){
     }
     if(lines.length)s+="\n"+lines.join("\n");
     // Une image n'est jamais cliquable : les liens voyagent dans le texte du message.
-    for(const d of Tableau.documents(GAR,r.key,r.fi)) s+="\n   "+d.libelle+" : "+d.url;
+    for(const d of Tableau.documents(GAR,r.key,r.fi,regimeActuel())) s+="\n   "+d.libelle+" : "+d.url;
     const lim=Tableau.limites(GAR,r.key,r.fi);
     if(lim) s+="\n   À noter : "+lim;
   }
@@ -2250,7 +2255,7 @@ function mailTableau(cols){
     return {key:c.key, fi:c.fi, gamme:g.label, formule:g.names[c.fi], nom:Tableau.nomComplet(GAR,c.key,c.fi),
             logo:g.ins?("logo_"+g.ins+".png"):"", compagnie:(COMP[c.key]||""),
             prix:r?eur(r.total):"", reco:RECO===(c.key+"|"+c.fi),
-            docs:Tableau.documents(GAR,c.key,c.fi), limites:nr+(lim||"")};
+            docs:Tableau.documents(GAR,c.key,c.fi,regimeActuel()), limites:nr+(lim||"")};
   });
   return {colonnes:colonnes,lignes:lignes};
 }

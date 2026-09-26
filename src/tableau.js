@@ -121,8 +121,12 @@ function libelleDoc(k){
 // est indexé sur la formule, pour les documents qui en dépendent — APICIL publie une
 // plaquette par gamme Équilibre et une seule pour toutes les Sérénité, et l'IPID de
 // La Mutuelle Verte ne couvre que GCI 500. Un document absent n'apparaît pas.
-function documents(G,key,fi){
-  const d=(G.documents||{})[key]; if(!d) return [];
+// reg (facultatif) : régime du prospect. Une gamme dont les TNS relèvent d'un autre produit
+// (Cap Evolution TNS chez Avenir) porte une entrée « CLE_TNS » ; vide, elle ne publie aucun
+// document plutôt que ceux des salariés — jamais de lien vers un document qui ne la concerne pas.
+function documents(G,key,fi,reg){
+  const D=G.documents||{};
+  const d=(/^TNS/.test(reg||"")&&D[key+"_TNS"]!==undefined)?D[key+"_TNS"]:D[key]; if(!d) return [];
   const out=[];
   for(const k of Object.keys(d)){
     const v=d[k], url=Array.isArray(v)?v[fi]:v;
@@ -141,12 +145,12 @@ function limites(G,key,fi){
 // Bas du tableau : ce que le prospect doit voir de chaque formule comparée — ses
 // documents contractuels et ce qui borne ses remboursements. Sans formule conseillée,
 // la note de gamme fournie par l'appelant reste affichée.
-function pied(G,cols,note,reco){
+function pied(G,cols,note,reco,reg){
   const c=cols.find(x=>estReco(reco,x));
   const av=c?atouts(G,c.key,c.fi):"";
   const blocs=cols.map(x=>{
     const g=G.gammes[x.key]; if(!g) return "";
-    const liens=documents(G,x.key,x.fi)
+    const liens=documents(G,x.key,x.fi,reg)
       .map(d=>'<a class="tgdoc" href="'+d.url+'" target="_blank" rel="noopener">'+d.libelle+'</a>')
       .join(' <span class="tgsep">·</span> ');
     const nr=g.resp===false?'<b class="tgnr">Contrat NON responsable.</b> ':'';

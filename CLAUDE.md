@@ -495,6 +495,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   désormais dans `docs/` (26/09/2026) — `capevo_tg_2026.pdf` (12 p.), `capevo_ipid_2026.pdf` (2 p., millésime
   2023) et `capevo_notice_2026.pdf`, qui est le **kit complet** (67 p.), la « notice » selon Fabrice. Ne jamais
   ouvrir le filtre à `drive.google.com`, qui héberge les fichiers de n'importe qui.
+  **Ces documents sont ceux des salariés.** Chez Avenir, **Cap Evolution TNS est un autre produit** (autre
+  caisse, autre kit — Fabrice, 26/09/2026 ; le bulletin propose ☐ Cap Evolution / ☐ Cap Evolution TNS).
+  `DOCS.CAPEVO_TNS` porte ses documents ; **vide tant qu'ils ne sont pas reçus**, il n'affiche rien plutôt que
+  les documents salariés. `Tableau.documents(G, key, fi, reg)` et `Tableau.pied(…, reg)` prennent le régime
+  (`regimeActuel()` dans la page, `TNS` ou `TNSRL`) ; `interet.php` fait de même avec le régime du jeton.
+  Les **garanties** TNS restent celles des salariés dans le comparateur : à vérifier sur le tableau TNS.
 - **Ni bandeau ni pied par formule** (décision de Fabrice, 25/09/2026) : le courrier commence par « Bonjour »,
   sans le cartouche SANTÉO / ORIAS en tête, et les limites par formule n'y figurent plus — trop longues, elles
   faisaient cinq paragraphes identiques sous un tableau Mutuelle Verte. Elles restent dans la page et dans le
