@@ -55,8 +55,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   certificat de radiation ; GCI 500 : délais de stage de 3 à 10 mois) + Mutuelle Verte Assistance 2025.
   `DOCS.MV.Notice` est indexé sur la formule, comme l'IPID. Relecture ligne à ligne du nouveau tableau contre
   le comparateur : **une seule erreur, corrigée** — GCI 500 honoraires hors OPTAM en soins courants = **500 %**
-  (et non 200 %) ; en hospitalisation hors OPTAM, 200 % est juste. Le poste optique du comparateur reprend
-  les **verres mixtes** 16 ans et plus (150 / 250 / 300 / 350 €), pas les verres simples (100 / 150 / 200 / 250 €).
+  (et non 200 %) ; en hospitalisation hors OPTAM, 200 % est juste. Le poste optique reprend désormais,
+  comme Cap Évolution, le forfait **2 verres simples** 16 ans et plus : 100 % / 100 / 150 / 200 / 250 € (Fabrice,
+  26/09/2026 — c'étaient les verres mixtes, 150 / 250 / 300 / 350 €, qui flattaient la Mutuelle Verte).
   Manquent encore : IPID et notice de MCCINOVA, FLEXIA, SOLENCIA (gammes MCCI, pas encore vendues),
   notice de LPS HOSPI.
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
@@ -578,7 +579,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - Autres compagnies : aucune n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
-- Harmonisation optique FLEXIA / SOLENCIA (et Mutuelle Verte : verres mixtes ou simples ?).
+- Harmonisation optique FLEXIA / SOLENCIA (base « 2 verres simples », comme Cap Évolution et Mutuelle Verte).
 
 ## Tests
 
