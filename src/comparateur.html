@@ -1939,22 +1939,15 @@ function crmBack(){
   try{ window.close(); }catch(e){}
   setTimeout(()=>{ if(!document.hidden) alert("Le document est déposé dans la conversation. Fermez cet onglet pour revenir au CRM."); },700);
 }
-async function doDepotText(){
-  const bt=document.getElementById("sbwa"); if(!bt||bt.disabled)return;
-  const old=bt.textContent; bt.disabled=true; bt.textContent="⏳ Dépôt…";
-  try{
-    await crmDepot({kind:"text",text:sendText()});
-    bt.textContent="✅ Déposé";
-    let back=document.getElementById("sbback");
-    if(!back){back=document.createElement("button");back.id="sbback";back.textContent="↩ Revenir au CRM";
-      back.style.cssText="border:0;border-radius:9px;background:#fff;color:#12233d;padding:8px 11px;font:800 13px 'Archivo',sans-serif;cursor:pointer";
-      back.addEventListener("click",crmBack);bt.after(back);}
-    setTimeout(crmBack,900);   // bascule automatique vers le CRM
-    setTimeout(()=>{bt.disabled=false;bt.textContent=old;},4000);
-  }catch(e){bt.disabled=false;bt.textContent="❌ Réessayer";setTimeout(()=>{bt.textContent=old;},3000);}
+// Raccourci de la barre flottante : ouvre le tableau des formules cochées (étoile comprise)
+// et y déclenche l'action voulue — le dépôt ou le courrier partent tels que le tableau les produit.
+function viaTableau(action){
+  showTGSel();
+  const ov=[...document.querySelectorAll('#tgov')].pop();
+  const b=ov&&ov.querySelector('button[data-a="'+action+'"]'); if(b)b.click();
 }
 function doWhatsApp(){
-  if(window.CRMLINK){doDepotText();return;}
+  if(window.CRMLINK){viaTableau("crm");return;}   // dépôt de la capture du tableau, comme depuis le tableau
   const t=sendText();
   try{navigator.clipboard.writeText(t)}catch(e){}
   window.open("https://wa.me/?text="+encodeURIComponent(t),"_blank","noopener");
@@ -1982,11 +1975,12 @@ function updateSendBar(){
     bar.querySelector("#sbtg").addEventListener("click",showTGSel);
     bar.querySelector("#sbwa").addEventListener("click",doWhatsApp);
     // « Email » envoie le courrier au prospect : il passe par le tableau, dont le courrier reprend les colonnes.
-    bar.querySelector("#sbml").addEventListener("click",()=>{showTGSel();const b=document.querySelector('#tgov button[data-a="mel"]');if(b)b.click();});
+    bar.querySelector("#sbml").addEventListener("click",()=>viaTableau("mel"));
     bar.querySelector("#sbx").addEventListener("click",()=>{SENDSEL.clear();updateSendBar();calc();});
   }
   bar.querySelector("#sbcount").textContent=SENDSEL.size+" formule"+(SENDSEL.size>1?"s":"");
-  if(window.CRMLINK){const w=bar.querySelector("#sbwa");if(!w.disabled&&!/Déposé|Dépôt|Réessayer/.test(w.textContent))w.textContent="📲 Déposer dans le CRM";}
+  if(window.CRMLINK){const w=bar.querySelector("#sbwa");w.textContent="📲 Capture → WhatsApp";
+    w.title="Déposer la capture du tableau de garantie (formules cochées, ⭐ comprise) dans la conversation WhatsApp du CRM";}
 }
 
 // ---- Filtre par niveau de garantie -------------------------------------------

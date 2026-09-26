@@ -90,7 +90,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Plus de bouton Télécharger ni de consignes au-dessus du tableau : la ligne « synthèse d'après le tableau de
   garantie officiel… » est cachée à l'écran mais **reste dans l'image** (`.capwide .src`), la consigne de
   l'étoile est son infobulle. Le bouton **✉️ Email** de la barre flottante ouvre le tableau et la fenêtre
-  « Envoyer par mail » — plus de `mailto:`. Pas de second aperçu.
+  « Envoyer par mail » — plus de `mailto:`. Venu du CRM, le bouton vert de cette barre devient
+  **📲 Capture → WhatsApp** : il ouvre le tableau des formules cochées (⭐ comprise) et y déclenche le dépôt
+  de la capture (`viaTableau("crm")`), en un clic. L'ancien dépôt en texte (`doDepotText`) est retiré. Pas de second aperçu.
   **Bas du tableau**, dans cet ordre :
   1. les atouts de la formule marquée de l'⭐, poste par poste — hospitalisation, honoraires, chambre, dentaire,
      implantologie, orthodontie, optique, lentilles, audio, médecines douces ; les postes sans garantie sont
