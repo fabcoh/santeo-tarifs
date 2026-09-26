@@ -357,7 +357,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-26T08:19:01Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T08:19:01Z</div>
+  <div id="buildstamp" data-build="2026-09-26T08:25:15Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T08:25:15Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1990,7 +1990,9 @@ async function fillAdh(r,ov){
     }
     // Dossiers complets Avenir (bulletin + notices + garanties + règlement) : Cap Évolution (74 p.), Cap NR (75 p.), Talis (55 p.).
     // LPS Hospi : bulletin seul (6 p.) intégré à la page, complété par ses garanties/IPID. Repli sur le bulletin seul si le dossier est injoignable.
-    const DOSSIER={CAPEVO:"bulletin_avenir_2026.pdf",CAPNR:"bulletin_capnr_2026.pdf",TALIS:"bulletin_talis_2026.pdf"}[r.key];
+    // Cap Evolution TNS a son propre dossier (même bulletin, documentation TNS derrière, 87 p.).
+    const tnsDossier=/^TNS/.test(document.getElementById("regime").value);
+    const DOSSIER={CAPEVO:tnsDossier?"bulletin_avenir_tns_2026.pdf":"bulletin_avenir_2026.pdf",CAPNR:"bulletin_capnr_2026.pdf",TALIS:"bulletin_talis_2026.pdf"}[r.key];
     let bytes=null;
     if(DOSSIER){
       for(const u of ["docs/"+DOSSIER,"https://fabcoh.github.io/santeo-tarifs/docs/"+DOSSIER]){
