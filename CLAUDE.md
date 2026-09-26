@@ -48,6 +48,15 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `lps_hospi_2026.pdf`). **La Mutuelle Verte édite deux IPID**, chacun rattaché à ses formules :
   `mv_ipid_gci100_300_2026.pdf` (GCI 100 à 300, « respecte les conditions légales des contrats responsables »)
   et `mv_ipid_gci500_2026.pdf` (GCI 500, « ne respecte pas »). Ils confirment les pastilles du comparateur.
+  **Tableau de garantie et notices Mutuelle Verte (26/09/2026, zip de Fabrice)** : `mv_tg_2026.pdf` est désormais
+  « Garanties Courtage Ind-100-500 », qui porte **les cinq formules** (l'ancien s'arrêtait à GCI 300). La Mutuelle
+  Verte n'édite pas de notice unique : `mv_notice_gci100_300_2026.pdf` et `mv_notice_gci500_2026.pdf` (4 p.
+  chacune) sont **assemblées** — délais de stage de la gamme (GCI 100–300 : prise en charge immédiate avec
+  certificat de radiation ; GCI 500 : délais de stage de 3 à 10 mois) + Mutuelle Verte Assistance 2025.
+  `DOCS.MV.Notice` est indexé sur la formule, comme l'IPID. Relecture ligne à ligne du nouveau tableau contre
+  le comparateur : **une seule erreur, corrigée** — GCI 500 honoraires hors OPTAM en soins courants = **500 %**
+  (et non 200 %) ; en hospitalisation hors OPTAM, 200 % est juste. Le poste optique du comparateur reprend
+  les **verres mixtes** 16 ans et plus (150 / 250 / 300 / 350 €), pas les verres simples (100 / 150 / 200 / 250 €).
   Manquent encore : IPID et notice de MCCINOVA, FLEXIA, SOLENCIA (gammes MCCI, pas encore vendues),
   notice de LPS HOSPI.
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
@@ -569,7 +578,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - Autres compagnies : aucune n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
-- GCI 500 (Mutuelle Verte), harmonisation optique FLEXIA / SOLENCIA.
+- Harmonisation optique FLEXIA / SOLENCIA (et Mutuelle Verte : verres mixtes ou simples ?).
 
 ## Tests
 
