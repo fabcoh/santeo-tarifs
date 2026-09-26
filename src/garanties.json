@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmpkmsd9sl2.js",
+ "genere": "/tmp/tmpv4qp_qka.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -1587,9 +1587,9 @@
    "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/solencia_tg_2026.pdf"
   },
   "CAPEVO": {
-   "Tableau de garantie": "https://drive.google.com/file/d/1_I_J2OVVyU8ho6ACdObVhftg6ia-2w1h/view",
-   "IPID": "https://drive.google.com/file/d/1lFy7NnQ-cKUjndo1qhYjK3yHhkxuljyg/view",
-   "Notice": "https://drive.google.com/file/d/11w23LL6Zg6VdI7iAxagVWyx4zBkGeDwu/view"
+   "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/capevo_tg_2026.pdf",
+   "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/capevo_ipid_2026.pdf",
+   "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/capevo_notice_2026.pdf"
   },
   "CAPNR": {
    "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/capnr_tg_2026.pdf",
