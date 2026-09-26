@@ -40,7 +40,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 
 ## Fichiers `docs/` (chargés à l'exécution par la page)
 
-- `bulletin_avenir_2026.pdf` (Cap Évolution, 74 p.), `bulletin_capnr_2026.pdf` (75 p.), `bulletin_talis_2026.pdf` (55 p.),
+- `bulletin_avenir_2026.pdf` (Cap Évolution, 74 p.), `bulletin_avenir_tns_2026.pdf` (Cap Évolution TNS, 87 p.), `bulletin_capnr_2026.pdf` (75 p.), `bulletin_talis_2026.pdf` (55 p.),
   `bulletin_mv_2026.pdf` (Mutuelle Verte, 22 p.), `bulletin_revoluo_2026.pdf` (24 p.) + `sepa_revoluo_2026.pdf`.
   Formulaires AcroForm remplis côté navigateur avec pdf-lib ; les PDF ont été allégés (pikepdf/qpdf),
   widgets orphelins rattachés, noms de champs en double suffixés `_2`.
@@ -501,9 +501,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   SÉRÉNITÉ TNS », 04/2024) et `capevo_tns_notice_2026.pdf` (kit TNS, 81 p., notice « EVO PRO et CAP TNS ») ; l'IPID
   est **commun**, millésime 2024 (`capevo_ipid_2026.pdf`, qui remplace l'IPID 2023 encore chargé des niveaux ZEN).
   **Garanties TNS = garanties salariés**, chiffre pour chiffre (comparaison ligne à ligne des deux tableaux) :
-  seuls changent des libellés (MonPsy, Médecin direct, actes de prévention). Le **bulletin d'adhésion** est le
-  même `bulletin_avenir_2026.pdf` : la page coche `EVO TNS` au lieu de `EVO SAL` pour un TNS. Le kit TNS n'a
-  aucun champ de formulaire. Une entrée `CLE_TNS` vide n'afficherait rien plutôt que les documents salariés. `Tableau.documents(G, key, fi, reg)` et `Tableau.pied(…, reg)` prennent le régime
+  seuls changent des libellés (MonPsy, Médecin direct, actes de prévention). Le **bulletin d'adhésion** est le même
+  (pages 1–3), mais **le dossier TNS a son propre PDF** : `bulletin_avenir_tns_2026.pdf` (87 p., 123 champs, reçu
+  le 26/09/2026 — bulletin + documentation TNS), chargé par `fillAdh` quand le régime commence par `TNS` ; la
+  page y coche `EVO TNS` au lieu de `EVO SAL`. Les 60 champs que la page remplit existent tous, de même type
+  et mêmes options (vérifié) ; il ajoute des champs non utilisés (IJ hospi, perenity, `NUM ADHERENT`…) et porte
+  `JOUR EFFET ADHESION` en **deux champs de premier niveau** du même nom : pypdf n'en lit qu'un, mais les deux
+  widgets sont bien remplis (PyMuPDF). Le kit TNS seul (81 p.) n'a aucun champ de formulaire. Une entrée `CLE_TNS` vide n'afficherait rien plutôt que les documents salariés. `Tableau.documents(G, key, fi, reg)` et `Tableau.pied(…, reg)` prennent le régime
   (`regimeActuel()` dans la page, `TNS` ou `TNSRL`) ; `interet.php` fait de même avec le régime du jeton.
 - **Ni bandeau ni pied par formule** (décision de Fabrice, 25/09/2026) : le courrier commence par « Bonjour »,
   sans le cartouche SANTÉO / ORIAS en tête, et les limites par formule n'y figurent plus — trop longues, elles
