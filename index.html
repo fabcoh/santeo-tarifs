@@ -360,7 +360,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-26T10:13:57Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T10:13:57Z</div>
+  <div id="buildstamp" data-build="2026-09-26T10:21:48Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T10:21:48Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -3961,12 +3961,23 @@ calc();
       if(r.vide){res.innerHTML='<div class="irow iwarn"><span>Aucune fiche</span><b>'+esc(v)+'</b></div>'+diagHTML();return;}
       if(r.erreur){res.innerHTML='<div class="irow iwarn"><span>Erreur</span><b>'+esc(r.erreur)+'</b></div>'+diagHTML();return;}
       if(r.fiche){remplir(r.fiche);return;}
-      const L=r.liste||[];
-      if(!L.length){res.innerHTML='<div class="irow iwarn"><span>Aucune fiche</span><b>'+esc(v)+'</b></div>';return;}
-      res.innerHTML='<div class="ipost"><h3>'+L.length+' fiches — choisis la bonne</h3>'
+      let L=r.liste||[];
+      // Recherche par nom : on ne garde que les fiches dont le nom ou le prénom contient chaque mot tapé.
+      // Sur un mot seul (« cohen »), le CRM renvoie ses 50 dernières fiches sans filtrer ; la page trie.
+      const recherchenom=!/\d|@/.test(v);
+      let brut=L.length;
+      if(recherchenom){
+        const nz=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase();
+        const mots=nz(v).split(/[^A-Z]+/).filter(Boolean);
+        L=L.filter(f=>{const n=nz([f.nom,f.prenom,f.nomNaissance].filter(Boolean).join(" "));return mots.every(m=>n.includes(m));});
+      }
+      if(!L.length){res.innerHTML='<div class="irow iwarn"><span>Aucune fiche</span><b>'+esc(v)+'</b></div>'
+        +(brut?'<div style="font-size:11.5px;color:var(--muted);margin-top:6px">Le CRM a renvoyé '+brut+' fiches, aucune à ce nom. Essayez nom et prénom.</div>':'');return;}
+      res.innerHTML='<div class="ipost"><h3>'+L.length+(L.length>1?' fiches':' fiche')+' — choisis la bonne</h3>'
+        +((recherchenom&&brut>=50)?'<div style="font-size:11.5px;color:var(--muted);margin:-4px 0 6px">Le CRM limite sa réponse à 50 fiches : d\u2019autres peuvent manquer. Ajoutez le prénom.</div>':'')
         +L.map((f,i)=>'<label class="irow" style="cursor:pointer" data-i="'+i+'"><span><b>'+esc([f.nom,f.prenom].filter(Boolean).join(" "))+'</b>'
           +'<span style="display:block;font-size:11.5px;color:var(--muted)">'
-          +[ISO2FR(f.naissance),f.ville,f.statut,(f.dateCreation?"créée "+ISO2FR(f.dateCreation):"")].filter(Boolean).join(" · ")
+          +[ISO2FR(f.naissance),f.ville,f.statut,(ISO2FR(f.dateCreation)?"créée le "+ISO2FR(f.dateCreation):"")].filter(Boolean).join(" · ")
           +'</span></span><b>n° '+esc(f.santeoId||f.id||"")+'</b></label>').join("")+'</div>';
       res.querySelectorAll(".irow[data-i]").forEach(el=>el.addEventListener("click",async()=>{
         const f=L[+el.dataset.i]; res.textContent="Lecture de la fiche…";
