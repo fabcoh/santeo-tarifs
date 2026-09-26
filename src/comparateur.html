@@ -1676,11 +1676,13 @@ function renderTG(cols,title,sub,note,single){
   // Deux icônes (image copiée puis messagerie ou WhatsApp ouverts), deux envois nommés en toutes lettres.
   const ico="width:38px;height:36px;padding:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:8px;background:var(--soft);cursor:pointer";
   const svgMail='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></svg>';
+  const svgAutre='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="14" height="11" rx="1.6"/><path d="M2.5 6.3 9 11l6.5-4.7"/><path d="M15 18h7m-3-3 3 3-3 3"/></svg>';
   const svgWa='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="fill:#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
   bar.innerHTML='<label style="display:inline-flex;align-items:center;gap:5px;font:600 12.5px \'Archivo\',sans-serif;margin-right:6px;cursor:pointer"><input type="checkbox" id="tgnoprices" style="accent-color:var(--accent)">Sans tarifs</label>'
     +'<button data-a="mail" title="Copier l\u2019image et ouvrir votre messagerie" aria-label="Messagerie" style="'+ico+';color:var(--ink)">'+svgMail+'</button>'
     +'<button data-a="wa" title="Envoyer l\u2019image sur WhatsApp" aria-label="WhatsApp" style="'+ico+'">'+svgWa+'</button>'
     +'<button data-a="mel" style="'+bst+';background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">Envoyer par mail</button>'
+    +'<button data-a="mel2" title="Envoyer par mail à un autre destinataire" aria-label="Autre destinataire" style="'+ico+';color:var(--accent)">'+svgAutre+'</button>'
     +(window.CRMLINK?'<button data-a="crm" style="'+bst+';background:#059669;color:#fff;border-color:#059669">Envoyer dans le CRM</button>':'')
     +'<span id="tgstat" style="font:600 12.5px \'Archivo\',sans-serif;color:var(--accent);margin-left:4px"></span>';
   ov.querySelector('#tgbox .src').after(bar);
@@ -1754,9 +1756,9 @@ function renderTG(cols,title,sub,note,single){
         try{const dl2=await CUSE("downloads");if(dl2){await dl2.save({filename:fname,data:new Uint8Array(await blob.arrayBuffer())});saved=true;}}catch(_){}
         if(!saved){const a2=document.createElement('a');a2.href=URL.createObjectURL(blob);a2.download=fname;document.body.appendChild(a2);a2.click();a2.remove();}
         stat("✅ Image téléchargée");
-      } else if(a==="mel"){
+      } else if(a==="mel"||a==="mel2"){
         const t=el=>{const e=box.querySelector(el);return e?e.textContent.trim():"";};
-        mailFenetre(blob,mailTableau(cols),PR,{entete:t('.tghdr'),soustitre:t('.src')}); stat("");
+        mailFenetre(blob,mailTableau(cols),PR,{entete:t('.tghdr'),soustitre:t('.src')},a==="mel2"); stat("");
       } else if(a==="crm"){
         btn.textContent="⏳ Dépôt…";
         const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);});
@@ -2237,11 +2239,22 @@ function mailTableau(cols){
   return {colonnes:colonnes,lignes:lignes};
 }
 
-function mailFenetre(blob,tg,PR,tetes){
+// autre = true : petite fenêtre « autre destinataire » — même courrier, adresse saisie à la main.
+function mailFenetre(blob,tg,PR,tetes,autre){
   const offres=tg.colonnes;
   let expChoisi=EXPEDITEURS[0][0];
   try{const m=localStorage.getItem("santeo_exp"); if(m&&EXPEDITEURS.some(e=>e[0]===m))expChoisi=m;}catch(e){}
-  const ov=overlay('<button class="close">Fermer ✕</button><h2>📮 Envoyer le comparatif au prospect</h2>'
+  const ov=autre?overlay('<button class="close">Fermer ✕</button><h2>Envoyer à un autre destinataire</h2>'
+    +'<div class="sgrid" style="grid-template-columns:1fr">'
+      +sSel("m_exp","De la part de",EXPEDITEURS.map(e=>[e[0],e[1]+" — "+e[0]]),expChoisi)
+      +sFld("m_dest","Adresse du destinataire","",{ph:"prenom.nom@exemple.fr"})+'</div>'
+    +'<input type="hidden" id="m_prov" value="'+dvEch((PR&&PR.provenance)||"santeo.net")+'">'
+    +'<input type="hidden" id="m_obj" value="Votre offre de mutuelle santé">'
+    +'<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">'
+    +'<button type="button" class="tgbtn close">Annuler</button>'
+    +'<button type="button" class="tgbtn ok" id="melok">Envoyer</button></div>'
+    +'<div id="melmsg" style="margin-top:11px;font:600 12.5px \'IBM Plex Sans\',sans-serif"></div>', 440)
+  :overlay('<button class="close">Fermer ✕</button><h2>📮 Envoyer le comparatif au prospect</h2>'
     +'<div class="src">Le tableau part en image dans le corps du message, avec les liens vers les documents de chaque formule.</div>'
     +'<div class="optgrp"><h3>Message</h3>'
     +'<div class="sgrid" style="grid-template-columns:1fr 1fr">'
@@ -2261,6 +2274,7 @@ function mailFenetre(blob,tg,PR,tetes){
     +'<div id="melmsg" style="margin-top:11px;font:600 12.5px \'IBM Plex Sans\',sans-serif"></div>', 640);
   const q=id=>ov.querySelector("#"+id), v=id=>{const e=q(id);return e?e.value.trim():"";};
   const bok=q("melok"), msg=q("melmsg");
+  if(autre)setTimeout(()=>{try{q("m_dest").focus();}catch(e){}},50);
   bok.addEventListener("click",async()=>{
     const dest=v("m_dest"), exp=v("m_exp");
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(dest)){

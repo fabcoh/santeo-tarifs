@@ -85,7 +85,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   contrôle du titulaire du document.
 - **Tableau de garantie** : tarifs et prospect affichés d'office, case « Sans tarifs », barre unique
   (Fabrice, 26/09/2026) : ☐ Sans tarifs · icône messagerie · icône WhatsApp (infobulles ; image copiée puis
-  messagerie ou WhatsApp ouverts) · **Envoyer par mail** (courrier Mailgun au prospect) · **Envoyer dans le CRM**.
+  messagerie ou WhatsApp ouverts) · **Envoyer par mail** (courrier Mailgun au prospect) · icône **autre destinataire** (petite fenêtre :
+  expéditeur + adresse saisie, même courrier, mêmes copies cachées — `mailFenetre(…, autre=true)`) · **Envoyer dans le CRM**.
   Plus de bouton Télécharger ni de consignes au-dessus du tableau : la ligne « synthèse d'après le tableau de
   garantie officiel… » est cachée à l'écran mais **reste dans l'image** (`.capwide .src`), la consigne de
   l'étoile est son infobulle. Le bouton **✉️ Email** de la barre flottante ouvre le tableau et la fenêtre
