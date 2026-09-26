@@ -357,6 +357,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - `POST /api/comparateur/depot` (image ou texte), `GET /api/comparateur/fiche?token=`,
   `GET /api/comparateur/recherche?q=` avec en-tête `X-Import-Auto-PIN` (**jamais dans l'URL**, PIN stocké sur l'appareil).
 - Retour au CRM après dépôt : `crmBack()` (opener → `back=` → fermeture).
+- **Un dépôt refusé dit pourquoi** (26/09/2026) : `crmDepot` remonte le code HTTP et le début de la réponse. 401/403 =
+  **jeton `t=` expiré (2 h)** — « Rouvrez le comparateur depuis la conversation WhatsApp » ; sinon « Dépôt impossible
+  (HTTP xxx · …) ». Avant, tout échec disait seulement « réessayer ». Un onglet ouvert par ↗ porte le même jeton :
+  il expire à la même heure.
 - Recherche par e-mail : côté Manus, renvoie `404 Aucune fiche Santéo trouvée` — à corriger chez lui.
 
 ## Envoi d'e-mails (Mailgun)

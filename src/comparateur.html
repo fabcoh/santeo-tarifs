@@ -1838,7 +1838,11 @@ function renderTG(cols,title,sub,note,single){
         const back=document.createElement("button");back.textContent="↩ Revenir au CRM";back.style.cssText=bst;back.addEventListener("click",crmBack);btn.after(back);
         setTimeout(crmBack,attente);
       }
-    }catch(err){ try{if(rejectImg)rejectImg(err);}catch(_){}; stat(a==="crm"?"❌ Dépôt impossible — réessayer":"❌ Capture impossible"); }
+    }catch(err){ try{if(rejectImg)rejectImg(err);}catch(_){};
+      if(a!=="crm"){stat("❌ Capture impossible");}
+      else if(err&&(err.status===401||err.status===403)) stat("❌ Dépôt refusé : le lien du CRM a expiré (il vaut 2 h). Rouvrez le comparateur depuis la conversation WhatsApp.");
+      else stat("❌ Dépôt impossible"+(err&&err.message?" ("+err.message+")":"")+" — réessayer");
+    }
     btn.disabled=false; btn.innerHTML=old;
   });
 }
@@ -1995,7 +1999,11 @@ function sendText(){
 async function crmDepot(payload){
   const resp=await fetch(window.CRMLINK.base+"/api/comparateur/depot",{method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify(Object.assign({token:window.CRMLINK.token},payload))});
-  if(!resp.ok)throw new Error("HTTP "+resp.status);
+  if(!resp.ok){
+    // La raison du refus, pour l'afficher : 401/403 = jeton du lien expiré (il vaut 2 h), 413 = trop lourd.
+    let t=""; try{t=(await resp.text()).replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,140);}catch(_){}
+    const e=new Error("HTTP "+resp.status+(t?" · "+t:"")); e.status=resp.status; throw e;
+  }
   return true;
 }
 // Retour au CRM : on remet la fenêtre d'origine au premier plan, puis on ferme celle-ci.
