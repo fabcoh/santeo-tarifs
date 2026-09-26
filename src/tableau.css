@@ -172,6 +172,10 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox td.reco,#tgbox th.reco{background:var(--best);border-left:2px solid var(--warn);border-right:2px solid var(--warn)}
 #tgbox thead th.reco{border-top:2px solid var(--warn)}
 #tgbox tbody tr:last-child td.reco{border-bottom:2px solid var(--warn)}
+/* Lignes mises en avant (clic sur le libellé) : fond jaune pâle et valeurs en gras, dans la fenêtre et l'image. */
+#tgbox tbody td:first-child{cursor:pointer}
+#tgbox tbody tr.avant td{background:rgba(255,196,0,.22);font-weight:800}
+#tgbox tbody tr.avant td:first-child{box-shadow:inset 4px 0 0 var(--warn)}
 #tgbox .recolbl{display:block;font:800 10.5px 'Archivo',sans-serif;letter-spacing:.03em;color:var(--warn);margin-bottom:2px;text-transform:none}
 #tgbox .rectip{font-size:11px;color:var(--muted);margin:-4px 0 8px}
 #tgbox .star{display:block;font-size:16px;line-height:1;color:var(--muted);opacity:.55;margin-bottom:2px}
