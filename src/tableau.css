@@ -140,9 +140,6 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 .tgbtn{margin-left:auto;font:600 12px "Archivo",sans-serif;color:var(--accent);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:5px 10px;cursor:pointer;text-decoration:none;display:inline-block}
 #tgov{position:fixed;inset:0;background:rgba(10,14,20,.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
 #tgbox{background:var(--panel);color:var(--ink);border-radius:12px;max-width:880px;width:100%;max-height:86vh;overflow:auto;padding:18px;border:1px solid var(--line)}
-/* Mode « plein écran » du tableau de garantie (bouton sous « Fiche CRM ») : la fenêtre prend toute la page. */
-body.tgplein #tgov.tgmain{padding:0}
-body.tgplein #tgov.tgmain #tgbox{max-width:none;width:100%;max-height:none;height:100%;border-radius:0;border:0;padding:18px 28px}
 #tgbox h2{font-family:"Archivo",sans-serif;font-size:17px;margin:0 0 4px}
 #tgbox .src{display:none;font-size:11px;color:var(--muted);margin-bottom:10px}
 #tgbox table{width:100%;min-width:0;table-layout:auto;border-collapse:collapse}
