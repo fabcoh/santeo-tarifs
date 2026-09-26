@@ -1712,7 +1712,7 @@ function renderTG(cols,title,sub,note,single){
     +'<button data-a="wa" title="Envoyer l\u2019image sur WhatsApp" aria-label="WhatsApp" style="'+ico+'">'+svgWa+'</button>'
     +'<button data-a="mel" style="'+bst+';background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">Envoyer par mail</button>'
     +'<button data-a="mel2" title="Envoyer par mail à un autre destinataire" aria-label="Autre destinataire" style="'+ico+';color:var(--accent)">'+svgAutre+'</button>'
-    +(window.CRMLINK?'<button data-a="crm" style="'+bst+';background:#059669;color:#fff;border-color:#059669">Envoyer dans le CRM</button>':'')
+    +(window.CRMLINK?'<button data-a="crm" title="Dépose l\u2019image dans la conversation et envoie le mail au prospect (copie dans le CRM)" style="'+bst+';background:#059669;color:#fff;border-color:#059669">Envoyer dans le CRM</button>':'')
     +'<span id="tgstat" style="font:600 12.5px \'Archivo\',sans-serif;color:var(--accent);margin-left:4px"></span>';
   ov.querySelector('#tgbox .src').after(bar);
   bar.querySelector('#tgnoprices').addEventListener('change',e=>{box.querySelectorAll('.thprice').forEach(d=>{d.style.display=e.target.checked?"none":"";});});
@@ -1792,9 +1792,34 @@ function renderTG(cols,title,sub,note,single){
         btn.textContent="⏳ Dépôt…";
         const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);});
         await crmDepot({kind:"image",filename:fname,mime:"image/png",data:b64,caption:"Tableau de garantie — "+nm});
-        stat("✅ Déposé — retour à la conversation…");
+        // Le même clic envoie le courrier au prospect (Fabrice, 26/09/2026) et en dépose la copie
+        // dans la conversation, pour la garder ou la renvoyer depuis le CRM. Sans adresse, l'image
+        // part seule : jamais de blocage.
+        let mailMsg="", attente=1200;
+        const dest=String((PR&&PR.email)||"").trim();
+        if(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(dest)){
+          btn.textContent="⏳ Mail…";
+          try{
+            let exp=EXPEDITEURS[0][0];
+            try{const m=localStorage.getItem("santeo_exp");if(m&&EXPEDITEURS.some(e=>e[0]===m))exp=m;}catch(_){}
+            const t=el=>{const e=box.querySelector(el);return e?e.textContent.trim():"";};
+            const rp=await fetch(MAIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},
+              body:JSON.stringify(corpsMail({tg:mailTableau(cols),PR,tetes:{entete:t('.tghdr'),soustitre:t('.src')},dest,exp,b64,
+                prov:(PR&&PR.provenance)||"santeo.net",objet:"Votre offre de mutuelle santé",copie:true}))});
+            const d=await rp.json().catch(()=>null);
+            if(rp.ok&&d&&d.envoye){
+              mailMsg=" · mail envoyé à "+dest;
+              if(d.copie){
+                try{await crmDepot({kind:"email",subject:d.copie.objet,from:d.copie.de,to:d.copie.a,date:d.copie.date,html:d.copie.html,text:d.copie.texte});
+                    mailMsg+=", copie dans le CRM";}
+                catch(_){mailMsg+=" (copie non déposée dans le CRM)";attente=4000;}
+              }
+            } else {mailMsg=" · ⚠ mail non envoyé : "+((d&&d.erreur)||("HTTP "+rp.status));attente=5000;}
+          }catch(_){mailMsg=" · ⚠ mail non envoyé : service injoignable";attente=5000;}
+        } else {mailMsg=" · mail non envoyé : pas d'adresse";attente=3500;}
+        stat("✅ Image déposée"+mailMsg+" — retour à la conversation…");
         const back=document.createElement("button");back.textContent="↩ Revenir au CRM";back.style.cssText=bst;back.addEventListener("click",crmBack);btn.after(back);
-        setTimeout(crmBack,900);
+        setTimeout(crmBack,attente);
       }
     }catch(err){ try{if(rejectImg)rejectImg(err);}catch(_){}; stat(a==="crm"?"❌ Dépôt impossible — réessayer":"❌ Capture impossible"); }
     btn.disabled=false; btn.innerHTML=old;
@@ -2262,6 +2287,30 @@ function mailTableau(cols){
   return {colonnes:colonnes,lignes:lignes};
 }
 
+// Corps envoyé au relais santeo-mail.php : le même pour « Envoyer par mail » et pour le dépôt CRM.
+function corpsMail({tg,PR,tetes,dest,exp,b64,prov,objet,copie}){
+  const c={expediteur:exp,destinataire:dest,
+          civilite:/^mme$/i.test((PR&&PR.civ)||"")?"MME":"MR",
+          nom:(PR&&PR.nom)||"",prenom:(PR&&PR.prenom)||"",
+          telephone:telFR((PR&&PR.tel)||"")||((PR&&PR.tel)||""),
+          // La fiche complète du prospect, pour le récapitulatif de la page « Cette offre
+          // m'intéresse » : le relais la chiffre dans le lien, rien n'en est lisible.
+          fiche:{ddn:(PR&&PR.ddn)||"",regime:document.getElementById("regime").value,
+                 adresse:(PR&&PR.adresse)||"",cp:(PR&&(PR.cp5||PR.cp))||"",ville:(PR&&PR.ville)||"",
+                 conjoint:(PR&&PR.conjoint&&PR.conjoint.ddn)||(document.getElementById("cnj").value.trim()||""),
+                 enfants:(PR&&Array.isArray(PR.enfants))?PR.enfants.map(e=>e.ddn||"").filter(Boolean):[],
+                 // Le nombre de mineurs du haut de page : c'est lui qui a fait le tarif, même
+                 // quand leurs dates de naissance ne sont pas connues.
+                 kids:+document.getElementById("kids").value||0},
+          // Adresse exacte de la conversation d'où vient la fiche : le conseiller
+          // qui reçoit « Cette offre m'intéresse » y retourne d'un clic.
+          conversation:(window.CRMLINK&&window.CRMLINK.back)||"",
+          provenance:prov,objet:objet,
+          entete:(tetes&&tetes.entete)||"",soustitre:(tetes&&tetes.soustitre)||"",
+          colonnes:tg.colonnes,lignes:tg.lignes,image:b64};
+  if(copie)c.copie=true;
+  return c;
+}
 // autre = true : petite fenêtre « autre destinataire » — même courrier, adresse saisie à la main.
 function mailFenetre(blob,tg,PR,tetes,autre){
   const offres=tg.colonnes;
@@ -2313,25 +2362,7 @@ function mailFenetre(blob,tg,PR,tetes,autre){
       const b64=blob?await new Promise((res,rej)=>{const fr=new FileReader();
         fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);}):"";
       const rp=await fetch(MAIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({expediteur:exp,destinataire:dest,
-          civilite:/^mme$/i.test((PR&&PR.civ)||"")?"MME":"MR",
-          nom:(PR&&PR.nom)||"",prenom:(PR&&PR.prenom)||"",
-          telephone:telFR((PR&&PR.tel)||"")||((PR&&PR.tel)||""),
-          // La fiche complète du prospect, pour le récapitulatif de la page « Cette offre
-          // m'intéresse » : le relais la chiffre dans le lien, rien n'en est lisible.
-          fiche:{ddn:(PR&&PR.ddn)||"",regime:document.getElementById("regime").value,
-                 adresse:(PR&&PR.adresse)||"",cp:(PR&&(PR.cp5||PR.cp))||"",ville:(PR&&PR.ville)||"",
-                 conjoint:(PR&&PR.conjoint&&PR.conjoint.ddn)||(document.getElementById("cnj").value.trim()||""),
-                 enfants:(PR&&Array.isArray(PR.enfants))?PR.enfants.map(e=>e.ddn||"").filter(Boolean):[],
-                 // Le nombre de mineurs du haut de page : c'est lui qui a fait le tarif, même
-                 // quand leurs dates de naissance ne sont pas connues.
-                 kids:+document.getElementById("kids").value||0},
-          // Adresse exacte de la conversation d'où vient la fiche : le conseiller
-          // qui reçoit « Cette offre m'intéresse » y retourne d'un clic.
-          conversation:(window.CRMLINK&&window.CRMLINK.back)||"",
-          provenance:v("m_prov"),objet:v("m_obj"),
-          entete:(tetes&&tetes.entete)||"",soustitre:(tetes&&tetes.soustitre)||"",
-          colonnes:tg.colonnes,lignes:tg.lignes,image:b64})});
+        body:JSON.stringify(corpsMail({tg,PR,tetes,dest,exp,b64,prov:v("m_prov"),objet:v("m_obj")}))});
       const txt=await rp.text(); let d=null; try{d=JSON.parse(txt);}catch(e){}
       if(!rp.ok){
         msg.innerHTML='<span class="dvwarn">'+dvEch((d&&d.erreur)?d.erreur:"L'envoi a échoué (HTTP "+rp.status+").")+'</span>'

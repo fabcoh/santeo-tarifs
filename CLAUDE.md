@@ -103,6 +103,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   « Envoyer par mail » — plus de `mailto:`. Venu du CRM, le bouton vert de cette barre devient
   **📲 Capture → WhatsApp** : il ouvre le tableau des formules cochées (⭐ comprise) et y déclenche le dépôt
   de la capture (`viaTableau("crm")`), en un clic. L'ancien dépôt en texte (`doDepotText`) est retiré. Pas de second aperçu.
+  **« Envoyer dans le CRM » envoie aussi le mail** (Fabrice, 26/09/2026), en haut comme en bas : dépôt de l'image,
+  puis le courrier de « Envoyer par mail » au prospect (même relais, expéditeur mémorisé `santeo_exp`, mêmes
+  copies cachées), puis **la copie du courrier déposée dans la conversation** (`kind:"email"` : `subject`,
+  `from`, `to`, `date`, `html`, `text`) pour la garder ou la renvoyer depuis le CRM. La page demande la copie
+  au relais (`copie:true`) ; `santeo-mail.php` la renvoie avec les logos en adresse publique au lieu de `cid:`.
+  **Sans e-mail sur la fiche, l'image part seule** et le statut dit « mail non envoyé : pas d'adresse ».
+  Un CRM qui refuse `kind:"email"` n'empêche rien : « copie non déposée dans le CRM ». `corpsMail()` fabrique le
+  corps du courrier pour les deux chemins — une seule définition.
   **Bas du tableau**, dans cet ordre :
   1. les atouts de la formule marquée de l'⭐, poste par poste — hospitalisation, honoraires, chambre, dentaire,
      implantologie, orthodontie, optique, lentilles, audio, médecines douces ; les postes sans garantie sont
