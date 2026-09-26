@@ -500,6 +500,23 @@ function exVal(key,k,fi){
   }
   return (e[k]&&e[k][fi]!==undefined)?e[k][fi]:"—";
 }
+// Case d'en-tête : coche ou décoche d'un coup toutes les formules affichées.
+// Pleine si toutes le sont, à moitié (tiret) si une partie seulement.
+function syncSendAll(){
+  const all=document.getElementById("sendall"); if(!all)return;
+  const cbs=[...document.querySelectorAll("#rows .sendchk")];
+  const n=cbs.filter(c=>c.checked).length;
+  all.checked=cbs.length>0&&n===cbs.length;
+  all.indeterminate=n>0&&n<cbs.length;
+}
+document.addEventListener("change",e=>{
+  if(e.target.id!=="sendall")return;
+  const on=e.target.checked;
+  document.querySelectorAll("#rows .sendchk").forEach(cb=>{
+    cb.checked=on; on?SENDSEL.add(cb.dataset.rk):SENDSEL.delete(cb.dataset.rk);
+  });
+  updateSendBar(); syncSendAll();
+});
 function buildHead(){
   const ad=EXD.filter(e=>exOn[e[0]]), ao=EXO.filter(e=>exOn[e[0]]);
   const xc='<col style="width:86px">';
@@ -507,7 +524,7 @@ function buildHead(){
     '<col style="width:80px"><col style="width:70px"><col style="width:62px"><col style="width:70px"><col style="width:80px">'+xc.repeat(ao.length)+
     '<col style="width:74px">';
   document.getElementById("cg").innerHTML=cg;
-  let r1='<tr><th rowspan="2"></th><th rowspan="2">Gamme · Formule</th><th class="num" rowspan="2">Total / mois</th>'+
+  let r1='<tr><th rowspan="2" style="text-align:center"><input type="checkbox" id="sendall" class="sendchk" title="Cocher toutes les formules du tableau"></th><th rowspan="2">Gamme · Formule</th><th class="num" rowspan="2">Total / mois</th>'+
     '<th class="c big" rowspan="2">Dentaire</th>'+
     ad.map(e=>'<th class="c" rowspan="2">'+e[1]+'</th>').join("")+
     '<th class="c grp" colspan="2">Hospitalisation</th><th class="c grp" colspan="2">Honoraires</th>'+
@@ -515,7 +532,10 @@ function buildHead(){
     ao.map(e=>'<th class="c" rowspan="2">'+e[1]+'</th>').join("")+
     '<th class="c" rowspan="2">Méd. douce</th>';
   r1+='</tr><tr><th class="c sub">Optam</th><th class="c sub">hors Opt.</th><th class="c sub">Optam</th><th class="c sub">hors Opt.</th></tr>';
-  document.getElementById("thd").innerHTML=r1;
+  // L'en-tête n'est remplacé que s'il change : un recalcul déclenché par la sortie d'un champ
+  // (mousedown) ne doit pas effacer la case « tout cocher » au moment où on clique dessus.
+  const thd=document.getElementById("thd");
+  if(thd.dataset.h!==r1){thd.innerHTML=r1;thd.dataset.h=r1;}
   return 10+ad.length+ao.length;
 }
 // Documents contractuels par gamme. Une valeur est une adresse, ou un tableau indexé
@@ -2818,9 +2838,10 @@ function render(rows,warns){
         e.stopPropagation();
         const rk=cb.dataset.rk;
         cb.checked?SENDSEL.add(rk):SENDSEL.delete(rk);
-        updateSendBar();
+        updateSendBar(); syncSendAll();
       });
     });
+    syncSendAll();
     tb.querySelectorAll("tr.offer").forEach(tr=>{
       tr.addEventListener("click",()=>{
         const rk=tr.dataset.rk;

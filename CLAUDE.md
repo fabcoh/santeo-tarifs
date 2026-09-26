@@ -129,6 +129,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **À l'arrivée d'une fiche**, `filtresApercu()` ouvre le panneau **6 secondes** puis le referme : le
   commercial voit qu'il repart vierge sans avoir à aller le vérifier. Dès qu'il y touche — bouton ⚖, clic ou
   saisie dans le panneau — le minuteur est annulé et le panneau lui appartient.
+- **Case « tout cocher »** en tête de la colonne des cases (Fabrice, 26/09/2026) : coche ou décoche toutes les
+  formules affichées — donc après filtres et périmètre. Pleine si toutes le sont, tiret si une partie
+  (`syncSendAll()`). **`buildHead()` ne remplace l'en-tête que s'il a changé** : quitter un champ (CP…) recalcule
+  au `mousedown`, et l'en-tête reconstruit à ce moment avalait le clic sur la case.
 - **Haut de page** : une seule ligne — assuré, conjoint, régime, département/CP, mineurs — les âges retenus
   inscrits sous leur champ en position absolue, pour ne pas pousser la ligne. Le tableau démarre à 136 px
   au lieu de 255 avant ce resserrement. **Options par poste** ouvre une fenêtre par-dessus (`ouvrirOptions`) :
