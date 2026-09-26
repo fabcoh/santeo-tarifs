@@ -151,10 +151,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   formules affichées — donc après filtres et périmètre. Pleine si toutes le sont, tiret si une partie
   (`syncSendAll()`). **`buildHead()` ne remplace l'en-tête que s'il a changé** : quitter un champ (CP…) recalcule
   au `mousedown`, et l'en-tête reconstruit à ce moment avalait le clic sur la case.
-- **Mode plein écran du tableau de garantie** (Fabrice, 26/09/2026) : bouton ⛶ / ⧉ sous « Fiche CRM » ; la
-  fenêtre du tableau (`#tgov.tgmain`) prend toute la page, choix mémorisé (`santeo_tgplein`). **Plein écran
-  plutôt qu'un vrai onglet** : les envois (mail, CRM, autre destinataire) ouvrent leurs fenêtres dans la page
-  du comparateur ; dans un onglet séparé, elles s'ouvriraient derrière, dans l'autre onglet.
+- **Bouton ↗ sous « Fiche CRM »** (Fabrice, 26/09/2026) : ouvre le comparateur **dans un nouvel onglet**, à la même
+  adresse — donc la même fiche et le même lien CRM (`#fiche=…&crm=…&t=…`). Pour sortir de la petite fenêtre où le
+  CRM l'ouvre. Ouvert en `noopener` : « Revenir au CRM » y suit l'adresse `back=`. Les formules cochées et
+  l'étoile ne suivent pas. Un premier essai en « plein écran » dans la page a été retiré le même jour : ce
+  n'était pas ce que Fabrice voulait.
 - **Recherche de fiche par nom** : le CRM renvoie une **liste** sous un nom de champ variable ; la page prend
   `resultats`, `results`, `fiches`, `items`, `data`, `liste`, `prospects`, ou le premier tableau d'objets de la
   réponse. Avant, tout objet était pris pour une fiche : « Fiche reçue mais vide ». Ce message affiche

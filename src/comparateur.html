@@ -141,9 +141,6 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 .tgbtn{margin-left:auto;font:600 12px "Archivo",sans-serif;color:var(--accent);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:5px 10px;cursor:pointer;text-decoration:none;display:inline-block}
 #tgov{position:fixed;inset:0;background:rgba(10,14,20,.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
 #tgbox{background:var(--panel);color:var(--ink);border-radius:12px;max-width:880px;width:100%;max-height:86vh;overflow:auto;padding:18px;border:1px solid var(--line)}
-/* Mode « plein écran » du tableau de garantie (bouton sous « Fiche CRM ») : la fenêtre prend toute la page. */
-body.tgplein #tgov.tgmain{padding:0}
-body.tgplein #tgov.tgmain #tgbox{max-width:none;width:100%;max-height:none;height:100%;border-radius:0;border:0;padding:18px 28px}
 #tgbox h2{font-family:"Archivo",sans-serif;font-size:17px;margin:0 0 4px}
 #tgbox .src{display:none;font-size:11px;color:var(--muted);margin-bottom:10px}
 #tgbox table{width:100%;min-width:0;table-layout:auto;border-collapse:collapse}
@@ -3504,17 +3501,14 @@ calc();
   b.addEventListener("click",panneau);
   document.body.appendChild(b);
 
-  // Sous « Fiche CRM » : le tableau de garantie en fenêtre ou en plein écran. Plein écran plutôt qu'un
-  // onglet : les envois (mail, CRM) et leurs fenêtres restent ainsi dans la même page. Mémorisé sur l'appareil.
+  // Sous « Fiche CRM » : ouvrir le comparateur dans un nouvel onglet, avec la même adresse — donc la même
+  // fiche et le même lien CRM (#fiche=…&crm=…&t=…). Utile quand le CRM l'ouvre dans une petite fenêtre.
   const m=document.createElement("button");
-  m.id="tgmode"; m.type="button";
-  const plein=()=>{try{return localStorage.getItem("santeo_tgplein")==="1";}catch(e){return false;}};
-  const peindre=()=>{const on=plein();document.body.classList.toggle("tgplein",on);
-    m.textContent=on?"⧉":"⛶";
-    m.title=on?"Tableau de garantie : plein écran (cliquer pour revenir en fenêtre)":"Tableau de garantie : en fenêtre (cliquer pour le plein écran)";};
+  m.id="tgonglet"; m.type="button"; m.textContent="↗";
+  m.title="Ouvrir le comparateur dans un nouvel onglet";
   m.style.cssText="position:fixed;top:52px;right:56px;z-index:50;width:38px;height:34px;border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:9px;font:800 17px 'Archivo',sans-serif;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)";
-  m.addEventListener("click",()=>{try{localStorage.setItem("santeo_tgplein",plein()?"0":"1");}catch(e){}peindre();});
-  peindre();
+  m.addEventListener("click",()=>{ window.open(location.href,"_blank","noopener"); });
+  try{localStorage.removeItem("santeo_tgplein");}catch(e){}
   document.body.appendChild(m);
 })();
 </script>
