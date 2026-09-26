@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmpv4qp_qka.js",
+ "genere": "/tmp/tmpq749xcm6.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -1591,6 +1591,7 @@
    "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/capevo_ipid_2026.pdf",
    "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/capevo_notice_2026.pdf"
   },
+  "CAPEVO_TNS": {},
   "CAPNR": {
    "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/capnr_tg_2026.pdf",
    "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/capnr_ipid_2026.pdf",
