@@ -37,7 +37,9 @@ const ATOUTS=[["hospitalisation","hospO"],["honoraires spécialistes","honoO"],
   ["aides auditives","x:aud"],["médecines douces","md"]];
 
 // Logos déposés dans docs/ (PNG à fond transparent, hauteur utile ~40 px).
-const LOGOS={mcci:"logo_mcci.png",avenir:"logo_avenir.png",mverte:"logo_mverte.png",apicil:"logo_apicil.png"};
+// Une gamme peut porter son propre logo (`logo`), distinct de son assureur (`ins`) : Révoluo est vendue
+// par Avenir Mutuelle mais sous sa marque.
+const LOGOS={mcci:"logo_mcci.png",avenir:"logo_avenir.png",mverte:"logo_mverte.png",apicil:"logo_apicil.png",revoluo:"logo_revoluo.png"};
 const LOGOBASE="https://fabcoh.github.io/santeo-tarifs/docs/";
 
 const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
@@ -55,7 +57,7 @@ function valeur(G,key,fi,src){
 
 // Tant qu'un logo manque, le nom de la compagnie s'affiche à sa place : rien ne casse.
 function logo(G,key,base){
-  const g=G.gammes[key], f=g&&LOGOS[g.ins], nom=(G.compagnies||{})[key]||"";
+  const g=G.gammes[key], f=g&&LOGOS[g.logo||g.ins], nom=(G.compagnies||{})[key]||"";
   if(!f) return '<span class="tglogo-txt">'+nom+'</span>';
   return '<img class="tglogo" src="'+((base||LOGOBASE)+f)+'" alt="'+nom+'" '
        + 'onerror="this.outerHTML=\'<span class=&quot;tglogo-txt&quot;>'+nom+'</span>\'">';

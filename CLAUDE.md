@@ -151,6 +151,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   formules affichées — donc après filtres et périmètre. Pleine si toutes le sont, tiret si une partie
   (`syncSendAll()`). **`buildHead()` ne remplace l'en-tête que s'il a changé** : quitter un champ (CP…) recalcule
   au `mousedown`, et l'en-tête reconstruit à ce moment avalait le clic sur la case.
+- **Mode plein écran du tableau de garantie** (Fabrice, 26/09/2026) : bouton ⛶ / ⧉ sous « Fiche CRM » ; la
+  fenêtre du tableau (`#tgov.tgmain`) prend toute la page, choix mémorisé (`santeo_tgplein`). **Plein écran
+  plutôt qu'un vrai onglet** : les envois (mail, CRM, autre destinataire) ouvrent leurs fenêtres dans la page
+  du comparateur ; dans un onglet séparé, elles s'ouvriraient derrière, dans l'autre onglet.
+- **Recherche de fiche par nom** : le CRM renvoie une **liste** sous un nom de champ variable ; la page prend
+  `resultats`, `results`, `fiches`, `items`, `data`, `liste`, `prospects`, ou le premier tableau d'objets de la
+  réponse. Avant, tout objet était pris pour une fiche : « Fiche reçue mais vide ». Ce message affiche
+  désormais le diagnostic (adresse appelée, réponse brute) pour voir ce que le CRM a vraiment renvoyé.
 - **Haut de page** : une seule ligne — assuré, conjoint, régime, département/CP, mineurs — les âges retenus
   inscrits sous leur champ en position absolue, pour ne pas pousser la ligne. Le tableau démarre à 136 px
   au lieu de 255 avant ce resserrement. **Options par poste** ouvre une fenêtre par-dessus (`ouvrirOptions`) :
@@ -237,11 +245,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   et l'affiche en entier. Ne jamais tronquer ce message, c'est le seul qui dise ce qui ne va pas.
 - **Logos dans le tableau de garantie** : `Tableau.logo(...)` place le logo de l'assureur au-dessus de l'étoile,
   en tête de colonne. Fichiers dans `docs/` : `logo_mcci.png`, `logo_avenir.png`, `logo_mverte.png`,
-  `logo_apicil.png` — PNG à fond transparent, normalisés à 160 px de haut, affichés en **42 px** (à 34 px un
+  `logo_apicil.png`, `logo_revoluo.png` — PNG à fond transparent, normalisés à 160 px de haut, affichés en **42 px** (à 34 px un
   logo carré comme celui d'Avenir devenait illisible). Avenir, Mutuelle Verte et APICIL sont tirés des
   documents de `docs/` ; MCCI vient du fichier fourni par Fabrice, ses plaquettes ne publiant le logo qu'en
   blanc sur fond sombre. **Tant qu'un fichier manque, le nom de la compagnie s'affiche à sa place** — aucune
   image cassée. Le logo est reposé à chaque mise en avant d'une formule.
+  **Révoluo, RF50 et RF100 portent le logo Révoluo** (fourni par Fabrice le 26/09/2026, fond blanc rendu
+  transparent) et non celui d'Avenir : la gamme porte `logo:"revoluo"`, distinct de `ins:"avenir"` qui reste
+  l'assureur (pastille de couleur, routage). `Tableau.logo` et le courrier lisent `g.logo || g.ins`.
   **Dans le courrier, la taille n'est pas une hauteur commune mais un encombrement commun** : les logos n'ont
   pas la même forme — Avenir est presque carré (211 × 160), MCCI un long bandeau (545 × 160). À 34 px de haut
   tous les deux, MCCI faisait 116 px de large contre 45 à Avenir, et écrasait la colonne voisine. Le relais
