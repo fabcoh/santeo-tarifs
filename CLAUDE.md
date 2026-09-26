@@ -485,12 +485,15 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   calculé dans le relais, prêt à resservir. **La date, elle, est sous le tableau**, en 10 px centré :
   « Tarifs au 23 septembre 2026, valables 15 jours. » Sans elle, rien ne bornerait l'offre dans le temps —
   un prospect revenant trois mois plus tard avec ce courrier n'aurait vu nulle part que les tarifs changent.
-- **Les documents de chaque formule sont sous sa colonne** — « Tableau de garantie - IPID - Notice » sur une
-  seule ligne, en **10 px**, cliquables, juste au-dessus de son bouton. Le pied ne garde que le **nom de la
+- **Les documents de chaque formule sont sous sa colonne** — sur **deux lignes** (Fabrice, 26/09/2026) :
+  « Tableau des garanties », puis « IPID - Notice », en **10 px**, cliquables, juste au-dessus de son bouton. Le pied ne garde que le **nom de la
   formule et ses limites**, trop longues pour une colonne : les répéter aux deux endroits ne faisait que du
   bruit. **Ce qui manque n'est pas un défaut du courrier mais du dossier** : `DOCS` ne publie qu'un tableau
   de garantie pour MCCINOVA, FLEXIA et SOLENCIA, et un seul « Garanties + IPID » pour LPS HOSPI — leurs IPID
-  et notices n'existent pas encore. CAP NR, CAP ÉVOLUTION, TALIS et API SANTÉ affichent bien les trois.
+  et notices n'existent pas encore. CAP NR, TALIS et API SANTÉ affichent bien les trois. **CAP ÉVOLUTION n'en affiche aucun dans le
+  courrier** : ses trois documents sont des liens Google Drive dans `DOCS`, et le relais n'accepte que nos hôtes.
+  À déposer dans `docs/` (`capevo_tg_2026.pdf`, `capevo_ipid_2026.pdf`, `capevo_notice_2026.pdf`) puis
+  `DOCS.CAPEVO` à repointer — ne pas ouvrir le filtre à `drive.google.com`, qui héberge les fichiers de n'importe qui.
 - **Ni bandeau ni pied par formule** (décision de Fabrice, 25/09/2026) : le courrier commence par « Bonjour »,
   sans le cartouche SANTÉO / ORIAS en tête, et les limites par formule n'y figurent plus — trop longues, elles
   faisaient cinq paragraphes identiques sous un tableau Mutuelle Verte. Elles restent dans la page et dans le
