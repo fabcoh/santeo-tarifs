@@ -361,7 +361,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-26T10:52:02Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T10:52:02Z</div>
+  <div id="buildstamp" data-build="2026-09-26T11:01:08Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T11:01:08Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2332,7 +2332,11 @@ function renderTG(cols,title,sub,note,single){
         const back=document.createElement("button");back.textContent="↩ Revenir au CRM";back.style.cssText=bst;back.addEventListener("click",crmBack);btn.after(back);
         setTimeout(crmBack,attente);
       }
-    }catch(err){ try{if(rejectImg)rejectImg(err);}catch(_){}; stat(a==="crm"?"❌ Dépôt impossible — réessayer":"❌ Capture impossible"); }
+    }catch(err){ try{if(rejectImg)rejectImg(err);}catch(_){};
+      if(a!=="crm"){stat("❌ Capture impossible");}
+      else if(err&&(err.status===401||err.status===403)) stat("❌ Dépôt refusé : le lien du CRM a expiré (il vaut 2 h). Rouvrez le comparateur depuis la conversation WhatsApp.");
+      else stat("❌ Dépôt impossible"+(err&&err.message?" ("+err.message+")":"")+" — réessayer");
+    }
     btn.disabled=false; btn.innerHTML=old;
   });
 }
@@ -2489,7 +2493,11 @@ function sendText(){
 async function crmDepot(payload){
   const resp=await fetch(window.CRMLINK.base+"/api/comparateur/depot",{method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify(Object.assign({token:window.CRMLINK.token},payload))});
-  if(!resp.ok)throw new Error("HTTP "+resp.status);
+  if(!resp.ok){
+    // La raison du refus, pour l'afficher : 401/403 = jeton du lien expiré (il vaut 2 h), 413 = trop lourd.
+    let t=""; try{t=(await resp.text()).replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,140);}catch(_){}
+    const e=new Error("HTTP "+resp.status+(t?" · "+t:"")); e.status=resp.status; throw e;
+  }
   return true;
 }
 // Retour au CRM : on remet la fenêtre d'origine au premier plan, puis on ferme celle-ci.
