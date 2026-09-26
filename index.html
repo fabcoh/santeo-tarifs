@@ -149,6 +149,9 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 .tgbtn{margin-left:auto;font:600 12px "Archivo",sans-serif;color:var(--accent);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:5px 10px;cursor:pointer;text-decoration:none;display:inline-block}
 #tgov{position:fixed;inset:0;background:rgba(10,14,20,.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px}
 #tgbox{background:var(--panel);color:var(--ink);border-radius:12px;max-width:880px;width:100%;max-height:86vh;overflow:auto;padding:18px;border:1px solid var(--line)}
+/* Mode « plein écran » du tableau de garantie (bouton sous « Fiche CRM ») : la fenêtre prend toute la page. */
+body.tgplein #tgov.tgmain{padding:0}
+body.tgplein #tgov.tgmain #tgbox{max-width:none;width:100%;max-height:none;height:100%;border-radius:0;border:0;padding:18px 28px}
 #tgbox h2{font-family:"Archivo",sans-serif;font-size:17px;margin:0 0 4px}
 #tgbox .src{display:none;font-size:11px;color:var(--muted);margin-bottom:10px}
 #tgbox table{width:100%;min-width:0;table-layout:auto;border-collapse:collapse}
@@ -357,7 +360,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-26T09:18:10Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T09:18:10Z</div>
+  <div id="buildstamp" data-build="2026-09-26T10:13:57Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T10:13:57Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -676,7 +679,9 @@ const ATOUTS=[["hospitalisation","hospO"],["honoraires spécialistes","honoO"],
   ["aides auditives","x:aud"],["médecines douces","md"]];
 
 // Logos déposés dans docs/ (PNG à fond transparent, hauteur utile ~40 px).
-const LOGOS={mcci:"logo_mcci.png",avenir:"logo_avenir.png",mverte:"logo_mverte.png",apicil:"logo_apicil.png"};
+// Une gamme peut porter son propre logo (`logo`), distinct de son assureur (`ins`) : Révoluo est vendue
+// par Avenir Mutuelle mais sous sa marque.
+const LOGOS={mcci:"logo_mcci.png",avenir:"logo_avenir.png",mverte:"logo_mverte.png",apicil:"logo_apicil.png",revoluo:"logo_revoluo.png"};
 const LOGOBASE="https://fabcoh.github.io/santeo-tarifs/docs/";
 
 const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
@@ -694,7 +699,7 @@ function valeur(G,key,fi,src){
 
 // Tant qu'un logo manque, le nom de la compagnie s'affiche à sa place : rien ne casse.
 function logo(G,key,base){
-  const g=G.gammes[key], f=g&&LOGOS[g.ins], nom=(G.compagnies||{})[key]||"";
+  const g=G.gammes[key], f=g&&LOGOS[g.logo||g.ins], nom=(G.compagnies||{})[key]||"";
   if(!f) return '<span class="tglogo-txt">'+nom+'</span>';
   return '<img class="tglogo" src="'+((base||LOGOBASE)+f)+'" alt="'+nom+'" '
        + 'onerror="this.outerHTML=\'<span class=&quot;tglogo-txt&quot;>'+nom+'</span>\'">';
@@ -918,17 +923,17 @@ const F = {
     hospO:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],hospN:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],
     honoO:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],honoN:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],
     dent:["—","100 %","130 %","160 %","200 %","300 %","400 %"],opt:["—","130 €","200 €","200 €","250 €","350 €","450 €"],aud:["—","100 %","130 %","160 %","200 %","200 %","200 %"],ch:["25 €/j","30 €/j","40 €/j","60 €/j","80 €/j","100 €/j","120 €/j"],md:["—","30 €","40 €","50 €","75 €","100 €","150 €"]},
-  REV:{label:"REVOLUO",resp:true,ins:"avenir",names:["Rev 1","Rev 2","Rev 3","Rev 4","Rev 5","Rev 6","Rev 7","Rev 8"],
+  REV:{label:"REVOLUO",resp:true,ins:"avenir",logo:"revoluo",names:["Rev 1","Rev 2","Rev 3","Rev 4","Rev 5","Rev 6","Rev 7","Rev 8"],
     hospO:["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"],hospN:["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
     honoO:["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"],honoN:["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
     dent:["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"],opt:["—","100 €","125 €","150 €","175 €","225 €","275 €","300 €"],
     ch:["—","30 €/j","35 €/j","40 €/j","50 €/j","60 €/j","70 €/j","100 €/j"],md:["—","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €"]},
-  RF50:{label:"REVOLUO RF50",resp:true,ins:"avenir",names:["Rev 2","Rev 3","Rev 4","Rev 5","Rev 6","Rev 7","Rev 8"],
+  RF50:{label:"REVOLUO RF50",resp:true,ins:"avenir",logo:"revoluo",names:["Rev 2","Rev 3","Rev 4","Rev 5","Rev 6","Rev 7","Rev 8"],
     hospO:["100 %","125 %","150 %","175 %","200 %","250 %","300 %"],hospN:["100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
     honoO:["100 %","125 %","150 %","175 %","200 %","250 %","300 %"],honoN:["100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
     dent:["150 %","175 %","200 %","225 %","250 %","300 %","350 %"],opt:["150 €","175 €","200 €","225 €","275 €","325 €","350 €"],
     ch:["30 €/j","35 €/j","40 €/j","50 €/j","60 €/j","70 €/j","100 €/j"],md:["4×20 €","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €"]},
-  RF100:{label:"REVOLUO RF100",resp:true,ins:"avenir",names:["Rev 2","Rev 3","Rev 4","Rev 5","Rev 6"],
+  RF100:{label:"REVOLUO RF100",resp:true,ins:"avenir",logo:"revoluo",names:["Rev 2","Rev 3","Rev 4","Rev 5","Rev 6"],
     hospO:["100 %","125 %","150 %","175 %","200 %"],hospN:["100 %","105 %","130 %","155 %","180 %"],
     honoO:["100 %","125 %","150 %","175 %","200 %"],honoN:["100 %","105 %","130 %","155 %","180 %"],
     dent:["200 %","225 %","250 %","275 %","300 %"],opt:["150 €","175 €","200 €","225 €","275 €"],
@@ -2135,7 +2140,7 @@ function renderTG(cols,title,sub,note,single){
   const isReco=c=>RECO===(c.key+"|"+c.fi);
   let head=Tableau.entete(GAR,cols,RECO);
   let body=Tableau.corps(GAR,cols,RECO);
-  const ov=document.createElement('div');ov.id='tgov';
+  const ov=document.createElement('div');ov.id='tgov';ov.className='tgmain';
   ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+tgFoot(cols,note)+'</div></div>';
   ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
   document.body.appendChild(ov);
@@ -2772,7 +2777,7 @@ function mailTableau(cols){
     const nr=(g&&g.resp===false&&!/non responsable/i.test(lim||""))?"Contrat NON responsable. ":"";
     // key et fi : le relais en fait le jeton signé du lien « Cette offre m'intéresse ».
     return {key:c.key, fi:c.fi, gamme:g.label, formule:g.names[c.fi], nom:Tableau.nomComplet(GAR,c.key,c.fi),
-            logo:g.ins?("logo_"+g.ins+".png"):"", compagnie:(COMP[c.key]||""),
+            logo:(g.logo||g.ins)?("logo_"+(g.logo||g.ins)+".png"):"", compagnie:(COMP[c.key]||""),
             prix:r?eur(r.total):"", reco:RECO===(c.key+"|"+c.fi),
             docs:Tableau.documents(GAR,c.key,c.fi,regimeActuel()), limites:nr+(lim||"")};
   });
@@ -3901,7 +3906,15 @@ calc();
     if(!rp.ok)return {erreur:"HTTP "+rp.status};
     let d=null; try{ d=JSON.parse(txt); }catch(e){ return {erreur:"réponse illisible"}; }
     if(Array.isArray(d)) return d.length?{liste:d}:{vide:true};
-    if(Array.isArray(d&&d.resultats)) return d.resultats.length?{liste:d.resultats}:{vide:true};
+    // Une recherche par nom renvoie une liste, sous un nom de champ qui a varié côté CRM :
+    // resultats, results, fiches, items, data… On prend le premier tableau d'objets trouvé.
+    if(d&&typeof d==="object"){
+      for(const k of ["resultats","results","fiches","items","data","liste","prospects"])
+        if(Array.isArray(d[k])) return d[k].length?{liste:d[k]}:{vide:true};
+      const arr=Object.values(d).find(v=>Array.isArray(v)&&v.length&&v[0]&&typeof v[0]==="object");
+      if(arr) return {liste:arr};
+      if(d.fiche&&typeof d.fiche==="object") return {fiche:d.fiche};
+    }
     return {fiche:d};
   }
   const diagHTML=()=>DIAG?'<div style="margin-top:8px;font:11.5px/1.5 ui-monospace,monospace;color:var(--muted);white-space:pre-wrap;word-break:break-all;border-top:1px dotted var(--line);padding-top:6px">'+String(DIAG).replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</div>':"";
@@ -3936,7 +3949,7 @@ calc();
       const b=prompt("Adresse du CRM :",base()); if(b)set(KB,b.trim().replace(/\/+$/,""));
       ov.querySelector("#cspin").style.display="flex"; ov.querySelector("#cspv").focus();
     });
-    const remplir=d=>{ if(applyFicheJSON(d)){ov.remove();} else res.innerHTML='<div class="irow iwarn"><span>Fiche reçue mais vide</span><b>rien à reprendre</b></div>'; };
+    const remplir=d=>{ if(applyFicheJSON(d)){ov.remove();} else res.innerHTML='<div class="irow iwarn"><span>Fiche reçue mais vide</span><b>rien à reprendre</b></div>'+diagHTML(); };
     const lancer=async()=>{
       const v=q.value.trim(); if(!v)return;
       if(!get(KP)){res.innerHTML='<div class="irow iwarn"><span>PIN manquant</span><b>saisis-le ci-dessus</b></div>';ov.querySelector("#cspin").style.display="flex";return;}
@@ -3954,10 +3967,10 @@ calc();
         +L.map((f,i)=>'<label class="irow" style="cursor:pointer" data-i="'+i+'"><span><b>'+esc([f.nom,f.prenom].filter(Boolean).join(" "))+'</b>'
           +'<span style="display:block;font-size:11.5px;color:var(--muted)">'
           +[ISO2FR(f.naissance),f.ville,f.statut,(f.dateCreation?"créée "+ISO2FR(f.dateCreation):"")].filter(Boolean).join(" · ")
-          +'</span></span><b>n° '+esc(f.santeoId)+'</b></label>').join("")+'</div>';
+          +'</span></span><b>n° '+esc(f.santeoId||f.id||"")+'</b></label>').join("")+'</div>';
       res.querySelectorAll(".irow[data-i]").forEach(el=>el.addEventListener("click",async()=>{
         const f=L[+el.dataset.i]; res.textContent="Lecture de la fiche…";
-        const r2=await chercher(String(f.santeoId));
+        const r2=await chercher(String(f.santeoId||f.id||""));
         if(r2&&r2.fiche)remplir(r2.fiche);
         else res.innerHTML='<div class="irow iwarn"><span>Fiche illisible</span><b>n° '+esc(f.santeoId)+'</b></div>';
       }));
@@ -3973,6 +3986,19 @@ calc();
   b.style.cssText="position:fixed;top:10px;right:56px;z-index:50;border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:9px;padding:8px 12px;font:800 12.5px 'Archivo',sans-serif;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)";
   b.addEventListener("click",panneau);
   document.body.appendChild(b);
+
+  // Sous « Fiche CRM » : le tableau de garantie en fenêtre ou en plein écran. Plein écran plutôt qu'un
+  // onglet : les envois (mail, CRM) et leurs fenêtres restent ainsi dans la même page. Mémorisé sur l'appareil.
+  const m=document.createElement("button");
+  m.id="tgmode"; m.type="button";
+  const plein=()=>{try{return localStorage.getItem("santeo_tgplein")==="1";}catch(e){return false;}};
+  const peindre=()=>{const on=plein();document.body.classList.toggle("tgplein",on);
+    m.textContent=on?"⧉":"⛶";
+    m.title=on?"Tableau de garantie : plein écran (cliquer pour revenir en fenêtre)":"Tableau de garantie : en fenêtre (cliquer pour le plein écran)";};
+  m.style.cssText="position:fixed;top:52px;right:56px;z-index:50;width:38px;height:34px;border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:9px;font:800 17px 'Archivo',sans-serif;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)";
+  m.addEventListener("click",()=>{try{localStorage.setItem("santeo_tgplein",plein()?"0":"1");}catch(e){}peindre();});
+  peindre();
+  document.body.appendChild(m);
 })();
 </script>
 

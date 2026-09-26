@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmp7s2lfxcp.js",
+ "genere": "/tmp/tmpitmf8npp.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -448,6 +448,7 @@
    "label": "REVOLUO",
    "resp": true,
    "ins": "avenir",
+   "logo": "revoluo",
    "names": [
     "Rev 1",
     "Rev 2",
@@ -543,6 +544,7 @@
    "label": "REVOLUO RF50",
    "resp": true,
    "ins": "avenir",
+   "logo": "revoluo",
    "names": [
     "Rev 2",
     "Rev 3",
@@ -629,6 +631,7 @@
    "label": "REVOLUO RF100",
    "resp": true,
    "ins": "avenir",
+   "logo": "revoluo",
    "names": [
     "Rev 2",
     "Rev 3",
