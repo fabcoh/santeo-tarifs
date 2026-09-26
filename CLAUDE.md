@@ -493,7 +493,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   et notices n'existent pas encore. CAP NR, CAP ÉVOLUTION, TALIS et API SANTÉ affichent bien les trois. **CAP ÉVOLUTION pointait vers Google
   Drive**, que le relais écarte (il n'accepte que nos hôtes) : le courrier partait sans ses liens. Ses PDF sont
   désormais dans `docs/` (26/09/2026) — `capevo_tg_2026.pdf` (12 p.), `capevo_ipid_2026.pdf` (2 p., millésime
-  2023) et `capevo_notice_2026.pdf`, qui est le **kit complet** (67 p.), la « notice » selon Fabrice. Ne jamais
+  2024, commun salariés / TNS) et `capevo_notice_2026.pdf`, qui est le **kit complet** (67 p.), la « notice » selon Fabrice. Ne jamais
   ouvrir le filtre à `drive.google.com`, qui héberge les fichiers de n'importe qui.
   **Ces documents sont ceux des salariés.** Chez Avenir, **Cap Evolution TNS est un autre produit** (autre
   caisse, autre kit — Fabrice, 26/09/2026 ; le bulletin propose ☐ Cap Evolution / ☐ Cap Evolution TNS).
