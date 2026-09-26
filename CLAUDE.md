@@ -105,6 +105,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Dans la page, ces liens **ouvrent le PDF dans une fenêtre par-dessus** (`showDoc`) : le commercial ne quitte
   pas son comparatif pour montrer une garantie. **Une image n'est jamais cliquable** : les mêmes liens et les
   mêmes limites sont donc repris dans le texte WhatsApp / e-mail qui accompagne l'image (`offreTxt`).
+  **La capture ne porte pas ces liens** (Fabrice, 26/09/2026) : `#tgbox.capwide .tglim .tgdoc` et `.tgsep`
+  sont cachés pendant la capture — nom de la formule et limites seulement. La fenêtre, elle, les garde.
+  « Contrat NON responsable. » n'est plus écrit deux fois quand les limites de la gamme commencent déjà par lui.
 - **Filtre par garantie** (panneau ⚖ sur le bord droit) : un seuil minimum par poste (dentaire, implantologie,
   orthodontie remboursée / non remboursée, optique, lentilles, hospitalisation, honoraires, chambre, audio,
   médecines douces) + un **budget mensuel** avec tolérance **+15 %**. Les seuils proposés sont uniquement les

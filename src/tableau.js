@@ -149,8 +149,9 @@ function pied(G,cols,note,reco){
     const liens=documents(G,x.key,x.fi)
       .map(d=>'<a class="tgdoc" href="'+d.url+'" target="_blank" rel="noopener">'+d.libelle+'</a>')
       .join(' <span class="tgsep">·</span> ');
-    const lim=limites(G,x.key,x.fi);
     const nr=g.resp===false?'<b class="tgnr">Contrat NON responsable.</b> ':'';
+    // Les limites de certaines gammes commencent déjà par la mention : on ne la répète pas.
+    const lim=nr?String(limites(G,x.key,x.fi)||"").replace(/^\s*Contrat NON responsable\.\s*/i,""):limites(G,x.key,x.fi);
     if(!liens&&!lim&&!nr) return "";
     return '<div class="tglim"><b>'+nomComplet(G,x.key,x.fi)+'</b>'
       +(liens?' <span class="tgsep">—</span> '+liens:"")
