@@ -111,6 +111,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Sans e-mail sur la fiche, l'image part seule** et le statut dit « mail non envoyé : pas d'adresse ».
   Un CRM qui refuse `kind:"email"` n'empêche rien : « copie non déposée dans le CRM ». `corpsMail()` fabrique le
   corps du courrier pour les deux chemins — une seule définition.
+  **Après un envoi réussi, les fenêtres se ferment seules** (Fabrice, 26/09/2026) : 1,6 s après « Comparatif
+  envoyé », la fenêtre d'envoi et le tableau de garantie (`fermerTableaux()`, `#tgov.tgmain`) disparaissent, et
+  un bandeau vert (`bandeauOk`) confirme l'envoi 3 s. Même chose après un dépôt CRM réussi, juste avant le
+  retour à la conversation. Un échec, lui, laisse tout ouvert, avec son message.
   **Bas du tableau**, dans cet ordre :
   1. les atouts de la formule marquée de l'⭐, poste par poste — hospitalisation, honoraires, chambre, dentaire,
      implantologie, orthodontie, optique, lentilles, audio, médecines douces ; les postes sans garantie sont
