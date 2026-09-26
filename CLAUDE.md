@@ -107,10 +107,17 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   puis le courrier de « Envoyer par mail » au prospect (même relais, expéditeur mémorisé `santeo_exp`, mêmes
   copies cachées), puis **la copie du courrier déposée dans la conversation** (`kind:"email"` : `subject`,
   `from`, `to`, `date`, `html`, `text`) pour la garder ou la renvoyer depuis le CRM. La page demande la copie
-  au relais (`copie:true`) ; `santeo-mail.php` la renvoie avec les logos en adresse publique au lieu de `cid:`.
+  au relais (`copie:true`) ; `santeo-mail.php` la renvoie avec les logos intégrés en `data:` au lieu de `cid:`.
   **Sans e-mail sur la fiche, l'image part seule** et le statut dit « mail non envoyé : pas d'adresse ».
   Un CRM qui refuse `kind:"email"` n'empêche rien : « copie non déposée dans le CRM ». `corpsMail()` fabrique le
   corps du courrier pour les deux chemins — une seule définition.
+  **Ouverte depuis le CRM (`window.CRMLINK`), la page dépose la copie de TOUT courrier réussi** (demande du Claude
+  du CRM, 26/09/2026) : fenêtre « Envoyer par mail », « autre destinataire » — même quand le destinataire n'est
+  pas le prospect — et bouton ✉️ Email de la barre flottante, qui passent tous par `mailFenetre`. `copieCRM(d)`
+  fait le dépôt et rend la mention (« copie dans le CRM » ou « ⚠ copie non déposée dans le CRM (raison) ») ; un
+  échec ne bloque jamais l'envoi, déjà parti. Hors CRM, `copie` n'est pas demandée. **Dans la copie seulement**,
+  le relais intègre les logos en `data:image/png;base64` (le CRM n'affiche aucune image distante) ; le courrier du
+  prospect garde `cid:`. Le GET du relais annonce `version` et `copie` : c'est ainsi qu'on vérifie qu'il est à jour.
   **Après un envoi réussi, les fenêtres se ferment seules** (Fabrice, 26/09/2026) : 1,6 s après « Comparatif
   envoyé », la fenêtre d'envoi et le tableau de garantie (`fermerTableaux()`, `#tgov.tgmain`) disparaissent, et
   un bandeau vert (`bandeauOk`) confirme l'envoi 3 s. Même chose après un dépôt CRM réussi, juste avant le
