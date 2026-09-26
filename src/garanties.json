@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmpx70sca19.js",
+ "genere": "/tmp/tmp47zzidol.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -730,7 +730,7 @@
     "140 %",
     "180 %",
     "200 %",
-    "200 %"
+    "500 %"
    ],
    "dent": [
     "100 %",
@@ -1621,6 +1621,13 @@
     "https://fabcoh.github.io/santeo-tarifs/docs/mv_ipid_gci100_300_2026.pdf",
     "https://fabcoh.github.io/santeo-tarifs/docs/mv_ipid_gci100_300_2026.pdf",
     "https://fabcoh.github.io/santeo-tarifs/docs/mv_ipid_gci500_2026.pdf"
+   ],
+   "Notice": [
+    "https://fabcoh.github.io/santeo-tarifs/docs/mv_notice_gci100_300_2026.pdf",
+    "https://fabcoh.github.io/santeo-tarifs/docs/mv_notice_gci100_300_2026.pdf",
+    "https://fabcoh.github.io/santeo-tarifs/docs/mv_notice_gci100_300_2026.pdf",
+    "https://fabcoh.github.io/santeo-tarifs/docs/mv_notice_gci100_300_2026.pdf",
+    "https://fabcoh.github.io/santeo-tarifs/docs/mv_notice_gci500_2026.pdf"
    ]
   },
   "LPSH": {
