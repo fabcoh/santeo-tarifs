@@ -310,8 +310,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (Équilibre 1–6, Sérénité étant réservée aux plus de 50 ans) ; pour chacune, **la formule la moins chère qui atteint le
   niveau** (seuils 1 = 100 %, 2 = 131, 3 = 200, 4 = 300 ; optique même échelle en euros, « 100 % BR » ne compte pas),
   **la plus forte au niveau 4** ; une compagnie qui n'atteint pas le niveau est absente ; 5 colonnes au plus. Sans besoin :
-  échelle montante en hospitalisation OPTAM depuis Cap Évolution Accès. Alertes dans `index.json` : moins de 3 formules,
-  contrat non responsable (GCI 500 aux niveaux 4 dentaire et hospitalisation).
+  échelle montante en hospitalisation OPTAM depuis Cap Évolution Accès. **GCI 500 (non responsable) reste aux niveaux 4
+  dentaire et hospitalisation** (Fabrice, 27/09/2026) : `responsable:false` sur la formule, plus d'alerte ; seule
+  alerte restante dans `index.json` : moins de 3 formules.
 - **Mise à jour** : l'Action lance `node tools/images_tg.js --verifier` (sans navigateur) ; si l'empreinte a changé,
   elle installe Playwright, refait les images et les commit avec `index.html`. L'empreinte couvre les valeurs affichées,
   les noms, les limites, les logos et le code de rendu. Le CRM compare `empreinte` pour savoir qu'une image a changé.

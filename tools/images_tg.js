@@ -94,8 +94,9 @@ function html(sel){
     const fichier=sel.id+".png";
     await (await p.$("#tgbox")).screenshot({path:path.join(SORTIE,fichier)});
     await ctx.close();
-    const alerte=sel.formules.length<3?"moins de 3 formules à ce niveau":
-                 sel.formules.some(c=>!c.responsable)?"contient un contrat non responsable":undefined;
+    // Un contrat non responsable n'est pas une alerte : Fabrice garde GCI 500 aux niveaux 4
+    // (27/09/2026). Chaque formule porte « responsable », et les limites de l'image le disent.
+    const alerte=sel.formules.length<3?"moins de 3 formules à ce niveau":undefined;
     images.push({id:sel.id,besoin:sel.besoin,niveau:sel.niveau,fichier:fichier,url:ADRESSE+fichier,
       ligneMiseEnAvant:sel.ligne,
       formules:sel.formules.map(c=>({key:c.key,fi:c.fi,compagnie:c.compagnie,logo:c.logo,gamme:c.gamme,
