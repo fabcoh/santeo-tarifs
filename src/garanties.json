@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmpitmf8npp.js",
+ "genere": "/tmp/tmp2132dcme.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -9,9 +9,9 @@
   "CAPEVO": "AVENIR M.",
   "CAPNR": "AVENIR M.",
   "LPSH": "AVENIR M.",
-  "REV": "AVENIR M.",
-  "RF50": "AVENIR M.",
-  "RF100": "AVENIR M.",
+  "REV": "REMA",
+  "RF50": "REMA",
+  "RF100": "REMA",
   "TALIS": "AVENIR M.",
   "MV": "M. VERTE",
   "APICIL": "APICIL"
@@ -447,7 +447,7 @@
   "REV": {
    "label": "REVOLUO",
    "resp": true,
-   "ins": "avenir",
+   "ins": "rema",
    "logo": "revoluo",
    "names": [
     "Rev 1",
@@ -543,7 +543,7 @@
   "RF50": {
    "label": "REVOLUO RF50",
    "resp": true,
-   "ins": "avenir",
+   "ins": "rema",
    "logo": "revoluo",
    "names": [
     "Rev 2",
@@ -630,7 +630,7 @@
   "RF100": {
    "label": "REVOLUO RF100",
    "resp": true,
-   "ins": "avenir",
+   "ins": "rema",
    "logo": "revoluo",
    "names": [
     "Rev 2",

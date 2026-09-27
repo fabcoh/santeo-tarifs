@@ -15,7 +15,7 @@
   --accent:#0E6E8C; --accent-ink:#FFFFFF; --soft:#EAF1EF;
   --best:#FBF3DC; --best-line:#D9C489;
   --ok:#1A7A5C; --ok-bg:#E4F1EB; --warn:#A9651B; --warn-bg:#F6EBDA;
-  --mcci:#C33B54; --avenir:#2F6B3C;
+  --mcci:#C33B54; --avenir:#2F6B3C; --rema:#6B3FA0;
   --respc:#157A46; --nrc:#8B2332;
 }
 @media (prefers-color-scheme: dark){
@@ -24,7 +24,7 @@
     --accent:#4FB3D4; --accent-ink:#0E1620; --soft:#22303A;
     --best:#33301F; --best-line:#8A7A45;
     --ok:#5CC79C; --ok-bg:#1E332B; --warn:#E0A55E; --warn-bg:#39301F;
-    --mcci:#E06A80; --avenir:#7BC488;
+    --mcci:#E06A80; --avenir:#7BC488; --rema:#B393E6;
     --respc:#5CC79C; --nrc:#E08A96;
   }
 }
@@ -33,7 +33,7 @@
   --accent:#4FB3D4; --accent-ink:#0E1620; --soft:#22303A;
   --best:#33301F; --best-line:#8A7A45;
   --ok:#5CC79C; --ok-bg:#1E332B; --warn:#E0A55E; --warn-bg:#39301F;
-  --mcci:#E06A80; --avenir:#7BC488;
+  --mcci:#E06A80; --avenir:#7BC488; --rema:#B393E6;
   --respc:#5CC79C; --nrc:#E08A96;
 }
 *{box-sizing:border-box}
@@ -116,7 +116,7 @@ tr.offer:hover td{background:var(--soft)}
 tr.open .caret{transform:rotate(90deg)}
 .gamme{display:flex;align-items:center;gap:7px}
 .dot{width:9px;height:9px;border-radius:3px;flex:none}
-.dot.mcci{background:var(--mcci)} .dot.avenir{background:var(--avenir)} .dot.mverte{background:#3FA34D} .dot.apicil{background:#0E7C86}
+.dot.mcci{background:var(--mcci)} .dot.avenir{background:var(--avenir)} .dot.rema{background:var(--rema)} .dot.mverte{background:#3FA34D} .dot.apicil{background:#0E7C86}
 .gsel label.g{flex-direction:column;gap:1px;align-items:center}
 .gsel label.g .comp{font-size:8.5px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
 .gsel label.g .top{display:inline-flex;align-items:center;gap:6px}
@@ -361,7 +361,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-27T07:41:33Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-27T07:41:33Z</div>
+  <div id="buildstamp" data-build="2026-09-27T07:55:19Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-27T07:55:19Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -528,7 +528,7 @@ function calculer(e){
         let pK=null,kidNote="";
         if(kids>0){const kn=Math.min(2,kids),bk=r2(L18[f]*coef);pK=r2(bk*kn);kidNote=kn+" × "+eur(bk)+(kids>2?" (3ᵉ+ gratuit)":"")+" — tarif 18 ans";}
         const tot=r2((pA+((pC&&pC!==undefined)?pC:0)+(pK||0))*fam);
-        rows.push({key,fi:f,ins:"avenir",resp:true,gamme:F[key].label,formule:F[key].names[f],
+        rows.push({key,fi:f,ins:F[key].ins,resp:true,gamme:F[key].label,formule:F[key].names[f],
           hospO:F[key].hospO[f],hospN:F[key].hospN[f],honoO:F[key].honoO[f],honoN:F[key].honoN[f],
           dent:F[key].dent[f],opt:F[key].opt[f],ch:F[key].ch[f],md:F[key].md[f],
           chips:[["resp","Responsable"]].concat(fam<1?[["info","Réduction famille −"+Math.round((1-fam)*100)+" %"]]:[]),
@@ -924,17 +924,17 @@ const F = {
     hospO:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],hospN:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],
     honoO:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],honoN:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],
     dent:["—","100 %","130 %","160 %","200 %","300 %","400 %"],opt:["—","130 €","200 €","200 €","250 €","350 €","450 €"],aud:["—","100 %","130 %","160 %","200 %","200 %","200 %"],ch:["25 €/j","30 €/j","40 €/j","60 €/j","80 €/j","100 €/j","120 €/j"],md:["—","30 €","40 €","50 €","75 €","100 €","150 €"]},
-  REV:{label:"REVOLUO",resp:true,ins:"avenir",logo:"revoluo",names:["Rev 1","Rev 2","Rev 3","Rev 4","Rev 5","Rev 6","Rev 7","Rev 8"],
+  REV:{label:"REVOLUO",resp:true,ins:"rema",logo:"revoluo",names:["Rev 1","Rev 2","Rev 3","Rev 4","Rev 5","Rev 6","Rev 7","Rev 8"],
     hospO:["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"],hospN:["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
     honoO:["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"],honoN:["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
     dent:["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"],opt:["—","100 €","125 €","150 €","175 €","225 €","275 €","300 €"],
     ch:["—","30 €/j","35 €/j","40 €/j","50 €/j","60 €/j","70 €/j","100 €/j"],md:["—","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €"]},
-  RF50:{label:"REVOLUO RF50",resp:true,ins:"avenir",logo:"revoluo",names:["Rev 2","Rev 3","Rev 4","Rev 5","Rev 6","Rev 7","Rev 8"],
+  RF50:{label:"REVOLUO RF50",resp:true,ins:"rema",logo:"revoluo",names:["Rev 2","Rev 3","Rev 4","Rev 5","Rev 6","Rev 7","Rev 8"],
     hospO:["100 %","125 %","150 %","175 %","200 %","250 %","300 %"],hospN:["100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
     honoO:["100 %","125 %","150 %","175 %","200 %","250 %","300 %"],honoN:["100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
     dent:["150 %","175 %","200 %","225 %","250 %","300 %","350 %"],opt:["150 €","175 €","200 €","225 €","275 €","325 €","350 €"],
     ch:["30 €/j","35 €/j","40 €/j","50 €/j","60 €/j","70 €/j","100 €/j"],md:["4×20 €","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €","4×20 €"]},
-  RF100:{label:"REVOLUO RF100",resp:true,ins:"avenir",logo:"revoluo",names:["Rev 2","Rev 3","Rev 4","Rev 5","Rev 6"],
+  RF100:{label:"REVOLUO RF100",resp:true,ins:"rema",logo:"revoluo",names:["Rev 2","Rev 3","Rev 4","Rev 5","Rev 6"],
     hospO:["100 %","125 %","150 %","175 %","200 %"],hospN:["100 %","105 %","130 %","155 %","180 %"],
     honoO:["100 %","125 %","150 %","175 %","200 %"],honoN:["100 %","105 %","130 %","155 %","180 %"],
     dent:["200 %","225 %","250 %","275 %","300 %"],opt:["150 €","175 €","200 €","225 €","275 €"],
@@ -2346,7 +2346,7 @@ function renderTG(cols,title,sub,note,single){
 const REGLBL={SAL:"Salarié",TNS:"TNS",RL:"Salarié régime local",TNSRL:"TNS régime local"};
 const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
 const sel={MCCINOVA:false,FLEXIA:false,SOLENCIA:false,CAPEVO:false,CAPNR:false,LPSH:false,REV:false,RF50:false,RF100:false,MV:false,TALIS:false,APICIL:false};
-const COMP={MCCINOVA:'MCCI',FLEXIA:'MCCI',SOLENCIA:'MCCI',CAPEVO:'AVENIR M.',CAPNR:'AVENIR M.',LPSH:'AVENIR M.',REV:'AVENIR M.',RF50:'AVENIR M.',RF100:'AVENIR M.',TALIS:'AVENIR M.',MV:'M. VERTE',APICIL:'APICIL'};
+const COMP={MCCINOVA:'MCCI',FLEXIA:'MCCI',SOLENCIA:'MCCI',CAPEVO:'AVENIR M.',CAPNR:'AVENIR M.',LPSH:'AVENIR M.',REV:'REMA',RF50:'REMA',RF100:'REMA',TALIS:'AVENIR M.',MV:'M. VERTE',APICIL:'APICIL'};
 // Garanties remises aux modules partagés : même jeu que src/garanties.json.
 const GAR={gammes:F,extras:EX,compagnies:COMP,limites:LIMITES,documents:DOCS,notes:TGNOTE};
 const on=k=>Object.values(sel).some(v=>v)?sel[k]:true; // aucune coche = toutes les gammes ; coche(s) = uniquement celles-là
