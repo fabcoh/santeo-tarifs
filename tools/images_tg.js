@@ -98,7 +98,7 @@ function html(sel){
                  sel.formules.some(c=>!c.responsable)?"contient un contrat non responsable":undefined;
     images.push({id:sel.id,besoin:sel.besoin,niveau:sel.niveau,fichier:fichier,url:ADRESSE+fichier,
       ligneMiseEnAvant:sel.ligne,
-      formules:sel.formules.map(c=>({key:c.key,fi:c.fi,compagnie:G.compagnies[c.key],gamme:c.gamme,
+      formules:sel.formules.map(c=>({key:c.key,fi:c.fi,compagnie:c.compagnie,logo:c.logo,gamme:c.gamme,
         formule:c.formule,nom:c.nom,valeur:c.valeur,responsable:c.responsable})),
       alerte:alerte});
     console.log(fichier.padEnd(22),sel.formules.map(c=>c.nom).join(" | "));
@@ -107,8 +107,8 @@ function html(sel){
   fs.writeFileSync(path.join(SORTIE,"index.json"),JSON.stringify({
     empreinte:EMPREINTE, genere:new Date().toISOString(),
     source:"Comparateur Santéo — src/selections.js sur src/garanties.json",
-    niveaux:{"1":"jusqu'à 130 % (ou 130 €)","2":"131 à 199","3":"200 à 299","4":"300 et plus — la formule la plus forte"},
-    regle:"Une formule par compagnie (Cap Évolution, MCCI Flexia, Mutuelle Verte, Révoluo, APICIL Équilibre), la première qui atteint le niveau ; niveau 4 : la plus forte. Compagnie sans formule au niveau : absente.",
+    niveaux:{"1":"100 % (ou un forfait en euros)","2":"au moins 131","3":"au moins 200","4":"au moins 300 — la formule la plus forte"},
+    regle:"Colonne 1 : Cap Évolution Accès, toujours. Puis une compagnie par colonne, jamais deux fois le même logo, dans l'ordre MCCI (Flexia), Mutuelle Verte, Révoluo (REMA), APICIL (Équilibre) : la formule la moins chère qui atteint le niveau, la plus forte au niveau 4. Compagnie qui n'atteint pas le niveau : absente. 5 colonnes au plus.",
     images:images},null,1)+"\n");
   console.log("Empreinte "+EMPREINTE+" — "+images.length+" images dans docs/tg/.");
 })().catch(e=>{console.error(e);process.exit(1);});

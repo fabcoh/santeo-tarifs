@@ -280,8 +280,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   blanc sur fond sombre. **Tant qu'un fichier manque, le nom de la compagnie s'affiche à sa place** — aucune
   image cassée. Le logo est reposé à chaque mise en avant d'une formule.
   **Révoluo, RF50 et RF100 portent le logo Révoluo** (fourni par Fabrice le 26/09/2026, fond blanc rendu
-  transparent) et non celui d'Avenir : la gamme porte `logo:"revoluo"`, distinct de `ins:"avenir"` qui reste
-  l'assureur (pastille de couleur, routage). `Tableau.logo` et le courrier lisent `g.logo || g.ins`.
+  transparent) et non celui d'Avenir : la gamme porte `logo:"revoluo"`. `Tableau.logo` et le courrier lisent `g.logo || g.ins`.
+  **Révoluo n'est pas Avenir Mutuelle** (Fabrice, 27/09/2026) : l'assureur est **REMA** (La Réunion des Mutuelles
+  d'Assurances Régionales, SIREN 775 626 377, IPID et conditions générales), gestion déléguée au **CERGAP**.
+  REV, RF50 et RF100 portent `ins:"rema"` (pastille violette `--rema`, déclarée dans les trois thèmes) et
+  `COMP` = `REMA` — donc `garanties.json`, le périmètre, le sous-titre du tableau et le courrier. `moteur.js`
+  écrivait `ins:"avenir"` en dur pour ces lignes : il reprend désormais `F[key].ins`.
   **Dans le courrier, la taille n'est pas une hauteur commune mais un encombrement commun** : les logos n'ont
   pas la même forme — Avenir est presque carré (211 × 160), MCCI un long bandeau (545 × 160). À 34 px de haut
   tous les deux, MCCI faisait 116 px de large contre 45 à Avenir, et écrasait la colonne voisine. Le relais
@@ -301,13 +305,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Le choix des formules vit dans `src/selections.js`** (fonction pure, sans DOM) ; `tools/images_tg.js` fait les
   images avec `src/tableau.js` + `src/tableau.css` — le même tableau que la page, logos en `data:`, étoile masquée,
   **ligne du besoin mise en avant** (`tr.avant`). Refus de produire si Archivo / IBM Plex Sans ne sont pas chargées.
-- Règles de Fabrice : une formule par compagnie, ordre Cap Évolution · MCCI · Mutuelle Verte · Révoluo · APICIL ;
-  3 à 5 par image ; niveau 1 = 100–130 %, 2 = 150 %, 3 = 200–250 %, 4 = 300–500 % (la plus forte) ; compagnie sans
-  formule au niveau : absente ; sans besoin : échelle montante en hospitalisation depuis Cap Évolution Accès.
-  **Lecture retenue, à valider par Fabrice** : niveaux jointifs (≤130, 131–199, 200–299, ≥300 — sinon Cap Évolution
-  Tranquillité 160 % n'aurait aucun niveau) ; niveaux 1–3 = la **première** formule qui atteint le niveau ; MCCI =
-  **FLEXIA** ; APICIL = **Équilibre 1–6** (Sérénité réservée aux plus de 50 ans) ; optique en euros sur la même échelle,
-  « 100 % BR » ne compte pas ; hospitalisation = ligne « Hospitalisation Optam ».
+- **Règles de Fabrice, confirmées le 27/09/2026** : colonne 1 **toujours Cap Évolution Accès** ; puis une compagnie
+  par colonne, **jamais deux fois le même logo**, ordre MCCI (FLEXIA) · Mutuelle Verte · Révoluo (REMA) · APICIL
+  (Équilibre 1–6, Sérénité étant réservée aux plus de 50 ans) ; pour chacune, **la formule la moins chère qui atteint le
+  niveau** (seuils 1 = 100 %, 2 = 131, 3 = 200, 4 = 300 ; optique même échelle en euros, « 100 % BR » ne compte pas),
+  **la plus forte au niveau 4** ; une compagnie qui n'atteint pas le niveau est absente ; 5 colonnes au plus. Sans besoin :
+  échelle montante en hospitalisation OPTAM depuis Cap Évolution Accès. Alertes dans `index.json` : moins de 3 formules,
+  contrat non responsable (GCI 500 aux niveaux 4 dentaire et hospitalisation).
 - **Mise à jour** : l'Action lance `node tools/images_tg.js --verifier` (sans navigateur) ; si l'empreinte a changé,
   elle installe Playwright, refait les images et les commit avec `index.html`. L'empreinte couvre les valeurs affichées,
   les noms, les limites, les logos et le code de rendu. Le CRM compare `empreinte` pour savoir qu'une image a changé.

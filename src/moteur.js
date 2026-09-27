@@ -157,7 +157,7 @@ function calculer(e){
         let pK=null,kidNote="";
         if(kids>0){const kn=Math.min(2,kids),bk=r2(L18[f]*coef);pK=r2(bk*kn);kidNote=kn+" × "+eur(bk)+(kids>2?" (3ᵉ+ gratuit)":"")+" — tarif 18 ans";}
         const tot=r2((pA+((pC&&pC!==undefined)?pC:0)+(pK||0))*fam);
-        rows.push({key,fi:f,ins:"avenir",resp:true,gamme:F[key].label,formule:F[key].names[f],
+        rows.push({key,fi:f,ins:F[key].ins,resp:true,gamme:F[key].label,formule:F[key].names[f],
           hospO:F[key].hospO[f],hospN:F[key].hospN[f],honoO:F[key].honoO[f],honoN:F[key].honoN[f],
           dent:F[key].dent[f],opt:F[key].opt[f],ch:F[key].ch[f],md:F[key].md[f],
           chips:[["resp","Responsable"]].concat(fam<1?[["info","Réduction famille −"+Math.round((1-fam)*100)+" %"]]:[]),
