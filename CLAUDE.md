@@ -291,6 +291,31 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Après génération** : fenêtre « Faire signer sur Universign » (nom de collecte, signataire à copier, fichiers,
   page Universign intégrée en iframe). Le glisser-déposer d'un fichier vers un autre site est interdit par le navigateur.
 
+## Images sans tarif pour le CRM — `docs/tg/` (27/09/2026)
+
+- Demande du Claude du CRM (via Fabrice) : juste après le « oui » du prospect à « je vous les présente ? », le CRM
+  envoie une **image du tableau de garantie sans tarif**. Sans tarif, l'image ne dépend que du besoin : **13 images
+  fixes**, `dentaire-1…4`, `optique-1…4`, `hospitalisation-1…4`, `sans-besoin`, à
+  `https://fabcoh.github.io/santeo-tarifs/docs/tg/<id>.png`, et leur liste `docs/tg/index.json` (formules retenues,
+  valeur du poste, responsable ou non, alerte, **`empreinte`**).
+- **Le choix des formules vit dans `src/selections.js`** (fonction pure, sans DOM) ; `tools/images_tg.js` fait les
+  images avec `src/tableau.js` + `src/tableau.css` — le même tableau que la page, logos en `data:`, étoile masquée,
+  **ligne du besoin mise en avant** (`tr.avant`). Refus de produire si Archivo / IBM Plex Sans ne sont pas chargées.
+- Règles de Fabrice : une formule par compagnie, ordre Cap Évolution · MCCI · Mutuelle Verte · Révoluo · APICIL ;
+  3 à 5 par image ; niveau 1 = 100–130 %, 2 = 150 %, 3 = 200–250 %, 4 = 300–500 % (la plus forte) ; compagnie sans
+  formule au niveau : absente ; sans besoin : échelle montante en hospitalisation depuis Cap Évolution Accès.
+  **Lecture retenue, à valider par Fabrice** : niveaux jointifs (≤130, 131–199, 200–299, ≥300 — sinon Cap Évolution
+  Tranquillité 160 % n'aurait aucun niveau) ; niveaux 1–3 = la **première** formule qui atteint le niveau ; MCCI =
+  **FLEXIA** ; APICIL = **Équilibre 1–6** (Sérénité réservée aux plus de 50 ans) ; optique en euros sur la même échelle,
+  « 100 % BR » ne compte pas ; hospitalisation = ligne « Hospitalisation Optam ».
+- **Mise à jour** : l'Action lance `node tools/images_tg.js --verifier` (sans navigateur) ; si l'empreinte a changé,
+  elle installe Playwright, refait les images et les commit avec `index.html`. L'empreinte couvre les valeurs affichées,
+  les noms, les limites, les logos et le code de rendu. Le CRM compare `empreinte` pour savoir qu'une image a changé.
+- En local : `NODE_PATH=<scratchpad>/node_modules CHROMIUM=/opt/pw-browsers/chromium node tools/images_tg.js`.
+- **Nom de formule corrigé au passage** : `.replace(/\b(\S+) \1\b/…)` retirait la répétition « M. VERTE GCI GCI 100 »
+  mais collait aussi « API SANTÉ Équilibre » en « API SANTÉquilibre » (`\b` ne connaît pas les lettres accentuées) —
+  dans le texte WhatsApp, le bas du tableau et le courrier. Remplacé partout par `/(^|\s)(\S+) \2(?=\s|$)/`.
+
 ## API APICIL / VERALTI (tarification)
 
 - Offre « API Santé » (individuel et TNS), documentation VERALTI **v1.8** du 27/01/2026. Support : support@veralti.com.

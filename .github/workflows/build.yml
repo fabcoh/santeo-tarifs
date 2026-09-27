@@ -6,6 +6,8 @@ on:
     paths:
       - 'src/**'
       - 'build.py'
+      - 'tools/**'
+      - 'docs/logo_*.png'
       - '.github/workflows/build.yml'
   workflow_dispatch:
 
@@ -28,15 +30,28 @@ jobs:
       - name: Placer la page a la racine
         run: cp dist/index.html index.html
 
+      # Images des sélections sans tarif pour le CRM (docs/tg/) : refaites seulement quand
+      # ce qu'elles montrent a changé — la vérification se passe de navigateur.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Images des selections sans tarif
+        run: |
+          if node tools/images_tg.js --verifier; then exit 0; fi
+          npm install --no-save --no-package-lock playwright@1.63.0
+          npx playwright install --with-deps chromium
+          node tools/images_tg.js
+
       - name: Publier
         run: |
           git config user.name "Fabrice Cohen"
           git config user.email "fcohen@santeo.net"
           # garanties.json est regenere par build.py : il suit la page, jamais l'inverse.
-          if git diff --quiet -- index.html src/garanties.json; then
+          if git diff --quiet -- index.html src/garanties.json && [ -z "$(git status --porcelain -- docs/tg)" ]; then
             echo "Aucun changement a publier."
             exit 0
           fi
-          git add index.html src/garanties.json src/tableau.css
+          git add index.html src/garanties.json src/tableau.css docs/tg
           git commit -m "Comparateur : construction automatique"
           git push

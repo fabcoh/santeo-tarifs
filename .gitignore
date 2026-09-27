@@ -4,3 +4,6 @@ dist/
 
 # Outils de mise au point déposés sur l'hébergement, jamais dans le dépôt public
 apicil-config.php
+
+# Playwright installé par l’Action pour les images docs/tg/
+node_modules/

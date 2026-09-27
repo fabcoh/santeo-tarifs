@@ -1,0 +1,705 @@
+{
+ "empreinte": "4b1444bb913b5b69",
+ "genere": "2026-09-27T07:40:03.395Z",
+ "source": "Comparateur Santéo — src/selections.js sur src/garanties.json",
+ "niveaux": {
+  "1": "jusqu'à 130 % (ou 130 €)",
+  "2": "131 à 199",
+  "3": "200 à 299",
+  "4": "300 et plus — la formule la plus forte"
+ },
+ "regle": "Une formule par compagnie (Cap Évolution, MCCI Flexia, Mutuelle Verte, Révoluo, APICIL Équilibre), la première qui atteint le niveau ; niveau 4 : la plus forte. Compagnie sans formule au niveau : absente.",
+ "images": [
+  {
+   "id": "dentaire-1",
+   "besoin": "dentaire",
+   "niveau": 1,
+   "fichier": "dentaire-1.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/dentaire-1.png",
+   "ligneMiseEnAvant": "Dentaire — prothèses",
+   "formules": [
+    {
+     "key": "CAPEVO",
+     "fi": 0,
+     "compagnie": "AVENIR M.",
+     "gamme": "CAP EVOLUTION",
+     "formule": "Accès",
+     "nom": "CAP EVOLUTION Accès",
+     "valeur": "100 %",
+     "responsable": true
+    },
+    {
+     "key": "FLEXIA",
+     "fi": 0,
+     "compagnie": "MCCI",
+     "gamme": "FLEXIA",
+     "formule": "Start",
+     "nom": "FLEXIA Start",
+     "valeur": "100 %",
+     "responsable": true
+    },
+    {
+     "key": "MV",
+     "fi": 0,
+     "compagnie": "M. VERTE",
+     "gamme": "M. VERTE GCI",
+     "formule": "GCI 100",
+     "nom": "M. VERTE GCI 100",
+     "valeur": "100 %",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 0,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 1",
+     "nom": "REVOLUO Rev 1",
+     "valeur": "100 %",
+     "responsable": true
+    },
+    {
+     "key": "APICIL",
+     "fi": 0,
+     "compagnie": "APICIL",
+     "gamme": "API SANTÉ",
+     "formule": "Équilibre 1",
+     "nom": "API SANTÉ Équilibre 1",
+     "valeur": "100 %",
+     "responsable": true
+    }
+   ]
+  },
+  {
+   "id": "dentaire-2",
+   "besoin": "dentaire",
+   "niveau": 2,
+   "fichier": "dentaire-2.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/dentaire-2.png",
+   "ligneMiseEnAvant": "Dentaire — prothèses",
+   "formules": [
+    {
+     "key": "CAPEVO",
+     "fi": 2,
+     "compagnie": "AVENIR M.",
+     "gamme": "CAP EVOLUTION",
+     "formule": "Tranquillité",
+     "nom": "CAP EVOLUTION Tranquillité",
+     "valeur": "160 %",
+     "responsable": true
+    },
+    {
+     "key": "FLEXIA",
+     "fi": 1,
+     "compagnie": "MCCI",
+     "gamme": "FLEXIA",
+     "formule": "Confort",
+     "nom": "FLEXIA Confort",
+     "valeur": "150 %",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 3,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 4",
+     "nom": "REVOLUO Rev 4",
+     "valeur": "150 %",
+     "responsable": true
+    },
+    {
+     "key": "APICIL",
+     "fi": 1,
+     "compagnie": "APICIL",
+     "gamme": "API SANTÉ",
+     "formule": "Équilibre 2",
+     "nom": "API SANTÉ Équilibre 2",
+     "valeur": "150 %",
+     "responsable": true
+    }
+   ]
+  },
+  {
+   "id": "dentaire-3",
+   "besoin": "dentaire",
+   "niveau": 3,
+   "fichier": "dentaire-3.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/dentaire-3.png",
+   "ligneMiseEnAvant": "Dentaire — prothèses",
+   "formules": [
+    {
+     "key": "CAPEVO",
+     "fi": 3,
+     "compagnie": "AVENIR M.",
+     "gamme": "CAP EVOLUTION",
+     "formule": "Sérénité",
+     "nom": "CAP EVOLUTION Sérénité",
+     "valeur": "200 %",
+     "responsable": true
+    },
+    {
+     "key": "FLEXIA",
+     "fi": 2,
+     "compagnie": "MCCI",
+     "gamme": "FLEXIA",
+     "formule": "Performance",
+     "nom": "FLEXIA Performance",
+     "valeur": "200 %",
+     "responsable": true
+    },
+    {
+     "key": "MV",
+     "fi": 1,
+     "compagnie": "M. VERTE",
+     "gamme": "M. VERTE GCI",
+     "formule": "GCI 150",
+     "nom": "M. VERTE GCI 150",
+     "valeur": "200 %",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 5,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 6",
+     "nom": "REVOLUO Rev 6",
+     "valeur": "200 %",
+     "responsable": true
+    },
+    {
+     "key": "APICIL",
+     "fi": 2,
+     "compagnie": "APICIL",
+     "gamme": "API SANTÉ",
+     "formule": "Équilibre 3",
+     "nom": "API SANTÉ Équilibre 3",
+     "valeur": "200 %",
+     "responsable": true
+    }
+   ]
+  },
+  {
+   "id": "dentaire-4",
+   "besoin": "dentaire",
+   "niveau": 4,
+   "fichier": "dentaire-4.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/dentaire-4.png",
+   "ligneMiseEnAvant": "Dentaire — prothèses",
+   "formules": [
+    {
+     "key": "FLEXIA",
+     "fi": 3,
+     "compagnie": "MCCI",
+     "gamme": "FLEXIA",
+     "formule": "Premium",
+     "nom": "FLEXIA Premium",
+     "valeur": "300 %",
+     "responsable": true
+    },
+    {
+     "key": "MV",
+     "fi": 4,
+     "compagnie": "M. VERTE",
+     "gamme": "M. VERTE GCI",
+     "formule": "GCI 500",
+     "nom": "M. VERTE GCI 500",
+     "valeur": "500 %",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 7,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 8",
+     "nom": "REVOLUO Rev 8",
+     "valeur": "300 %",
+     "responsable": true
+    },
+    {
+     "key": "APICIL",
+     "fi": 5,
+     "compagnie": "APICIL",
+     "gamme": "API SANTÉ",
+     "formule": "Équilibre 6",
+     "nom": "API SANTÉ Équilibre 6",
+     "valeur": "500 %",
+     "responsable": true
+    }
+   ]
+  },
+  {
+   "id": "optique-1",
+   "besoin": "optique",
+   "niveau": 1,
+   "fichier": "optique-1.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/optique-1.png",
+   "ligneMiseEnAvant": "Optique (équipement)",
+   "formules": [
+    {
+     "key": "CAPEVO",
+     "fi": 0,
+     "compagnie": "AVENIR M.",
+     "gamme": "CAP EVOLUTION",
+     "formule": "Accès",
+     "nom": "CAP EVOLUTION Accès",
+     "valeur": "100 €",
+     "responsable": true
+    },
+    {
+     "key": "FLEXIA",
+     "fi": 1,
+     "compagnie": "MCCI",
+     "gamme": "FLEXIA",
+     "formule": "Confort",
+     "nom": "FLEXIA Confort",
+     "valeur": "95 €",
+     "responsable": true
+    },
+    {
+     "key": "MV",
+     "fi": 1,
+     "compagnie": "M. VERTE",
+     "gamme": "M. VERTE GCI",
+     "formule": "GCI 150",
+     "nom": "M. VERTE GCI 150",
+     "valeur": "100 €",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 1,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 2",
+     "nom": "REVOLUO Rev 2",
+     "valeur": "100 €",
+     "responsable": true
+    },
+    {
+     "key": "APICIL",
+     "fi": 1,
+     "compagnie": "APICIL",
+     "gamme": "API SANTÉ",
+     "formule": "Équilibre 2",
+     "nom": "API SANTÉ Équilibre 2",
+     "valeur": "100 €",
+     "responsable": true
+    }
+   ]
+  },
+  {
+   "id": "optique-2",
+   "besoin": "optique",
+   "niveau": 2,
+   "fichier": "optique-2.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/optique-2.png",
+   "ligneMiseEnAvant": "Optique (équipement)",
+   "formules": [
+    {
+     "key": "MV",
+     "fi": 2,
+     "compagnie": "M. VERTE",
+     "gamme": "M. VERTE GCI",
+     "formule": "GCI 200",
+     "nom": "M. VERTE GCI 200",
+     "valeur": "150 €",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 3,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 4",
+     "nom": "REVOLUO Rev 4",
+     "valeur": "150 €",
+     "responsable": true
+    }
+   ],
+   "alerte": "moins de 3 formules à ce niveau"
+  },
+  {
+   "id": "optique-3",
+   "besoin": "optique",
+   "niveau": 3,
+   "fichier": "optique-3.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/optique-3.png",
+   "ligneMiseEnAvant": "Optique (équipement)",
+   "formules": [
+    {
+     "key": "CAPEVO",
+     "fi": 1,
+     "compagnie": "AVENIR M.",
+     "gamme": "CAP EVOLUTION",
+     "formule": "Équilibre",
+     "nom": "CAP EVOLUTION Équilibre",
+     "valeur": "230 €",
+     "responsable": true
+    },
+    {
+     "key": "MV",
+     "fi": 3,
+     "compagnie": "M. VERTE",
+     "gamme": "M. VERTE GCI",
+     "formule": "GCI 300",
+     "nom": "M. VERTE GCI 300",
+     "valeur": "200 €",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 5,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 6",
+     "nom": "REVOLUO Rev 6",
+     "valeur": "225 €",
+     "responsable": true
+    },
+    {
+     "key": "APICIL",
+     "fi": 2,
+     "compagnie": "APICIL",
+     "gamme": "API SANTÉ",
+     "formule": "Équilibre 3",
+     "nom": "API SANTÉ Équilibre 3",
+     "valeur": "200 €",
+     "responsable": true
+    }
+   ]
+  },
+  {
+   "id": "optique-4",
+   "besoin": "optique",
+   "niveau": 4,
+   "fichier": "optique-4.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/optique-4.png",
+   "ligneMiseEnAvant": "Optique (équipement)",
+   "formules": [
+    {
+     "key": "CAPEVO",
+     "fi": 3,
+     "compagnie": "AVENIR M.",
+     "gamme": "CAP EVOLUTION",
+     "formule": "Sérénité",
+     "nom": "CAP EVOLUTION Sérénité",
+     "valeur": "300 €",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 7,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 8",
+     "nom": "REVOLUO Rev 8",
+     "valeur": "300 €",
+     "responsable": true
+    },
+    {
+     "key": "APICIL",
+     "fi": 5,
+     "compagnie": "APICIL",
+     "gamme": "API SANTÉ",
+     "formule": "Équilibre 6",
+     "nom": "API SANTÉ Équilibre 6",
+     "valeur": "420 €",
+     "responsable": true
+    }
+   ]
+  },
+  {
+   "id": "hospitalisation-1",
+   "besoin": "hospitalisation",
+   "niveau": 1,
+   "fichier": "hospitalisation-1.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/hospitalisation-1.png",
+   "ligneMiseEnAvant": "Hospitalisation Optam",
+   "formules": [
+    {
+     "key": "CAPEVO",
+     "fi": 0,
+     "compagnie": "AVENIR M.",
+     "gamme": "CAP EVOLUTION",
+     "formule": "Accès",
+     "nom": "CAP EVOLUTION Accès",
+     "valeur": "100 %",
+     "responsable": true
+    },
+    {
+     "key": "FLEXIA",
+     "fi": 0,
+     "compagnie": "MCCI",
+     "gamme": "FLEXIA",
+     "formule": "Start",
+     "nom": "FLEXIA Start",
+     "valeur": "100 %",
+     "responsable": true
+    },
+    {
+     "key": "MV",
+     "fi": 0,
+     "compagnie": "M. VERTE",
+     "gamme": "M. VERTE GCI",
+     "formule": "GCI 100",
+     "nom": "M. VERTE GCI 100",
+     "valeur": "100 %",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 0,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 1",
+     "nom": "REVOLUO Rev 1",
+     "valeur": "100 %",
+     "responsable": true
+    },
+    {
+     "key": "APICIL",
+     "fi": 0,
+     "compagnie": "APICIL",
+     "gamme": "API SANTÉ",
+     "formule": "Équilibre 1",
+     "nom": "API SANTÉ Équilibre 1",
+     "valeur": "100 %",
+     "responsable": true
+    }
+   ]
+  },
+  {
+   "id": "hospitalisation-2",
+   "besoin": "hospitalisation",
+   "niveau": 2,
+   "fichier": "hospitalisation-2.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/hospitalisation-2.png",
+   "ligneMiseEnAvant": "Hospitalisation Optam",
+   "formules": [
+    {
+     "key": "CAPEVO",
+     "fi": 2,
+     "compagnie": "AVENIR M.",
+     "gamme": "CAP EVOLUTION",
+     "formule": "Tranquillité",
+     "nom": "CAP EVOLUTION Tranquillité",
+     "valeur": "160 %",
+     "responsable": true
+    },
+    {
+     "key": "FLEXIA",
+     "fi": 1,
+     "compagnie": "MCCI",
+     "gamme": "FLEXIA",
+     "formule": "Confort",
+     "nom": "FLEXIA Confort",
+     "valeur": "150 %",
+     "responsable": true
+    },
+    {
+     "key": "MV",
+     "fi": 1,
+     "compagnie": "M. VERTE",
+     "gamme": "M. VERTE GCI",
+     "formule": "GCI 150",
+     "nom": "M. VERTE GCI 150",
+     "valeur": "160 %",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 3,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 4",
+     "nom": "REVOLUO Rev 4",
+     "valeur": "150 %",
+     "responsable": true
+    },
+    {
+     "key": "APICIL",
+     "fi": 1,
+     "compagnie": "APICIL",
+     "gamme": "API SANTÉ",
+     "formule": "Équilibre 2",
+     "nom": "API SANTÉ Équilibre 2",
+     "valeur": "150 %",
+     "responsable": true
+    }
+   ]
+  },
+  {
+   "id": "hospitalisation-3",
+   "besoin": "hospitalisation",
+   "niveau": 3,
+   "fichier": "hospitalisation-3.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/hospitalisation-3.png",
+   "ligneMiseEnAvant": "Hospitalisation Optam",
+   "formules": [
+    {
+     "key": "CAPEVO",
+     "fi": 3,
+     "compagnie": "AVENIR M.",
+     "gamme": "CAP EVOLUTION",
+     "formule": "Sérénité",
+     "nom": "CAP EVOLUTION Sérénité",
+     "valeur": "200 %",
+     "responsable": true
+    },
+    {
+     "key": "FLEXIA",
+     "fi": 2,
+     "compagnie": "MCCI",
+     "gamme": "FLEXIA",
+     "formule": "Performance",
+     "nom": "FLEXIA Performance",
+     "valeur": "200 %",
+     "responsable": true
+    },
+    {
+     "key": "MV",
+     "fi": 2,
+     "compagnie": "M. VERTE",
+     "gamme": "M. VERTE GCI",
+     "formule": "GCI 200",
+     "nom": "M. VERTE GCI 200",
+     "valeur": "200 %",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 5,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 6",
+     "nom": "REVOLUO Rev 6",
+     "valeur": "200 %",
+     "responsable": true
+    },
+    {
+     "key": "APICIL",
+     "fi": 2,
+     "compagnie": "APICIL",
+     "gamme": "API SANTÉ",
+     "formule": "Équilibre 3",
+     "nom": "API SANTÉ Équilibre 3",
+     "valeur": "200 %",
+     "responsable": true
+    }
+   ]
+  },
+  {
+   "id": "hospitalisation-4",
+   "besoin": "hospitalisation",
+   "niveau": 4,
+   "fichier": "hospitalisation-4.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/hospitalisation-4.png",
+   "ligneMiseEnAvant": "Hospitalisation Optam",
+   "formules": [
+    {
+     "key": "FLEXIA",
+     "fi": 3,
+     "compagnie": "MCCI",
+     "gamme": "FLEXIA",
+     "formule": "Premium",
+     "nom": "FLEXIA Premium",
+     "valeur": "300 %",
+     "responsable": true
+    },
+    {
+     "key": "MV",
+     "fi": 4,
+     "compagnie": "M. VERTE",
+     "gamme": "M. VERTE GCI",
+     "formule": "GCI 500",
+     "nom": "M. VERTE GCI 500",
+     "valeur": "500 %",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 7,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 8",
+     "nom": "REVOLUO Rev 8",
+     "valeur": "300 %",
+     "responsable": true
+    },
+    {
+     "key": "APICIL",
+     "fi": 5,
+     "compagnie": "APICIL",
+     "gamme": "API SANTÉ",
+     "formule": "Équilibre 6",
+     "nom": "API SANTÉ Équilibre 6",
+     "valeur": "400 %",
+     "responsable": true
+    }
+   ]
+  },
+  {
+   "id": "sans-besoin",
+   "besoin": null,
+   "niveau": null,
+   "fichier": "sans-besoin.png",
+   "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/sans-besoin.png",
+   "ligneMiseEnAvant": "Hospitalisation Optam",
+   "formules": [
+    {
+     "key": "CAPEVO",
+     "fi": 0,
+     "compagnie": "AVENIR M.",
+     "gamme": "CAP EVOLUTION",
+     "formule": "Accès",
+     "nom": "CAP EVOLUTION Accès",
+     "valeur": "100 %",
+     "responsable": true
+    },
+    {
+     "key": "FLEXIA",
+     "fi": 1,
+     "compagnie": "MCCI",
+     "gamme": "FLEXIA",
+     "formule": "Confort",
+     "nom": "FLEXIA Confort",
+     "valeur": "150 %",
+     "responsable": true
+    },
+    {
+     "key": "MV",
+     "fi": 1,
+     "compagnie": "M. VERTE",
+     "gamme": "M. VERTE GCI",
+     "formule": "GCI 150",
+     "nom": "M. VERTE GCI 150",
+     "valeur": "160 %",
+     "responsable": true
+    },
+    {
+     "key": "REV",
+     "fi": 4,
+     "compagnie": "AVENIR M.",
+     "gamme": "REVOLUO",
+     "formule": "Rev 5",
+     "nom": "REVOLUO Rev 5",
+     "valeur": "175 %",
+     "responsable": true
+    },
+    {
+     "key": "APICIL",
+     "fi": 2,
+     "compagnie": "APICIL",
+     "gamme": "API SANTÉ",
+     "formule": "Équilibre 3",
+     "nom": "API SANTÉ Équilibre 3",
+     "valeur": "200 %",
+     "responsable": true
+    }
+   ]
+  }
+ ]
+}

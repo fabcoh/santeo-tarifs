@@ -46,7 +46,7 @@ const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,max
 
 // « M. VERTE GCI » + « GCI 100 » donne « M. VERTE GCI GCI 100 » : on ôte la répétition.
 function nomComplet(G,key,fi){
-  return (G.gammes[key].label+" "+G.gammes[key].names[fi]).replace(/\b(\S+) \1\b/,"$1");
+  return (G.gammes[key].label+" "+G.gammes[key].names[fi]).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2");
 }
 
 function valeur(G,key,fi,src){
