@@ -361,7 +361,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-09-26T18:11:02Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-26T18:11:02Z</div>
+  <div id="buildstamp" data-build="2026-09-27T07:41:33Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-09-27T07:41:33Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -689,7 +689,7 @@ const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,max
 
 // « M. VERTE GCI » + « GCI 100 » donne « M. VERTE GCI GCI 100 » : on ôte la répétition.
 function nomComplet(G,key,fi){
-  return (G.gammes[key].label+" "+G.gammes[key].names[fi]).replace(/\b(\S+) \1\b/,"$1");
+  return (G.gammes[key].label+" "+G.gammes[key].names[fi]).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2");
 }
 
 function valeur(G,key,fi,src){
@@ -1108,7 +1108,7 @@ function showInfo(r){
   if(!blocks.length)html='<div class="ipost">Détail non disponible pour cette gamme.</div>';
   const ov=document.createElement('div');ov.id='tgov';
   ov.innerHTML='<div id="tgbox" class="infobox"><button class="close">Fermer ✕</button>'
-    +'<h2>'+(F[r.key].label+" "+r.formule).replace(/\b(\S+) \1\b/,"$1")+'</h2>'
+    +'<h2>'+(F[r.key].label+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")+'</h2>'
     +'<div class="src">'+COMP[r.key]+' · '+eur(r.total)+' par mois · limites, plafonds et exclusions — seuls les documents contractuels font foi.</div>'
     +(docs?'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">'+docs+'</div>':'')
     +html+'<div class="foot">'+(TGNOTE[r.key]||'')+'</div></div>';
@@ -2466,7 +2466,7 @@ const SENDSEL=new Set();
 function selRows(){return LASTROWS.filter(r=>SENDSEL.has(r.key+"|"+r.fi));}
 function offreTxt(r,full){
   const f=F[r.key], e=EX[r.key]||{};
-  let s=("• "+f.label+" "+r.formule).replace(/\b(\S+) \1\b/,"$1")+" : "+eur(r.total)+" par mois";
+  let s=("• "+f.label+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")+" : "+eur(r.total)+" par mois";
   if(full){
     const lines=[];
     for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
@@ -2489,7 +2489,7 @@ function sendIntro(){
 function sendText(){
   let reco="";
   if(RECO){const r=LASTROWS.find(x=>x.key+"|"+x.fi===RECO);
-    if(r)reco="\n\n\u2b50 Ma recommandation : "+(F[r.key].label+" "+r.formule).replace(/\b(\S+) \1\b/,"$1")+" \u2014 "+eur(r.total)+" par mois.";}
+    if(r)reco="\n\n\u2b50 Ma recommandation : "+(F[r.key].label+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")+" \u2014 "+eur(r.total)+" par mois.";}
   return sendIntro()+selRows().map(r=>offreTxt(r,true)).join("\n\n")+reco+"\n\nLes documents contractuels seuls font foi.";
 }
 // Dépôt dans la conversation du CRM (lien venu du CRM avec jeton) — rien n'est envoyé au prospect
