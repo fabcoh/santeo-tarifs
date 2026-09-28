@@ -40,7 +40,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 
 ## Fichiers `docs/` (chargés à l'exécution par la page)
 
-- `bulletin_avenir_2026.pdf` (Cap Évolution, 74 p.), `bulletin_avenir_tns_2026.pdf` (Cap Évolution TNS, 87 p.), `bulletin_capnr_2026.pdf` (75 p.), `bulletin_talis_2026.pdf` (55 p.),
+- `bulletin_avenir_2026.pdf` (Cap Évolution, 72 p.), `bulletin_avenir_tns_2026.pdf` (Cap Évolution TNS, 85 p.), `bulletin_capnr_2026.pdf` (73 p.), `bulletin_talis_2026.pdf` (48 p.),
   `bulletin_mv_2026.pdf` (Mutuelle Verte, 22 p.), `bulletin_revoluo_2026.pdf` (24 p.) + `sepa_revoluo_2026.pdf`.
   Formulaires AcroForm remplis côté navigateur avec pdf-lib ; les PDF ont été allégés (pikepdf/qpdf),
   widgets orphelins rattachés, noms de champs en double suffixés `_2`.
@@ -61,6 +61,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Manquent encore : IPID et notice de MCCINOVA, FLEXIA, SOLENCIA (gammes MCCI, pas encore vendues),
   notice de LPS HOSPI.
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
+- **Avenir Mutuelle, mise à jour du 28/09/2026** (dépôt de Fabrice sur la page de dépôt) : Cap Évolution, Cap Évolution
+  TNS, CAP NR, TALIS — tableau de garantie, IPID, notice et bulletin. **Aucune garantie ne change** : les pages de
+  garanties de Cap Évolution, TNS et TALIS sont identiques mot pour mot ; celles de CAP NR (nouvelle mise en page)
+  concordent chiffre pour chiffre avec le comparateur. Les tableaux portent désormais la **notice d'assistance**
+  Ressources Mutuelles Assistance (14 p.) en fin de fichier. La « notice » n'est plus le kit complet mais le
+  **descriptif de garanties** (3 p. ; 10 p. pour CAP NR). Les bulletins portent les **statuts de l'AG du 24 juin
+  2026** ; leurs 121–122 champs sont inchangés (noms, types, pages), la génération a été vérifiée (Cap Évolution
+  salariés 72 p., TNS 85 p.). L'IPID Cap Évolution « ipid.pdf » déposé n'avait qu'une page : « IPID (38) » retenu.
 
 - **Page de dépôt des documents** (28/09/2026) : https://claude.ai/artifact/5EWAbsBRP3EhxuFaFpiDc4 (privée à
   Fabrice ; source dans le scratchpad `depot/depot-documents.html`, capacités `db` + `assets`). Une case par gamme ×
