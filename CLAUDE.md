@@ -62,6 +62,18 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   notice de LPS HOSPI.
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
 
+- **Page de dépôt des documents** (28/09/2026) : https://claude.ai/artifact/5EWAbsBRP3EhxuFaFpiDc4 (privée à
+  Fabrice ; source dans le scratchpad `depot/depot-documents.html`, capacités `db` + `assets`). Une case par gamme ×
+  pièce (tableau de garantie, IPID, notice, bulletin d'adhésion) + « Autre document » ; Fabrice y dépose le PDF
+  (20 Mo au plus) avec une remarque, puis dit « documents déposés ». **Pour traiter** : `ArtifactData list` de
+  `depots` (statut `a_traiter` : `ligne`, `piece`, `asset`, `nomFichier`, `remarque`) → `Artifact read` avec
+  `path` = l'id de l'asset pour récupérer le PDF → le relire contre le comparateur (et, pour un bulletin, vérifier
+  que les champs que la page remplit existent toujours, même nom, même type) → le ranger dans `docs/` sous le nom
+  en place, publier → `update` du dépôt : `statut` `remplace` (ou `refuse`), `traiteLe`, `reponse` en une ligne ;
+  si le nom de fichier change, écrire `catalogue/etat` → `lignes.<ligne>.<piece>` = `[fichier, pages, note]`.
+  Les lignes de la page ne suivent pas les clés de `DOCS` pour la Mutuelle Verte (`MV_100_300`, `MV_500`) et APICIL
+  (`API_EQ`, `API_SER`).
+
 ## Règles métier à ne pas casser
 
 - **MCCINOVA** : mineurs au tarif 18 ans ; cadre « Conditions MCCINOVA » (âge atteint dans l'année, enfants
