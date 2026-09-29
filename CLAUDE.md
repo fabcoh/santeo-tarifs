@@ -379,6 +379,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   depuis un Mac, sans rien installer, une ligne suffit dans le Terminal :
   `curl -T "$(ls -t ~/Downloads/apicil-devis*.php | head -1)" -u capisaf ftp://ftp.cluster129.hosting.ovh.net/www/apicil-devis.php`
   (vérifier la taille annoncée : le Mac renomme un second téléchargement `fichier (1).php`).
+  **Depuis Windows** (vérifié le 29/09/2026), dans l'invite de commandes (`cmd`, pas PowerShell) :
+  `curl.exe -T "%USERPROFILE%\Downloads\apicil-souscription.php" -u capisaf ftp://ftp.cluster129.hosting.ovh.net/www/apicil-souscription.php`
+  — le mot de passe est demandé ensuite, sans écho. WinSCP a échoué (« La connexion a échoué ») : préférer cette ligne.
   L'explorateur web OVH n'existe plus. Depuis une session Claude, les ports 21 et 22 sont bloqués :
   le dépôt ne peut pas être fait d'ici.
 
