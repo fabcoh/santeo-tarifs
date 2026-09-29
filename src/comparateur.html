@@ -2775,7 +2775,8 @@ async function souscrire(o){
   q("s_mail").addEventListener("input",majDest); majDest();
 
   // Deux clics quand il manque quelque chose : le premier récapitule, le second envoie.
-  // Rien n'est bloqué sauf ce qu'APICIL refuse — l'e-mail et le BIC.
+  // Rien n'est bloqué sauf ce qu'APICIL refuse — l'e-mail, et un BIC ou un IBAN mal formés.
+  // Le BIC est de nouveau facultatif chez APICIL (VERALTI, 29/09/2026) : vide, le client le saisit lui-même.
   let confirme=false;
   bok.addEventListener("click",async()=>{
     const ko=(id,bon)=>{const e=q(id);if(e)e.classList.toggle("ko",!bon);return bon;};
@@ -2793,10 +2794,11 @@ async function souscrire(o){
       smsg.innerHTML='<span class="dvwarn">Une adresse e-mail valide est indispensable : c\'est elle qui reçoit le lien de signature.</span>';
       q("s_mail").focus(); return;
     }
-    if(!ko("s_bic",/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(bic))){
-      smsg.innerHTML='<span class="dvwarn">BIC attendu : 8 ou 11 caractères, par exemple CRLYFRPP. APICIL refuse la demande sans lui.</span>';
+    if(bic&&!ko("s_bic",/^[A-Z]{6}[A-Z0-9]{2}([A-Z0-9]{3})?$/.test(bic))){
+      smsg.innerHTML='<span class="dvwarn">BIC attendu : 8 ou 11 caractères, par exemple CRLYFRPP. Laissez le champ vide si le client le saisira lui-même.</span>';
       q("s_bic").focus(); return;
     }
+    if(!bic) q("s_bic").classList.remove("ko");
     if(iban&&!ko("s_iban",/^FR[0-9A-Z]{25}$/.test(iban))){
       smsg.innerHTML='<span class="dvwarn">IBAN français attendu : FR suivi de 25 caractères. Laissez le champ vide si le client le saisira lui-même.</span>';
       q("s_iban").focus(); return;
@@ -2813,6 +2815,7 @@ async function souscrire(o){
     if(!ko("s_cpnais",/^[0-9]{5}$/.test(cpnais))) reste.push("le code postal de naissance");
     if(!ko("s_sit",!!sit))   reste.push("la situation familiale");
     if(!iban) reste.push("l'IBAN");
+    if(!bic)  reste.push("le BIC");
     if(reste.length&&!confirme){
       confirme=true; bok.textContent="Envoyer quand même";
       smsg.innerHTML='<span class="dvwarn">Le client devra saisir lui-même '+dvEch(reste.join(", "))+'.</span>'

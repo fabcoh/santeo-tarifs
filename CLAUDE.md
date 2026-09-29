@@ -254,8 +254,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   le corps porte l'`IdOpportunite` : les deux viennent du devis. Les dates de naissance des bénéficiaires
   doivent être **identiques à celles du devis**, APICIL les recoupe. Le retour (§5.4.4) donne `urlEsignQuote`,
   affichée comme « Suivre la signature ».
-  **Le BIC est obligatoire en pratique**, contrairement à ce qu'annonce la documentation : sans lui APICIL
-  répond `INTERNAL_SERVER_ERROR` / « Le BIC doit faire 8 ou 11 caractères » — vérifié par appel réel.
+  **Le BIC est de nouveau facultatif** (message de VERALTI transmis par Fabrice, 29/09/2026) : du 22 au 29/09,
+  APICIL répondait sans lui `INTERNAL_SERVER_ERROR` / « Le BIC doit faire 8 ou 11 caractères ». Vide, il n'est
+  plus transmis (`BICSepa` absent) et part dans la liste « le client devra saisir lui-même » ; saisi, il doit
+  avoir 8 ou 11 caractères, sinon la page et le relais refusent. Le GET du relais annonce
+  `"version":"2026-09-29 BIC facultatif"`.
   L'IBAN, lui, **est bien facultatif** : vérifié par appel réel le 22/09/2026 sur `DEV-2026-3315706`,
   BIC `CRLYFRPPPOI` seul, sans `IBANSEPA` — APICIL renvoie `success` et l'`urlEsignQuote`. Le client saisit
   son IBAN dans le parcours de signature.
@@ -264,7 +267,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   nom/ville/CP de naissance, situation familiale, n° de Sécurité sociale + n° d'organisme sur une ligne,
   IBAN + BIC sur une ligne, jour de prélèvement. Ce qui vient du devis (nom, prénom, date de naissance,
   régime, code postal) s'affiche **en pointillé et non modifiable** : APICIL le recoupe.
-  **Alertes ≠ blocage, ici aussi** : seuls l'e-mail et le BIC arrêtent l'envoi ; pour tout le reste, un
+  **Alertes ≠ blocage, ici aussi** : seuls l'e-mail, et un IBAN ou un BIC mal formés, arrêtent l'envoi ; pour tout le reste, un
   premier clic énumère ce que le client devra saisir lui-même, un second envoie quand même. Le **nom de
   naissance** est proposé égal au nom et n'est jamais signalé : c'est le cas courant.
   **Dates : `jj/mm/aaaa` à l'écran, `AAAA-MM-JJ` pour APICIL.** `masqueDate()` pose le masque de saisie —
