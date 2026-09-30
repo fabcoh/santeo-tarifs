@@ -208,6 +208,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   que les fiches dont nom + prénom contiennent chaque mot tapé (sans accents ni casse), dit « Aucune fiche »
   si rien ne correspond, et prévient quand la réponse atteint 50 fiches (d'autres peuvent manquer). Le vrai
   correctif est côté CRM : demande transmise à Fabrice pour le Claude du CRM.
+  **Choix dans une liste** (30/09/2026) : le CRM ne renvoie le **détail** (adresse, e-mail, téléphone, famille) que
+  si la recherche trouve une seule fiche. Avant, le clic relançait `q=<n° de fiche>` en recherche plein texte, qui
+  revenait en liste : « Fiche illisible ». La page envoie désormais `&santeoId=<n°>` en plus ; le CRM doit y répondre
+  par la fiche complète (`readSanteoComparateurDetails`). Tant qu'il l'ignore, la page reprend ce que la liste montre
+  — nom, prénom, date de naissance, ville — et le dit (« Fiche reprise en partie »). Les lignes de la liste sont des
+  `div role=button` (et non des `label`), touchables sur téléphone.
 - **Haut de page** : une seule ligne — assuré, conjoint, régime, département/CP, mineurs — les âges retenus
   inscrits sous leur champ en position absolue, pour ne pas pousser la ligne. Le tableau démarre à 136 px
   au lieu de 255 avant ce resserrement. **Options par poste** ouvre une fenêtre par-dessus (`ouvrirOptions`) :
