@@ -214,6 +214,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   par la fiche complète (`readSanteoComparateurDetails`). Tant qu'il l'ignore, la page reprend ce que la liste montre
   — nom, prénom, date de naissance, ville — et le dit (« Fiche reprise en partie »). Les lignes de la liste sont des
   `div role=button` (et non des `label`), touchables sur téléphone.
+  **Une fiche n'est pas une liste** (30/09/2026, fiche 294413) : la fiche complète porte ses propres tableaux
+  (`assures`, `enfants`) ; la règle « premier tableau d'objets de la réponse » prenait `assures` pour une liste —
+  « 3 fiches, choisis la bonne » (l'adhérent, un assuré vide, ENFANT3). Un objet qui a `nom`, `prenom`,
+  `civilite`, `naissance`, `assures` ou `enfants` est désormais une fiche ; le repli sur un tableau ignore
+  `assures`, `enfants`, `conjoint`, `beneficiaires`.
 - **Haut de page** : une seule ligne — assuré, conjoint, régime, département/CP, mineurs — les âges retenus
   inscrits sous leur champ en position absolue, pour ne pas pousser la ligne. Le tableau démarre à 136 px
   au lieu de 255 avant ce resserrement. **Options par poste** ouvre une fenêtre par-dessus (`ouvrirOptions`) :

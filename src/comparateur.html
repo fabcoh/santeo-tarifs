@@ -3502,9 +3502,12 @@ calc();
     if(d&&typeof d==="object"){
       for(const k of ["resultats","results","fiches","items","data","liste","prospects"])
         if(Array.isArray(d[k])) return d[k].length?{liste:d[k]}:{vide:true};
-      const arr=Object.values(d).find(v=>Array.isArray(v)&&v.length&&v[0]&&typeof v[0]==="object");
-      if(arr) return {liste:arr};
       if(d.fiche&&typeof d.fiche==="object") return {fiche:d.fiche};
+      // Une fiche porte ses propres tableaux (assures, enfants) : ce n'est pas une liste de fiches.
+      // Avant, « assures » était pris pour une liste — « 3 fiches, choisis la bonne » (30/09/2026).
+      if(["nom","prenom","civilite","naissance","assures","enfants"].some(k=>k in d)) return {fiche:d};
+      const arr=Object.entries(d).find(([k,v])=>!/^(assures|enfants|conjoint|beneficiaires)$/i.test(k)&&Array.isArray(v)&&v.length&&v[0]&&typeof v[0]==="object");
+      if(arr) return {liste:arr[1]};
     }
     return {fiche:d};
   }
