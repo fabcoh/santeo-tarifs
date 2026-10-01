@@ -3078,6 +3078,7 @@ function applyImport(raw){
     sessionStorage.removeItem("santeo_stash");
     if(s&&Date.now()-s.ts<10*60*1000){
       for(const id of ["naiss","cnj","cp","regime","kids"])if(s[id]!=null)document.getElementById(id).value=s[id];
+      window.STASH_OK=true; // saisie retrouvée après rechargement : on ne la vide pas
     }
   }catch(e){}
   const refresh=()=>{
@@ -3378,12 +3379,19 @@ if(__PRIV__){
   const CRMMODE=__CRM__;
   // Lien direct (#vide) : on arrive sur un comparateur vierge, sans proposition de collage
   const DIRECT=/(^|[#&?])(vide|direct|nofiche)\b/i.test(location.hash+location.search);
-  if(!CRMMODE||urlImported||DIRECT)return;
-  // Page hébergée : la fenêtre « Fiche du CRM » (chercher, créer un tarif, coller une fiche) remplace la question
-  // « Importer une fiche prospect ? » (Fabrice, 01/10/2026). Une fiche reçue mais incomplète garde l'ancienne fenêtre.
-  // Le module de recherche est déclaré plus bas dans la page : on attend qu'elle soit lue en entier.
-  const quand=f=>document.readyState==="loading"?document.addEventListener("DOMContentLoaded",f):f();
-  quand(()=>{ if(window.ouvrirFicheCRM&&!window.FICHE_KO) window.ouvrirFicheCRM(); else ancienne(); });
+  if(!CRMMODE||urlImported)return;
+  // Page hébergée, arrivée sans fiche (Fabrice, 01/10/2026) : aucune fenêtre, champs vides, aucun tarif.
+  // La fenêtre « Fiche du CRM » (chercher, créer un tarif, coller une fiche) ne s'ouvre que par son bouton.
+  // Une fiche reçue mais incomplète (FICHE_KO) garde l'ancienne fenêtre, qui la montre.
+  if(__HOSTED__&&!window.FICHE_KO){
+    if(!window.STASH_OK){
+      const n=document.getElementById("naiss"),c=document.getElementById("cp");
+      n.value=""; c.value=""; n.placeholder="âge ou année"; c.placeholder="75 ou 75012";
+    }
+    return;
+  }
+  if(DIRECT)return;
+  ancienne();
   function ancienne(){
   const ov=document.createElement("div");
   ov.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.45);z-index:997;display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 16px";

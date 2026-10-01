@@ -240,8 +240,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   la dépliait d'office, ce n'était pas la demande) ; rien n'est retenu d'une ouverture à l'autre. Ouvrir « Ajouter un assuré » pose aussitôt la fiche de
   l'assuré 2. Champs à 40 px de haut et libellés sur une ligne (`white-space:nowrap`), grille alignée par le bas :
   un libellé qui passait à la ligne décalait son champ (constaté par Fabrice sur PC le 01/10/2026).
-  **À l'arrivée directe sur la page** (sans `#fiche`, sans `#vide`), cette fenêtre s'ouvre (réduite), à la
-  place de l'ancienne question « Importer une fiche prospect ? ». Le collage d'une fiche Santéo y est gardé, replié
+  **Elle ne s'ouvre que par le bouton Fiche CRM** (Fabrice, 01/10/2026). **Arrivée sur la page sans fiche** (directe ou
+  `#vide`) : aucune fenêtre, assuré et code postal **vides**, aucun tarif (« Renseigne une année de naissance… »). Une
+  saisie retrouvée après le rechargement des 6 h (`santeo_stash`, `window.STASH_OK`) n'est pas vidée. L'ancienne
+  question « Importer une fiche prospect ? » ne sert plus sur la page hébergée. Le collage d'une fiche Santéo y est gardé, replié
   (« Coller une fiche copiée de Santéo », même `parseFiche`). Une fiche reçue par le lien mais incomplète (`FICHE_KO`)
   ouvre toujours l'ancienne fenêtre, qui la montre. Depuis le CRM WhatsApp, rien ne s'ouvre : la fiche arrive par le lien.
 - **Haut de page** : une seule ligne — assuré, conjoint, régime, département/CP, mineurs — les âges retenus
