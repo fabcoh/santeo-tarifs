@@ -218,6 +218,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   HTTP, réponse brute) n'est plus affiché** (Fabrice, 01/10/2026) : il reste dans la console, `window.CRMDIAG`.
   Constaté le 01/10 : `q=294421&santeoId=294421` renvoie encore `total:2` — le CRM ne lit pas `santeoId` tant que
   la branche `claude/comparateur-fiche-par-numero` de WhatsApp_Solution n'est ni fusionnée ni déployée.
+  **Décision de Fabrice (01/10/2026) : on n'y touche pas pour le moment.** La branche est en conflit avec `main`
+  (`ECHANGES.md`) ; si la question revient, la faire reprendre par le Claude du CRM, qui seul parle à Manus —
+  ne pas ouvrir de PR dans son dépôt depuis ici.
 - **Titre de la fenêtre d'adhésion** (01/10/2026) : « Adhésion — gamme formule · xx,xx €/mois » (`#adhtit`), le tarif
   retenu pour vérifier ; il suit le recalcul « Souscripteur non assuré » de Révoluo.
   **Une fiche n'est pas une liste** (30/09/2026, fiche 294413) : la fiche complète porte ses propres tableaux
