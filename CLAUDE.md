@@ -225,6 +225,18 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   « 3 fiches, choisis la bonne » (l'adhérent, un assuré vide, ENFANT3). Un objet qui a `nom`, `prenom`,
   `civilite`, `naissance`, `assures` ou `enfants` est désormais une fiche ; le repli sur un tableau ignore
   `assures`, `enfants`, `conjoint`, `beneficiaires`.
+- **Créer un tarif sans fiche CRM** (Fabrice, 01/10/2026) : dans la fenêtre « Fiche du CRM Santéo », sous la recherche,
+  `creationHTML()` / `brancherCreation()`. **Créer un tarif** : âge, année ou date de naissance (`lireNaissance` :
+  « 42 », « 1984 », « 04/12/1984 » ou « 04121984 »), département ou code postal, régime (Salarié, TNS, Alsace-Moselle
+  salarié `RL`, Alsace-Moselle TNS `TNSRL`). Se déplient : **Compléter les infos** (civilité, nom, prénom, adresse, ville,
+  téléphone, e-mail) et **Ajouter un assuré** (assuré 1 rappelé tel que saisi, puis lien conjoint / enfant, nom, prénom,
+  date de naissance au masque, régime ; un mineur passe en enfant ; nom de famille de l'assuré 1 par défaut). « Voir les
+  tarifs » remplit `PRO` (comme une fiche importée, donc l'adhésion) et le haut de page par `applyImport`, sans la fenêtre
+  « Données importées du CRM » : le commercial vient de tout taper. Rien n'est écrit dans un CRM.
+  **À l'arrivée directe sur la page** (sans `#fiche`, sans `#vide`), cette fenêtre s'ouvre « Créer un tarif » déplié, à la
+  place de l'ancienne question « Importer une fiche prospect ? ». Le collage d'une fiche Santéo y est gardé, replié
+  (« Coller une fiche copiée de Santéo », même `parseFiche`). Une fiche reçue par le lien mais incomplète (`FICHE_KO`)
+  ouvre toujours l'ancienne fenêtre, qui la montre. Depuis le CRM WhatsApp, rien ne s'ouvre : la fiche arrive par le lien.
 - **Haut de page** : une seule ligne — assuré, conjoint, régime, département/CP, mineurs — les âges retenus
   inscrits sous leur champ en position absolue, pour ne pas pousser la ligne. Le tableau démarre à 136 px
   au lieu de 255 avant ce resserrement. **Options par poste** ouvre une fenêtre par-dessus (`ouvrirOptions`) :
