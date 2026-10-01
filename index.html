@@ -361,7 +361,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-01T05:06:35Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-01T05:06:35Z</div>
+  <div id="buildstamp" data-build="2026-10-01T05:31:37Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-01T05:31:37Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -3873,6 +3873,12 @@ if(false){
   // Lien direct (#vide) : on arrive sur un comparateur vierge, sans proposition de collage
   const DIRECT=/(^|[#&?])(vide|direct|nofiche)\b/i.test(location.hash+location.search);
   if(!CRMMODE||urlImported||DIRECT)return;
+  // Page hébergée : la fenêtre « Fiche du CRM » (chercher, créer un tarif, coller une fiche) remplace la question
+  // « Importer une fiche prospect ? » (Fabrice, 01/10/2026). Une fiche reçue mais incomplète garde l'ancienne fenêtre.
+  // Le module de recherche est déclaré plus bas dans la page : on attend qu'elle soit lue en entier.
+  const quand=f=>document.readyState==="loading"?document.addEventListener("DOMContentLoaded",f):f();
+  quand(()=>{ if(window.ouvrirFicheCRM&&!window.FICHE_KO) window.ouvrirFicheCRM({creer:true}); else ancienne(); });
+  function ancienne(){
   const ov=document.createElement("div");
   ov.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.45);z-index:997;display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 16px";
   ov.innerHTML='<div style="background:var(--panel,#fff);color:var(--ink,#12233d);border-radius:14px;max-width:420px;width:100%;padding:16px 18px;box-shadow:0 18px 50px rgba(0,0,0,.35);font-family:\'Archivo\',sans-serif">'
@@ -3893,6 +3899,7 @@ if(false){
   ta.addEventListener("input",()=>{if(ta.value.length>8)done(ta.value);});
   ov.querySelector("#stskip").addEventListener("click",()=>ov.remove());
   ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
+}
 })();
 ["naiss","regime","cp","cnj","kids"].forEach(id=>{
   const el=document.getElementById(id);
@@ -4013,7 +4020,130 @@ calc();
   // il reste lisible dans la console du navigateur (window.CRMDIAG) si le CRM doit être diagnostiqué.
   const diagHTML=()=>{try{window.CRMDIAG=DIAG;}catch(e){} return "";};
 
-  function panneau(){
+  // ---- Créer un tarif sans fiche CRM (Fabrice, 01/10/2026) ----
+  // Âge, année ou date de naissance + code postal + régime suffisent au tarif ; « Compléter les infos » et
+  // « Ajouter un assuré » se déplient pour préparer l'adhésion. Rien n'est écrit dans un CRM : la fiche ne vit
+  // que dans la page (PRO), comme une fiche importée.
+  const REGS=[["SAL","Salarié"],["TNS","TNS"],["RL","Alsace-Moselle salarié"],["TNSRL","Alsace-Moselle TNS"]];
+  const CHP="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--ground);color:var(--ink);font:inherit";
+  const LBL=t=>'<span style="display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:6px 0 2px">'+t+'</span>';
+  const SUM="cursor:pointer;font:800 14px 'Archivo',sans-serif;color:var(--accent);padding:8px 0;list-style-position:inside";
+  const GRILLE="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0 10px";
+  const regSel=(id,cls)=>'<select '+(id?'id="'+id+'" ':'')+(cls?'class="'+cls+'" ':'')+'style="'+CHP+'">'+REGS.map(([v,l])=>'<option value="'+v+'">'+l+'</option>').join("")+'</select>';
+  function creationHTML(){
+    return '<details id="ctbox" style="margin-top:12px;border-top:1px solid var(--line);padding-top:4px">'
+      +'<summary style="'+SUM+'">Créer un tarif</summary>'
+      +'<div style="'+GRILLE+'">'
+      +'<label>'+LBL("Âge, année ou date de naissance")+'<input id="ct_age" inputmode="numeric" autocomplete="off" placeholder="42 · 1984 · 04/12/1984" style="'+CHP+'"></label>'
+      +'<label>'+LBL("Code postal")+'<input id="ct_cp" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="75 ou 75012" style="'+CHP+'"></label>'
+      +'<label>'+LBL("Régime")+regSel("ct_reg")+'</label></div>'
+      +'<details id="ctinfos" style="margin-top:8px"><summary style="'+SUM+'">Compléter les infos</summary>'
+      +'<div style="'+GRILLE+'">'
+      +'<label>'+LBL("Civilité")+'<select id="ct_civ" style="'+CHP+'"><option value=""></option><option>M.</option><option>Mme</option></select></label>'
+      +'<label>'+LBL("Nom")+'<input id="ct_nom" autocomplete="off" style="'+CHP+'"></label>'
+      +'<label>'+LBL("Prénom")+'<input id="ct_prenom" autocomplete="off" style="'+CHP+'"></label>'
+      +'<label>'+LBL("Adresse")+'<input id="ct_adr" autocomplete="off" style="'+CHP+'"></label>'
+      +'<label>'+LBL("Ville")+'<input id="ct_ville" autocomplete="off" style="'+CHP+'"></label>'
+      +'<label>'+LBL("Téléphone")+'<input id="ct_tel" inputmode="tel" autocomplete="off" style="'+CHP+'"></label>'
+      +'<label>'+LBL("E-mail")+'<input id="ct_mail" type="email" inputmode="email" autocomplete="off" style="'+CHP+'"></label>'
+      +'</div></details>'
+      +'<details id="ctassures" style="margin-top:4px"><summary style="'+SUM+'">Ajouter un assuré</summary>'
+      +'<div id="ct_a1" style="font-size:13px;padding:6px 0;color:var(--muted)"></div>'
+      +'<div id="ct_liste"></div>'
+      +'<button type="button" id="ct_plus" style="margin-top:6px;padding:7px 12px;border:1px dashed var(--accent);border-radius:8px;background:none;color:var(--accent);font:700 13px \'Archivo\',sans-serif;cursor:pointer">+ Ajouter un assuré</button>'
+      +'</details>'
+      +'<div id="ct_err" style="color:var(--nrc);font-size:13px;margin-top:8px"></div>'
+      +'<button type="button" id="ct_go" style="margin-top:10px;width:100%;padding:11px;border:0;border-radius:9px;background:var(--accent);color:var(--accent-ink);font:800 15px \'Archivo\',sans-serif;cursor:pointer">Voir les tarifs</button>'
+      +'<details id="ctcolle" style="margin-top:10px"><summary style="'+SUM+';font-size:12.5px;color:var(--muted)">Coller une fiche copiée de Santéo</summary>'
+      +'<textarea id="ct_colle" rows="3" autocomplete="off" placeholder="Collez la fiche ici — l\'analyse démarre toute seule" style="'+CHP+';resize:vertical"></textarea></details>'
+      +'</details>';
+  }
+  // « 42 », « 1984 », « 04/12/1984 » ou « 04121984 » → {naiss: âge ou année pour le haut de page, ddn: jj/mm/aaaa ou ""}
+  function lireNaissance(v){
+    v=String(v||"").trim();
+    const ch=v.replace(/\D/g,"");
+    if(/^\d{1,3}$/.test(v)&&+v<=110) return {naiss:v,ddn:""};
+    if(/^\d{4}$/.test(v)) return {naiss:v,ddn:""};
+    if(ch.length===8){const fr=ch.slice(0,2)+"/"+ch.slice(2,4)+"/"+ch.slice(4);if(isoDate(fr))return {naiss:ch.slice(4),ddn:fr};}
+    return null;
+  }
+  function brancherCreation(ov){
+    const $=s=>ov.querySelector(s), val=s=>($(s).value||"").trim();
+    const liste=$("#ct_liste");
+    const resume=()=>{
+      const n=lireNaissance(val("#ct_age"));
+      const bits=[[val("#ct_nom").toUpperCase(),val("#ct_prenom")].filter(Boolean).join(" ")||"nom non saisi",
+        n?(n.ddn?"né(e) le "+n.ddn:(n.naiss.length===4?"né(e) en "+n.naiss:n.naiss+" ans")):"naissance non saisie",
+        REGS.find(r=>r[0]===$("#ct_reg").value)[1]];
+      $("#ct_a1").innerHTML='<b style="color:var(--ink)">Assuré 1 :</b> '+bits.map(t=>String(t).replace(/</g,"&lt;")).join(" · ");
+    };
+    ["#ct_age","#ct_nom","#ct_prenom","#ct_reg"].forEach(s=>{$(s).addEventListener("input",resume);$(s).addEventListener("change",resume);});
+    resume();
+    const ajouter=()=>{
+      const i=liste.children.length+2, conj=![...liste.querySelectorAll(".ct_lien")].some(s=>s.value==="C");
+      const d=document.createElement("div");
+      d.className="ct_ass";
+      d.style.cssText="border-top:1px dotted var(--line);padding:6px 0";
+      d.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:13px">Assuré '+i+'</b>'
+        +'<button type="button" class="ct_moins" style="border:0;background:none;color:var(--muted);cursor:pointer;font-size:12px">Retirer</button></div>'
+        +'<div style="'+GRILLE+'">'
+        +'<label>'+LBL("Lien")+'<select class="ct_lien" style="'+CHP+'"><option value="C"'+(conj?' selected':'')+'>Conjoint</option><option value="E"'+(conj?'':' selected')+'>Enfant</option></select></label>'
+        +'<label>'+LBL("Nom")+'<input class="ct_anom" autocomplete="off" style="'+CHP+'"></label>'
+        +'<label>'+LBL("Prénom")+'<input class="ct_aprenom" autocomplete="off" style="'+CHP+'"></label>'
+        +'<label>'+LBL("Date de naissance")+'<input class="ct_addn" autocomplete="off" style="'+CHP+'"></label>'
+        +'<label>'+LBL("Régime")+regSel("","ct_areg")+'</label></div>';
+      liste.appendChild(d);
+      d.querySelector(".ct_areg").value=$("#ct_reg").value;
+      const ddn=d.querySelector(".ct_addn"); masqueDate(ddn);
+      // Un mineur est toujours un enfant
+      ddn.addEventListener("input",()=>{const iso=isoDate(ddn.value);if(iso&&YEAR-+iso.slice(0,4)<18)d.querySelector(".ct_lien").value="E";});
+      d.querySelector(".ct_moins").addEventListener("click",()=>{d.remove();[...liste.children].forEach((x,k)=>x.querySelector("b").textContent="Assuré "+(k+2));});
+      d.querySelector(".ct_anom").focus();
+    };
+    $("#ct_plus").addEventListener("click",ajouter);
+    $("#ct_go").addEventListener("click",()=>{
+      const err=$("#ct_err"); err.textContent="";
+      const n=lireNaissance(val("#ct_age")), cp=val("#ct_cp").replace(/\s/g,"");
+      if(!n){err.textContent="Indiquez l'âge, l'année ou la date de naissance de l'assuré.";$("#ct_age").focus();return;}
+      if(!/^(\d{2}|2[AB]|\d{5}|97\d)$/i.test(cp)){err.textContent="Indiquez le département (75) ou le code postal (75012).";$("#ct_cp").focus();return;}
+      const reg=$("#ct_reg").value;
+      PRO=PRO||{};
+      for(const k of ["civ","nom","prenom","ddn","cp5","adresse","ville","email","tel","conjoint","enfants","secu","org","situation"]) delete PRO[k];
+      const put=(k,v)=>{if(v)PRO[k]=v;};
+      put("civ",val("#ct_civ")); put("nom",val("#ct_nom").toUpperCase()); put("prenom",val("#ct_prenom"));
+      put("ddn",n.ddn); put("adresse",val("#ct_adr")); put("ville",val("#ct_ville").toUpperCase());
+      put("email",val("#ct_mail")); put("tel",telFR(val("#ct_tel"))||val("#ct_tel"));
+      if(/^\d{5}$/.test(cp)) PRO.cp5=cp;
+      const P=new URLSearchParams();
+      P.set("naiss",n.naiss); P.set("dept",cp); P.set("regime",reg);
+      const enf=[]; let cj=null;
+      for(const d of liste.querySelectorAll(".ct_ass")){
+        const a={nom:(d.querySelector(".ct_anom").value||"").trim().toUpperCase(),prenom:(d.querySelector(".ct_aprenom").value||"").trim(),
+                 ddn:isoDate(d.querySelector(".ct_addn").value)?d.querySelector(".ct_addn").value:"",regime:d.querySelector(".ct_areg").value};
+        if(!a.nom&&!a.prenom&&!a.ddn) continue;
+        if(!a.nom&&PRO.nom) a.nom=PRO.nom; // même nom de famille que l'assuré 1 par défaut
+        if(d.querySelector(".ct_lien").value==="C"&&!cj) cj=a; else enf.push(a);
+      }
+      if(cj){PRO.conjoint=cj; P.set("cnj",cj.ddn?cj.ddn.slice(-4):"");}
+      else P.set("cnj","");
+      PRO.enfants=enf.slice(0,4); P.set("kids",String(Math.min(enf.length,4)));
+      const nom=[PRO.nom,PRO.prenom].filter(Boolean).join(" ");
+      if(nom) P.set("nom",nom);
+      // Le conjoint sans date reste compté : on garde sa ligne, à compléter avant l'adhésion
+      document.getElementById("cnj").value=cj&&cj.ddn?cj.ddn.slice(-4):"";
+      applyImport(P.toString());
+      // Saisie à la main : pas de fenêtre « Données importées du CRM », le commercial vient de tout taper
+      const rec=document.getElementById("impov"); if(rec) rec.remove();
+      ov.remove();
+      bandeauOk("Tarif créé"+(nom?" pour "+nom:""));
+    });
+    // L'ancienne fenêtre « Importer une fiche prospect ? » : même analyse, rangée ici
+    const ta=$("#ct_colle");
+    const colle=t=>{const parsed=parseFiche(t||"");if(parsed){ov.remove();applyImport(parsed);}else{$("#ct_err").textContent="Fiche non reconnue — il faut au moins une date de naissance, un code postal, un téléphone ou un e-mail.";ta.value="";}};
+    ta.addEventListener("paste",e=>{e.preventDefault();colle((e.clipboardData||window.clipboardData).getData("text"));});
+  }
+
+  function panneau(opts){
     const esc=v=>String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
     const ov=document.createElement("div"); ov.id="tgov"; ov.style.zIndex=1007;
     const bst="padding:8px 13px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink);font:700 13px 'Archivo',sans-serif;cursor:pointer";
@@ -4030,6 +4160,7 @@ calc();
       +'<button id="cspok" style="'+bst+'">Enregistrer le PIN</button>'
       +'<span style="font-size:11.5px;color:var(--muted)">gardé sur cet appareil uniquement</span></div>'
       +'<div id="csres" style="font-size:13px"></div>'
+      +creationHTML()
       +'<div class="foot"><a href="#" id="csconf">Changer le PIN ou l’adresse du CRM</a></div></div>';
     document.body.appendChild(ov);
     const res=ov.querySelector("#csres"), q=ov.querySelector("#csq");
@@ -4092,14 +4223,18 @@ calc();
     };
     ov.querySelector("#csgo").addEventListener("click",lancer);
     q.addEventListener("keydown",e=>{if(e.key==="Enter")lancer();});
-    (get(KP)?q:ov.querySelector("#cspv")).focus();
+    brancherCreation(ov);
+    if(opts&&opts.creer){ov.querySelector("#ctbox").open=true;ov.querySelector("#ct_age").focus();}
+    else (get(KP)?q:ov.querySelector("#cspv")).focus();
   }
+  // Ouvert aussi à l'arrivée directe sur la page, à la place de l'ancienne fenêtre « Importer une fiche prospect ? »
+  window.ouvrirFicheCRM=panneau;
 
   const b=document.createElement("button");
   b.id="crmsearch"; b.type="button"; b.textContent="🔎 Fiche CRM";
   b.title="Chercher une fiche dans le CRM Santéo";
   b.style.cssText="position:fixed;top:10px;right:56px;z-index:50;border:1px solid var(--line);background:var(--panel);color:var(--accent);border-radius:9px;padding:8px 12px;font:800 12.5px 'Archivo',sans-serif;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)";
-  b.addEventListener("click",panneau);
+  b.addEventListener("click",()=>panneau());
   document.body.appendChild(b);
 
   // Sous « Fiche CRM » : ouvrir le comparateur dans un nouvel onglet, avec la même adresse — donc la même
