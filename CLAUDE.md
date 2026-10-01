@@ -212,8 +212,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   si la recherche trouve une seule fiche. Avant, le clic relançait `q=<n° de fiche>` en recherche plein texte, qui
   revenait en liste : « Fiche illisible ». La page envoie désormais `&santeoId=<n°>` en plus ; le CRM doit y répondre
   par la fiche complète (`readSanteoComparateurDetails`). Tant qu'il l'ignore, la page reprend ce que la liste montre
-  — nom, prénom, date de naissance, ville — et le dit (« Fiche reprise en partie »). Les lignes de la liste sont des
-  `div role=button` (et non des `label`), touchables sur téléphone.
+  — nom, prénom, date de naissance, ville — et le dit en une ligne dans la fenêtre « Données importées du CRM »
+  (`window.IMPNOTE`, lue une seule fois) ; le panneau de recherche se ferme. Les lignes de la liste sont des
+  `div role=button` (et non des `label`), touchables sur téléphone. **Le détail technique (adresse appelée, code
+  HTTP, réponse brute) n'est plus affiché** (Fabrice, 01/10/2026) : il reste dans la console, `window.CRMDIAG`.
+  Constaté le 01/10 : `q=294421&santeoId=294421` renvoie encore `total:2` — le CRM ne lit pas `santeoId` tant que
+  la branche `claude/comparateur-fiche-par-numero` de WhatsApp_Solution n'est ni fusionnée ni déployée.
+- **Titre de la fenêtre d'adhésion** (01/10/2026) : « Adhésion — gamme formule · xx,xx €/mois » (`#adhtit`), le tarif
+  retenu pour vérifier ; il suit le recalcul « Souscripteur non assuré » de Révoluo.
   **Une fiche n'est pas une liste** (30/09/2026, fiche 294413) : la fiche complète porte ses propres tableaux
   (`assures`, `enfants`) ; la règle « premier tableau d'objets de la réponse » prenait `assures` pour une liste —
   « 3 fiches, choisis la bonne » (l'adhérent, un assuré vide, ENFANT3). Un objet qui a `nom`, `prenom`,

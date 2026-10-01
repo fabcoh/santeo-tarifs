@@ -1152,7 +1152,7 @@ function showAdh(r){
    +'<button type="button" class="addb" id="addkid"'+(kids>=4?" hidden":"")+'>＋ Ajouter un enfant</button></div>';
   const ov=document.createElement("div");ov.id="tgov";
   const rev=isREV(r.key); ADHKEY=r.key;
-  ov.innerHTML='<div id="tgbox" style="max-width:760px"><button class="close">Fermer ✕</button><h2>Adhésion — '+r.gamme+" "+r.formule+'</h2><div class="src"><b id="adhcot">'+eur(r.total)+'</b> /mois · le bulletin '+(r.key==="MV"?"LA MUTUELLE VERTE":rev?"RÉVOLUO (REMA / CERGAP)":"AVENIR MUTUELLE")+' sera rempli et téléchargé'+(rev?' · <b>+ mandat SEPA CERGAP en 2e fichier</b> (signé à part)':'')+'</div>'+
+  ov.innerHTML='<div id="tgbox" style="max-width:760px"><button class="close">Fermer ✕</button><h2>Adhésion — '+r.gamme+" "+r.formule+' <span id="adhtit" style="color:var(--accent);white-space:nowrap">· '+eur(r.total)+'/mois</span></h2><div class="src"><b id="adhcot">'+eur(r.total)+'</b> /mois · le bulletin '+(r.key==="MV"?"LA MUTUELLE VERTE":rev?"RÉVOLUO (REMA / CERGAP)":"AVENIR MUTUELLE")+' sera rempli et téléchargé'+(rev?' · <b>+ mandat SEPA CERGAP en 2e fichier</b> (signé à part)':'')+'</div>'+
   (rev?'<label class="nosubl" style="display:flex;gap:9px;align-items:flex-start;margin:6px 0 8px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--ground);cursor:pointer;font-size:13px"><input type="checkbox" id="nosub" style="margin-top:2px;accent-color:var(--accent)"><span><b>Souscripteur non assuré</b> — le souscripteur signe et paie, mais n’apparaît pas parmi les personnes à assurer (enfants'+(nC?' et conjoint':'')+' seuls). Cotisation recalculée : <b>'+eur(r.noSubTotal)+'</b> /mois</span></label>':'')+
   '<form autocomplete="off" onsubmit="return false" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:4px 12px">'+
   '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Civilité</label><select id="aciv" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option'+(P.civ!=="Mme"?" selected":"")+'>M.</option><option'+(P.civ==="Mme"?" selected":"")+'>Mme</option></select></div>'+
@@ -1205,7 +1205,8 @@ function showAdh(r){
   paintBank();
   if(rev){
     const ns=document.getElementById("nosub"), cot=document.getElementById("adhcot");
-    ns.addEventListener("change",()=>{cot.textContent=eur(ns.checked?r.noSubTotal:r.total);});
+    const tit=document.getElementById("adhtit");
+    ns.addEventListener("change",()=>{const m=eur(ns.checked?r.noSubTotal:r.total);cot.textContent=m;if(tit)tit.textContent="· "+m+"/mois";});
   }
   // Volets bénéficiaires : ouverture/fermeture et rappel du nom saisi quand le volet est replié
   ov.querySelectorAll(".volet.mini").forEach(bt=>{
@@ -3057,8 +3058,11 @@ function applyImport(raw){
       +'<div style="font:800 17px \'Archivo\',sans-serif;margin-bottom:4px">📥 Données importées du CRM</div>'
       +(nomTxt?'<div style="font:700 16px \'Archivo\',sans-serif;color:var(--accent,#1d4ed8);margin-bottom:8px">'+nomTxt.replace(/</g,"&lt;")+'</div>':"")
       +imported.map(([l,v])=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:14px"><span style="color:var(--muted,#5b6b82)">'+l+'</span><span style="font-weight:800;white-space:nowrap">'+String(v).replace(/</g,"&lt;")+'</span></div>').join("")
+      // Note en clair posée par l'appelant (ex. fiche reprise en partie) : une seule fenêtre, pas d'écran technique
+      +(window.IMPNOTE?'<div style="margin-top:10px;padding:8px 10px;border-radius:8px;background:var(--ground,#f6f7f4);color:var(--muted,#5b6b82);font-size:12.5px;line-height:1.45">'+String(window.IMPNOTE).replace(/</g,"&lt;")+'</div>':"")
       +'<button id="impok" style="margin-top:14px;width:100%;padding:10px;border:0;border-radius:9px;background:var(--accent,#1d4ed8);color:#fff;font:800 15px \'Archivo\',sans-serif;cursor:pointer">OK — voir les tarifs</button></div>';
     document.body.appendChild(ov);
+    window.IMPNOTE=""; // la note ne sert qu'une fois
     ov.querySelector("#impok").addEventListener("click",()=>ov.remove());
     ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
     calc();
@@ -3511,7 +3515,9 @@ calc();
     }
     return {fiche:d};
   }
-  const diagHTML=()=>DIAG?'<div style="margin-top:8px;font:11.5px/1.5 ui-monospace,monospace;color:var(--muted);white-space:pre-wrap;word-break:break-all;border-top:1px dotted var(--line);padding-top:6px">'+String(DIAG).replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</div>':"";
+  // Le détail technique de l'appel (URL, code HTTP, réponse) n'est plus affiché au commercial :
+  // il reste lisible dans la console du navigateur (window.CRMDIAG) si le CRM doit être diagnostiqué.
+  const diagHTML=()=>{try{window.CRMDIAG=DIAG;}catch(e){} return "";};
 
   function panneau(){
     const esc=v=>String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
@@ -3579,10 +3585,11 @@ calc();
         if(r2&&r2.fiche){remplir(r2.fiche);return;}
         // Le CRM ne donne le détail que d'une fiche unique : on reprend au moins ce que la liste montre
         // (nom, prénom, date de naissance, ville), et on le dit — adresse, e-mail, téléphone et famille manquent.
-        if(applyFicheJSON({nom:f.nom,prenom:f.prenom,naissance:f.naissance,ville:f.ville})){
-          res.innerHTML='<div class="irow iwarn"><span>Fiche reprise en partie : nom, prénom, date de naissance, ville</span><b>n° '+esc(sid)+'</b></div>'
-            +'<div style="font-size:11.5px;color:var(--muted);margin-top:6px">Le CRM n\u2019a pas renvoyé le détail de cette fiche (adresse, e-mail, téléphone, conjoint, enfants). Complétez-les à la main.</div>'+diagHTML();
-        }else res.innerHTML='<div class="irow iwarn"><span>Fiche illisible</span><b>n° '+esc(sid)+'</b></div>'+diagHTML();
+        // Une seule fenêtre : la note part dans « Données importées du CRM » et le panneau se ferme
+        window.IMPNOTE="Le CRM n\u2019a renvoyé que ces informations : adresse, e-mail, téléphone, conjoint et enfants sont à compléter à la main.";
+        if(applyFicheJSON({nom:f.nom,prenom:f.prenom,naissance:f.naissance,ville:f.ville})){ ov.remove(); return; }
+        window.IMPNOTE="";
+        res.innerHTML='<div class="irow iwarn"><span>Fiche illisible</span><b>n° '+esc(sid)+'</b></div>'+diagHTML();
       };
       res.querySelectorAll(".irow[data-i]").forEach(el=>{
         el.addEventListener("click",()=>choisir(el));
