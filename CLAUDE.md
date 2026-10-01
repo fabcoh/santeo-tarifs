@@ -182,11 +182,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   choix compagnie par compagnie (cases à cocher sur deux colonnes sous le bouton, avec raccourcis
   « Toutes » / « Aucune » ; le nom de la compagnie passe en infobulle, la pastille du tableau le donnant
   déjà). L'ouverture du détail est retenue sur l'appareil, comme la sélection.
-  **Compagnies par défaut** (Fabrice, 01/10/2026) : un **appui long** (0,6 s) sur une compagnie du détail la coche et
-  passe sa case en rouge (`label.defaut`, `--nrc`) ; un second appui long l'enlève. Liste `DEFAUT`, retenue sur
+  **Compagnies par défaut** (Fabrice, 01/10/2026) : dans le détail, **la case** coche pour cette fois ; **le nom** de la
+  compagnie (`.fnom`) la fixe par défaut — case rouge (`.fcase.defaut`, `--nrc`), cochée — et un second clic sur le nom
+  l'enlève. Un premier essai à l'appui long ne marchait pas chez Fabrice : abandonné. Liste `DEFAUT`, retenue sur
   l'appareil (`santeo_defaut`). À l'ouverture de la page, à chaque nouvelle fiche et sur « Tout effacer »,
-  `selDefaut()` coche ces compagnies-là au lieu de « toutes » ; sans compagnie par défaut, rien ne change. Le clic
-  qui suit l'appui long est avalé (sinon la case se décocherait), le menu contextuel du téléphone aussi.
+  `selDefaut()` coche ces compagnies-là au lieu de « toutes » ; sans compagnie par défaut, rien ne change.
   **Le périmètre ne se règle que là** : le volet « Compagnies & gammes » du haut de page a été retiré, deux
   endroits pour le même réglage se désynchronisant et mangeant la place des résultats.
   **TALIS, surcomplémentaire, n'apparaît que si elle est cochée** : son tarif ne couvre

@@ -243,9 +243,12 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 #fcomp label{display:flex;align-items:center;gap:5px;padding:2px 3px;border-radius:5px;font:600 11.5px 'IBM Plex Sans',sans-serif;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #fcomp label:hover{background:var(--best)}
 #fcomp label input{margin:0;flex:none}
-#fcomp label{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-#fcomp label.defaut{background:rgba(198,40,40,.13);color:var(--nrc)}
-#fcomp label.defaut input{accent-color:var(--nrc);outline:2px solid var(--nrc);outline-offset:1px}
+#fcomp .fcase{display:flex;align-items:center;gap:5px;padding:2px 3px;border-radius:5px;font:600 11.5px 'IBM Plex Sans',sans-serif;white-space:nowrap;min-width:0}
+#fcomp .fcase input{margin:0;flex:none;cursor:pointer}
+#fcomp .fnom{cursor:pointer;overflow:hidden;text-overflow:ellipsis;-webkit-user-select:none;user-select:none;padding:1px 2px;border-radius:4px}
+#fcomp .fnom:hover{background:var(--best)}
+#fcomp .fcase.defaut{background:rgba(198,40,40,.13);color:var(--nrc)}
+#fcomp .fcase.defaut input{accent-color:var(--nrc);outline:2px solid var(--nrc);outline-offset:1px}
 #fcomp .fdefaut{grid-column:1/-1;font:500 10.5px 'IBM Plex Sans',sans-serif;color:var(--muted);padding:3px 3px 0}
 #fcomp .raccourcis{grid-column:1/-1;display:flex;gap:6px;padding:1px 3px 4px}
 #fcomp .raccourcis button{flex:1;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);padding:4px;font:700 11px 'Archivo',sans-serif;cursor:pointer}
@@ -2160,10 +2163,10 @@ function fconstruit(){
   try{ zone.hidden = localStorage.getItem("santeo_fcomp")!=="1"; }catch(e){ zone.hidden=true; }
   zone.innerHTML='<div class="raccourcis"><button type="button" data-tout="1">Toutes</button>'
     +'<button type="button" data-tout="0">Aucune</button></div>'
-    + Object.keys(sel).map(k=>'<label title="'+COMP[k]+' — appui long : cochée d\'office à l\'ouverture"'+(DEFAUT.includes(k)?' class="defaut"':'')
-        +'><input type="checkbox" data-c="'+k+'"'+(sel[k]?" checked":"")
-        +'> '+F[k].label+'</label>').join("")
-    +'<div class="fdefaut">Appui long sur une compagnie : cochée d\'office à l\'ouverture (case rouge).</div>';
+    + Object.keys(sel).map(k=>'<div class="fcase'+(DEFAUT.includes(k)?' defaut':'')+'" title="'+COMP[k]+'">'
+        +'<input type="checkbox" data-c="'+k+'"'+(sel[k]?" checked":"")+' title="Cocher pour cette fois">'
+        +'<span class="fnom" data-n="'+k+'" title="Cliquer le nom : cochée à chaque ouverture (rouge) — recliquer pour enlever">'+F[k].label+'</span></div>').join("")
+    +'<div class="fdefaut">Case : pour cette fois. Nom : cochée à chaque ouverture (en rouge) ; recliquer le nom pour l\'enlever.</div>';
   const sync=()=>{
     saveSel();
     try{ localStorage.setItem("santeo_fcomp", zone.hidden?"0":"1"); }catch(e){}
@@ -2174,24 +2177,15 @@ function fconstruit(){
   zone.querySelectorAll('input[data-c]').forEach(i=>i.addEventListener("change",e=>{
     sel[e.target.dataset.c]=e.target.checked; sync();
   }));
-  // Appui long (0,6 s) : la compagnie entre dans la sélection par défaut, ou en sort. Le clic qui suit
-  // l'appui long est avalé, sinon la case se décocherait aussitôt.
-  zone.querySelectorAll("label").forEach(lab=>{
-    const inp=lab.querySelector("input[data-c]"); if(!inp) return;
-    let t=null, long=false;
-    const stop=()=>{ if(t){clearTimeout(t);t=null;} };
-    lab.addEventListener("pointerdown",()=>{ long=false; stop(); t=setTimeout(()=>{
-      t=null; long=true; const k=inp.dataset.c, i=DEFAUT.indexOf(k);
-      if(i<0){ DEFAUT.push(k); sel[k]=true; } else DEFAUT.splice(i,1);
-      lab.classList.toggle("defaut",i<0);
-      try{ localStorage.setItem("santeo_defaut",JSON.stringify(DEFAUT)); }catch(e){}
-      try{ navigator.vibrate&&navigator.vibrate(30); }catch(e){}
-      sync();
-    },600); });
-    ["pointerup","pointerleave","pointercancel"].forEach(ev=>lab.addEventListener(ev,stop));
-    lab.addEventListener("click",e=>{ if(long){ e.preventDefault(); long=false; } });
-    lab.addEventListener("contextmenu",e=>e.preventDefault());
-  });
+  // Le nom de la compagnie la fixe par défaut (case rouge, cochée à chaque ouverture) ou l'enlève ;
+  // la case seule ne vaut que pour cette fois (Fabrice, 01/10/2026 — l'appui long ne marchait pas).
+  zone.querySelectorAll(".fnom").forEach(nom=>nom.addEventListener("click",()=>{
+    const k=nom.dataset.n, i=DEFAUT.indexOf(k);
+    if(i<0){ DEFAUT.push(k); sel[k]=true; } else DEFAUT.splice(i,1);
+    nom.parentNode.classList.toggle("defaut",i<0);
+    try{ localStorage.setItem("santeo_defaut",JSON.stringify(DEFAUT)); }catch(e){}
+    sync();
+  }));
   zone.querySelectorAll('button[data-tout]').forEach(btn=>btn.addEventListener("click",()=>{
     const v=btn.dataset.tout==="1";
     for(const k in sel) sel[k]=v;
