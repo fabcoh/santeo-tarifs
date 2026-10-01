@@ -3383,7 +3383,7 @@ if(__PRIV__){
   // « Importer une fiche prospect ? » (Fabrice, 01/10/2026). Une fiche reçue mais incomplète garde l'ancienne fenêtre.
   // Le module de recherche est déclaré plus bas dans la page : on attend qu'elle soit lue en entier.
   const quand=f=>document.readyState==="loading"?document.addEventListener("DOMContentLoaded",f):f();
-  quand(()=>{ if(window.ouvrirFicheCRM&&!window.FICHE_KO) window.ouvrirFicheCRM({creer:true}); else ancienne(); });
+  quand(()=>{ if(window.ouvrirFicheCRM&&!window.FICHE_KO) window.ouvrirFicheCRM(); else ancienne(); });
   function ancienne(){
   const ov=document.createElement("div");
   ov.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.45);z-index:997;display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 16px";
@@ -3733,11 +3733,9 @@ calc();
     ov.querySelector("#csgo").addEventListener("click",lancer);
     q.addEventListener("keydown",e=>{if(e.key==="Enter")lancer();});
     brancherCreation(ov);
-    // « Créer un tarif » toujours déplié à l'ouverture (Fabrice, 01/10/2026) ; « Compléter les infos » et
-    // « Ajouter un assuré » restent repliés jusqu'à ce qu'on les ouvre.
-    ov.querySelector("#ctbox").open=true;
-    if(opts&&opts.creer) ov.querySelector("#ct_age").focus();
-    else (get(KP)?q:ov.querySelector("#cspv")).focus();
+    // À l'ouverture, la fenêtre est réduite : recherche + « ▸ Créer un tarif » replié (Fabrice, 01/10/2026).
+    // On déplie ce qu'on veut ; rien n'est retenu d'une ouverture à l'autre.
+    (get(KP)?q:ov.querySelector("#cspv")).focus();
   }
   // Ouvert aussi à l'arrivée directe sur la page, à la place de l'ancienne fenêtre « Importer une fiche prospect ? »
   window.ouvrirFicheCRM=panneau;
