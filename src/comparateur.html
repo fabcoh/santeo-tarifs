@@ -3531,16 +3531,17 @@ calc();
   // « Ajouter un assuré » se déplient pour préparer l'adhésion. Rien n'est écrit dans un CRM : la fiche ne vit
   // que dans la page (PRO), comme une fiche importée.
   const REGS=[["SAL","Salarié"],["TNS","TNS"],["RL","Alsace-Moselle salarié"],["TNSRL","Alsace-Moselle TNS"]];
-  const CHP="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--ground);color:var(--ink);font:inherit";
-  const LBL=t=>'<span style="display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:6px 0 2px">'+t+'</span>';
+  const CHP="width:100%;height:40px;box-sizing:border-box;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--ground);color:var(--ink);font:inherit";
+  // Libellés sur une ligne et champs de même hauteur : sinon un libellé qui passe à la ligne décale son champ.
+  const LBL=t=>'<span style="display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:8px 0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+t+'</span>';
   const SUM="cursor:pointer;font:800 14px 'Archivo',sans-serif;color:var(--accent);padding:8px 0;list-style-position:inside";
-  const GRILLE="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0 10px";
+  const GRILLE="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:2px 12px;align-items:end";
   const regSel=(id,cls)=>'<select '+(id?'id="'+id+'" ':'')+(cls?'class="'+cls+'" ':'')+'style="'+CHP+'">'+REGS.map(([v,l])=>'<option value="'+v+'">'+l+'</option>').join("")+'</select>';
   function creationHTML(){
     return '<details id="ctbox" style="margin-top:12px;border-top:1px solid var(--line);padding-top:4px">'
       +'<summary style="'+SUM+'">Créer un tarif</summary>'
       +'<div style="'+GRILLE+'">'
-      +'<label>'+LBL("Âge, année ou date de naissance")+'<input id="ct_age" inputmode="numeric" autocomplete="off" placeholder="42 · 1984 · 04/12/1984" style="'+CHP+'"></label>'
+      +'<label>'+LBL("Âge ou date de naissance")+'<input id="ct_age" inputmode="numeric" autocomplete="off" placeholder="42 · 1984 · 04/12/1984" style="'+CHP+'"></label>'
       +'<label>'+LBL("Code postal")+'<input id="ct_cp" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="75 ou 75012" style="'+CHP+'"></label>'
       +'<label>'+LBL("Régime")+regSel("ct_reg")+'</label></div>'
       +'<details id="ctinfos" style="margin-top:8px"><summary style="'+SUM+'">Compléter les infos</summary>'
@@ -3561,7 +3562,7 @@ calc();
       +'<div id="ct_err" style="color:var(--nrc);font-size:13px;margin-top:8px"></div>'
       +'<button type="button" id="ct_go" style="margin-top:10px;width:100%;padding:11px;border:0;border-radius:9px;background:var(--accent);color:var(--accent-ink);font:800 15px \'Archivo\',sans-serif;cursor:pointer">Voir les tarifs</button>'
       +'<details id="ctcolle" style="margin-top:10px"><summary style="'+SUM+';font-size:12.5px;color:var(--muted)">Coller une fiche copiée de Santéo</summary>'
-      +'<textarea id="ct_colle" rows="3" autocomplete="off" placeholder="Collez la fiche ici — l\'analyse démarre toute seule" style="'+CHP+';resize:vertical"></textarea></details>'
+      +'<textarea id="ct_colle" rows="3" autocomplete="off" placeholder="Collez la fiche ici — l\'analyse démarre toute seule" style="'+CHP+';height:auto;padding:8px 10px;resize:vertical"></textarea></details>'
       +'</details>';
   }
   // « 42 », « 1984 », « 04/12/1984 » ou « 04121984 » → {naiss: âge ou année pour le haut de page, ddn: jj/mm/aaaa ou ""}
@@ -3607,6 +3608,8 @@ calc();
       d.querySelector(".ct_anom").focus();
     };
     $("#ct_plus").addEventListener("click",ajouter);
+    // « Ajouter un assuré » ouvert : la fiche de l'assuré 2 est déjà là, prête à remplir
+    $("#ctassures").addEventListener("toggle",e=>{if(e.target.open&&!liste.children.length)ajouter();});
     $("#ct_go").addEventListener("click",()=>{
       const err=$("#ct_err"); err.textContent="";
       const n=lireNaissance(val("#ct_age")), cp=val("#ct_cp").replace(/\s/g,"");
@@ -3730,7 +3733,10 @@ calc();
     ov.querySelector("#csgo").addEventListener("click",lancer);
     q.addEventListener("keydown",e=>{if(e.key==="Enter")lancer();});
     brancherCreation(ov);
-    if(opts&&opts.creer){ov.querySelector("#ctbox").open=true;ov.querySelector("#ct_age").focus();}
+    // « Créer un tarif » toujours déplié à l'ouverture (Fabrice, 01/10/2026) ; « Compléter les infos » et
+    // « Ajouter un assuré » restent repliés jusqu'à ce qu'on les ouvre.
+    ov.querySelector("#ctbox").open=true;
+    if(opts&&opts.creer) ov.querySelector("#ct_age").focus();
     else (get(KP)?q:ov.querySelector("#cspv")).focus();
   }
   // Ouvert aussi à l'arrivée directe sur la page, à la place de l'ancienne fenêtre « Importer une fiche prospect ? »

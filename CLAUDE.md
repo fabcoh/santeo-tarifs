@@ -236,6 +236,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   date de naissance au masque, régime ; un mineur passe en enfant ; nom de famille de l'assuré 1 par défaut). « Voir les
   tarifs » remplit `PRO` (comme une fiche importée, donc l'adhésion) et le haut de page par `applyImport`, sans la fenêtre
   « Données importées du CRM » : le commercial vient de tout taper. Rien n'est écrit dans un CRM.
+  **« Créer un tarif » est déplié à chaque ouverture de la fenêtre** (bouton Fiche CRM compris) ; « Compléter les
+  infos » et « Ajouter un assuré » restent repliés, et ouvrir « Ajouter un assuré » pose aussitôt la fiche de
+  l'assuré 2. Champs à 40 px de haut et libellés sur une ligne (`white-space:nowrap`), grille alignée par le bas :
+  un libellé qui passait à la ligne décalait son champ (constaté par Fabrice sur PC le 01/10/2026).
   **À l'arrivée directe sur la page** (sans `#fiche`, sans `#vide`), cette fenêtre s'ouvre « Créer un tarif » déplié, à la
   place de l'ancienne question « Importer une fiche prospect ? ». Le collage d'une fiche Santéo y est gardé, replié
   (« Coller une fiche copiée de Santéo », même `parseFiche`). Une fiche reçue par le lien mais incomplète (`FICHE_KO`)
