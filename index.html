@@ -251,6 +251,10 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 #fcomp label{display:flex;align-items:center;gap:5px;padding:2px 3px;border-radius:5px;font:600 11.5px 'IBM Plex Sans',sans-serif;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #fcomp label:hover{background:var(--best)}
 #fcomp label input{margin:0;flex:none}
+#fcomp label{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#fcomp label.defaut{background:rgba(198,40,40,.13);color:var(--nrc)}
+#fcomp label.defaut input{accent-color:var(--nrc);outline:2px solid var(--nrc);outline-offset:1px}
+#fcomp .fdefaut{grid-column:1/-1;font:500 10.5px 'IBM Plex Sans',sans-serif;color:var(--muted);padding:3px 3px 0}
 #fcomp .raccourcis{grid-column:1/-1;display:flex;gap:6px;padding:1px 3px 4px}
 #fcomp .raccourcis button{flex:1;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);padding:4px;font:700 11px 'Archivo',sans-serif;cursor:pointer}
 #fbud{display:flex;align-items:center;gap:7px;padding:10px 0 4px;border-bottom:1px solid var(--line);margin-bottom:2px}
@@ -361,7 +365,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-01T05:50:04Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-01T05:50:04Z</div>
+  <div id="buildstamp" data-build="2026-10-01T05:52:23Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-01T05:52:23Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2364,6 +2368,13 @@ try{
   if(s)for(const k in sel)if(k in s)sel[k]=!!s[k];
 }catch(e){}
 function saveSel(){try{localStorage.setItem("santeo_sel",JSON.stringify(sel))}catch(e){}}
+// Compagnies cochées d'office à l'ouverture (Fabrice, 01/10/2026) : appui long dans le périmètre du panneau ⚖,
+// la case passe en rouge ; second appui long pour l'enlever. Retenu sur l'appareil. Elles reviennent aussi à
+// chaque nouvelle fiche et sur « Tout effacer », à la place de « toutes les compagnies ».
+let DEFAUT=[];
+try{ DEFAUT=(JSON.parse(localStorage.getItem("santeo_defaut")||"[]")||[]).filter(k=>k in sel); }catch(e){ DEFAUT=[]; }
+function selDefaut(){ for(const k in sel) sel[k]=DEFAUT.includes(k); }
+if(DEFAUT.length) selDefaut();
 
 // ---- API SANTÉ (APICIL) : tarifs demandés en direct à l'assureur ----------------
 // La page n'appelle jamais APICIL : elle interroge notre relais sur capisante.fr,
@@ -2643,8 +2654,10 @@ function fconstruit(){
   try{ zone.hidden = localStorage.getItem("santeo_fcomp")!=="1"; }catch(e){ zone.hidden=true; }
   zone.innerHTML='<div class="raccourcis"><button type="button" data-tout="1">Toutes</button>'
     +'<button type="button" data-tout="0">Aucune</button></div>'
-    + Object.keys(sel).map(k=>'<label title="'+COMP[k]+'"><input type="checkbox" data-c="'+k+'"'+(sel[k]?" checked":"")
-        +'> '+F[k].label+'</label>').join("");
+    + Object.keys(sel).map(k=>'<label title="'+COMP[k]+' — appui long : cochée d\'office à l\'ouverture"'+(DEFAUT.includes(k)?' class="defaut"':'')
+        +'><input type="checkbox" data-c="'+k+'"'+(sel[k]?" checked":"")
+        +'> '+F[k].label+'</label>').join("")
+    +'<div class="fdefaut">Appui long sur une compagnie : cochée d\'office à l\'ouverture (case rouge).</div>';
   const sync=()=>{
     saveSel();
     try{ localStorage.setItem("santeo_fcomp", zone.hidden?"0":"1"); }catch(e){}
@@ -2655,6 +2668,24 @@ function fconstruit(){
   zone.querySelectorAll('input[data-c]').forEach(i=>i.addEventListener("change",e=>{
     sel[e.target.dataset.c]=e.target.checked; sync();
   }));
+  // Appui long (0,6 s) : la compagnie entre dans la sélection par défaut, ou en sort. Le clic qui suit
+  // l'appui long est avalé, sinon la case se décocherait aussitôt.
+  zone.querySelectorAll("label").forEach(lab=>{
+    const inp=lab.querySelector("input[data-c]"); if(!inp) return;
+    let t=null, long=false;
+    const stop=()=>{ if(t){clearTimeout(t);t=null;} };
+    lab.addEventListener("pointerdown",()=>{ long=false; stop(); t=setTimeout(()=>{
+      t=null; long=true; const k=inp.dataset.c, i=DEFAUT.indexOf(k);
+      if(i<0){ DEFAUT.push(k); sel[k]=true; } else DEFAUT.splice(i,1);
+      lab.classList.toggle("defaut",i<0);
+      try{ localStorage.setItem("santeo_defaut",JSON.stringify(DEFAUT)); }catch(e){}
+      try{ navigator.vibrate&&navigator.vibrate(30); }catch(e){}
+      sync();
+    },600); });
+    ["pointerup","pointerleave","pointercancel"].forEach(ev=>lab.addEventListener(ev,stop));
+    lab.addEventListener("click",e=>{ if(long){ e.preventDefault(); long=false; } });
+    lab.addEventListener("contextmenu",e=>e.preventDefault());
+  });
   zone.querySelectorAll('button[data-tout]').forEach(btn=>btn.addEventListener("click",()=>{
     const v=btn.dataset.tout==="1";
     for(const k in sel) sel[k]=v;
@@ -2731,9 +2762,10 @@ function fapplique(rows){
 function filtresRAZ(){
   for(const k in FILTRES) delete FILTRES[k];
   try{ localStorage.removeItem("santeo_filtres"); }catch(e){}
-  for(const k in sel) sel[k]=false;          // aucune coche = toutes les compagnies
+  selDefaut();                               // compagnies par défaut, ou aucune coche = toutes les compagnies
   try{ localStorage.removeItem("santeo_sel"); }catch(e){}
-  document.querySelectorAll('input[type="checkbox"][data-k]').forEach(i=>{i.checked=false;});
+  document.querySelectorAll('input[type="checkbox"][data-k]').forEach(i=>{i.checked=!!sel[i.dataset.k];});
+  document.querySelectorAll('#fcomp input[data-c]').forEach(i=>{i.checked=!!sel[i.dataset.c];});
   document.querySelectorAll("#fcorps select[data-f]").forEach(x=>{x.value="";x.classList.remove("on");});
   const bu=document.getElementById("f_budget"); if(bu){bu.value="";bu.classList.remove("on");}
   try{ fporteeMaj(); }catch(e){}
