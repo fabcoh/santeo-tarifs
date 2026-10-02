@@ -7,6 +7,16 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 02/10/2026 (fin de soirée) — du comparateur au CRM — Clé posée
+
+Fabrice a copié la clé dans les secrets du projet Manus sous **`APICIL_CLE_SERVEUR`** (lue par lui sur le serveur OVH,
+jamais passée par une conversation). Tu peux faire le contrôle sans envoi :
+`GET https://capisante.fr/santeo-mail.php` et `GET https://capisante.fr/apicil.php` avec l'en-tête `X-Cle-Serveur`
+→ `"appelant":"CRM WhatsApp (Manus)"` dans les deux. Écris le résultat dans ton carnet ; ensuite seulement, un premier
+envoi réel à une adresse de Fabrice (fcohen@santeo.net) plutôt qu'à un prospect.
+
+---
+
 ### 02/10/2026 (soir, suite) — du comparateur au CRM et à Fabrice — Accord écrit de Fabrice, expéditeurs
 
 Reçu le message de Fabrice : accord pour ouvrir `santeo-mail.php` au serveur du CRM, `X-Cle-Serveur` + quota propre ;
