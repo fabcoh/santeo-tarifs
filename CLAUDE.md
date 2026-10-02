@@ -835,7 +835,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   du scratchpad `april/wsall_*.json`). **Santé Mix et Flexi Santé** (modulables) : le niveau du résumé s'écrit **« 03|03 »**
   dans chaque garantie (« 03 » seul → « slug APRIL_ASP_MIXV5-lvl-03 not found ») ; relevés sur la diagonale 01|01…06|06
   (trouvé à la demande de Fabrice, « cherche encore pour mixte »). Flexi Santé ne porte **aucun renvoi** responsable /
-  non responsable : pastille « Responsable : à vérifier ». Les 12 produits ouverts ont désormais leurs garanties.
+  non responsable : classé **responsable** à ses garanties (Fabrice : « OPTAM et non-OPTAM, c'est du 100 % Santé en
+  général ») — OPTAM distinct du non-OPTAM (≥ 20 points, non-OPTAM ≤ 200 %) et paniers 100 % Santé aux frais réels ;
+  contre-exemple Only Santé : OPTAM = non-OPTAM, « Aucune prise en charge » en 100 % Santé, déclaré non responsable. Les 12 produits ouverts ont désormais leurs garanties.
   `F.APRIL` / `EX.APRIL` sont remplis à l'exécution (`APRIL_RANG` : rang fixe du produit dans `APRIL_PRODUITS`, fi = rang
   × 100 + niveau) ; pastille Responsable / Non responsable ; les filtres de garantie s'appliquent aux lignes APRIL
   connues. **L'envoi au prospect reste fermé** pour APRIL (ni `garanties.json`, ni documents, ni logo, ni `interet.php`).
