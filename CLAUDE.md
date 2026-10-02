@@ -755,6 +755,16 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Vérification** : `april-config.php` (gabarit, secret à coller par Fabrice, `cle_verif`) + `april-verif.php` (lecture
   seule : IP sortante, jeton, `GET /products`, garanties et commissions de chaque produit, régimes ; essaie
   `…/v1/products` puis `…/v1/healthProtection/products`). Sources dans le scratchpad `ovh/april/`. À supprimer après relevé.
+  **Premier accès réussi le 02/10/2026** (après correction du secret : 44 caractères collés au lieu de 43) : jeton obtenu
+  par l'adresse (méthode du tutoriel), routes **sans** préfixe `/healthProtection` (`…/healthprotection/v1/products`),
+  `GET /socialSecurityProviders` en **404**. **29 produits**, dont en santé : `OnlySante`, `SanteVita`, `FlexiSante`,
+  `SanteMix` (Santé Mix Proximité), `SanteTranquil`, `SanteGan`, `SanteOptimale`, `SimplySante`, `SanteProtect`
+  (Malakoff Humanis), `SantePeps`, `SanteCapSerenite`, `SanteZen`, `SantePrimo`, `SanteGlobale`, `SanteBrio`, `SanteMoove`,
+  `SanteGenerali`, `SanteApril`, `HospiPlus` ; TNS : `SantePro`, `SanteProStart`, `SanteProPrivilege`, `SanteSolution`,
+  `SantePremium` ; hors santé : `Obseques`, `FGP`, `PrevPremium`, `Tempo`, `Accident`. Garanties : le plus souvent
+  `MaladieChirurgie` (+ renforts), FlexiSante en modules (`GarantieDentaireOptiqueAuditives`, `GarantieHospitalisation`,
+  `Renfort…`, versions `Eco`). **Commissions** par produit : `1515`, `3010`, `3010S`, `1515S`, `1510`, `1616`…`2020`,
+  `HORCOM` (00/00), `1010` — **le taux choisi change le tarif** : choix commercial de Fabrice, à fixer avant tout tarif.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
