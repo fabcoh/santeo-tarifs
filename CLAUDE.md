@@ -727,7 +727,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   téléchargement de la liasse, le suivi de l'état du devis et la validation de souscription.
 - Date de naissance APICIL : celle de la fiche si elle est cohérente avec l'âge saisi, sinon 1ᵉʳ janvier
   (âge atteint dans l'année). Demander à Manus la date exacte dans ses exports.
-- Autres compagnies : aucune n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
+- **APRIL : accès API ouvert le 01/10/2026** (Damien VALCARCEL, april.com) — documentation et environnement de test
+  **PréProduction (PPR)** sur l'API Store `https://ppr-api.april.fr/` ; la production s'ouvre sur demande, une fois les
+  développements finis en PPR. Identifiants `clientId` / `clientSecret` (couple propre à CAPI FINANCE) : **jamais dans ce
+  dépôt ni dans la page** — dans un `april-config.php` hors dépôt sur capisante.fr, comme APICIL ; même architecture
+  (relais PHP, IP française, page qui n'appelle que le relais). Le secret PPR a transité par une conversation Claude le
+  02/10/2026 : en demander un nouveau avant la production, et ne jamais coller celui de production ici.
+  `ppr-api.april.fr` est **bloqué depuis une session Claude** (proxy) : la documentation doit être fournie par Fabrice.
+- Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
 - Harmonisation optique FLEXIA / SOLENCIA (base « 2 verres simples », comme Cap Évolution et Mutuelle Verte).
