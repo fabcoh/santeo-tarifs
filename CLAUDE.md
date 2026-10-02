@@ -477,6 +477,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **jeton `t=` expiré (2 h)** — « Rouvrez le comparateur depuis la conversation WhatsApp » ; sinon « Dépôt impossible
   (HTTP xxx · …) ». Avant, tout échec disait seulement « réessayer ». Un onglet ouvert par ↗ porte le même jeton :
   il expire à la même heure.
+  **« Failed to fetch » = CRM injoignable** (02/10/2026, vers 18 h : « Dépôt impossible (Failed to fetch) », mail non
+  parti puisque le dépôt passe en premier). Le Claude du CRM confirme que **toutes** les réponses de
+  `/api/comparateur/depot` portent les en-têtes CORS, erreurs comprises (400, 401, 404, 413, 500 ; pré-vol OPTIONS 204),
+  corps jusqu'à 3 Mo, image 2 Mo décodée, jeton 2 h. Une absence de réponse vient donc d'un serveur indisponible
+  (redémarrage, publication, hébergeur). Sur un `TypeError` sans code HTTP, la page affiche « CRM injoignable pour
+  l'instant — réessayez dans une minute » et un bouton **↻ Réessayer** qui relance le même dépôt ; le constat de Manus
+  sur les journaux de 16 h UTC est attendu dans `docs/carnet/ECHANGES.md` du CRM.
 - Recherche par e-mail : côté Manus, renvoie `404 Aucune fiche Santéo trouvée` — à corriger chez lui.
 
 ## Envoi d'e-mails (Mailgun)
