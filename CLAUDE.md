@@ -807,6 +807,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Test de bout en bout en local** (scratchpad `relais/`) : `april.php` servi par `php -S` (avec
   `-d curl.cainfo=/root/.ccr/ca-bundle.crt`), jeton factice sur un 2ᵉ port, et `px/p.php` qui relaie vers la console
   en retirant ses deux lignes d'en-tête ; Playwright détourne `capisante.fr/april.php` vers lui.
+  **Relais déposé et vérifié le 02/10/2026** (`https://capisante.fr/april.php`, GET = état). Retours de Fabrice le même
+  jour : sur téléphone le tableau des niveaux débordait (seul « Niv. 1 » visible) → **pastilles par produit**
+  (`.apl`, `.apniv`), qui passent à la ligne. **Deux chiffres suffisent** : `aprilCP()` prend le code postal du
+  chef-lieu (`dept+"000"`, sauf 13001, 69001, 75001, 2A 20000, 2B 20200, DOM `97x00`) — « 75000 » n'existe pas et Santé
+  Zen le refuse —, mention « Code postal pris au chef-lieu… ». Avec APRIL seule cochée, le tableau dit « Aucune formule
+  dans le périmètre choisi… Les tarifs APRIL sont plus bas » au lieu de « Renseigne une année de naissance ».
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
