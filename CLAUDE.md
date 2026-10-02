@@ -765,10 +765,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `MaladieChirurgie` (+ renforts), FlexiSante en modules (`GarantieDentaireOptiqueAuditives`, `GarantieHospitalisation`,
   `Renfort…`, versions `Eco`). **Commissions** par produit : `1515`, `3010`, `3010S`, `1515S`, `1510`, `1616`…`2020`,
   `HORCOM` (00/00), `1010` — **le taux choisi change le tarif** : choix commercial de Fabrice, à fixer avant tout tarif.
-  **Sélecteur des produits APRIL** (Fabrice, 02/10/2026) : dans le panneau ⚖, sous les compagnies, ligne « APRIL » et
-  bouton **☰ n / 19** qui déplie la liste (`APRIL_PRODUITS`, Particuliers : 14, TNS : 5), cases à cocher, retenues sur
+  **Sélecteur des produits APRIL** (Fabrice, 02/10/2026) : APRIL est **une compagnie du périmètre comme les autres**
+  (`sel.APRIL`, `COMP.APRIL` ; case = pour cette fois, nom = par défaut), dernière de la grille, avec à côté de son nom
+  le bouton **☰ n / 19** qui déplie la liste (`APRIL_PRODUITS`, Particuliers : 14, TNS : 5), cases à cocher, retenues sur
   l'appareil (`santeo_april`, `window.APRIL_SEL`) ; par défaut Santé Mix Proximité et Simply Santé. **Les tarifs APRIL ne
   sont pas encore branchés** : la sélection dira au futur relais quels produits interroger (quota APRIL).
+  **Commission (Fabrice, 02/10/2026)** : tarifer d'abord à la **commission la plus forte**, avec un bouton **Remise** sur la
+  proposition qui retarife à **15/15** pour baisser le prix. L'API n'a pas de champ « remise » : le seul levier est le code
+  `commission` du produit (presque tous offrent `3010` et `1515` ; Santé Optimale aussi `1616`…`2020`).
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
