@@ -259,6 +259,21 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 #fcomp .fcase.defaut input{accent-color:var(--nrc);outline:2px solid var(--nrc);outline-offset:1px}
 #fcomp .fdefaut{grid-column:1/-1;font:500 10.5px 'IBM Plex Sans',sans-serif;color:var(--muted);padding:3px 3px 0}
 #fcomp .fexpl{font-size:9.5px;margin-top:8px;padding-top:4px}
+#aprilbox{margin-top:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:500 12.5px 'IBM Plex Sans',sans-serif}
+#aprilbox .aph{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+#aprilbox .aph b{font:800 12px 'Archivo',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+#aprilbox .aph .apn{color:var(--muted);font-size:11px}
+#aprilbox #aprrem{margin-left:auto;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent);padding:3px 10px;font:700 11.5px 'Archivo',sans-serif;cursor:pointer}
+#aprilbox #aprrem.on{background:var(--accent);color:var(--accent-ink)}
+#aprilbox .aptw{overflow-x:auto}
+#aprilbox table{border-collapse:collapse;width:auto}
+#aprilbox th,#aprilbox td{position:static;width:auto;min-width:0;background:none;height:auto}
+#aprilbox th:first-child,#aprilbox td:first-child{min-width:150px;padding-right:14px}
+#aprilbox thead th{box-shadow:none;color:var(--muted);font-size:10.5px;padding-top:4px}
+#aprilbox th,#aprilbox td{padding:4px 6px;border-top:1px solid var(--line);text-align:right;white-space:nowrap}
+#aprilbox th:first-child,#aprilbox td:first-child{text-align:left}
+#aprilbox th{font:700 10.5px 'Archivo',sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+#aprilbox td.apko{text-align:left;color:var(--muted);white-space:normal}
 #fcomp #faprlbtn{margin-left:auto;flex:none;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent);padding:1px 7px;font:700 11px 'Archivo',sans-serif;cursor:pointer}
 #fcomp #faprlliste{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:1px 8px}
 #fcomp #faprlliste[hidden]{display:none}
@@ -370,12 +385,13 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <tbody id="rows"></tbody>
   </table></div>
   <div id="warns"></div>
+  <div id="aprilbox" hidden></div>
   <div class="condbox" id="condbox" hidden>
     <div style="font-weight:800;font-family:'Archivo',sans-serif;margin-bottom:3px">Conditions MCCINOVA</div>
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-02T07:33:35Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-02T07:33:35Z</div>
+  <div id="buildstamp" data-build="2026-10-02T13:17:41Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-02T13:17:41Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2465,6 +2481,68 @@ async function apicilCharge(profil,cle){
   if(APICIL.cle===cle){ APICIL=etat; calc(); }   // une réponse périmée est ignorée
 }
 
+// ---- APRIL : tarifs demandés à l'assureur par notre relais (capisante.fr/april.php) ----------
+// Même principe qu'API SANTÉ : la page n'appelle jamais APRIL. Les produits interrogés sont ceux
+// cochés au bouton ☰ du panneau ⚖ (APRIL_SEL). Tant que les garanties APRIL ne sont pas saisies,
+// leurs tarifs s'affichent dans un bloc à part, sous le tableau, et non parmi les formules.
+// « Remise » retarife en commission 15/15 au lieu de 30/10 (Fabrice, 02/10/2026).
+const APRIL_URL="https://capisante.fr/april.php";
+const APRIL_REG={SAL:"SS",TNS:"TNS",RL:"AlsaceMoselle",TNSRL:"AlsaceMoselle"};
+const APRIL_NOM={}; APRIL_PRODUITS.forEach(g=>g[1].forEach(([c,l])=>{APRIL_NOM[c]=l;}));
+let APRIL_ST={cle:"",etat:"vide",res:null,message:""}, aprilTimer=null, aprilRemise=false;
+function aprilProfil(age,cnjAge,hasCnj,kids,reg,cpBrut){
+  const brut=(cpBrut||"").trim();
+  if(!/^\d{5}$/.test(brut)||!APRIL_SEL.length) return null;      // APRIL tarife sur le code postal exact
+  const a=[{role:"AssurePrincipal",naissance:apicilNaiss(age,apicilDDNAssure())}];
+  if(hasCnj&&cnjAge!=null) a.push({role:"Conjoint",naissance:apicilNaiss(cnjAge,apicilDDNConjoint())});
+  for(let i=0;i<Math.min(kids,8);i++) a.push({role:"Enfant",naissance:(YEAR-10)+"-01-01"});
+  return {cp:brut,effet:apicilEffet(),regime:APRIL_REG[reg]||"SS",assures:a,produits:APRIL_SEL.slice(),remise:aprilRemise};
+}
+function aprilDemande(profil,cle){
+  APRIL_ST={cle:cle,etat:"attente",res:null,message:""};
+  clearTimeout(aprilTimer);
+  aprilTimer=setTimeout(()=>aprilCharge(profil,cle),600);
+}
+async function aprilCharge(profil,cle){
+  let st;
+  try{
+    const rp=await fetch(APRIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(profil)});
+    let d=null; try{d=JSON.parse(await rp.text())}catch(e){}
+    if(rp.status===404) st={cle,etat:"erreur",res:null,message:"relais APRIL pas encore en ligne"};
+    else if(!rp.ok) st={cle,etat:"erreur",res:null,message:(d&&d.erreur)?d.erreur:"service indisponible (HTTP "+rp.status+")"};
+    else if(!d||!Array.isArray(d.produits)) st={cle,etat:"erreur",res:null,message:"réponse inattendue du relais"};
+    else st={cle,etat:"ok",res:d.produits,message:""};
+  }catch(e){ st={cle,etat:"erreur",res:null,message:"relais APRIL injoignable"}; }
+  if(APRIL_ST.cle===cle){ APRIL_ST=st; aprilRendu(); }
+}
+function aprilRendu(){
+  const box=document.getElementById("aprilbox"); if(!box) return;
+  const st=APRIL_ST;
+  if(st.etat==="vide"){ box.hidden=true; box.innerHTML=""; return; }
+  box.hidden=false;
+  let corps;
+  if(st.etat==="attente") corps='<div class="apn">Tarifs APRIL en cours d\'interrogation…</div>';
+  else if(st.etat==="erreur") corps='<div class="apn">APRIL : '+st.message+'.</div>';
+  else{
+    const ok=st.res.filter(p=>p.etat==="ok"&&p.niveaux&&Object.keys(p.niveaux).length);
+    const nmax=Math.max(0,...ok.map(p=>Object.keys(p.niveaux).length));
+    let h='<div class="aptw"><table><thead><tr><th>Produit</th>';
+    for(let i=1;i<=nmax;i++) h+='<th>Niv. '+i+'</th>';
+    h+='</tr></thead><tbody>';
+    for(const p of st.res){
+      const nom=APRIL_NOM[p.produit]||p.produit;
+      if(p.etat==="ok"&&p.niveaux&&Object.keys(p.niveaux).length){
+        const v=Object.keys(p.niveaux).sort().map(k=>p.niveaux[k]);
+        h+='<tr><td>'+nom+'</td>'+v.map(x=>'<td>'+eur(x)+'</td>').join("")+'<td></td>'.repeat(nmax-v.length)+'</tr>';
+      } else h+='<tr><td>'+nom+'</td><td class="apko" colspan="'+Math.max(1,nmax)+'">'+(p.message||"non proposé pour ce profil")+'</td></tr>';
+    }
+    corps=h+'</tbody></table></div>';
+  }
+  box.innerHTML='<div class="aph"><b>APRIL</b><span class="apn">tarif mensuel par niveau · garanties APRIL à saisir</span>'
+    +'<button type="button" id="aprrem" class="'+(aprilRemise?"on":"")+'" title="Retarifer en commission 15/15">'+(aprilRemise?"Remise appliquée":"Remise")+'</button></div>'+corps;
+  box.querySelector("#aprrem").addEventListener("click",()=>{ aprilRemise=!aprilRemise; calc(); });
+}
+
 function calc(){
   const cpSaisi=document.getElementById("cp").value;
   const age=parseAge(document.getElementById("naiss").value);
@@ -2490,6 +2568,12 @@ function calc(){
               approche:apicilApproche,cpExact:/^\d{5}$/.test(cpSaisi.trim())};
     }
   }
+  // APRIL : seulement si la case APRIL est cochée — son quota ne doit pas servir à chaque saisie.
+  if(sel.APRIL&&age!=null){
+    const pa=aprilProfil(age,cnjAge,hasCnj,kids,reg,cpSaisi);
+    if(pa){ const cle=JSON.stringify(pa); if(APRIL_ST.cle!==cle){ aprilDemande(pa,cle); aprilRendu(); } }
+    else { APRIL_ST={cle:"",etat:"erreur",res:null,message:APRIL_SEL.length?"code postal à 5 chiffres requis":"aucun produit choisi (bouton ☰ du panneau ⚖)"}; aprilRendu(); }
+  } else if(APRIL_ST.etat!=="vide"){ APRIL_ST={cle:"",etat:"vide",res:null,message:""}; aprilRendu(); }
   const {rows,warns}=Moteur.calculer({D,F,sel,age,cnjAge,hasCnj,kids,reg,dept,
                                       zone:dept?ZMAP[dept]:null,apicil});
   render(rows,warns);
@@ -2683,7 +2767,7 @@ function fconstruit(){
         +(k==="APRIL"?'<button type="button" id="faprlbtn" title="Choisir les produits APRIL" aria-expanded="false">☰ <b id="faprlnb"></b></button>':'')+'</div>').join("")
     +'<div id="faprlliste" hidden>'+APRIL_PRODUITS.map(([grp,ps])=>'<div class="faprlgrp">'+grp+'</div>'
         +ps.map(([c,l])=>'<label class="fcase"><input type="checkbox" data-apr="'+c+'"'+(APRIL_SEL.includes(c)?" checked":"")+'><span title="'+l+'">'+l+'</span></label>').join("")).join("")
-    +'<div class="fdefaut">Tarifs APRIL en préparation : les produits cochés seront interrogés dès que le relais sera branché.</div></div>'
+    +'<div class="fdefaut">Cochez APRIL et ses produits : leurs tarifs s\'affichent sous le tableau.</div></div>'
     +'<div class="fdefaut fexpl">Case : cette fois · Nom en rouge : à chaque ouverture</div>';
   const sync=()=>{
     saveSel();
@@ -2705,7 +2789,7 @@ function fconstruit(){
   zone.querySelectorAll("input[data-apr]").forEach(i=>i.addEventListener("change",()=>{
     APRIL_SEL=[...zone.querySelectorAll("input[data-apr]:checked")].map(x=>x.dataset.apr); window.APRIL_SEL=APRIL_SEL;
     try{ localStorage.setItem("santeo_april",JSON.stringify(APRIL_SEL)); }catch(e){}
-    aprNb();
+    aprNb(); calc();
   }));
   zone.querySelectorAll(".fnom").forEach(nom=>nom.addEventListener("click",()=>{
     const k=nom.dataset.n, i=DEFAUT.indexOf(k);

@@ -250,6 +250,21 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 #fcomp .fcase.defaut input{accent-color:var(--nrc);outline:2px solid var(--nrc);outline-offset:1px}
 #fcomp .fdefaut{grid-column:1/-1;font:500 10.5px 'IBM Plex Sans',sans-serif;color:var(--muted);padding:3px 3px 0}
 #fcomp .fexpl{font-size:9.5px;margin-top:8px;padding-top:4px}
+#aprilbox{margin-top:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:500 12.5px 'IBM Plex Sans',sans-serif}
+#aprilbox .aph{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+#aprilbox .aph b{font:800 12px 'Archivo',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+#aprilbox .aph .apn{color:var(--muted);font-size:11px}
+#aprilbox #aprrem{margin-left:auto;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent);padding:3px 10px;font:700 11.5px 'Archivo',sans-serif;cursor:pointer}
+#aprilbox #aprrem.on{background:var(--accent);color:var(--accent-ink)}
+#aprilbox .aptw{overflow-x:auto}
+#aprilbox table{border-collapse:collapse;width:auto}
+#aprilbox th,#aprilbox td{position:static;width:auto;min-width:0;background:none;height:auto}
+#aprilbox th:first-child,#aprilbox td:first-child{min-width:150px;padding-right:14px}
+#aprilbox thead th{box-shadow:none;color:var(--muted);font-size:10.5px;padding-top:4px}
+#aprilbox th,#aprilbox td{padding:4px 6px;border-top:1px solid var(--line);text-align:right;white-space:nowrap}
+#aprilbox th:first-child,#aprilbox td:first-child{text-align:left}
+#aprilbox th{font:700 10.5px 'Archivo',sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+#aprilbox td.apko{text-align:left;color:var(--muted);white-space:normal}
 #fcomp #faprlbtn{margin-left:auto;flex:none;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent);padding:1px 7px;font:700 11px 'Archivo',sans-serif;cursor:pointer}
 #fcomp #faprlliste{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:1px 8px}
 #fcomp #faprlliste[hidden]{display:none}
