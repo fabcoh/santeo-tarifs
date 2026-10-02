@@ -390,7 +390,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-02T15:53:21Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-02T15:53:21Z</div>
+  <div id="buildstamp" data-build="2026-10-02T16:36:43Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-02T16:36:43Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2388,6 +2388,15 @@ function renderTG(cols,title,sub,note,single){
     }catch(err){ try{if(rejectImg)rejectImg(err);}catch(_){};
       if(a!=="crm"){stat("❌ Capture impossible");}
       else if(err&&(err.status===401||err.status===403)) stat("❌ Dépôt refusé : le lien du CRM a expiré (il vaut 2 h). Rouvrez le comparateur depuis la conversation WhatsApp.");
+      // Pas de réponse du tout (« Failed to fetch ») : le CRM pose ses en-têtes CORS sur toutes ses réponses, erreurs
+      // comprises (Claude du CRM, 02/10/2026) — c'est donc le serveur, momentanément indisponible (redémarrage,
+      // publication, hébergeur). Message clair et bouton pour réessayer, sans rien perdre du tableau.
+      else if(err&&err.status===undefined&&err instanceof TypeError){
+        stat("❌ CRM injoignable pour l'instant — réessayez dans une minute.");
+        const re=document.createElement("button"); re.textContent="↻ Réessayer"; re.style.cssText=bst;
+        re.addEventListener("click",()=>{ re.remove(); stat(""); btn.click(); });
+        btn.after(re);
+      }
       else stat("❌ Dépôt impossible"+(err&&err.message?" ("+err.message+")":"")+" — réessayer");
     }
     btn.disabled=false; btn.innerHTML=old;
