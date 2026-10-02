@@ -734,6 +734,22 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (relais PHP, IP française, page qui n'appelle que le relais). Le secret PPR a transité par une conversation Claude le
   02/10/2026 : en demander un nouveau avant la production, et ne jamais coller celui de production ici.
   `ppr-api.april.fr` est **bloqué depuis une session Claude** (proxy) : la documentation doit être fournie par Fabrice.
+  Application `45254-5594-capi-finance` (créée le 01/10/2026), **trois API souscrites** : *Individual Healthcare and
+  Borrower Portfolio* (« courante », REST, domaine Santé Prévoyance Apporteurs — à confirmer : sans doute la santé des
+  particuliers), *healthProtection* 0.0.182 (`https://ppr-api-gateway.april.fr/healthprotection/v1/`, production
+  `https://api-gateway.april.fr/healthprotection/v1/`) et *Borrower* 1.0 (emprunteur, hors sujet).
+  **healthProtection, lu le 02/10/2026** (PDF de la page de documentation, 88 p.) : authentification **OAuth2** (jeton
+  Bearer dans `Authorization`) + en-tête `x-projectUuid` (identifiant de traçabilité, un par projet) ; référentiels
+  `GET /products`, `/products/{code}/guarantees`, `/commissions`, `/professionalCategories`, `/socialSecurityProviders`… ;
+  tarif `POST /projects/prices?pricingType=Simple` (ou `AllOptions` : tous les niveaux d'un coup) avec un projet
+  `{$type, properties:{addresses, email, effectiveDate}, persons:[{$id:"i-1", title, birthDate:"aaaa-mm-jj",
+  mandatoryScheme, professionalCategory, familyStatus…}], products:[{$id:"p-1", productCode, insured:[{$id:"a-1",
+  role, person:{$ref:"i-1"}}], commission, effectiveDate, coverages:[{guaranteeCode, levelCode…}]}]}` ; réponse :
+  `priceType`, `insured`, `product.productCode`, `guaranteeCode`, `levelCode`, `contribution.contributionAmount`. Devis
+  (`requestType=Quotation`), mise en relation (`ContactRequest`), adhésion papier / en ligne / télésélection. Elle vise
+  d'abord la **prévoyance professionnelle** (`$type` « Prev… ») : un seul produit santé par projet. **Manquent** :
+  l'adresse d'obtention du jeton OAuth2, les codes produits santé et niveaux (lisibles seulement par `GET /products`
+  depuis une IP autorisée), le Swagger.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
