@@ -249,9 +249,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 #fcomp .fcase.defaut{background:rgba(198,40,40,.13);color:var(--nrc)}
 #fcomp .fcase.defaut input{accent-color:var(--nrc);outline:2px solid var(--nrc);outline-offset:1px}
 #fcomp .fdefaut{grid-column:1/-1;font:500 10.5px 'IBM Plex Sans',sans-serif;color:var(--muted);padding:3px 3px 0}
-#fcomp .faprl{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;padding:5px 3px 3px;border-top:1px dotted var(--line)}
-#fcomp .faprlnom{font:700 11.5px 'IBM Plex Sans',sans-serif}
-#fcomp #faprlbtn{border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent);padding:3px 9px;font:700 11.5px 'Archivo',sans-serif;cursor:pointer}
+#fcomp #faprlbtn{margin-left:auto;flex:none;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent);padding:1px 7px;font:700 11px 'Archivo',sans-serif;cursor:pointer}
 #fcomp #faprlliste{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:1px 8px}
 #fcomp #faprlliste[hidden]{display:none}
 #fcomp .faprlgrp{grid-column:1/-1;font:700 10px 'Archivo',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:5px 3px 1px}

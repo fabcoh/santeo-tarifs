@@ -258,9 +258,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 #fcomp .fcase.defaut{background:rgba(198,40,40,.13);color:var(--nrc)}
 #fcomp .fcase.defaut input{accent-color:var(--nrc);outline:2px solid var(--nrc);outline-offset:1px}
 #fcomp .fdefaut{grid-column:1/-1;font:500 10.5px 'IBM Plex Sans',sans-serif;color:var(--muted);padding:3px 3px 0}
-#fcomp .faprl{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;padding:5px 3px 3px;border-top:1px dotted var(--line)}
-#fcomp .faprlnom{font:700 11.5px 'IBM Plex Sans',sans-serif}
-#fcomp #faprlbtn{border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent);padding:3px 9px;font:700 11.5px 'Archivo',sans-serif;cursor:pointer}
+#fcomp #faprlbtn{margin-left:auto;flex:none;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent);padding:1px 7px;font:700 11px 'Archivo',sans-serif;cursor:pointer}
 #fcomp #faprlliste{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:1px 8px}
 #fcomp #faprlliste[hidden]{display:none}
 #fcomp .faprlgrp{grid-column:1/-1;font:700 10px 'Archivo',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:5px 3px 1px}
@@ -376,7 +374,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-02T06:38:48Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-02T06:38:48Z</div>
+  <div id="buildstamp" data-build="2026-10-02T07:30:21Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-02T07:30:21Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2361,8 +2359,8 @@ function renderTG(cols,title,sub,note,single){
 }
 const REGLBL={SAL:"Salarié",TNS:"TNS",RL:"Salarié régime local",TNSRL:"TNS régime local"};
 const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
-const sel={MCCINOVA:false,FLEXIA:false,SOLENCIA:false,CAPEVO:false,CAPNR:false,LPSH:false,REV:false,RF50:false,RF100:false,MV:false,TALIS:false,APICIL:false};
-const COMP={MCCINOVA:'MCCI',FLEXIA:'MCCI',SOLENCIA:'MCCI',CAPEVO:'AVENIR M.',CAPNR:'AVENIR M.',LPSH:'AVENIR M.',REV:'REMA',RF50:'REMA',RF100:'REMA',TALIS:'AVENIR M.',MV:'M. VERTE',APICIL:'APICIL'};
+const sel={MCCINOVA:false,FLEXIA:false,SOLENCIA:false,CAPEVO:false,CAPNR:false,LPSH:false,REV:false,RF50:false,RF100:false,MV:false,TALIS:false,APICIL:false,APRIL:false};
+const COMP={MCCINOVA:'MCCI',FLEXIA:'MCCI',SOLENCIA:'MCCI',CAPEVO:'AVENIR M.',CAPNR:'AVENIR M.',LPSH:'AVENIR M.',REV:'REMA',RF50:'REMA',RF100:'REMA',TALIS:'AVENIR M.',MV:'M. VERTE',APICIL:'APICIL',APRIL:'APRIL'};
 // Garanties remises aux modules partagés : même jeu que src/garanties.json.
 const GAR={gammes:F,extras:EX,compagnies:COMP,limites:LIMITES,documents:DOCS,notes:TGNOTE};
 const on=k=>Object.values(sel).some(v=>v)?sel[k]:true; // aucune coche = toutes les gammes ; coche(s) = uniquement celles-là
@@ -2385,7 +2383,8 @@ function saveSel(){try{localStorage.setItem("santeo_sel",JSON.stringify(sel))}ca
 let DEFAUT=[];
 try{ DEFAUT=(JSON.parse(localStorage.getItem("santeo_defaut")||"[]")||[]).filter(k=>k in sel); }catch(e){ DEFAUT=[]; }
 function selDefaut(){ for(const k in sel) sel[k]=DEFAUT.includes(k); }
-// Produits APRIL à tarifer (Fabrice, 02/10/2026) : choisis dans le panneau ⚖, sous les compagnies (bouton ☰ APRIL).
+// APRIL est une compagnie du périmètre comme les autres (case, nom par défaut). Ses produits à tarifer se
+// choisissent au bouton ☰ placé à côté de son nom (Fabrice, 02/10/2026).
 // Codes relevés par l'API healthProtection le 02/10/2026. Retenu sur l'appareil (santeo_april). Les tarifs APRIL ne
 // sont pas encore branchés : la sélection dira au relais quels produits interroger, pour ne pas épuiser le quota.
 const APRIL_PRODUITS=[
@@ -2679,12 +2678,12 @@ function fconstruit(){
     +'<button type="button" data-tout="0">Aucune</button></div>'
     + Object.keys(sel).map(k=>'<div class="fcase'+(DEFAUT.includes(k)?' defaut':'')+'" title="'+COMP[k]+'">'
         +'<input type="checkbox" data-c="'+k+'"'+(sel[k]?" checked":"")+' title="Cocher pour cette fois">'
-        +'<span class="fnom" data-n="'+k+'" title="Cliquer le nom : cochée à chaque ouverture (rouge) — recliquer pour enlever">'+F[k].label+'</span></div>').join("")
-    +'<div class="fdefaut">Case : pour cette fois. Nom : cochée à chaque ouverture (en rouge) ; recliquer le nom pour l\'enlever.</div>'
-    +'<div class="faprl"><span class="faprlnom">APRIL</span><button type="button" id="faprlbtn" title="Choisir les produits APRIL" aria-expanded="false">☰ <b id="faprlnb"></b></button></div>'
+        +'<span class="fnom" data-n="'+k+'" title="Cliquer le nom : cochée à chaque ouverture (rouge) — recliquer pour enlever">'+(F[k]?F[k].label:k)+'</span>'
+        +(k==="APRIL"?'<button type="button" id="faprlbtn" title="Choisir les produits APRIL" aria-expanded="false">☰ <b id="faprlnb"></b></button>':'')+'</div>').join("")
     +'<div id="faprlliste" hidden>'+APRIL_PRODUITS.map(([grp,ps])=>'<div class="faprlgrp">'+grp+'</div>'
         +ps.map(([c,l])=>'<label class="fcase"><input type="checkbox" data-apr="'+c+'"'+(APRIL_SEL.includes(c)?" checked":"")+'><span title="'+l+'">'+l+'</span></label>').join("")).join("")
-    +'<div class="fdefaut">Tarifs APRIL en préparation : les produits cochés seront interrogés dès que le relais sera branché.</div></div>';
+    +'<div class="fdefaut">Tarifs APRIL en préparation : les produits cochés seront interrogés dès que le relais sera branché.</div></div>'
+    +'<div class="fdefaut">Case : pour cette fois. Nom : cochée à chaque ouverture (en rouge) ; recliquer le nom pour l\'enlever.</div>';
   const sync=()=>{
     saveSel();
     try{ localStorage.setItem("santeo_fcomp", zone.hidden?"0":"1"); }catch(e){}
