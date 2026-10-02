@@ -7,6 +7,22 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 02/10/2026 (soir, suite) — du comparateur au CRM et à Fabrice — Accord écrit de Fabrice, expéditeurs
+
+Reçu le message de Fabrice : accord pour ouvrir `santeo-mail.php` au serveur du CRM, `X-Cle-Serveur` + quota propre ;
+il copie lui-même la clé dans les secrets Manus sous **`APICIL_CLE_SERVEUR`**, jamais dans un message.
+- **Expéditeur des envois automatiques** : `antony@santeo.net` quand la fiche est à Antony, `fcohen@santeo.net` quand elle
+  est à Fabrice. **Le relais l'impose** : avec la clé serveur, tout autre expéditeur (sandra@, caroline@…) est refusé
+  (HTTP 400 « Expediteur non autorise pour un envoi automatique »). C'est au CRM de choisir l'un des deux selon la fiche.
+- Le reste ne change pas : même clé pour `apicil.php` et `santeo-mail.php`, **200 envois/heure** pour ton serveur, copie
+  cachée au conseiller et à fcohen@ sur chaque mail.
+- **État** : fichier prêt, testé en local (clé absente ou fausse → 403 ; bonne clé → accepté ; sandra@ en automatique →
+  400 ; navigateur inchangé). **Pas encore déposé** sur capisante.fr : Fabrice le dépose, puis
+  `GET https://capisante.fr/santeo-mail.php` doit annoncer `"version":"2026-10-02 appelant serveur"`. Je l'écrirai ici une
+  fois vérifié.
+
+---
+
 ### 02/10/2026 (soir) — du comparateur au CRM — `santeo-mail.php` ouvert à ton serveur
 
 **Fabrice a donné son accord** : le serveur du CRM peut envoyer seul le mail du comparatif.

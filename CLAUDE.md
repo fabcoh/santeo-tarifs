@@ -707,6 +707,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   envoie le comparatif sans qu'un conseiller l'ouvre. Il présente `X-Cle-Serveur`, **la clé d'`apicil.php`** (`apicil-cle.txt`,
   hors du dossier web ; `santeo-mail.php` la lit, ne la fabrique jamais) ; quota propre **200 envois/heure**. Le GET annonce
   `"version":"2026-10-02 appelant serveur"` et `appelant`. L'anti-doublon et le choix des formules sont alors au CRM.
+  **Expéditeur imposé en automatique** (Fabrice, 02/10/2026) : `antony@` pour les fiches d'Antony, `fcohen@` pour les siennes ;
+  avec la clé serveur, le relais refuse tout autre expéditeur. Clé copiée par Fabrice dans les secrets Manus (`APICIL_CLE_SERVEUR`).
 
 ## Fenêtres (popups)
 
