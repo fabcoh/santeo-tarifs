@@ -486,6 +486,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   sur les journaux de 16 h UTC est attendu dans `docs/carnet/ECHANGES.md` du CRM.
   Le message porte aussi le **poids de l'envoi** (« envoi de 1 465 ko ») et `window.CRMDIAG` le garde : une plateforme qui
   coupe un envoi trop lourd sans CORS donne le même « Failed to fetch » qu'un serveur arrêté. Manus teste ~1,5 Mo.
+  **Cause trouvée le 02/10/2026 (16:45 UTC)** — ni la page ni la taille (échec aussi avec une formule) : le site du CRM
+  était passé en **accès réservé** sur l'hébergement Manus. La plateforme répond `401 {"error":"Unauthorized"}` (24 octets,
+  **sans CORS**) au pré-vol comme au POST, avant le CRM, dont le journal n'a rien reçu. Le navigateur du commercial, sans
+  session Manus, est refusé ; le CRM lui-même marche, il a sa connexion. Remède : remettre le site en **accès public**
+  (réglage d'hébergement, par Manus avec l'accord de Fabrice). Si « CRM injoignable » revient : vérifier d'abord ce réglage.
 - Recherche par e-mail : côté Manus, renvoie `404 Aucune fiche Santéo trouvée` — à corriger chez lui.
 
 ## Envoi d'e-mails (Mailgun)
