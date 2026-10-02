@@ -748,8 +748,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `priceType`, `insured`, `product.productCode`, `guaranteeCode`, `levelCode`, `contribution.contributionAmount`. Devis
   (`requestType=Quotation`), mise en relation (`ContactRequest`), adhésion papier / en ligne / télésélection. Elle vise
   d'abord la **prévoyance professionnelle** (`$type` « Prev… ») : un seul produit santé par projet. **Manquent** :
-  l'adresse d'obtention du jeton OAuth2, les codes produits santé et niveaux (lisibles seulement par `GET /products`
-  depuis une IP autorisée), le Swagger.
+  les codes produits santé et niveaux (lisibles seulement par `GET /products` depuis le serveur), le Swagger.
+  **Jeton OAuth2** (page d'accueil de l'API Store, 02/10/2026) : `POST https://ppr-am-gateway.april.fr/apistore/oauth/token
+  ?grant_type=client_credentials&client_id=…&client_secret=…` → `access_token` (bearer, **7 199 s**), à passer en
+  `Authorization: Bearer …`. Le relais devra le garder en cache (fichier hors du dossier web) jusqu'à expiration.
+  **Vérification** : `april-config.php` (gabarit, secret à coller par Fabrice, `cle_verif`) + `april-verif.php` (lecture
+  seule : IP sortante, jeton, `GET /products`, garanties et commissions de chaque produit, régimes ; essaie
+  `…/v1/products` puis `…/v1/healthProtection/products`). Sources dans le scratchpad `ovh/april/`. À supprimer après relevé.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
