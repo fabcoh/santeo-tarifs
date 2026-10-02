@@ -773,6 +773,22 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Commission (Fabrice, 02/10/2026)** : tarifer d'abord à la **commission la plus forte**, avec un bouton **Remise** sur la
   proposition qui retarife à **15/15** pour baisser le prix. L'API n'a pas de champ « remise » : le seul levier est le code
   `commission` du produit (presque tous offrent `3010` et `1515` ; Santé Optimale aussi `1616`…`2020`).
+  **Tarification APRIL, relevé par appels réels le 02/10/2026** (console `april-console.php`, outil temporaire, clé =
+  `cle_verif`, lecture + tarification seulement, 300 appels/heure) : `$type` **`Sante`** (`PrevPro` pour la prévoyance) ;
+  `products[].insured` est **un objet** `{$id:"a-1", role:"AssurePrincipal", person:{$ref:"i-1"}}` — une liste fait
+  échouer la lecture (« Failed to read HTTP message ») ; chaque garantie pointe vers son assuré :
+  `coverages:[{insured:{$ref:"a-1"}, guaranteeCode, levelCode:"01"}]` ; **niveaux `01`, `02`…** (« 1 », « N1 »,
+  « Niveau1 » refusés). `pricingType=AllOptions` renvoie tous les niveaux (`grouping` 01…0n, `priceType` TarifDetaille,
+  `contribution.contributionAmount` mensuel). Régimes `mandatorySchemes` : `SS`, `TNS`, `Agricole`, `AlsaceMoselle`.
+  Simply Santé exige 50 ans dans l'année d'effet, Only Santé 55 ans. SanteMix rend `GarantieHospitalisation`
+  obligatoire avec `GarantieFraisDeSante`, FlexiSante `GarantieDentaireOptiqueAuditives` avec l'hospitalisation.
+  **Non disponibles pour CAPI FINANCE** : SanteBrio, SantePrimo, SanteGlobale, SanteMoove, SanteSolution, SantePremium.
+  **Constat : sur Simply Santé, 15/15 donne le même prix que 30/10** (89,35 → 180,24 €, 60 ans, Paris) : la commission
+  y change la rémunération, pas le prix. La préproduction répond par intermittence (délais de 60 s).
+  **Page** : bloc `#aprilbox` sous le tableau (`aprilProfil`, `aprilCharge`, `aprilRendu`), produits × niveaux, bouton
+  **Remise** (`aprilRemise` → `remise:true`, le relais passe en 15/15). Interrogé **seulement si la case APRIL est
+  cochée** et le code postal à 5 chiffres. Pas encore parmi les formules : les garanties APRIL ne sont pas saisies.
+  Relais `april.php` (scratchpad `ovh/april/`), à déposer dans `www/`.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
