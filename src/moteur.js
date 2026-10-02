@@ -16,6 +16,7 @@
  *     reg,          // SAL | TNS | RL | TNSRL
  *     dept, zone,   // Moteur.departement(cp) et Moteur.zones(D)[dept]
  *     apicil,       // {profil, etat:"ok|attente|erreur", tarifs, message, approche, cpExact}
+ *     april,        // {etat:"ok|attente|erreur", produits:[{code, nom, niveaux:[{niv, prix}]}], famille, message}
  *   });
  *
  * Navigateur : window.Moteur.   Node : require("./moteur.js").
@@ -58,7 +59,7 @@ function zones(D){
 }
 
 function calculer(e){
-  const D=e.D, F=e.F, sel=e.sel||{}, api=e.apicil||{};
+  const D=e.D, F=e.F, sel=e.sel||{}, api=e.apicil||{}, apr=e.april||{};
   const age=e.age, cnjAge=e.cnjAge, hasCnj=!!e.hasCnj, kids=+e.kids||0;
   const reg=e.reg||"SAL", dept=e.dept||null, zone=e.zone||null;
   // aucune coche = toutes les gammes ; coche(s) = uniquement celles-là
@@ -255,6 +256,18 @@ function calculer(e){
     }
     else if(api.etat==="attente") warns.push("API SANTÉ : tarifs en cours d'interrogation…");
     else if(api.etat==="erreur")  warns.push("API SANTÉ : "+api.message+".");
+  }
+  // APRIL — tarifs demandés à l'assureur par le relais, une ligne par produit et par niveau. Seulement si la
+  // case APRIL est cochée (son quota ne doit pas servir à chaque saisie). Les garanties APRIL ne sont pas
+  // encore saisies : « n.c. » (non communiqué), jamais « — », qui voudrait dire « pas couvert ».
+  if(sel.APRIL&&apr.etat==="ok"&&Array.isArray(apr.produits)){
+    const NC="n.c.";
+    apr.produits.forEach((p,ip)=>(p.niveaux||[]).forEach(x=>{
+      rows.push({key:"APRIL",fi:ip*100+x.niv,ins:"april",resp:true,gamme:"APRIL "+p.nom,formule:"Niv. "+x.niv,april:p.code,
+        hospO:NC,hospN:NC,honoO:NC,honoN:NC,dent:NC,opt:NC,aud:NC,ch:"",md:NC,
+        chips:[["info","Garanties APRIL à saisir"]].concat(apr.famille?[["info","Tarif famille à confirmer"]]:[]),
+        pA:x.prix,pC:null,pK:null,kidNote:"",total:x.prix,incomplete:false,foyer:(hasCnj||kids>0)});
+    }));
   }
   rows.sort((x,y)=>x.total-y.total);
   return {rows,warns};

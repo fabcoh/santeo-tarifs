@@ -812,7 +812,17 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (`.apl`, `.apniv`), qui passent à la ligne. **Deux chiffres suffisent** : `aprilCP()` prend le code postal du
   chef-lieu (`dept+"000"`, sauf 13001, 69001, 75001, 2A 20000, 2B 20200, DOM `97x00`) — « 75000 » n'existe pas et Santé
   Zen le refuse —, mention « Code postal pris au chef-lieu… ». Avec APRIL seule cochée, le tableau dit « Aucune formule
-  dans le périmètre choisi… Les tarifs APRIL sont plus bas » au lieu de « Renseigne une année de naissance ».
+  dans le périmètre choisi… » au lieu de « Renseigne une année de naissance ».
+  **Lignes APRIL dans le tableau des formules** (Fabrice, 02/10/2026 : « il faut placer les prix dans les tableaux ») :
+  `moteur.js` reçoit `april:{etat, famille, produits:[{code, nom, niveaux:[{niv, prix}]}]}` (`aprilPourMoteur()`, la
+  diagonale calculée par la page) et fait une ligne par produit et par niveau — `key:"APRIL"`, `fi = n° produit × 100 +
+  niveau`, `gamme:"APRIL Santé Mix Proximité"`, `formule:"Niv. 3"`, triée par prix avec les autres. **Garanties non saisies :
+  « n.c. » partout** (jamais « — », qui dirait « pas couvert »), pastille « Garanties APRIL à saisir ». Tant qu'elles ne
+  le sont pas : **case d'envoi désactivée** (`.sendko`, hors « tout cocher »), ni étoile ni bouton « Tableau de garantie » —
+  rien ne part au prospect ; un filtre de garantie compte les lignes APRIL **à part** (incomparables), le budget s'applique.
+  `F.APRIL` est posé **à l'exécution** (hors du `F` publié : `garanties.json` et l'empreinte des images ne bougent pas).
+  Le bloc `#aprilbox` ne garde que **Remise**, le nombre de produits tarifés, les refus et les mentions (CP, famille).
+  **Prochaine étape : saisir les garanties APRIL** (tableaux de garanties de chaque produit à déposer par Fabrice).
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
