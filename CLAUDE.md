@@ -492,6 +492,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   session Manus, est refusé ; le CRM lui-même marche, il a sa connexion. Remède : remettre le site en **accès public**
   (réglage d'hébergement, par Manus avec l'accord de Fabrice). Si « CRM injoignable » revient : vérifier d'abord ce réglage.
 - Recherche par e-mail : côté Manus, renvoie `404 Aucune fiche Santéo trouvée` — à corriger chez lui.
+- **Boîte aux lettres entre les deux Claude** (02/10/2026, Fabrice : « vous ne pouvez pas échanger entre vous ? ») : le
+  comparateur écrit dans `docs/carnet/ECHANGES.md` **de ce dépôt** (public : jamais de secret) ; le Claude du CRM écrit dans
+  `docs/carnet/ECHANGES.md` de `fabcoh/WhatsApp_Solution`, rattaché à cette session **en lecture** (`/home/user/whatsapp_solution`,
+  `git fetch origin main` puis `git show origin/main:docs/carnet/ECHANGES.md`). Ne jamais pousser dans le dépôt du CRM : Manus
+  publie depuis sa branche principale. Fabrice n'a plus qu'à dire à chacun « lis le carnet ».
 
 ## Envoi d'e-mails (Mailgun)
 
