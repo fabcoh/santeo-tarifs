@@ -256,15 +256,12 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 #aprilbox .aph .apn{color:var(--muted);font-size:11px}
 #aprilbox #aprrem{margin-left:auto;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent);padding:3px 10px;font:700 11.5px 'Archivo',sans-serif;cursor:pointer}
 #aprilbox #aprrem.on{background:var(--accent);color:var(--accent-ink)}
-#aprilbox .aptw{overflow-x:auto}
-#aprilbox table{border-collapse:collapse;width:auto}
-#aprilbox th,#aprilbox td{position:static;width:auto;min-width:0;background:none;height:auto}
-#aprilbox th:first-child,#aprilbox td:first-child{min-width:150px;padding-right:14px}
-#aprilbox thead th{box-shadow:none;color:var(--muted);font-size:10.5px;padding-top:4px}
-#aprilbox th,#aprilbox td{padding:4px 6px;border-top:1px solid var(--line);text-align:right;white-space:nowrap}
-#aprilbox th:first-child,#aprilbox td:first-child{text-align:left}
-#aprilbox th{font:700 10.5px 'Archivo',sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-#aprilbox td.apko{text-align:left;color:var(--muted);white-space:normal}
+#aprilbox .apl{border-top:1px solid var(--line);padding:6px 0}
+#aprilbox .apnom{font-weight:700;margin-bottom:4px}
+#aprilbox .apniv{display:flex;flex-wrap:wrap;gap:4px 6px}
+#aprilbox .apniv span{border:1px solid var(--line);border-radius:6px;padding:2px 7px;background:var(--card);white-space:nowrap;font-variant-numeric:tabular-nums}
+#aprilbox .apniv i{font-style:normal;color:var(--muted);font-size:10.5px;margin-right:5px}
+#aprilbox .apko{color:var(--muted)}
 #fcomp #faprlbtn{margin-left:auto;flex:none;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent);padding:1px 7px;font:700 11px 'Archivo',sans-serif;cursor:pointer}
 #fcomp #faprlliste{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:1px 8px}
 #fcomp #faprlliste[hidden]{display:none}
