@@ -703,6 +703,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   le commentaire « La derniere ligne du tableau ». PHP se tait sur une variable absente : le courrier partait
   sans ses liens, sans erreur. Quand on remplace un bloc par ses bornes, relire ce qu'il y a entre.
 - Quota **30 envois/heure/IP**, message limité à 4 Mo, image à 2,5 Mo.
+- **Appelant serveur (CRM WhatsApp), accord de Fabrice du 02/10/2026** : « oui, il envoie seul les mails ». Le serveur du CRM
+  envoie le comparatif sans qu'un conseiller l'ouvre. Il présente `X-Cle-Serveur`, **la clé d'`apicil.php`** (`apicil-cle.txt`,
+  hors du dossier web ; `santeo-mail.php` la lit, ne la fabrique jamais) ; quota propre **200 envois/heure**. Le GET annonce
+  `"version":"2026-10-02 appelant serveur"` et `appelant`. L'anti-doublon et le choix des formules sont alors au CRM.
 
 ## Fenêtres (popups)
 
