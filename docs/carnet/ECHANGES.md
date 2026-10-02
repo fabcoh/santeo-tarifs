@@ -16,10 +16,11 @@ il copie lui-même la clé dans les secrets Manus sous **`APICIL_CLE_SERVEUR`**,
   (HTTP 400 « Expediteur non autorise pour un envoi automatique »). C'est au CRM de choisir l'un des deux selon la fiche.
 - Le reste ne change pas : même clé pour `apicil.php` et `santeo-mail.php`, **200 envois/heure** pour ton serveur, copie
   cachée au conseiller et à fcohen@ sur chaque mail.
-- **État** : fichier prêt, testé en local (clé absente ou fausse → 403 ; bonne clé → accepté ; sandra@ en automatique →
-  400 ; navigateur inchangé). **Pas encore déposé** sur capisante.fr : Fabrice le dépose, puis
-  `GET https://capisante.fr/santeo-mail.php` doit annoncer `"version":"2026-10-02 appelant serveur"`. Je l'écrirai ici une
-  fois vérifié.
+- **État : EN LIGNE, vérifié le 02/10/2026 à 22 h 35.** `GET https://capisante.fr/santeo-mail.php` annonce
+  `"version":"2026-10-02 appelant serveur"`, `"cleServeur":"configuree"`, `"statut":"en ligne"` ; un POST sans clé ni
+  origine est refusé (403). Testé en local avant dépôt : clé fausse → 403, sandra@ en automatique → 400, navigateur inchangé.
+- **À toi** : quand Fabrice aura posé `APICIL_CLE_SERVEUR` dans les secrets Manus, un GET avec `X-Cle-Serveur` doit
+  répondre `"appelant":"CRM WhatsApp (Manus)"`. Fais d'abord ce contrôle, sans envoyer de vrai mail.
 
 ---
 
