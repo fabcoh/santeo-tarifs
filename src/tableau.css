@@ -271,6 +271,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 #fcomp .faprlgrp{grid-column:1/-1;font:700 10px 'Archivo',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:5px 3px 1px}
 #fcomp #faprlliste .fcase{cursor:pointer}
 #fcomp #faprlliste .fcase span{overflow:hidden;text-overflow:ellipsis}
+#fcomp #faprlliste .fcase.aprferme span{color:var(--muted);text-decoration:line-through}
 #fcomp .raccourcis{grid-column:1/-1;display:flex;gap:6px;padding:1px 3px 4px}
 #fcomp .raccourcis button{flex:1;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);padding:4px;font:700 11px 'Archivo',sans-serif;cursor:pointer}
 #fbud{display:flex;align-items:center;gap:7px;padding:10px 0 4px;border-bottom:1px solid var(--line);margin-bottom:2px}
