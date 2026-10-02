@@ -16,7 +16,7 @@
  *     reg,          // SAL | TNS | RL | TNSRL
  *     dept, zone,   // Moteur.departement(cp) et Moteur.zones(D)[dept]
  *     apicil,       // {profil, etat:"ok|attente|erreur", tarifs, message, approche, cpExact}
- *     april,        // {etat:"ok|attente|erreur", produits:[{code, nom, niveaux:[{niv, prix}]}], famille, message}
+ *     april,        // {etat:"ok|attente|erreur", produits:[{code, idx, nom, resp, niveaux:[{niv, prix}]}], famille}
  *   });
  *
  * Navigateur : window.Moteur.   Node : require("./moteur.js").
@@ -257,15 +257,20 @@ function calculer(e){
     else if(api.etat==="attente") warns.push("API SANTÉ : tarifs en cours d'interrogation…");
     else if(api.etat==="erreur")  warns.push("API SANTÉ : "+api.message+".");
   }
-  // APRIL — tarifs demandés à l'assureur par le relais, une ligne par produit et par niveau. Seulement si la
-  // case APRIL est cochée (son quota ne doit pas servir à chaque saisie). Les garanties APRIL ne sont pas
-  // encore saisies : « n.c. » (non communiqué), jamais « — », qui voudrait dire « pas couvert ».
+  // APRIL — tarifs demandés à l'assureur par le relais, une ligne par produit et par niveau (fi = rang du
+  // produit dans la liste APRIL × 100 + niveau). Seulement si la case APRIL est cochée (son quota ne doit pas
+  // servir à chaque saisie). Garanties lues dans F.APRIL ; un produit dont APRIL ne publie pas le résumé
+  // reste en « n.c. » (non communiqué), jamais « — », qui voudrait dire « pas couvert ».
   if(sel.APRIL&&apr.etat==="ok"&&Array.isArray(apr.produits)){
-    const NC="n.c.";
-    apr.produits.forEach((p,ip)=>(p.niveaux||[]).forEach(x=>{
-      rows.push({key:"APRIL",fi:ip*100+x.niv,ins:"april",resp:true,gamme:"APRIL "+p.nom,formule:"Niv. "+x.niv,april:p.code,
-        hospO:NC,hospN:NC,honoO:NC,honoN:NC,dent:NC,opt:NC,aud:NC,ch:"",md:NC,
-        chips:[["info","Garanties APRIL à saisir"]].concat(apr.famille?[["info","Tarif famille à confirmer"]]:[]),
+    const FA=F.APRIL||{}, NC="n.c.";
+    const g=(champ,fi)=>(FA[champ]&&FA[champ][fi]!==undefined)?FA[champ][fi]:NC;
+    apr.produits.forEach(p=>(p.niveaux||[]).forEach(x=>{
+      const fi=p.idx*100+x.niv, connu=FA.hospO&&FA.hospO[fi]!==undefined;
+      const chips=(!connu?[["info","Garanties APRIL à saisir"]]:[p.resp===false?["nr","Non responsable"]:["resp","Responsable"]])
+        .concat(apr.famille?[["info","Tarif famille à confirmer"]]:[]);
+      rows.push({key:"APRIL",fi:fi,ins:"april",resp:p.resp!==false,gamme:"APRIL "+p.nom,formule:"Niv. "+x.niv,april:p.code,
+        hospO:g("hospO",fi),hospN:g("hospN",fi),honoO:g("honoO",fi),honoN:g("honoN",fi),dent:g("dent",fi),opt:g("opt",fi),
+        aud:g("aud",fi),ch:connu?g("ch",fi):"",md:g("md",fi),chips:chips,
         pA:x.prix,pC:null,pK:null,kidNote:"",total:x.prix,incomplete:false,foyer:(hasCnj||kids>0)});
     }));
   }

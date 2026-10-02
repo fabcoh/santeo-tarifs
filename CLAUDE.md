@@ -822,7 +822,21 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   rien ne part au prospect ; un filtre de garantie compte les lignes APRIL **à part** (incomparables), le budget s'applique.
   `F.APRIL` est posé **à l'exécution** (hors du `F` publié : `garanties.json` et l'empreinte des images ne bougent pas).
   Le bloc `#aprilbox` ne garde que **Remise**, le nombre de produits tarifés, les refus et les mentions (CP, famille).
-  **Prochaine étape : saisir les garanties APRIL** (tableaux de garanties de chaque produit à déposer par Fabrice).
+  **Garanties APRIL lues dans l'API** (Fabrice : « tu ne l'as pas dans l'API ? », 02/10/2026) : `POST /projects/warrantysSummary`
+  (même projet que le tarif, un `levelCode` par appel) rend `resumeDeGaranties.postes[].categories[].listePrestations[]`
+  `{identifiantPrestation, intitule, valeur}` + `renvois` (`responsable` / `nonresponsable`, optique, aides auditives…).
+  **Valeurs sans unité** : déduites — % Sécu comprise pour `HOSPIT_CONV%%SEJOUR%%HONORAIRES_(NON_)DPTAM`,
+  `SOINS_COURANTS%%HONORAIRES_(NON_)DPTAM_CONSULTATION`, `DENTAIRE%%PROTHESE_MODEREE_LIBRE`, `DENTAIRE%%ORTHODONTHIE_SS` ;
+  € pour `CHAMBRE_PART` (/j), `OPTIQUE%%CLASSE_B_CAT_1` (2 verres simples, « forfait incluant la Sécu »),
+  `CONFORT_MED_NAT%%MED_NAT`, `DENTAIRE%%AUTRES_FRAIS` (non remboursés : implantologie et ortho non remboursée) ;
+  `OPTIQUE%%LENTILLES` et `AUDIO%%2021%%CLASSE_2` valent 100 à tous les niveaux → « 100 % BR ». `DENTAIRE%%REMBOURSEMENT`
+  = plafond dentaire annuel. Relevé pour **10 produits** (Zen 6 niv., Optimale 7, Peps 5, Tranquillité 6, Vita 6, Simply 5,
+  Only 6 — **non responsable** —, Santé Pro 6, Pro Start 5, Pro Privilège 3) et rangé dans la page (`APRIL_GAR`, relevés
+  du scratchpad `april/wsall_*.json`). **Santé Mix et Flexi Santé** (modulables) : « Health product with slug
+  APRIL_ASP_MIXV5-lvl-03 … not found » — pas de résumé chez APRIL, restent en « n.c. » jusqu'à saisie depuis leur PDF.
+  `F.APRIL` / `EX.APRIL` sont remplis à l'exécution (`APRIL_RANG` : rang fixe du produit dans `APRIL_PRODUITS`, fi = rang
+  × 100 + niveau) ; pastille Responsable / Non responsable ; les filtres de garantie s'appliquent aux lignes APRIL
+  connues. **L'envoi au prospect reste fermé** pour APRIL (ni `garanties.json`, ni documents, ni logo, ni `interet.php`).
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
