@@ -250,6 +250,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 #fcomp .fcase.defaut{background:rgba(198,40,40,.13);color:var(--nrc)}
 #fcomp .fcase.defaut input{accent-color:var(--nrc);outline:2px solid var(--nrc);outline-offset:1px}
 #fcomp .fdefaut{grid-column:1/-1;font:500 10.5px 'IBM Plex Sans',sans-serif;color:var(--muted);padding:3px 3px 0}
+#fcomp .fexpl{font-size:9.5px;margin-top:8px;padding-top:4px}
 #fcomp #faprlbtn{margin-left:auto;flex:none;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--accent);padding:1px 7px;font:700 11px 'Archivo',sans-serif;cursor:pointer}
 #fcomp #faprlliste{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:1px 8px}
 #fcomp #faprlliste[hidden]{display:none}
@@ -2189,7 +2190,7 @@ function fconstruit(){
     +'<div id="faprlliste" hidden>'+APRIL_PRODUITS.map(([grp,ps])=>'<div class="faprlgrp">'+grp+'</div>'
         +ps.map(([c,l])=>'<label class="fcase"><input type="checkbox" data-apr="'+c+'"'+(APRIL_SEL.includes(c)?" checked":"")+'><span title="'+l+'">'+l+'</span></label>').join("")).join("")
     +'<div class="fdefaut">Tarifs APRIL en préparation : les produits cochés seront interrogés dès que le relais sera branché.</div></div>'
-    +'<div class="fdefaut">Case : pour cette fois. Nom : cochée à chaque ouverture (en rouge) ; recliquer le nom pour l\'enlever.</div>';
+    +'<div class="fdefaut fexpl">Case : cette fois · Nom en rouge : à chaque ouverture</div>';
   const sync=()=>{
     saveSel();
     try{ localStorage.setItem("santeo_fcomp", zone.hidden?"0":"1"); }catch(e){}
