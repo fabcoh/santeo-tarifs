@@ -484,6 +484,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (redémarrage, publication, hébergeur). Sur un `TypeError` sans code HTTP, la page affiche « CRM injoignable pour
   l'instant — réessayez dans une minute » et un bouton **↻ Réessayer** qui relance le même dépôt ; le constat de Manus
   sur les journaux de 16 h UTC est attendu dans `docs/carnet/ECHANGES.md` du CRM.
+  Le message porte aussi le **poids de l'envoi** (« envoi de 1 465 ko ») et `window.CRMDIAG` le garde : une plateforme qui
+  coupe un envoi trop lourd sans CORS donne le même « Failed to fetch » qu'un serveur arrêté. Manus teste ~1,5 Mo.
 - Recherche par e-mail : côté Manus, renvoie `404 Aucune fiche Santéo trouvée` — à corriger chez lui.
 
 ## Envoi d'e-mails (Mailgun)
