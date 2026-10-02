@@ -266,12 +266,13 @@ function calculer(e){
     const FA=F.APRIL||{}, NC="n.c.";
     const g=(champ,fi)=>(FA[champ]&&FA[champ][fi]!==undefined)?FA[champ][fi]:NC;
     apr.produits.forEach(p=>(p.niveaux||[]).forEach(x=>{
-      const fi=p.idx*100+x.niv, connu=FA.hospO&&FA.hospO[fi]!==undefined;
-      const chips=(!connu?[["info","Garanties APRIL à saisir"]]:[p.resp===true?["resp","Responsable"]:["nr","Non responsable"]])
+      const fi=p.idx*100+x.niv;
+      const connu=["hospO","hospN","honoO","honoN","dent","opt","ch","md"].some(c=>g(c,fi)!==NC);
+      const chips=[p.resp===true?["resp","Responsable"]:["nr","Non responsable"]].concat(connu?[]:[["info","Garanties non vérifiées"]])
         .concat(apr.famille?[["info","Tarif famille à confirmer"]]:[]);
       rows.push({key:"APRIL",fi:fi,ins:"april",resp:p.resp===true,gamme:"APRIL "+p.nom,formule:"Niv. "+x.niv,april:p.code,
         hospO:g("hospO",fi),hospN:g("hospN",fi),honoO:g("honoO",fi),honoN:g("honoN",fi),dent:g("dent",fi),opt:g("opt",fi),
-        aud:g("aud",fi),ch:connu?g("ch",fi):"",md:g("md",fi),chips:chips,
+        aud:g("aud",fi),ch:g("ch",fi)===NC?"":g("ch",fi),md:g("md",fi),chips:chips,
         pA:x.prix,pC:null,pK:null,kidNote:"",total:x.prix,incomplete:false,foyer:(hasCnj||kids>0)});
     }));
   }

@@ -856,6 +856,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   identiques ; **optique niveau 1 « 100 » = 100 % BR** (Zen, Peps, Vita, Tranquillité), corrigé pour tous les produits ;
   **lentilles fausses dans l'API** (« 100 » partout, alors que Zen donne 35 → 200 € acceptées et 50 → 250 € refusées) :
   reprises des PDF (`lentA` / `lentR`, forfait seul), « n.c. » pour les 5 produits sans PDF.
+  **Règle de Fabrice (02/10/2026) : « n'affiche que ce qui est certain ».** Confrontation automatique API / PDF
+  (scratchpad `april/verif.py`, poste par poste et niveau par niveau) : l'API se trompe sur des postes entiers — chambre
+  de Peps (« Non » contre 30 → 90 €/j), audio de Peps (100 % BR contre 100 % BR + 100 → 300 €), prothèses de Pro Start
+  (125 → 275 % contre 100 → 250 %), consultations de Santé Pro, prothèses d'Only (en % au lieu d'un forfait en €),
+  lentilles partout. Donc : **une valeur ne s'affiche que si l'API et le PDF concordent** (ou lue dans le PDF : prothèses
+  et honoraires d'Only, lentilles) ; sinon **« n.c. »**. Les 5 produits **sans PDF public** (Mix, Flexi, Optimale,
+  Simply, Pro Privilège) n'affichent **aucune garantie** — tarif seul, pastille « Garanties non vérifiées ». Un poste
+  « n.c. » sous un filtre de garantie rend la ligne **incomparable** (comptée à part), jamais « non couverte ».
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
