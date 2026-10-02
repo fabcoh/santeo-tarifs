@@ -390,7 +390,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-02T16:36:43Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-02T16:36:43Z</div>
+  <div id="buildstamp" data-build="2026-10-02T16:46:20Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-02T16:46:20Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2392,7 +2392,7 @@ function renderTG(cols,title,sub,note,single){
       // comprises (Claude du CRM, 02/10/2026) — c'est donc le serveur, momentanément indisponible (redémarrage,
       // publication, hébergeur). Message clair et bouton pour réessayer, sans rien perdre du tableau.
       else if(err&&err.status===undefined&&err instanceof TypeError){
-        stat("❌ CRM injoignable pour l'instant — réessayez dans une minute.");
+        stat("❌ CRM injoignable pour l'instant"+(err.ko?" (envoi de "+err.ko+" ko)":"")+" — réessayez dans une minute.");
         const re=document.createElement("button"); re.textContent="↻ Réessayer"; re.style.cssText=bst;
         re.addEventListener("click",()=>{ re.remove(); stat(""); btn.click(); });
         btn.after(re);
@@ -2699,8 +2699,12 @@ function sendText(){
 }
 // Dépôt dans la conversation du CRM (lien venu du CRM avec jeton) — rien n'est envoyé au prospect
 async function crmDepot(payload){
-  const resp=await fetch(window.CRMLINK.base+"/api/comparateur/depot",{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(Object.assign({token:window.CRMLINK.token},payload))});
+  const body=JSON.stringify(Object.assign({token:window.CRMLINK.token},payload));
+  let resp;
+  // Poids de l'envoi joint à l'échec : une plateforme qui coupe un envoi trop lourd sans en-têtes CORS
+  // donne le même « Failed to fetch » qu'un serveur arrêté (02/10/2026).
+  try{ resp=await fetch(window.CRMLINK.base+"/api/comparateur/depot",{method:"POST",headers:{"Content-Type":"application/json"},body:body}); }
+  catch(e){ try{ e.ko=Math.round(body.length/1024); window.CRMDIAG={depot:"échec réseau",ko:e.ko,kind:payload&&payload.kind,quand:new Date().toISOString()}; console.warn("Dépôt CRM :",window.CRMDIAG);}catch(_){} throw e; }
   if(!resp.ok){
     // La raison du refus, pour l'afficher : 401/403 = jeton du lien expiré (il vaut 2 h), 413 = trop lourd.
     let t=""; try{t=(await resp.text()).replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,140);}catch(_){}
