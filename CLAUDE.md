@@ -789,6 +789,24 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Remise** (`aprilRemise` → `remise:true`, le relais passe en 15/15). Interrogé **seulement si la case APRIL est
   cochée** et le code postal à 5 chiffres. Pas encore parmi les formules : les garanties APRIL ne sont pas saisies.
   Relais `april.php` (scratchpad `ovh/april/`), à déposer dans `www/`.
+  **Suite des relevés (02/10/2026, après-midi)** : une personne suffit avec `{$id, birthDate, mandatoryScheme}` ;
+  **postCode en chaîne** (« 75011 » — Hospi + refuse le nombre, les autres acceptent les deux). Produits **modulables**
+  (Santé Mix : hospitalisation | frais de santé ; Flexi Santé : hospitalisation | dentaire-optique-audio) : `grouping`
+  « 03|02 », 24 combinaisons ; la page n'en montre que la **diagonale** (`aprilNiveaux`, « Niv. 3 » = 03|03).
+  Niveaux à 45 ans, Paris (30/10) : Mix 59,79 → 172,95 ; Zen 64,38 → 191,39 ; Optimale 65,01 → 156,44 (7 niv.) ;
+  Peps 64,22 → 148,85 ; Tranquillité 70,15 → 231,06 ; Vita 74,29 → 162,78 ; Santé Pro (TNS, `Artisan`) 60,65 → 247,92.
+  **La commission ne change le prix que sur certains produits** : Santé Optimale 63,06 (15/15) < 65,01 (30/10) < 68,26
+  (20/20) ; Simply Santé, Santé Mix, Santé Zen : identiques. **Hospi + ne se vend pas seul** (retiré du relais).
+  **Familles** : `products[].insured` reste l'objet de l'assuré principal, les garanties des autres pointent vers
+  `a-2`, `a-3`… Simply Santé et Santé Mix tarifent ainsi (couple 60/58 ans : 174,20 € ; enfant à 0 € sur Simply Santé,
+  suspect) ; **Santé Zen répond « Relation must be set for a second insured on a health project »** — le lien de
+  parenté a un format non documenté (essayé sur la personne, l'assuré, la garantie, le projet : `relation`,
+  `relationship`, `familyLink`, `relations[]`…). **À demander à APRIL : le Swagger de healthProtection et un exemple de
+  tarif famille.** La page signale tout tarif famille « à confirmer ». Produits fermés et Hospi + barrés dans la liste
+  (`APRIL_FERMES`), jamais envoyés au relais.
+  **Test de bout en bout en local** (scratchpad `relais/`) : `april.php` servi par `php -S` (avec
+  `-d curl.cainfo=/root/.ccr/ca-bundle.crt`), jeton factice sur un 2ᵉ port, et `px/p.php` qui relaie vers la console
+  en retirant ses deux lignes d'en-tête ; Playwright détourne `capisante.fr/april.php` vers lui.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
