@@ -266,7 +266,7 @@ function calculer(e){
     const g=(champ,fi)=>(FA[champ]&&FA[champ][fi]!==undefined)?FA[champ][fi]:NC;
     apr.produits.forEach(p=>(p.niveaux||[]).forEach(x=>{
       const fi=p.idx*100+x.niv, connu=FA.hospO&&FA.hospO[fi]!==undefined;
-      const chips=(!connu?[["info","Garanties APRIL à saisir"]]:[p.resp===false?["nr","Non responsable"]:["resp","Responsable"]])
+      const chips=(!connu?[["info","Garanties APRIL à saisir"]]:[p.resp===false?["nr","Non responsable"]:p.resp===null?["info","Responsable : à vérifier"]:["resp","Responsable"]])
         .concat(apr.famille?[["info","Tarif famille à confirmer"]]:[]);
       rows.push({key:"APRIL",fi:fi,ins:"april",resp:p.resp!==false,gamme:"APRIL "+p.nom,formule:"Niv. "+x.niv,april:p.code,
         hospO:g("hospO",fi),hospN:g("hospN",fi),honoO:g("honoO",fi),honoN:g("honoN",fi),dent:g("dent",fi),opt:g("opt",fi),

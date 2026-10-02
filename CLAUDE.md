@@ -832,8 +832,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `OPTIQUE%%LENTILLES` et `AUDIO%%2021%%CLASSE_2` valent 100 à tous les niveaux → « 100 % BR ». `DENTAIRE%%REMBOURSEMENT`
   = plafond dentaire annuel. Relevé pour **10 produits** (Zen 6 niv., Optimale 7, Peps 5, Tranquillité 6, Vita 6, Simply 5,
   Only 6 — **non responsable** —, Santé Pro 6, Pro Start 5, Pro Privilège 3) et rangé dans la page (`APRIL_GAR`, relevés
-  du scratchpad `april/wsall_*.json`). **Santé Mix et Flexi Santé** (modulables) : « Health product with slug
-  APRIL_ASP_MIXV5-lvl-03 … not found » — pas de résumé chez APRIL, restent en « n.c. » jusqu'à saisie depuis leur PDF.
+  du scratchpad `april/wsall_*.json`). **Santé Mix et Flexi Santé** (modulables) : le niveau du résumé s'écrit **« 03|03 »**
+  dans chaque garantie (« 03 » seul → « slug APRIL_ASP_MIXV5-lvl-03 not found ») ; relevés sur la diagonale 01|01…06|06
+  (trouvé à la demande de Fabrice, « cherche encore pour mixte »). Flexi Santé ne porte **aucun renvoi** responsable /
+  non responsable : pastille « Responsable : à vérifier ». Les 12 produits ouverts ont désormais leurs garanties.
   `F.APRIL` / `EX.APRIL` sont remplis à l'exécution (`APRIL_RANG` : rang fixe du produit dans `APRIL_PRODUITS`, fi = rang
   × 100 + niveau) ; pastille Responsable / Non responsable ; les filtres de garantie s'appliquent aux lignes APRIL
   connues. **L'envoi au prospect reste fermé** pour APRIL (ni `garanties.json`, ni documents, ni logo, ni `interet.php`).
