@@ -842,6 +842,20 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `F.APRIL` / `EX.APRIL` sont remplis à l'exécution (`APRIL_RANG` : rang fixe du produit dans `APRIL_PRODUITS`, fi = rang
   × 100 + niveau) ; pastille Responsable / Non responsable ; les filtres de garantie s'appliquent aux lignes APRIL
   connues. **L'envoi au prospect reste fermé** pour APRIL (ni `garanties.json`, ni documents, ni logo, ni `interet.php`).
+  **Documents APRIL** (Fabrice, 02/10/2026 : « tu peux ajouter les documents directement ? ») : rien dans l'API hors devis
+  (qui crée un projet et envoie un e-mail). Les PDF **publics** d'april.fr / pro.april.fr (`assets.april.fr/prismic/
+  documents/...`, lus par la console `url=`) sont rangés dans `docs/` : `april_<code en minuscules>_tg_2026.pdf` (la
+  « notice garanties » d'APRIL : tableau + notice en un seul PDF) et `april_<code>_ipid_2026.pdf` (« document
+  d'information produit »), pour **7 produits** : Zen (12 p.), Only (3), Peps (11), Vita (11), Tranquillité (12),
+  Santé Pro TNS (9, millésime 2026), Pro Start (9, IPID du socle). **Aucun document public** pour Santé Mix, Flexi,
+  Optimale, Simply et Pro Privilège (vendus par courtiers seulement : April-On). `DOCS.APRIL` posé à l'exécution,
+  indexé sur fi (« Tableau de garantie + notice », « IPID »). **Pas de bulletin d'adhésion public** : chez APRIL
+  l'adhésion passe par l'API (`SubscriptionPaper` produit un bulletin rempli, `SubscriptionOnline` la signature en
+  ligne) ou par April-On — à construire, pas un PDF à remplir.
+  **Contrôle des garanties de l'API contre les PDF** : honoraires, prothèses, plafond dentaire, orthodontie de Santé Zen
+  identiques ; **optique niveau 1 « 100 » = 100 % BR** (Zen, Peps, Vita, Tranquillité), corrigé pour tous les produits ;
+  **lentilles fausses dans l'API** (« 100 » partout, alors que Zen donne 35 → 200 € acceptées et 50 → 250 € refusées) :
+  reprises des PDF (`lentA` / `lentR`, forfait seul), « n.c. » pour les 5 produits sans PDF.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
