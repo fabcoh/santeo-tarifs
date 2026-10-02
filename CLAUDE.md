@@ -765,6 +765,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `MaladieChirurgie` (+ renforts), FlexiSante en modules (`GarantieDentaireOptiqueAuditives`, `GarantieHospitalisation`,
   `Renfort…`, versions `Eco`). **Commissions** par produit : `1515`, `3010`, `3010S`, `1515S`, `1510`, `1616`…`2020`,
   `HORCOM` (00/00), `1010` — **le taux choisi change le tarif** : choix commercial de Fabrice, à fixer avant tout tarif.
+  **Sélecteur des produits APRIL** (Fabrice, 02/10/2026) : dans le panneau ⚖, sous les compagnies, ligne « APRIL » et
+  bouton **☰ n / 19** qui déplie la liste (`APRIL_PRODUITS`, Particuliers : 14, TNS : 5), cases à cocher, retenues sur
+  l'appareil (`santeo_april`, `window.APRIL_SEL`) ; par défaut Santé Mix Proximité et Simply Santé. **Les tarifs APRIL ne
+  sont pas encore branchés** : la sélection dira au futur relais quels produits interroger (quota APRIL).
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
