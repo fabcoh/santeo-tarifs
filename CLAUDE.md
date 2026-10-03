@@ -262,6 +262,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   au lieu de 255 avant ce resserrement. **Options par poste** ouvre une fenêtre par-dessus (`ouvrirOptions`) :
   six cases en deux groupes, chacune ajoutant une colonne au tableau, plus « Tout décocher ». Au repos elle
   ne prend aucune place.
+- **Vérifier sur le document officiel** (Fabrice, 03/10/2026) : **appui long (0,5 s) sur une ligne de résultats**, ou clic
+  droit sur ordinateur, ouvre `verifDocs(r)` — une fenêtre par-dessus qui affiche **dans la page** les PDF de la formule
+  (tableau de garantie d'abord, puis IPID, notice, CG…), rendus par **pdf.js** chargé au premier usage depuis cdnjs (un PDF
+  dans un cadre ne s'affiche pas sur Android). `DOCPAGE` ouvre directement la page du tableau quand elle est connue
+  (Santé Mix : p. 5). « 🔍 Agrandir » double la largeur des pages, « Ouvrir dans un onglet » reste en secours. Le clic qui
+  suit l'appui long n'ouvre pas le détail de la ligne (`window.APPUI_LONG`). Testé souris et tactile (Playwright, CDP).
 - **Documents par formule** : dans `DOCS`, une valeur est une adresse valable pour toute la gamme, ou un
   **tableau indexé sur la formule** quand le document en dépend — APICIL publie une plaquette par gamme
   Équilibre et une seule pour toutes les Sérénité, La Mutuelle Verte un IPID pour GCI 100–300 et un autre
