@@ -7,6 +7,80 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 03/10/2026 — du comparateur au CRM — Mode automatique du comparateur (format exact)
+
+**En ligne dès la publication de ce commit** (vérifier « version 03/10/2026 … » en bas de la page). Testé en navigateur
+sans écran, CRM et relais de mail simulés : capture, dépôt image, mail par antony@, copie `kind:"email"` déposée,
+1 s environ ; jeton refusé → arrêt sans mail ; APRIL et rang inconnu → écartés et signalés.
+
+**Adresse** — la page publique, avec tout dans le fragment (`#`, jamais envoyé à GitHub) :
+
+```
+https://fabcoh.github.io/santeo-tarifs/#auto=<JSON en base64url, UTF-8>&crm=https://whatsappcrm-45ekaxrk.manus.space&t=<jeton de dépôt 2 h>&back=<URL de la conversation>
+```
+
+`crm` et `t` sont **obligatoires** (mêmes valeurs que le lien du bouton € aujourd'hui). `back` est facultatif : il devient le
+lien « conversation » du mail « Cette offre m'intéresse ».
+
+**JSON `auto`** :
+
+```json
+{
+  "v": 1,
+  "id": "libre, renvoyé tel quel (ex. id de conversation)",
+  "prospect": {
+    "civilite": "MR | MME",
+    "nom": "DUPONT", "prenom": "Julie",
+    "email": "julie@exemple.fr",            // vide → l'image part seule, mail "sans-adresse"
+    "telephone": "0612345678",              // facultatif, ramené à 10 chiffres
+    "naissance": "12/04/1980",              // OBLIGATOIRE, jj/mm/aaaa ou aaaa-mm-jj
+    "cp": "75011",                          // OBLIGATOIRE, 5 chiffres
+    "regime": "SAL | TNS | RL | TNSRL",     // RL = Alsace-Moselle salarié ; défaut SAL
+    "conjoint": "03/05/1978",               // facultatif
+    "enfants": ["01/02/2015"],              // facultatif ; les moins de 18 ans font le nombre de mineurs
+    "adresse": "…", "ville": "…"            // facultatifs (page « Cette offre m'intéresse »)
+  },
+  "formules": [ {"cle": "CAPEVO", "rang": 1}, {"cle": "MV", "rang": 2} ],   // 1 à 5
+  "conseillee": {"cle": "MV", "rang": 2},  // ⭐, ou null
+  "expediteur": "antony@santeo.net | fcohen@santeo.net"                      // défaut antony@
+}
+```
+
+- **`cle`** = clé de gamme de `garanties.json` (`gammes`), **`rang`** = indice **à partir de 0** dans `gammes[cle].names`
+  (ex. `CAPEVO` rang 1 = « Équilibre », `MV` rang 2 = « GCI 200 »). C'est le couple `key`/`fi` du comparateur.
+- Les colonnes sortent **triées par prix**, comme dans la page, quel que soit l'ordre donné.
+- `APRIL` n'est jamais envoyé (garanties incomplètes) : écarté et signalé.
+- Le tarif est celui du moteur de la page ; pour `APICIL`, la page interroge `apicil.php` et attend sa réponse (60 s au plus).
+
+**Fin — à lire par le navigateur** (Playwright :
+`await page.waitForFunction(() => window.SANTEO_AUTO && window.SANTEO_AUTO.etat !== "en-cours", null, {timeout: 120000})`) :
+
+- `window.SANTEO_AUTO` (objet) — aussi en JSON dans `<pre id="santeo-auto" data-etat="ok|erreur">`, et le titre devient
+  `SANTEO_AUTO OK` ou `SANTEO_AUTO ERREUR`.
+
+```json
+{ "v": 1, "id": "…", "etat": "ok | erreur",
+  "depot": true,
+  "mail": "envoye | envoye-sans-copie | deja | sans-adresse | erreur | non",
+  "detail": "Image déposée · mail envoyé à …, copie dans le CRM",
+  "message": "(si erreur) jeton du CRM refusé (expiré ?) | CRM injoignable | prospect.cp invalide … | délai dépassé (100 s)",
+  "code": 401,
+  "formules": [ {"cle": "MV", "rang": 2, "nom": "M. VERTE GCI 200", "tarif": 241.37} ],
+  "absentes": [ {"cle": "APRIL", "rang": 0, "raison": "APRIL ne part pas au prospect"} ],
+  "duree_ms": 1039 }
+```
+
+- `etat:"ok"` = **image déposée**. Le mail peut néanmoins avoir échoué : lire `mail` (`erreur` → le dire au conseiller).
+- **Le mail ne part qu'après un dépôt accepté** : sans jeton valable, `etat:"erreur"`, rien n'est envoyé.
+- L'anti-doublon de 10 minutes de la page vit dans le stockage du navigateur : un navigateur neuf à chaque fois ne le voit
+  pas. **C'est à toi de ne pas relancer deux fois le même envoi.**
+- Le mail part depuis le navigateur (origine `fabcoh.github.io`), donc **sans `X-Cle-Serveur`** ; la page refuse tout autre
+  expéditeur qu'antony@ / fcohen@.
+- Polices : laisse à la page l'accès à `fonts.googleapis.com` / `fonts.gstatic.com` et à `cdnjs.cloudflare.com`
+  (html2canvas) ; sans html2canvas → `etat:"erreur"`, « capture impossible ».
+
+---
+
 ### 02/10/2026 (fin de soirée) — du comparateur au CRM — Clé posée
 
 Fabrice a copié la clé dans les secrets du projet Manus sous **`APICIL_CLE_SERVEUR`** (lue par lui sur le serveur OVH,

@@ -492,6 +492,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   session Manus, est refusé ; le CRM lui-même marche, il a sa connexion. Remède : remettre le site en **accès public**
   (réglage d'hébergement, par Manus avec l'accord de Fabrice). Si « CRM injoignable » revient : vérifier d'abord ce réglage.
 - Recherche par e-mail : côté Manus, renvoie `404 Aucune fiche Santéo trouvée` — à corriger chez lui.
+- **Mode automatique** (demande du Claude du CRM, 03/10/2026) : `#auto=<JSON base64url>&crm=…&t=…&back=…` — le serveur du CRM
+  ouvre la page dans un navigateur sans écran ; la page remplit `PRO` et le haut de page, restreint `sel` aux gammes demandées,
+  calcule (attend APICIL), coche `SENDSEL`, pose `RECO`, puis `viaTableau("crm")` — le même code que le bouton. `window.AUTO`
+  (`exp`, `fin`) fixe l'expéditeur (antony@ / fcohen@ seulement) et remplace le retour à la conversation par la fin signalée :
+  `window.SANTEO_AUTO` (`etat` en-cours → ok | erreur, `mail`, `formules`, `absentes`), `<pre id="santeo-auto">`, titre
+  `SANTEO_AUTO OK|ERREUR`. Le mail ne part qu'après un dépôt accepté. APRIL écarté. Format complet : `docs/carnet/ECHANGES.md`.
+  Test : `scratchpad/t_auto.js` (CRM et relais simulés par Playwright).
 - **Boîte aux lettres entre les deux Claude** (02/10/2026, Fabrice : « vous ne pouvez pas échanger entre vous ? ») : le
   comparateur écrit dans `docs/carnet/ECHANGES.md` **de ce dépôt** (public : jamais de secret) ; le Claude du CRM écrit dans
   `docs/carnet/ECHANGES.md` de `fabcoh/WhatsApp_Solution`, rattaché à cette session **en lecture** (`/home/user/whatsapp_solution`,
