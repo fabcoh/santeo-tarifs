@@ -91,6 +91,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   l'affiche ou le masque. Filtres et ouverture retenus sur l'appareil (`depot_filtre`, `depot_produit`, `depot_journal`). **APRIL** ajoutée :
   une ligne par produit ouvert (`APRIL_ZEN`, `APRIL_MIX`…), bulletin « sans objet (April-On ou l'API) » — c'est là que
   Fabrice dépose les PDF April-On de Mix, Flexi, Optimale, Simply et Pro Privilège.
+  **03/10/2026, suite (Fabrice)** : texte d'introduction retiré ; **œil 👁 à côté de « Nouveau PDF »**, qui ouvre l'aperçu du
+  document en ligne dans la fenêtre de la page (pdf.js). La page ne peut pas lire `fabcoh.github.io` (CSP) : les 56 PDF de
+  `docs/` sont **copiés dans l'espace de la page** et la table `APERCU` (fichier → id d'asset) les relie — **un document
+  remplacé doit y être téléversé à nouveau** (`Artifact publish asset:true`) et `APERCU` mis à jour. Un produit **sans aucun
+  document** est **barré**, dans le tableau comme dans la liste « Produit » (barre Unicode U+0336, une `<option>` n'acceptant
+  pas de style).
 
 ## Règles métier à ne pas casser
 

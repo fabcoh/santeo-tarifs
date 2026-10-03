@@ -14,3 +14,4 @@ Adresse publique : `https://fabcoh.github.io/santeo-tarifs/docs/connaissances/<f
 | Fichier | Produit | Assureur | Documents lus |
 |---|---|---|---|
 | `april_santemix.md` | APRIL Santé Mix Proximité | QUATREM (Malakoff Humanis), géré par APRIL Santé Prévoyance | CG, notice de garanties, IPID, exemples, argumentaire, bulletin (03/10/2026) |
+| `april_santegan.md` | APRIL Complémentaire Senior GAN (55 ans et plus) | Groupama Gan Vie, géré par APRIL Santé Prévoyance | CG, notice de garanties, IPID, assistance Mutuaide, exemples, argumentaire, bulletin (03/10/2026) |
