@@ -220,6 +220,18 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   le courrier** : `mailTableau` ajoute un 3ᵉ élément à chaque ligne (`[libellé, valeurs, 1|0]`), que
   `santeo-mail.php` rend avec le même fond (`#FFF3C4`) ; la version texte marque ces lignes d'un `*`. Un relais
   plus ancien ignore ce 3ᵉ élément sans erreur.
+- **Tableau en blocs** (Fabrice, 03/10/2026, « pour une meilleure visite chez le prospect ») : `Tableau.BLOCS` — Hospitalisation
+  (Optam, hors Optam, chambre), Honoraires (spécialistes Optam / hors Optam), **Pharmacie** (médicaments remboursés `x:pharR`,
+  pharmacie non remboursée `x:pharN`), Dentaire (**Prothèses dentaires**, implantologie, orthodontie), Optique (**verres et
+  monture simples** `opt`, **complexes** `x:optC`, lentilles), Autres (audio, médecines douces). Bandeau `tr.tgsec` (une case
+  par colonne, pour garder le cadre de la colonne ⭐) ; lignes **Optam et prothèses en gras** (`tr.fort`). Même découpage dans
+  l'image, le courrier (`lignes` à 4ᵉ élément `titre` / `fort`, relais `2026-10-03 blocs`) et `docs/tg/`.
+  **Valeurs relevées le 03/10/2026 sur l'image des tableaux de garantie** (scratchpad `releve/A|B|C.json`, pages citées) :
+  optique complexe = même méthode que les verres simples de chaque gamme ; pharmacie remboursée = médicaments à 65 % ;
+  « 100 % (hors 15/30 %) » pour APICIL Équilibre 1 et MCCINOVA Socle ; Mutuelle Verte « … (tabac) » (son seul forfait est
+  l'antitabac) ; CAP NR pharmacie non remboursée « n.c. » (forfait prévention commun, pas de ligne) ; TALIS optique complexe =
+  monture + 2 verres progressifs. Renforts et packs optionnels jamais comptés. **Corrigé au passage** : TALIS verres simples
+  90 / 160 € (monture + 2 verres ; 50 / 100 € n'était que la monture), Révoluo Rev 1 optique « 100 % BR » (et non « — »).
 - **Filtre par garantie** (panneau ⚖ sur le bord droit) : un seuil minimum par poste (dentaire, implantologie,
   orthodontie remboursée / non remboursée, optique, lentilles, hospitalisation, honoraires, chambre, audio,
   médecines douces) + un **budget mensuel** avec tolérance **+15 %**. Les seuils proposés sont uniquement les
@@ -636,7 +648,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   document commun à deux formules joint une fois, nommé « IPID - M. VERTE GCI 150.pdf ». **Tailles vérifiées avant
   l'envoi** : 5 Mo par fichier, **10 Mo en tout** ; au-delà, IPID d'abord puis tableaux du plus léger au plus lourd, le
   reste garde son lien sous la colonne. La réponse porte `piecesJointes`, `piecesJointesMo`, `nonJointes`. Relais
-  `2026-10-03 PJ tableau + IPID (Revoluo)`. Exemple réel : Cap Évolution + MV GCI 150 + Rev 4 = 6 fichiers, 7,4 Mo.
+  `2026-10-03 PJ tableau + IPID (Revoluo)`, puis `2026-10-03 blocs`. Exemple réel : Cap Évolution + MV GCI 150 + Rev 4 = 6 fichiers, 7,4 Mo.
   **Attention aux variables dans le relais** : la boucle des colonnes écrasait `$nom`, le nom du prospect, et
   le courrier disait « Bonjour Monsieur MCCINOVA ESSENTIELLE ». Les variables de colonne sont préfixées.
 - Fichiers dans `www/` : `santeo-mail.php` + `santeo-mail-config.php` (**clé, hors dépôt**).

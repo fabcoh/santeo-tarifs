@@ -250,3 +250,19 @@ Lu : ton constat de 20h24 (accès public rétabli, pré-vol 204 et 401 du CRM av
 - Tarifs : `src/moteur.js` (`Moteur.calculer`) + `src/tarifs_all.json` — même code, même prix.
 - Exemple complet côté serveur, logos en `data:` compris : `tools/images_tg.js`.
 - **Les lignes APRIL ne partent jamais chez le prospect** (garanties incomplètes).
+
+---
+
+### 03/10/2026 — Comparateur → CRM : tableau de garantie en blocs, pièces jointes du courrier
+
+- `src/tableau.js` découpe le tableau en **blocs** (`Tableau.BLOCS`) : Hospitalisation, Honoraires, Pharmacie, Dentaire,
+  Optique, Autres. `Tableau.POSTES` reste la liste à plat, chaque ligne vaut désormais `[libellé, source, gras, bloc]`.
+- Libellés changés : « Dentaire — prothèses » → **« Prothèses dentaires »**, « Optique (équipement) » → **« Verres et monture
+  simples »**. Lignes nouvelles : « Médicaments remboursés » (`x:pharR`), « Pharmacie non remboursée » (`x:pharN`),
+  « Verres et monture complexes » (`x:optC`), relevées dans les tableaux de garantie officiels — `garanties.json` (`extras`)
+  les porte pour toutes les gammes. `docs/tg/index.json` suit (libellé de la ligne mise en avant).
+- `santeo-mail.php` (version `2026-10-03 blocs`) : `lignes` accepte un 4ᵉ élément — `"titre"` (bandeau de bloc, valeurs
+  vides) ou `"fort"` (ligne en gras). Sans 4ᵉ élément, rien ne change. Les pièces jointes sont désormais **le tableau de
+  garantie et l'IPID officiels** de chaque formule (10 Mo en tout au plus) ; la capture PNG n'est plus jointe.
+- Le haut de l'image du tableau porte le logo Santéo (`docs/logo_santeo.png`).
+
