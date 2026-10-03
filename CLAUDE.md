@@ -629,7 +629,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `^logo_[a-z]+\.png$` — elle ne choisit pas une adresse.
   Largeur **100 %, plafonnée à 960 px** ; texte courant à 13,5 px, libellés et valeurs du tableau à 14 px.
   Au-delà de **cinq colonnes** le relais s'arrête : le tableau déborderait sur téléphone.
-  Le PNG capturé part en **pièce jointe ordinaire** (plus en image intégrée) : le corps le reproduit déjà.
+  **Pièces jointes = tableau de garantie et IPID officiels, rien d'autre** (Fabrice, 03/10/2026) : ni la capture PNG
+  (la page l'envoie encore, le relais l'ignore), ni les notices. Le relais télécharge les PDF de `docs/` (libellés
+  « Tableau de garantie », « IPID », « Garanties + IPID » ; adresse `fabcoh.github.io/santeo-tarifs/docs/*.pdf` seule), un
+  document commun à deux formules joint une fois, nommé « IPID - M. VERTE GCI 150.pdf ». **Tailles vérifiées avant
+  l'envoi** : 5 Mo par fichier, **10 Mo en tout** ; au-delà, IPID d'abord puis tableaux du plus léger au plus lourd, le
+  reste garde son lien sous la colonne. La réponse porte `piecesJointes`, `piecesJointesMo`, `nonJointes`. Relais
+  `2026-10-03 PJ tableau + IPID`. Exemple réel : Cap Évolution + MV GCI 150 + Rev 4 = 5 fichiers, 4,2 Mo.
   **Attention aux variables dans le relais** : la boucle des colonnes écrasait `$nom`, le nom du prospect, et
   le courrier disait « Bonjour Monsieur MCCINOVA ESSENTIELLE ». Les variables de colonne sont préfixées.
 - Fichiers dans `www/` : `santeo-mail.php` + `santeo-mail-config.php` (**clé, hors dépôt**).
