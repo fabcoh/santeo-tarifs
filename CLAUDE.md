@@ -418,9 +418,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Révoluo, RF50 et RF100 portent le logo Révoluo** (fourni par Fabrice le 26/09/2026, **remplacé le 03/10/2026** par
   la version bulle verte + cubes optique / dentaire / santé, fond blanc rendu transparent avec bords doux, 325 × 160) et non celui d'Avenir : la gamme porte `logo:"revoluo"`. `Tableau.logo` et le courrier lisent `g.logo || g.ins`.
   **Logo Santéo** (Fabrice, 03/10/2026 : « notre logo dans les mails et dans les envois des captures au CRM ») :
-  `docs/logo_santeo.png` (452 × 160, fond rendu transparent). **Dans l'image du tableau** : `Tableau.marque()`, en haut à
-  droite du cadre (64 px), affiché **seulement pendant la capture** (`#tgbox.capwide .tgmarque`) — la fenêtre du commercial
-  ne le montre pas ; donc aussi dans les images `docs/tg/` (logo en `data:` comme les autres). **Dans le courrier** :
+  `docs/logo_santeo.png` (452 × 160, fond rendu transparent). **Dans le tableau** : `Tableau.marque()` pose le **logo bleu
+  clair** (`docs/logo_santeobleu.png`, fourni par Fabrice le 03/10/2026, 494 × 120) dans la **case vide en tête de la colonne
+  des postes** (`th.tgcoin`), centré, sur la ligne des logos des compagnies, « pas trop gros » : 30 px à l'écran, 34 px dans
+  l'image ; visible dans la fenêtre comme dans la capture et les images `docs/tg/`. Il remplace le logo en haut à droite de
+  l'image (03/10, matin). **Dans le courrier** (logo d'origine, `logo_santeo.png`) :
   `santeo-mail.php` le télécharge avec les logos des compagnies et le joint en `cid:` au-dessus de « Votre conseiller »
   (158 × 56) ; absent s'il n'a pas pu être téléchargé ; en `data:` dans la copie CRM. Relais `2026-10-03 logo Santeo`.
   **Révoluo n'est pas Avenir Mutuelle** (Fabrice, 27/09/2026) : l'assureur est **REMA** (La Réunion des Mutuelles

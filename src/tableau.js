@@ -53,10 +53,10 @@ const ATOUTS=[["hospitalisation","hospO"],["honoraires spécialistes","honoO"],
 const LOGOS={mcci:"logo_mcci.png",avenir:"logo_avenir.png",mverte:"logo_mverte.png",apicil:"logo_apicil.png",revoluo:"logo_revoluo.png"};
 const LOGOBASE="https://fabcoh.github.io/santeo-tarifs/docs/";
 
-// Notre logo, en haut à droite du cadre. Le CSS ne le montre que dans l'image (classe « capwide ») :
-// la fenêtre du commercial n'a pas à le porter, le prospect si (Fabrice, 03/10/2026).
+// Notre logo, dans la case vide en tête de la colonne des postes, sur la ligne des logos des compagnies, centré
+// (Fabrice, 03/10/2026 : « en plus petit… pas trop gros »). Visible dans la fenêtre comme dans l'image.
 function marque(base){
-  return '<img class="tgmarque" src="'+((base||LOGOBASE)+"logo_santeo.png")+'" alt="Santéo" onerror="this.remove()">';
+  return '<img class="tgmarque" src="'+((base||LOGOBASE)+"logo_santeobleu.png")+'" alt="Santéo" onerror="this.remove()">';
 }
 
 const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
@@ -106,7 +106,7 @@ function lignes(G,cols){
 function entete(G,cols,reco,o){
   o=o||{};
   const multi=cols.some(c=>c.key!==cols[0].key);
-  return '<tr><th></th>'+cols.map((c,ci)=>'<th class="pick'+(estReco(reco,c)?' reco':'')+'" data-ci="'+ci+'">'
+  return '<tr><th class="tgcoin">'+marque(o.base)+'</th>'+cols.map((c,ci)=>'<th class="pick'+(estReco(reco,c)?' reco':'')+'" data-ci="'+ci+'">'
     +celluleEntete(G,c,{reco:estReco(reco,c),multi:multi,base:o.base,
                         tarif:o.tarifs?o.tarifs[c.key+"|"+c.fi]:undefined})
     +'</th>').join('')+'</tr>';
@@ -202,7 +202,7 @@ const MENTION=' · synthèse d’après le tableau de garantie officiel — seul
 // Corps du cadre, tel qu'il est capturé : ni bouton de fermeture, ni barre d'actions.
 function bloc(G,o){
   o=o||{};
-  return marque(o.base)+'<h2>'+(o.titre||"Sélection — tableau de garantie")+'</h2>'
+  return '<h2>'+(o.titre||"Sélection — tableau de garantie")+'</h2>'
     +(o.prospect?'<div class="tghdr" style="font:700 16.5px \'Archivo\',sans-serif;color:var(--accent);margin:2px 0 8px">'+o.prospect+'</div>':'')
     +'<div class="src">'+(o.sousTitre||"")+MENTION+'</div>'
     +'<div style="overflow-x:auto"><table><thead>'
