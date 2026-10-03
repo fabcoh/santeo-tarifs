@@ -774,7 +774,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   « Tarifs au 23 septembre 2026, valables 15 jours. » Sans elle, rien ne bornerait l'offre dans le temps —
   un prospect revenant trois mois plus tard avec ce courrier n'aurait vu nulle part que les tarifs changent.
 - **Les documents de chaque formule sont sous sa colonne** — sur **deux lignes** (Fabrice, 26/09/2026) :
-  « Tableau des garanties », puis « IPID - Notice », en **10 px**, cliquables, juste au-dessus de son bouton. Le pied ne garde que le **nom de la
+  « **GARANTIES** » en gras, puis « IPID - NOTICE », en **13 px** (Fabrice, 03/10/2026 : 10 px trop petit ; relais `… liens 13px`), cliquables, juste au-dessus de son bouton. Le pied ne garde que le **nom de la
   formule et ses limites**, trop longues pour une colonne : les répéter aux deux endroits ne faisait que du
   bruit. **Ce qui manque n'est pas un défaut du courrier mais du dossier** : `DOCS` ne publie qu'un tableau
   de garantie pour MCCINOVA, FLEXIA et SOLENCIA, et un seul « Garanties + IPID » pour LPS HOSPI — leurs IPID
