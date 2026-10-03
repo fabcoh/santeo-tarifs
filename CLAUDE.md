@@ -404,6 +404,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   image cassée. Le logo est reposé à chaque mise en avant d'une formule.
   **Révoluo, RF50 et RF100 portent le logo Révoluo** (fourni par Fabrice le 26/09/2026, **remplacé le 03/10/2026** par
   la version bulle verte + cubes optique / dentaire / santé, fond blanc rendu transparent avec bords doux, 325 × 160) et non celui d'Avenir : la gamme porte `logo:"revoluo"`. `Tableau.logo` et le courrier lisent `g.logo || g.ins`.
+  **Logo Santéo** (Fabrice, 03/10/2026 : « notre logo dans les mails et dans les envois des captures au CRM ») :
+  `docs/logo_santeo.png` (452 × 160, fond rendu transparent). **Dans l'image du tableau** : `Tableau.marque()`, en haut à
+  droite du cadre (64 px), affiché **seulement pendant la capture** (`#tgbox.capwide .tgmarque`) — la fenêtre du commercial
+  ne le montre pas ; donc aussi dans les images `docs/tg/` (logo en `data:` comme les autres). **Dans le courrier** :
+  `santeo-mail.php` le télécharge avec les logos des compagnies et le joint en `cid:` au-dessus de « Votre conseiller »
+  (158 × 56) ; absent s'il n'a pas pu être téléchargé ; en `data:` dans la copie CRM. Relais `2026-10-03 logo Santeo`.
   **Révoluo n'est pas Avenir Mutuelle** (Fabrice, 27/09/2026) : l'assureur est **REMA** (La Réunion des Mutuelles
   d'Assurances Régionales, SIREN 775 626 377, IPID et conditions générales), gestion déléguée au **CERGAP**.
   REV, RF50 et RF100 portent `ins:"rema"` (pastille violette `--rema`, déclarée dans les trois thèmes) et
@@ -770,7 +776,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Appelant serveur (CRM WhatsApp), accord de Fabrice du 02/10/2026** : « oui, il envoie seul les mails ». Le serveur du CRM
   envoie le comparatif sans qu'un conseiller l'ouvre. Il présente `X-Cle-Serveur`, **la clé d'`apicil.php`** (`apicil-cle.txt`,
   hors du dossier web ; `santeo-mail.php` la lit, ne la fabrique jamais) ; quota propre **200 envois/heure**. Le GET annonce
-  `"version":"2026-10-02 appelant serveur"` et `appelant`. L'anti-doublon et le choix des formules sont alors au CRM.
+  `"version":"2026-10-02 appelant serveur"` (puis `2026-10-03 logo Santeo`) et `appelant`. L'anti-doublon et le choix des formules sont alors au CRM.
   **Expéditeur imposé en automatique** (Fabrice, 02/10/2026) : `antony@` pour les fiches d'Antony, `fcohen@` pour les siennes ;
   avec la clé serveur, le relais refuse tout autre expéditeur. Clé copiée par Fabrice dans les secrets Manus (`APICIL_CLE_SERVEUR`).
 
