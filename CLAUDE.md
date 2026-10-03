@@ -99,6 +99,24 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   pièce « Manquant » ; « sans objet » compte comme fournie) a son nom **en rouge**, dans le tableau comme dans la liste « Produit »
   (Fabrice : rouge plutôt que barré, 03/10/2026). Boutons « Nouveau PDF » / 👁 alignés en bas de case (`margin-top:auto`).
 
+## Fiches de connaissances — `docs/connaissances/` (03/10/2026)
+
+- Demande de Fabrice : que le Claude du CRM réponde à tout ce qui sort des connaissances de base (sophrologie, séances d'ostéo
+  ou de kiné, plafond dentaire, implants, délais d'attente, âges, assistance…). **Une fiche Markdown par produit vendu (17)**,
+  liste dans `docs/connaissances/README.md`, rédigées par lecture complète des PDF de `docs/` (chiffres vérifiés sur l'image
+  des pages). Chaque fait porte sa source ; « Non précisé dans les documents » sinon. Sections : identité, adhésion, délais,
+  résiliation, cotisation, tableau des garanties, **« Détails pratiques »** (par thème), assistance, exclusions, écarts entre
+  documents, 35 à 50 questions-réponses. Consigne de rédaction : scratchpad `consigne_fiches.md`.
+- **Un document remplacé dans `docs/` → relire et mettre à jour sa fiche** (et le carnet du CRM).
+- Les écarts **avec le comparateur** relevés par les fiches ont été corrigés le 03/10/2026 (« Corrigé dans le comparateur » dans
+  la fiche) : notice d'information APICIL (`apisante_ni_2026.pdf`, la « notice » d'avant était la fiche produit distributeurs),
+  « Pas d'implantologie » Équilibre 1–3 / Sérénité 1, pharmacie Équilibre 1, Infos Mutuelle Verte (audio GCI 300 = 300 %,
+  3 séances de prévention par 12 mois, délais de stage, aucun âge écrit), âges (Cap Évolution TNS 18 ans, Révoluo 7–8 70 ans,
+  CAP NR / LPS sans âge maximum écrit, FLEXIA / SOLENCIA = grille de tarifs), Renfort 50 sans plafond propre, optique MCCI.
+  **Laissé tel quel, à confirmer par Fabrice auprès d'Avenir** : la gratuité du 3ᵉ enfant appliquée au tarif Cap Évolution
+  (non écrite dans le tableau ; la fenêtre Infos le dit). Révoluo : la réduction famille −5 / −10 % du tarif n'est dans aucun
+  document (seule la gratuité du 3ᵉ enfant de moins de 20 ans l'est) ; le Renfort 25 existe mais n'est pas proposé.
+
 ## Règles métier à ne pas casser
 
 - **MCCINOVA** : mineurs au tarif 18 ans ; cadre « Conditions MCCINOVA » (âge atteint dans l'année, enfants
@@ -921,6 +939,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   et honoraires d'Only, lentilles) ; sinon **« n.c. »**. Les 5 produits **sans PDF public** (Mix, Flexi, Optimale,
   Simply, Pro Privilège) n'affichent **aucune garantie** — tarif seul, pastille « Garanties non vérifiées ». Un poste
   « n.c. » sous un filtre de garantie rend la ligne **incomparable** (comptée à part), jamais « non couverte ».
+  **03/10/2026 : brochures relues** (Fabrice : « corrige tout ») — les « n.c. » d'Only, Peps, Pro, Pro Start, Tranquillité, Vita
+  et Zen sont remplacés par les valeurs lues dans le PDF (image vérifiée) ; « — » = non couvert par la formule de base (renfort
+  ou pack non compté : chambre, implants et médecines douces de Zen ; chambre de Peps). `APRIL_GAR.SanteGan` ajouté (notice
+  p.6–7, responsable), utilisé dès que son tarif sera branché. `EX.APRIL.orthN` ne reprend le forfait « dentaire non
+  remboursé » que chez Only, Pro et Pro Start (`APRIL_ORTHN_DANS_IMP`) : chez Vita, Tranquillité et GAN il ne couvre pas
+  l'orthodontie. Only Santé : prothèses en « € /acte ». `plaf` est rangé mais affiché nulle part.
   **↗ April-On** (accord écrit de Fabrice, 03/10/2026 : « Oui, j'accepte qu'un clic crée un projet chez APRIL ») : bouton
   dans le détail de chaque ligne APRIL. `aprilOn(r, btn)` reprend le profil de la tarification (`APRIL_ST.cle`), y ajoute
   `action:"aprilon"`, le produit, le niveau (`fi % 100`) et l'identité de `PRO` ; le relais `april.php` (version
@@ -931,8 +955,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   504 depuis la nuit du 02 au 03/10). La forme exacte de la réponse (`content`) est celle de la notice, à confirmer.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
-- LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
-- Harmonisation optique FLEXIA / SOLENCIA (base « 2 verres simples », comme Cap Évolution et Mutuelle Verte).
+- LPS Hospi : dossier complet à obtenir — `lps_hospi_2026.pdf` (4 p.) ne porte que le tableau et l'IPID ; ni notice, ni règlement,
+  ni détail de l'assistance.
+- ~~Harmonisation optique FLEXIA / SOLENCIA~~ : faite le 03/10/2026 (forfait monture + 2 verres simples : FLEXIA 100 % BR /
+  150 / 200 / 260 €, SOLENCIA 150 / 200 / 300 / 350 € ; lentilles non remboursées FLEXIA Start « — »).
 
 ## Tests
 
