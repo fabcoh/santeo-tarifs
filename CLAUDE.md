@@ -402,8 +402,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   documents de `docs/` ; MCCI vient du fichier fourni par Fabrice, ses plaquettes ne publiant le logo qu'en
   blanc sur fond sombre. **Tant qu'un fichier manque, le nom de la compagnie s'affiche à sa place** — aucune
   image cassée. Le logo est reposé à chaque mise en avant d'une formule.
-  **Révoluo, RF50 et RF100 portent le logo Révoluo** (fourni par Fabrice le 26/09/2026, fond blanc rendu
-  transparent) et non celui d'Avenir : la gamme porte `logo:"revoluo"`. `Tableau.logo` et le courrier lisent `g.logo || g.ins`.
+  **Révoluo, RF50 et RF100 portent le logo Révoluo** (fourni par Fabrice le 26/09/2026, **remplacé le 03/10/2026** par
+  la version bulle verte + cubes optique / dentaire / santé, fond blanc rendu transparent avec bords doux, 325 × 160) et non celui d'Avenir : la gamme porte `logo:"revoluo"`. `Tableau.logo` et le courrier lisent `g.logo || g.ins`.
   **Révoluo n'est pas Avenir Mutuelle** (Fabrice, 27/09/2026) : l'assureur est **REMA** (La Réunion des Mutuelles
   d'Assurances Régionales, SIREN 775 626 377, IPID et conditions générales), gestion déléguée au **CERGAP**.
   REV, RF50 et RF100 portent `ins:"rema"` (pastille violette `--rema`, déclarée dans les trois thèmes) et
