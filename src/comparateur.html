@@ -1708,6 +1708,50 @@ function chargerPdfjs(){
   });
   return PDFJS;
 }
+// ---- Cotisation écrite sur le tableau de garantie officiel (Fabrice, 03/10/2026) ----
+// « 23,42€/m » en noir gras, juste au-dessus du nom de la formule, en tête de sa colonne, sur la première page où elle
+// figure. Emplacements relevés à la main sur chaque PDF et vérifiés sur image (TAMPONS : fichier → formule → page,
+// centre x, ligne de base y en points PDF, taille). Sert à l'aperçu 👁 et aux pièces jointes du courrier.
+const TAMPONS={};
+function cleTampon(key,fi){
+  if(key==="APRIL"){ const code=Object.keys(APRIL_RANG).find(c=>APRIL_RANG[c]===Math.floor(fi/100)); return code?["APRIL:"+code+"|"+(fi%100)]:[]; }
+  return [key+"|"+fi, key+"_TNS|"+fi];
+}
+function prixTampon(total){ return (Math.round(total*100)/100).toFixed(2).replace(".",",")+"€/m"; }
+function estTableau(libelle){ return /^Tableau de garantie|^Garanties \+ IPID/.test(libelle); }
+// marques : [{key, fi, total}] — plusieurs formules d'un même fichier reçoivent chacune leur prix.
+async function pdfAvecTarifs(url,marques){
+  const r=await fetch(url); if(!r.ok) throw new Error("HTTP "+r.status);
+  const octets=new Uint8Array(await r.arrayBuffer());
+  const T=TAMPONS[url.split("/").pop()];
+  if(!T||typeof PDFLib==="undefined") return {octets,poses:0};
+  const pos=[];
+  for(const m of marques){ if(m.total==null) continue;
+    const k=cleTampon(m.key,m.fi).find(c=>T[c]); if(k) pos.push([T[k],prixTampon(m.total)]); }
+  if(!pos.length) return {octets,poses:0};
+  const pdf=await PDFLib.PDFDocument.load(octets,{ignoreEncryption:true});
+  const fnt=await pdf.embedFont(PDFLib.StandardFonts.HelveticaBold);
+  for(const [t,txt] of pos){
+    const pg=pdf.getPage(t.page), w=fnt.widthOfTextAtSize(txt,t.taille);
+    pg.drawText(txt,{x:t.x-w/2,y:t.y,size:t.taille,font:fnt,color:PDFLib.rgb(0,0,0)});
+  }
+  return {octets:await pdf.save(),poses:pos.length};
+}
+function enBase64(octets){ let s=""; for(let i=0;i<octets.length;i+=0x8000) s+=String.fromCharCode.apply(null,octets.subarray(i,i+0x8000)); return btoa(s); }
+// Pièces jointes du courrier : un tableau de garantie par fichier, avec le prix de chaque formule retenue qui y figure.
+async function pdfsTarifs(tg){
+  const parUrl={};
+  for(const c of tg.colonnes){
+    const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi); if(!r) continue;
+    for(const d of (c.docs||[])) if(estTableau(d.libelle)) (parUrl[d.url]=parUrl[d.url]||[]).push({key:c.key,fi:c.fi,total:r.total});
+  }
+  const out=[];
+  for(const [url,marques] of Object.entries(parUrl)){
+    try{ const {octets,poses}=await pdfAvecTarifs(url,marques); if(poses&&octets.length<=5e6) out.push({url,pdf:enBase64(octets)}); }
+    catch(e){ console.warn("tarif non écrit sur",url,e); }
+  }
+  return out;
+}
 function verifDocs(r){
   const docs=Object.entries(docsDe(r));
   const titre=(((F[r.key]&&F[r.key].label)||r.gamme)+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2");
@@ -1736,7 +1780,10 @@ function verifDocs(r){
     zone.innerHTML=""; info.textContent="Chargement de « "+nom+" »…";
     try{
       const lib=await chargerPdfjs();
-      const pdf=await lib.getDocument(url).promise; if(n!==jeton) return;
+      let src=url;
+      if(estTableau(nom)&&r.total!=null){ try{ const t=await pdfAvecTarifs(url,[{key:r.key,fi:r.fi,total:r.total}]); if(t.poses) src={data:t.octets}; }catch(_){ } }
+      if(n!==jeton) return;
+      const pdf=await lib.getDocument(src).promise; if(n!==jeton) return;
       const N=pdf.numPages, dep=Math.min(N,DOCPAGE[url.split("/").pop()]||1);
       const larg=Math.min(zone.clientWidth-20,960);
       let fin=dep-1;
@@ -1986,7 +2033,7 @@ function renderTG(cols,title,sub,note,single){
             const t=el=>{const e=box.querySelector(el);return e?e.textContent.trim():"";};
             const rp=await fetch(MAIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},
               body:JSON.stringify(corpsMail({tg:tgm,PR,tetes:{entete:t('.tghdr'),soustitre:t('.src')},dest,exp,b64,
-                prov:(PR&&PR.provenance)||"santeo.net",objet:"Votre offre de mutuelle santé",copie:true}))});
+                prov:(PR&&PR.provenance)||"santeo.net",objet:"Votre offre de mutuelle santé",copie:true,pdfs:await pdfsTarifs(tgm)}))});
             const d=await rp.json().catch(()=>null);
             if(rp.ok&&d&&d.envoye){
               mailMsg=" · mail envoyé à "+dest; envoiNote(cleM); mailEtat="envoye";
@@ -2727,7 +2774,7 @@ function mailTableau(cols){
 }
 
 // Corps envoyé au relais santeo-mail.php : le même pour « Envoyer par mail » et pour le dépôt CRM.
-function corpsMail({tg,PR,tetes,dest,exp,b64,prov,objet,copie}){
+function corpsMail({tg,PR,tetes,dest,exp,b64,prov,objet,copie,pdfs}){
   const c={expediteur:exp,destinataire:dest,
           civilite:/^mme$/i.test((PR&&PR.civ)||"")?"MME":"MR",
           nom:(PR&&PR.nom)||"",prenom:(PR&&PR.prenom)||"",
@@ -2746,7 +2793,9 @@ function corpsMail({tg,PR,tetes,dest,exp,b64,prov,objet,copie}){
           conversation:(window.CRMLINK&&window.CRMLINK.back)||"",
           provenance:prov,objet:objet,
           entete:(tetes&&tetes.entete)||"",soustitre:(tetes&&tetes.soustitre)||"",
-          colonnes:tg.colonnes,lignes:tg.lignes,image:b64};
+          // La capture n'est plus jointe (pièces jointes = tableau de garantie + IPID, 03/10/2026) ; les tableaux de
+          // garantie partent avec la cotisation écrite au-dessus de chaque formule.
+          colonnes:tg.colonnes,lignes:tg.lignes,pdfs:pdfs||[]};
   if(copie)c.copie=true;
   return c;
 }
@@ -2832,7 +2881,7 @@ function mailFenetre(blob,tg,PR,tetes,autre){
       const b64=blob?await new Promise((res,rej)=>{const fr=new FileReader();
         fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);}):"";
       const rp=await fetch(MAIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(corpsMail({tg,PR,tetes,dest,exp,b64,prov:v("m_prov"),objet:v("m_obj"),copie:!!window.CRMLINK}))});
+        body:JSON.stringify(corpsMail({tg,PR,tetes,dest,exp,b64,prov:v("m_prov"),objet:v("m_obj"),copie:!!window.CRMLINK,pdfs:await pdfsTarifs(tg)}))});
       const txt=await rp.text(); let d=null; try{d=JSON.parse(txt);}catch(e){}
       if(!rp.ok){
         msg.innerHTML='<span class="dvwarn">'+dvEch((d&&d.erreur)?d.erreur:"L'envoi a échoué (HTTP "+rp.status+").")+'</span>'
