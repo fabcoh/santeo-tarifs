@@ -323,7 +323,7 @@ Non précisé dans les documents : ni la brochure ni l'IPID de Tranquillité San
 6. **Maintien de cotisation** : renvoi aux Conditions Générales (Notice p.1), absentes du dossier.
 7. **Renonciation** : 14 jours à compter de l'émission du certificat d'adhésion (IPID p.2), point de départ différent des autres IPID APRIL (conclusion du contrat).
 8. **Millésime** : brochure 03/2025, IPID mars 2025 ; aucun document 2026 malgré le nom du fichier.
-9. **Comparateur** : il affiche « n.c. » pour les honoraires non DPTAM (hôpital et soins courants : 100 / 105 / 125 / 150 / 200 / 200 % BR au tableau), l'orthodontie remboursée (100 % BR) et les aides auditives (classe II à 100 % BR) ; « Aucun plafond » dentaire aux N1 à N3, où le tableau imprime « - » (Notice p.6 et p.7). Ses autres valeurs (honoraires DPTAM, chambre, prothèses, implantologie, optique, lentilles, médecines douces) concordent.
+9. **Comparateur** : il affiche « n.c. » pour les honoraires non DPTAM (hôpital et soins courants : 100 / 105 / 125 / 150 / 200 / 200 % BR au tableau), l'orthodontie remboursée (100 % BR) et les aides auditives (classe II à 100 % BR) ; « Aucun plafond » dentaire aux N1 à N3, où le tableau imprime « - » (Notice p.6 et p.7). Ses autres valeurs (honoraires DPTAM, chambre, prothèses, implantologie, optique, lentilles, médecines douces) concordent. **03/10/2026 : « n.c. » remplacés dans le comparateur par les valeurs de la brochure.**
 
 ## Questions fréquentes
 

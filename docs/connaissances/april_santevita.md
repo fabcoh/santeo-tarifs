@@ -341,7 +341,7 @@ Non précisé dans les documents : ni la brochure ni l'IPID de Vita Santé ne ci
 6. **Renonciation** : réservée à la vente à distance et au démarchage à domicile (IPID p.2).
 7. **Notice valant CG** : citée (Notice p.4), absente du dossier.
 8. **Millésime** : brochure 10/2026, tarifs 2026, IPID janvier 2026.
-9. **Comparateur** : il affiche « n.c. » pour les aides auditives (classe II à 100 % BR dans le socle) et l'orthodontie remboursée (100 % BR) ; lentilles « 100 % BR » et refusées « — », valeurs du socle sans le Renfort Confort (125 € à 250 €) (Notice p.5 et p.6). Ses autres valeurs (honoraires, chambre, prothèses, plafond, implantologie, optique, médecines douces) concordent avec le tableau.
+9. **Comparateur** : il affiche « n.c. » pour les aides auditives (classe II à 100 % BR dans le socle) et l'orthodontie remboursée (100 % BR) ; lentilles « 100 % BR » et refusées « — », valeurs du socle sans le Renfort Confort (125 € à 250 €) (Notice p.5 et p.6). Ses autres valeurs (honoraires, chambre, prothèses, plafond, implantologie, optique, médecines douces) concordent avec le tableau. **03/10/2026 : « n.c. » remplacés dans le comparateur par les valeurs de la brochure.**
 
 ## Questions fréquentes
 

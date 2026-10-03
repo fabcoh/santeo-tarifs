@@ -342,7 +342,7 @@ Non précisé dans les documents : ni la brochure ni l'IPID de Santé Peps ne ci
 6. **Délai de 2 ans** : à partir des soins ou de la facturation, ou à partir de la réalisation de l'acte, selon le paragraphe (IPID p.2).
 7. **Madelin** : non mentionné dans l'IPID de Peps (IPID p.1), alors que d'autres IPID APRIL le citent.
 8. **Millésime** : brochure 06/2025, IPID juin 2025, tarifs 2025 ; aucun document 2026 malgré le nom du fichier.
-9. **Comparateur** : il affiche « n.c. » pour les aides auditives (le tableau donne 100 % BR + 100 € à + 300 € par oreille), pour l'orthodontie remboursée (100 % BR au tableau), pour la chambre (Pack seulement) et pour l'implantologie (aucune garantie au tableau) ; « Aucun plafond » dentaire au N1, où le tableau imprime « – » ; ses médecines douces (45 € / 55 €) sont celles du socle, sans le Pack (Notice p.4 à p.6).
+9. **Comparateur** : il affiche « n.c. » pour les aides auditives (le tableau donne 100 % BR + 100 € à + 300 € par oreille), pour l'orthodontie remboursée (100 % BR au tableau), pour la chambre (Pack seulement) et pour l'implantologie (aucune garantie au tableau) ; « Aucun plafond » dentaire au N1, où le tableau imprime « – » ; ses médecines douces (45 € / 55 €) sont celles du socle, sans le Pack (Notice p.4 à p.6). **03/10/2026 : « n.c. » remplacés dans le comparateur par les valeurs de la brochure.**
 
 ## Questions fréquentes
 

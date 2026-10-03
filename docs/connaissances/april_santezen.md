@@ -335,7 +335,7 @@ Restrictions (IPID p.1) : forfaits et plafonds annuels ; secteur non conventionn
 9. **Formalités médicales** : rien dans la brochure produit ; la page générique évoque une « Télésélection médicale » (Notice p.10).
 10. **Siège de l'assureur** : « Arras » (IPID p.1), « ARIAS » (IPID p.2).
 11. **Millésime** : brochure 04/2025, IPID mars 2025, tarifs 2025 ; aucun document 2026 malgré le nom du fichier.
-12. **Comparateur** : il affiche « n.c. » pour la chambre particulière, les médecines naturelles, l'implantologie et les aides auditives de Santé Zen ; ces postes ne sont au tableau qu'avec le Renfort Bien-Être, sauf l'audio du socle à 100 % BR (Notice p.7 et p.8). Il affiche « Aucun plafond » dentaire aux N1 et N2, où le tableau imprime « – » (Notice p.6).
+12. **Comparateur** : il affiche « n.c. » pour la chambre particulière, les médecines naturelles, l'implantologie et les aides auditives de Santé Zen ; ces postes ne sont au tableau qu'avec le Renfort Bien-Être, sauf l'audio du socle à 100 % BR (Notice p.7 et p.8). Il affiche « Aucun plafond » dentaire aux N1 et N2, où le tableau imprime « – » (Notice p.6). **03/10/2026 : « n.c. » remplacés dans le comparateur par les valeurs de la brochure.**
 
 ## Questions fréquentes
 
