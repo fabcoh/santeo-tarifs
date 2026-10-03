@@ -95,9 +95,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   document en ligne dans une **fenêtre par-dessus la page** (fond assombri, ✕ Fermer ou clic à côté ; pdf.js) — le nom du
   fichier fait de même : plus aucun nouvel onglet (la 1ʳᵉ version, plein écran, passait pour un onglet). La page ne peut pas lire `fabcoh.github.io` (CSP) : les 56 PDF de
   `docs/` sont **copiés dans l'espace de la page** et la table `APERCU` (fichier → id d'asset) les relie — **un document
-  remplacé doit y être téléversé à nouveau** (`Artifact publish asset:true`) et `APERCU` mis à jour. Un produit **sans aucun
-  document** est **barré**, dans le tableau comme dans la liste « Produit » (barre Unicode U+0336, une `<option>` n'acceptant
-  pas de style).
+  remplacé doit y être téléversé à nouveau** (`Artifact publish asset:true`) et `APERCU` mis à jour. Un produit **incomplet** (au moins une
+  pièce « Manquant » ; « sans objet » compte comme fournie) a son nom **en rouge**, dans le tableau comme dans la liste « Produit »
+  (Fabrice : rouge plutôt que barré, 03/10/2026). Boutons « Nouveau PDF » / 👁 alignés en bas de case (`margin-top:auto`).
 
 ## Règles métier à ne pas casser
 
