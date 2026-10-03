@@ -178,6 +178,7 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox tbody td:first-child{cursor:pointer}
 #tgbox tbody tr.avant td{background:rgba(255,196,0,.22);font-weight:800}
 #tgbox tbody tr.fort td{font-weight:800}
+#tgbox tbody tr:not(.fort):not(.avant):not(.tgsec) td:first-child{font-weight:400}
 #tgbox tbody tr.tgsec td{background:var(--soft);color:var(--accent);font:800 11px 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:.8px;padding:5px 8px;cursor:default}
 #tgbox.capwide tbody tr.tgsec td{font-size:13px;padding:7px 13px}
 #tgbox tbody tr.avant td:first-child{box-shadow:inset 4px 0 0 var(--warn)}
