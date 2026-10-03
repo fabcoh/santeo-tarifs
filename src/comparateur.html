@@ -1741,7 +1741,14 @@ async function pdfAvecTarifs(url,marques){
 }
 function enBase64(octets){ let s=""; for(let i=0;i<octets.length;i+=0x8000) s+=String.fromCharCode.apply(null,octets.subarray(i,i+0x8000)); return btoa(s); }
 // Pièces jointes du courrier : un tableau de garantie par fichier, avec le prix de chaque formule retenue qui y figure.
+// Un relais plus ancien refuse un corps de plus de 4 Mo : on ne lui envoie les PDF que s'il annonce les accepter.
+let RELAIS_PDF=null;
+async function relaisAcceptePdfs(){
+  if(RELAIS_PDF===null) RELAIS_PDF=fetch(MAIL_URL).then(r=>r.json()).then(d=>/cotisation/i.test((d&&d.version)||"")).catch(()=>false);
+  return RELAIS_PDF;
+}
 async function pdfsTarifs(tg){
+  if(!(await relaisAcceptePdfs())) return [];
   const parUrl={};
   for(const c of tg.colonnes){
     const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi); if(!r) continue;
