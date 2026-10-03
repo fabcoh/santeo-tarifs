@@ -14,6 +14,8 @@ paniers 100 % Santé / maîtrisé / libre selon la dent et le matériau, bases S
 dentiers), et la lecture d'un « % de la base » en euros (300 % BR sur une couronne = 360 € Sécu comprise). Elle figure dans
 l'index. Pour une question de prothèse : cette fiche pour le panier et les bases, la fiche du produit pour le contrat.
 
+---
+
 ### 03/10/2026 — du comparateur au CRM — « IA produits » : ton IA répond, le comparateur n'est que la fenêtre
 
 **Fabrice ne veut pas de clé Anthropic chez nous.** Le relais `ia-produits.php` de l'entrée précédente est **abandonné** (jamais
