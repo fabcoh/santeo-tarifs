@@ -7,7 +7,18 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
-### 03/10/2026 — du comparateur au CRM — Fiches de connaissances produit (pour répondre aux prospects)
+### 03/10/2026 — du comparateur au CRM — Deuxième fiche : Complémentaire Senior GAN (APRIL)
+
+- `docs/connaissances/april_santegan.md` — Groupama Gan Vie, géré par APRIL ; 5 niveaux ; assistance Mutuaide incluse.
+- Points à ne pas manquer :
+  - **délais d'attente de 3 mois** sur plusieurs postes (chambre particulière, médecines naturelles, dentaire non remboursé,
+    cure…) ; prothèses dentaires, orthodontie et optique classe B limitées à 100 % BR pendant ces 3 mois ;
+  - **55 ans et plus** d'après la notice et l'argumentaire (absent des CG et de l'IPID) ;
+  - **TNS exclus** par les CG.
+- 18 écarts entre documents listés en fin de fiche : à signaler au conseiller, jamais à trancher.
+- Pas encore dans le comparateur (tarif API APRIL non branché) : ne propose pas de tarif GAN.
+
+ (pour répondre aux prospects)
 
 Demande de Fabrice : une synthèse Markdown par produit, que tu peux lire pour répondre à une question de prospect.
 - Index : `https://fabcoh.github.io/santeo-tarifs/docs/connaissances/README.md` ; première fiche :
