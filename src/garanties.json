@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmpah1wzswz.js",
+ "genere": "/tmp/tmp7zgr7nb1.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -197,9 +197,9 @@
    ],
    "opt": [
     "100 % BR",
-    "95 €",
-    "110 €",
-    "120 €"
+    "150 €",
+    "200 €",
+    "260 €"
    ],
    "aud": [
     "400 €",
@@ -261,10 +261,10 @@
     "350 %"
    ],
    "opt": [
-    "90 €",
-    "120 €",
-    "160 €",
-    "175 €"
+    "150 €",
+    "200 €",
+    "300 €",
+    "350 €"
    ],
    "aud": [
     "260 %",
@@ -1055,7 +1055,7 @@
     "100 €"
    ],
    "lentR": [
-    "100 % BR",
+    "—",
     "60 €",
     "80 €",
     "100 €"
@@ -1528,56 +1528,56 @@
  },
  "notes": {
   "MCCINOVA": "Grille MCCINOVA (18–90 ans, tarif national). Pas d’optique, d’audio ni de 100 % Santé. Chambre particulière à partir du 4ᵉ jour. 30 premiers jours limités à la formule Socle. Statut responsable à confirmer auprès de MCCI.",
-  "FLEXIA": "Contrat solidaire et responsable, 100 % Santé. Plafond prothèses 2 500 €/an (Confort+). Capital obsèques 1 500 € avant 65 ans. Souscription 18–84 ans.",
-  "SOLENCIA": "Contrat solidaire et responsable, 100 % Santé. Souscription 62–99 ans. Plafond dentaire 2 000 €/an. Cures 100–300 %, prévention 50–200 €/an.",
+  "FLEXIA": "Contrat solidaire et responsable, 100 % Santé. Plafond prothèses 2 500 €/an (Confort+). Capital obsèques 1 500 € avant 65 ans. Grille tarifaire 18–84 ans.",
+  "SOLENCIA": "Contrat solidaire et responsable, 100 % Santé. Destinée aux plus de 55 ans ; grille tarifaire 62–99 ans. Plafond dentaire 2 000 €/an. Cures 100–300 %, prévention 50–200 €/an.",
   "CAPEVO": "Contrat responsable. Plafonds dentaires progressifs 600–1 300 € selon ancienneté. Audio enfant −20 ans : 840–1 700 €. Pharmacie non remb. 30 €/an (Équilibre+).",
-  "CAPNR": "Contrat NON responsable. Souscription 16–100 ans, zonage AVENIR. Plafonds dentaires 600–1 500 € selon ancienneté et formule. Lentilles incluses dans le forfait optique global (130–450 €). Fidélité optique dès la 3ᵉ année. Frais funéraires 200–1 000 €.",
-  "REV": "Contrat responsable et solidaire, 100 % Santé. Souscription 19–80 ans (Rev 7/8 : 70 ans max), pas de DOM-TOM. Plafond dentaire 1 400 € (Rev 7) / 2 000 € (Rev 8). Chambre limitée 90 j (30 j psy).",
+  "CAPNR": "Contrat NON responsable. Adhésion dès 16 ans, aucun âge maximum écrit ; tarif par zone AVENIR. Plafonds dentaires 600–1 500 € selon ancienneté et formule. Lentilles incluses dans le forfait optique global (130–450 €). Fidélité optique dès la 3ᵉ année. Frais funéraires 200–1 000 €.",
+  "REV": "Contrat responsable et solidaire, 100 % Santé. Adhésion après 18 ans, jusqu’à 80 ans (Rev 7/8 : 70 ans), pas de DOM-TOM. Plafond dentaire 1 400 € (Rev 7) / 2 000 € (Rev 8). Chambre limitée 90 j (30 j psy).",
   "RF50": "REVOLUO + Renfort 50 : +50 % sur soins/prothèses/orthodontie dentaires, +50 € verres et lentilles. Éligible Rev 2 à 8.",
   "RF100": "REVOLUO + Renfort 100 : +100 % dentaire, +50 € verres et lentilles. Éligible Rev 2 à 6.",
-  "MV": "La Mutuelle Verte, gamme Courtage GCI. Âge réel, 18 ans minimum. GCI 100–300 responsables ; GCI 500 NON responsable, sans 100 % Santé. Plafonds dentaires 750–2 400 €/12 mois. Audio max 1 700 €/acte/48 mois. Prévention plafonnée 30–150 €/an. Délais de stage applicables (GCI 500 notamment).",
-  "LPSH": "Contrat NON responsable limité aux frais d’hospitalisation : aucun remboursement en ville (consultations, pharmacie, dentaire, optique, audio). Inclus : frais de séjour et honoraires 100 % BR (OPTAM et non OPTAM), forfait journalier 100 % FR, chambre particulière 40 €/jour, lit d’accompagnant enfant de moins de 16 ans 15 €/nuit, indemnités journalières 20 €/jour dès le 1er jour, forfait patient urgence et participation actes lourds 100 % FR, transport 100 % BR, « Mon soutien psy » 100 % BR. Assistance RMA, téléconsultation, Noé Santé, deuxième avis. Pas de réseau Kalixia. Forfait journalier et chambre particulière limités à 30 j la 1re année, 60 j la 2e, 90 j ensuite ; long séjour, maison de retraite et gériatrie exclus. Adhésion sans questionnaire médical, 16 à 100 ans, zonage AVENIR.",
+  "MV": "La Mutuelle Verte, gamme Courtage GCI. GCI 100–300 responsables ; GCI 500 NON responsable, sans 100 % Santé. Plafonds dentaires 750–2 400 €/12 mois. Audio max 1 700 €/acte/48 mois. Prévention plafonnée 30–150 €/an. Délais de stage de 3 à 10 mois sans certificat de radiation.",
+  "LPSH": "Contrat NON responsable limité aux frais d’hospitalisation : aucun remboursement en ville (consultations, pharmacie, dentaire, optique, audio). Inclus : frais de séjour et honoraires 100 % BR (OPTAM et non OPTAM), forfait journalier 100 % FR, chambre particulière 40 €/jour, lit d’accompagnant enfant de moins de 16 ans 15 €/nuit, indemnités journalières 20 €/jour dès le 1er jour, forfait patient urgence et participation actes lourds 100 % FR, transport 100 % BR, « Mon soutien psy » 100 % BR. Assistance RMA, téléconsultation, Noé Santé, deuxième avis. Pas de réseau Kalixia. Forfait journalier et chambre particulière limités à 30 j la 1re année, 60 j la 2e, 90 j ensuite ; long séjour, maison de retraite et gériatrie exclus. Adhésion sans questionnaire médical ; âges non écrits dans les documents ; tarif par zone AVENIR.",
   "TALIS": "Surcomplémentaire (non responsable) : intervient après la Sécu ET une complémentaire principale. Carence 90 j dentaire/optique. Plafond dentaire 600/900 €/an. Chambre 90 j (30 j psy). Sans questionnaire de santé."
  },
  "limites": {
   "MCCINOVA": "Ni optique, ni audio, ni 100 % Santé. Chambre particulière à partir du 4ᵉ jour. 30 premiers jours limités à la formule Socle. Souscription 18–90 ans.",
-  "FLEXIA": "Plafond prothèses 2 500 €/an (Confort+). Souscription 18–84 ans.",
-  "SOLENCIA": "Plafond dentaire 2 000 €/an. Prévention 50–200 €/an. Souscription 62–99 ans.",
-  "CAPEVO": "Plafonds dentaires 600–1 300 € selon l'ancienneté du contrat. Audio enfant de moins de 20 ans : 840–1 700 €. Souscription dès 16 ans.",
-  "CAPNR": "Contrat NON responsable. Plafonds dentaires 600–1 500 € selon l'ancienneté et la formule. Lentilles comprises dans le forfait optique global (130–450 €). Fidélité optique à partir de la 3ᵉ année. Souscription 16–100 ans, zonage AVENIR.",
+  "FLEXIA": "Plafond prothèses 2 500 €/an (Confort+). Âges non écrits dans la brochure (grille tarifaire 18–84 ans).",
+  "SOLENCIA": "Plafond dentaire 2 000 €/an. Prévention 50–200 €/an. Destinée aux plus de 55 ans (brochure) ; grille tarifaire 62–99 ans.",
+  "CAPEVO": "Plafonds dentaires 600–1 300 € selon l'ancienneté du contrat. Audio enfant de moins de 20 ans : 840–1 700 €. Souscription dès 16 ans (18 ans en TNS).",
+  "CAPNR": "Contrat NON responsable. Plafonds dentaires 600–1 500 € selon l'ancienneté et la formule. Lentilles comprises dans le forfait optique global (130–450 €). Fidélité optique à partir de la 3ᵉ année. Adhésion dès 16 ans, aucun âge maximum écrit ; tarif par zone AVENIR.",
   "REV": [
-   "Ni chambre particulière, ni lit d'accompagnant, ni appareillage auditif sur Rev 1. Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Souscription 19–80 ans, hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
-   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Souscription 19–80 ans, hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
-   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Souscription 19–80 ans, hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
-   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Souscription 19–80 ans, hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
-   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Souscription 19–80 ans, hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
-   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Souscription 19–80 ans, hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
-   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Plafond dentaire 1 400 €. Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Souscription 19–80 ans (70 ans max), hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
-   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Plafond dentaire 2 000 €. Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Souscription 19–80 ans (70 ans max), hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée."
+   "Ni chambre particulière, ni lit d'accompagnant, ni appareillage auditif sur Rev 1. Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Adhésion après 18 ans, jusqu'à 80 ans (âge au 31 décembre), hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
+   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Adhésion après 18 ans, jusqu'à 80 ans (âge au 31 décembre), hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
+   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Adhésion après 18 ans, jusqu'à 80 ans (âge au 31 décembre), hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
+   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Adhésion après 18 ans, jusqu'à 80 ans (âge au 31 décembre), hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
+   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Adhésion après 18 ans, jusqu'à 80 ans (âge au 31 décembre), hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
+   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Adhésion après 18 ans, jusqu'à 80 ans (âge au 31 décembre), hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
+   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Plafond dentaire 1 400 €. Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Adhésion après 18 ans, jusqu'à 70 ans (âge au 31 décembre), hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée.",
+   "Chambre particulière limitée à 90 jours (30 jours en psychiatrie). Plafond dentaire 2 000 €. Optique : 1 équipement tous les 2 ans, 1 an pour un mineur ou si la vue évolue. Médecines douces : 4 séances par an et par bénéficiaire. Adhésion après 18 ans, jusqu'à 70 ans (âge au 31 décembre), hors DOM-TOM. Exclus : indemnités journalières, long séjour, EHPAD et MAS, chirurgie esthétique non remboursée."
   ],
-  "RF50": "Renfort en plus de REVOLUO : +50 % dentaire, +50 € verres et lentilles. Éligible Rev 2 à 8. Plafond dentaire propre au renfort. Les limites de la formule REVOLUO retenue s'appliquent.",
-  "RF100": "Renfort en plus de REVOLUO : +100 % dentaire, +50 € verres et lentilles. Éligible Rev 2 à 6. Plafond dentaire propre au renfort. Les limites de la formule REVOLUO retenue s'appliquent.",
+  "RF50": "Renfort en plus de REVOLUO : +50 % dentaire, +50 € verres et lentilles. Éligible Rev 2 à 8. Les limites de la formule REVOLUO retenue s'appliquent.",
+  "RF100": "Renfort en plus de REVOLUO : +100 % dentaire, +50 € verres et lentilles. Éligible Rev 2 à 6. Plafond dentaire propre au renfort (montant non publié dans les documents). Les limites de la formule REVOLUO retenue s'appliquent.",
   "MV": [
-   "Chambre particulière limitée à 90 jours en médecine et soins de suite, 30 jours en psychiatrie, illimitée en chirurgie. Optique : 1 équipement tous les 24 mois, 12 mois avant 16 ans ou si la vue évolue. Plafonds dentaires par bénéficiaire et par période de 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Délais de stage applicables. Âge réel, 18 ans minimum.",
-   "Chambre particulière limitée à 90 jours en médecine et soins de suite, 30 jours en psychiatrie, illimitée en chirurgie. Optique : 1 équipement tous les 24 mois, 12 mois avant 16 ans ou si la vue évolue. Plafonds dentaires par bénéficiaire et par période de 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Délais de stage applicables. Âge réel, 18 ans minimum.",
-   "Chambre particulière limitée à 90 jours en médecine et soins de suite, 30 jours en psychiatrie, illimitée en chirurgie. Optique : 1 équipement tous les 24 mois, 12 mois avant 16 ans ou si la vue évolue. Plafonds dentaires par bénéficiaire et par période de 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Délais de stage applicables. Âge réel, 18 ans minimum.",
-   "Chambre particulière limitée à 90 jours en médecine et soins de suite, 30 jours en psychiatrie, illimitée en chirurgie. Optique : 1 équipement tous les 24 mois, 12 mois avant 16 ans ou si la vue évolue. Plafonds dentaires par bénéficiaire et par période de 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Délais de stage applicables. Âge réel, 18 ans minimum.",
-   "Contrat NON responsable, sans 100 % Santé : les soins non remboursés par l'Assurance maladie et non prévus à la garantie restent à charge. Chambre particulière limitée à 90 jours en médecine et soins de suite, 30 jours en psychiatrie, illimitée en chirurgie. Optique : 1 équipement tous les 24 mois, 12 mois avant 16 ans ou si la vue évolue. Plafonds dentaires par bénéficiaire et par période de 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Délais de stage applicables. Âge réel, 18 ans minimum."
+   "Chambre particulière limitée à 90 jours en médecine et soins de suite, 30 jours en psychiatrie, illimitée en chirurgie. Optique : 1 équipement tous les 24 mois, 12 mois avant 16 ans ou si la vue évolue. Plafonds dentaires par bénéficiaire et par période de 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Délais de stage de 3 à 10 mois sans certificat de radiation.",
+   "Chambre particulière limitée à 90 jours en médecine et soins de suite, 30 jours en psychiatrie, illimitée en chirurgie. Optique : 1 équipement tous les 24 mois, 12 mois avant 16 ans ou si la vue évolue. Plafonds dentaires par bénéficiaire et par période de 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Délais de stage de 3 à 10 mois sans certificat de radiation.",
+   "Chambre particulière limitée à 90 jours en médecine et soins de suite, 30 jours en psychiatrie, illimitée en chirurgie. Optique : 1 équipement tous les 24 mois, 12 mois avant 16 ans ou si la vue évolue. Plafonds dentaires par bénéficiaire et par période de 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Délais de stage de 3 à 10 mois sans certificat de radiation.",
+   "Chambre particulière limitée à 90 jours en médecine et soins de suite, 30 jours en psychiatrie, illimitée en chirurgie. Optique : 1 équipement tous les 24 mois, 12 mois avant 16 ans ou si la vue évolue. Plafonds dentaires par bénéficiaire et par période de 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Délais de stage de 3 à 10 mois sans certificat de radiation.",
+   "Contrat NON responsable, sans 100 % Santé : les soins non remboursés par l'Assurance maladie et non prévus à la garantie restent à charge. Chambre particulière limitée à 90 jours en médecine et soins de suite, 30 jours en psychiatrie, illimitée en chirurgie. Optique : 1 équipement tous les 24 mois, 12 mois avant 16 ans ou si la vue évolue. Plafonds dentaires par bénéficiaire et par période de 12 mois. Audio 1 700 €/acte tous les 48 mois. Prévention 30–150 €/an. Délais de stage de 3 à 10 mois sans certificat de radiation."
   ],
-  "LPSH": "Hospitalisation seule : aucun remboursement en ville (consultations, pharmacie, dentaire, optique, audio). Forfait journalier et chambre limités à 30 jours la 1ʳᵉ année, 60 la 2ᵉ, 90 ensuite. Long séjour, maison de retraite et gériatrie exclus. Sans questionnaire médical, 16–100 ans.",
+  "LPSH": "Hospitalisation seule : aucun remboursement en ville (consultations, pharmacie, dentaire, optique, audio). Forfait journalier et chambre limités à 30 jours la 1ʳᵉ année, 60 la 2ᵉ, 90 ensuite. Long séjour, maison de retraite et gériatrie exclus. Sans questionnaire médical ; âges d'adhésion non écrits dans les documents.",
   "TALIS": "Surcomplémentaire : intervient après une complémentaire principale, jamais à sa place. Carence de 90 jours en dentaire et en optique. Plafond dentaire annuel par bénéficiaire, 600 € (Talis) ou 900 € (Talis +), hors soins. Optique : 1 équipement par an et par bénéficiaire. Chambre particulière 90 jours par an (30 jours en psychiatrie). Actes non conventionnés remboursés au seul ticket modérateur. Un même niveau pour toute la famille. Exclus : maison de retraite, MAS et établissements médico-sociaux. Sans questionnaire de santé.",
   "APICIL": [
-   "Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans.",
-   "Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
-   "Plafond dentaire 500 € la 1ʳᵉ année, 800 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
-   "Plafond dentaire 700 € la 1ʳᵉ année, 1 000 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
-   "Plafond dentaire 800 € la 1ʳᵉ année, 1 200 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
-   "Plafond dentaire 1 000 € la 1ʳᵉ année, 1 500 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
-   "Réservée aux plus de 50 ans. Plafond dentaire 500 € la 1ʳᵉ année, 800 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
-   "Réservée aux plus de 50 ans. Plafond dentaire 700 € la 1ʳᵉ année, 1 000 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
-   "Réservée aux plus de 50 ans. Plafond dentaire 800 € la 1ʳᵉ année, 1 200 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
-   "Réservée aux plus de 50 ans. Plafond dentaire 800 € la 1ʳᵉ année, 1 200 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
-   "Réservée aux plus de 50 ans. Plafond dentaire 1 000 € la 1ʳᵉ année, 1 500 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie limitée à 2 implants. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS)."
+   "Pas d'implantologie. Sans limite d'âge à l'adhésion. Pharmacie à service médical rendu modéré ou faible non remboursée. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans.",
+   "Pas d'implantologie. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
+   "Plafond dentaire 500 € la 1ʳᵉ année, 800 € ensuite ; devis obligatoire au-delà de 1 000 €. Pas d'implantologie. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
+   "Plafond dentaire 700 € la 1ʳᵉ année, 1 000 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie : 2 implants au plus par an. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
+   "Plafond dentaire 800 € la 1ʳᵉ année, 1 200 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie : 2 implants au plus par an. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
+   "Plafond dentaire 1 000 € la 1ʳᵉ année, 1 500 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie : 2 implants au plus par an. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
+   "Dès 50 ans (conjoint dès 45 ans). Plafond dentaire 500 € la 1ʳᵉ année, 800 € ensuite ; devis obligatoire au-delà de 1 000 €. Pas d'implantologie. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
+   "Dès 50 ans (conjoint dès 45 ans). Plafond dentaire 700 € la 1ʳᵉ année, 1 000 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie : 2 implants au plus par an. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 86 ans (78 ans en TNS).",
+   "Dès 50 ans (conjoint dès 45 ans). Plafond dentaire 800 € la 1ʳᵉ année, 1 200 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie : 2 implants au plus par an. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
+   "Dès 50 ans (conjoint dès 45 ans). Plafond dentaire 800 € la 1ʳᵉ année, 1 200 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie : 2 implants au plus par an. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS).",
+   "Dès 50 ans (conjoint dès 45 ans). Plafond dentaire 1 000 € la 1ʳᵉ année, 1 500 € ensuite ; devis obligatoire au-delà de 1 000 €. Implantologie : 2 implants au plus par an. Optique : 1 équipement tous les 2 ans. Audio : 1 aide par oreille tous les 4 ans. Souscription avant 80 ans (78 ans en TNS)."
   ]
  },
  "documents": {
@@ -1664,7 +1664,7 @@
     "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_ipid_2026.pdf",
     "https://fabcoh.github.io/santeo-tarifs/docs/apisante_serenite_ipid_2026.pdf"
    ],
-   "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_notice_2026.pdf"
+   "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/apisante_ni_2026.pdf"
   },
   "TALIS": {
    "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/talis_tg_2026.pdf",

@@ -1,6 +1,6 @@
 {
- "empreinte": "93f0368e27d5fc35",
- "genere": "2026-10-03T06:31:56.697Z",
+ "empreinte": "4194fb165d762253",
+ "genere": "2026-10-03T07:21:11.603Z",
  "source": "Comparateur Santéo — src/selections.js sur src/garanties.json",
  "niveaux": {
   "1": "100 % (ou un forfait en euros)",
@@ -297,7 +297,7 @@
      "gamme": "FLEXIA",
      "formule": "Confort",
      "nom": "FLEXIA Confort",
-     "valeur": "95 €",
+     "valeur": "150 €",
      "responsable": true
     },
     {
@@ -355,6 +355,17 @@
      "responsable": true
     },
     {
+     "key": "FLEXIA",
+     "fi": 1,
+     "compagnie": "MCCI",
+     "logo": "mcci",
+     "gamme": "FLEXIA",
+     "formule": "Confort",
+     "nom": "FLEXIA Confort",
+     "valeur": "150 €",
+     "responsable": true
+    },
+    {
      "key": "MV",
      "fi": 2,
      "compagnie": "M. VERTE",
@@ -406,6 +417,17 @@
      "formule": "Accès",
      "nom": "CAP EVOLUTION Accès",
      "valeur": "100 €",
+     "responsable": true
+    },
+    {
+     "key": "FLEXIA",
+     "fi": 2,
+     "compagnie": "MCCI",
+     "logo": "mcci",
+     "gamme": "FLEXIA",
+     "formule": "Performance",
+     "nom": "FLEXIA Performance",
+     "valeur": "200 €",
      "responsable": true
     },
     {
