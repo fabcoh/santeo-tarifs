@@ -33,6 +33,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **Publication = pousser `src/comparateur.html` sur `main`** : l'Action `.github/workflows/build.yml`
   reconstruit et commit `index.html` toute seule. Ne jamais éditer `index.html` à la main.
 - Vérifier la mise en ligne : la mention « version JJ/MM/AAAA HH:MM » en bas de page (heure locale).
+- **Envois rapprochés** (03/10/2026 : trois constructions de suite en échec à l'étape « Publier », la page en ligne restait
+  ancienne) : la branche avançait pendant la construction et le `git push` de l'Action était refusé. Désormais
+  `concurrency` (une seule construction, la plus récente) et, à la publication, `git pull --rebase` puis nouvel essai.
+  Après un envoi, vérifier que le commit « Comparateur : construction automatique » suit bien.
 - Si le push est refusé (« not in this session's authorized repository set ») : c'est une limitation de la
   session Claude, pas de git. Il faut une tâche créée avec le dépôt sélectionné. Sinon, dépôt manuel :
   https://github.com/fabcoh/santeo-tarifs/upload/main/src (et `/docs` pour les PDF).

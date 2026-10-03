@@ -14,6 +14,11 @@ on:
 permissions:
   contents: write
 
+# Plusieurs envois rapprochés : seule la construction la plus récente compte, les précédentes sont annulées.
+concurrency:
+  group: construire-comparateur
+  cancel-in-progress: true
+
 jobs:
   construire:
     runs-on: ubuntu-latest
@@ -54,4 +59,10 @@ jobs:
           fi
           git add index.html src/garanties.json src/tableau.css docs/tg
           git commit -m "Comparateur : construction automatique"
-          git push
+          # La branche a pu avancer pendant la construction (envoi suivant) : on se replace dessus avant de pousser.
+          # En cas de conflit, la construction déclenchée par cet envoi plus récent publiera à notre place.
+          for i in 1 2 3; do
+            if git push; then exit 0; fi
+            git pull --rebase origin main || { git rebase --abort; echo "Construction plus récente en cours : elle publiera."; exit 0; }
+          done
+          exit 1
