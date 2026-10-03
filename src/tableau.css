@@ -191,8 +191,9 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox.capwide table{width:max-content}
 #tgbox.capwide th,#tgbox.capwide td{white-space:nowrap;font-size:15.5px;padding:9px 13px}
 #tgbox.capwide thead th{font-size:14.5px}
-#tgbox .tgmarque{display:none}
-#tgbox.capwide .tgmarque{display:block;float:right;height:64px;width:auto;margin:0 0 6px 24px}
+#tgbox th.tgcoin{text-align:center;vertical-align:top;padding-top:12px}
+#tgbox .tgmarque{display:inline-block;height:30px;width:auto}
+#tgbox.capwide .tgmarque{height:34px}
 #tgbox.capwide .close{display:none}
 #tgbox.capwide h2{font-size:21px}
 #tgbox.capwide .src{display:block;font-size:13px}
