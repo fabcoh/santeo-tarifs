@@ -417,7 +417,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-03T11:32:34Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-03T11:32:34Z</div>
+  <div id="buildstamp" data-build="2026-10-03T11:52:48Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-03T11:52:48Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2289,20 +2289,38 @@ function enBase64(octets){ let s=""; for(let i=0;i<octets.length;i+=0x8000) s+=S
 // Un relais plus ancien refuse un corps de plus de 4 Mo : on ne lui envoie les PDF que s'il annonce les accepter.
 let RELAIS_PDF=null;
 async function relaisAcceptePdfs(){
-  if(RELAIS_PDF===null) RELAIS_PDF=fetch(MAIL_URL).then(r=>r.json()).then(d=>/cotisation/i.test((d&&d.version)||"")).catch(()=>false);
-  return RELAIS_PDF;
+  if(RELAIS_PDF===null) RELAIS_PDF=fetch(MAIL_URL).then(r=>r.json()).then(d=>String((d&&d.version)||"")).catch(()=>"");
+  return /cotisation/i.test(await RELAIS_PDF);
 }
+// Une seule pièce jointe par tableau de garantie (Fabrice, 03/10/2026 : « trop de documents ») : le tableau, la cotisation
+// écrite au-dessus de chaque formule, puis l'IPID de ces formules à la suite. Le relais n'envoie plus ces IPID à part.
 async function pdfsTarifs(tg){
   if(!(await relaisAcceptePdfs())) return [];
   const parUrl={};
   for(const c of tg.colonnes){
     const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi); if(!r) continue;
-    for(const d of (c.docs||[])) if(estTableau(d.libelle)) (parUrl[d.url]=parUrl[d.url]||[]).push({key:c.key,fi:c.fi,total:r.total});
+    const t=(c.docs||[]).find(d=>estTableau(d.libelle)); if(!t) continue;
+    const g=parUrl[t.url]=parUrl[t.url]||{marques:[],ipids:[]};
+    g.marques.push({key:c.key,fi:c.fi,total:r.total});
+    for(const d of c.docs) if(d.libelle==="IPID"&&!g.ipids.includes(d.url)) g.ipids.push(d.url);
   }
   const out=[];
-  for(const [url,marques] of Object.entries(parUrl)){
-    try{ const {octets,poses}=await pdfAvecTarifs(url,marques); if(poses&&octets.length<=5e6) out.push({url,pdf:enBase64(octets)}); }
-    catch(e){ console.warn("tarif non écrit sur",url,e); }
+  for(const [url,g] of Object.entries(parUrl)){
+    try{
+      const {octets,poses}=await pdfAvecTarifs(url,g.marques);
+      // Un relais d'avant la fusion joindrait l'IPID une seconde fois : on ne fusionne que s'il l'annonce.
+      if(!/fusion/i.test(await RELAIS_PDF)) g.ipids=[];
+      if(typeof PDFLib==="undefined"||(!poses&&!g.ipids.length)) continue;
+      const doc=await PDFLib.PDFDocument.load(octets,{ignoreEncryption:true}), joints=[];
+      for(const u of g.ipids){
+        try{ const r=await fetch(u); if(!r.ok) continue;
+          const src=await PDFLib.PDFDocument.load(new Uint8Array(await r.arrayBuffer()),{ignoreEncryption:true});
+          (await doc.copyPages(src,src.getPageIndices())).forEach(pg=>doc.addPage(pg)); joints.push(u);
+        }catch(e){ console.warn("IPID non joint",u,e); }
+      }
+      const fin=joints.length?await doc.save():octets;
+      if(fin.length<=6e6) out.push({url,pdf:enBase64(fin),ipids:joints});
+    }catch(e){ console.warn("tarif non écrit sur",url,e); }
   }
   return out;
 }
