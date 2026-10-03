@@ -658,10 +658,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (scratchpad `tampons/`, aperçus + `h.py`) ; RF50 / RF100 prennent la colonne « Rev N » (la colonne du renfort est commune) —
   Rev N seul et Rev N + renfort envoyés ensemble : un seul prix écrit. **Pas dans l'aperçu 👁** (Fabrice : rien n'y est
   sélectionné). Un tableau de garantie remplacé dans `docs/` → **refaire son emplacement**.
-  **Piège Mailgun (03/10/2026, courriers partis sans pièces jointes)** : les champs doivent s'appeler exactement `attachment`
-  et `inline`, répétés une fois par fichier. `attachment[0]`, `attachment[1]`… (seule façon de répéter une clé avec le
-  tableau PHP de cURL) sont acceptés sans erreur mais les fichiers n'arrivent pas. Le relais écrit donc le corps multipart
-  lui-même (`$fichiersMg`, relais `2026-10-03 PJ multipart`).
+  **Une pièce jointe par formule** (Fabrice, 03/10/2026 : « trop de documents ») : la page met l'IPID **à la suite** du
+  tableau de garantie tamponné (`pdfsTarifs`, `pdfs[].ipids`) ; le relais ne joint plus ces IPID à part et nomme le fichier
+  « Tableau de garantie + IPID - <formule>.pdf » (6 Mo au plus). La page ne fusionne que si le GET du relais annonce
+  « fusion » (relais `2026-10-03 PJ fusionnees (cotisation + IPID)`), et n'envoie de PDF que s'il annonce « cotisation ».
+  Exemple : MV GCI 150 + Cap Évolution Équilibre + Rev 4 = 3 fichiers, 7,4 Mo. `attachment[0]`, `attachment[1]`… marchent
+  bien chez Mailgun (vérifié par Fabrice) — une fausse piste du 03/10 (`santeo-mail.multipart-non-depose.php`) n'a pas servi.
   **Attention aux variables dans le relais** : la boucle des colonnes écrasait `$nom`, le nom du prospect, et
   le courrier disait « Bonjour Monsieur MCCINOVA ESSENTIELLE ». Les variables de colonne sont préfixées.
 - Fichiers dans `www/` : `santeo-mail.php` + `santeo-mail-config.php` (**clé, hors dépôt**).
