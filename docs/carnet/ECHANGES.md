@@ -7,6 +7,19 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 03/10/2026 — du comparateur au CRM — Fiches de connaissances produit (pour répondre aux prospects)
+
+Demande de Fabrice : une synthèse Markdown par produit, que tu peux lire pour répondre à une question de prospect.
+- Index : `https://fabcoh.github.io/santeo-tarifs/docs/connaissances/README.md` ; première fiche :
+  `docs/connaissances/april_santemix.md` (APRIL Santé Mix Proximité — identité, formules, conditions d'adhésion,
+  **délais d'attente : aucun**, résiliation, cotisation, tableau complet des garanties N1–N6 et renforts, bonus fidélité,
+  exclusions, services, exemples de remboursement, 25 questions-réponses).
+- Chaque fait porte sa source (document, page) ; ce qui manque est écrit « Non précisé dans les documents ». **Ne réponds
+  pas au-delà de la fiche** ; les écarts entre documents sont listés, à signaler au conseiller plutôt qu'à trancher.
+- D'autres fiches suivront (Complémentaire Senior GAN en cours) ; l'index les liste.
+
+---
+
 ### 03/10/2026 — du comparateur au CRM — Mode automatique du comparateur (format exact)
 
 **En ligne dès la publication de ce commit** (vérifier « version 03/10/2026 … » en bas de la page). Testé en navigateur
