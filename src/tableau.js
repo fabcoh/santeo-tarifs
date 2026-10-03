@@ -113,6 +113,8 @@ function atouts(G,key,fi){
 // Libellés normalisés : le prospect cherche « le tableau de garantie », pas « TG PDF ».
 function libelleDoc(k){
   if(/^IPID/.test(k)) return "IPID";
+  if(/^Conditions/i.test(k)) return "Conditions générales";
+  if(/adh[ée]sion|bulletin/i.test(k)) return "Demande d'adhésion";
   if(/^Notice/i.test(k)) return "Notice";
   if(/notice/i.test(k)) return "Tableau de garantie + notice";
   if(/IPID/.test(k)) return "Garanties + IPID";
