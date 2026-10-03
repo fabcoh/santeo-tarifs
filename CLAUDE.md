@@ -896,6 +896,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   et honoraires d'Only, lentilles) ; sinon **« n.c. »**. Les 5 produits **sans PDF public** (Mix, Flexi, Optimale,
   Simply, Pro Privilège) n'affichent **aucune garantie** — tarif seul, pastille « Garanties non vérifiées ». Un poste
   « n.c. » sous un filtre de garantie rend la ligne **incomparable** (comptée à part), jamais « non couverte ».
+  **↗ April-On** (accord écrit de Fabrice, 03/10/2026 : « Oui, j'accepte qu'un clic crée un projet chez APRIL ») : bouton
+  dans le détail de chaque ligne APRIL. `aprilOn(r, btn)` reprend le profil de la tarification (`APRIL_ST.cle`), y ajoute
+  `action:"aprilon"`, le produit, le niveau (`fi % 100`) et l'identité de `PRO` ; le relais `april.php` (version
+  `2026-10-03 April-On`) fait `POST /projects` (sans requestType : ni devis, ni mail, rien à signer) et ne rend qu'un lien
+  d'un hôte APRIL (`aprilon.fr`, `april.fr`), 20 projets/heure/IP. L'onglet s'ouvre au clic puis suit le lien. Libellé
+  **« (essai) »** tant que seule la préproduction est ouverte : le projet n'arrive pas dans l'April-On réel. Testé avec une
+  fausse API (corps, niveau « 03|03 » des modulables, lien étranger refusé) ; **pas encore contre APRIL** (préproduction en
+  504 depuis la nuit du 02 au 03/10). La forme exacte de la réponse (`content`) est celle de la notice, à confirmer.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir (aujourd'hui bulletin + garanties, 10 p.).
