@@ -81,9 +81,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   si le nom de fichier change, écrire `catalogue/etat` → `lignes.<ligne>.<piece>` = `[fichier, pages, note]`.
   Les lignes de la page ne suivent pas les clés de `DOCS` pour la Mutuelle Verte (`MV_100_300`, `MV_500`) et APICIL
   (`API_EQ`, `API_SER`).
-  **03/10/2026 (Fabrice)** : boutons de **filtre par compagnie** en tête (Toutes, chaque compagnie, Autre document ; le nombre
-  « à traiter » sur la pastille), qui filtrent aussi l'historique ; l'historique **« Dépôts » est replié par défaut**, son titre
-  l'affiche ou le masque. Filtre et ouverture retenus sur l'appareil (`depot_filtre`, `depot_journal`). **APRIL** ajoutée :
+  **03/10/2026 (Fabrice)** : **deux listes déroulantes, « Compagnie » et « Produit »** (les pastilles d'un premier essai ont été
+  refusées : « deux champs filtre ») ; Produit se restreint à la compagnie choisie, choisir un produit fixe sa compagnie, « Tout
+  afficher » remet à zéro ; le nombre « à traiter » suit chaque option. Les filtres s'appliquent aussi à l'historique ; l'historique **« Dépôts » est replié par défaut**, son titre
+  l'affiche ou le masque. Filtres et ouverture retenus sur l'appareil (`depot_filtre`, `depot_produit`, `depot_journal`). **APRIL** ajoutée :
   une ligne par produit ouvert (`APRIL_ZEN`, `APRIL_MIX`…), bulletin « sans objet (April-On ou l'API) » — c'est là que
   Fabrice dépose les PDF April-On de Mix, Flexi, Optimale, Simply et Pro Privilège.
 
