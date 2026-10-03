@@ -44,8 +44,8 @@ const ORDRE=[
 const MAX_COLONNES=5;
 
 const BESOINS={
-  dentaire:       {src:"dent",  unite:"%", libelle:"Dentaire — prothèses"},
-  optique:        {src:"opt",   unite:"€", libelle:"Optique (équipement)"},
+  dentaire:       {src:"dent",  unite:"%", libelle:"Prothèses dentaires"},
+  optique:        {src:"opt",   unite:"€", libelle:"Verres et monture simples"},
   hospitalisation:{src:"hospO", unite:"%", libelle:"Hospitalisation Optam"}
 };
 

@@ -26,7 +26,18 @@
 
 // Lignes du tableau, dans l'ordre d'affichage. « x: » désigne les postes qui ne
 // vivent pas dans la gamme elle-même mais dans les garanties complémentaires.
-const POSTES=[["Hospitalisation Optam","hospO"],["Hospitalisation hors Optam","hospN"],["Chambre particulière","ch"],["Consult. spécialistes Optam","honoO"],["Consult. hors Optam","honoN"],["Dentaire — prothèses","dent"],["Implantologie","x:imp"],["Orthodontie remboursée","x:orthR"],["Orthodontie non remboursée","x:orthN"],["Optique (équipement)","opt"],["Lentilles acceptées","x:lentA"],["Lentilles refusées","x:lentR"],["Aides auditives","x:aud"],["Médecine douce / bien-être","md"]];
+// Le tableau est découpé en blocs, pour la lecture chez le prospect (Fabrice, 03/10/2026) : un bandeau de titre
+// par famille, ses lignes dessous. 3e élément à 1 = ligne en gras (parcours OPTAM, prothèses dentaires).
+const BLOCS=[
+  ["Hospitalisation",[["Hospitalisation Optam","hospO",1],["Hospitalisation hors Optam","hospN"],["Chambre particulière","ch"]]],
+  ["Honoraires",[["Consult. spécialistes Optam","honoO",1],["Consult. hors Optam","honoN"]]],
+  ["Pharmacie",[["Médicaments remboursés","x:pharR"],["Pharmacie non remboursée","x:pharN"]]],
+  ["Dentaire",[["Prothèses dentaires","dent",1],["Implantologie","x:imp"],["Orthodontie remboursée","x:orthR"],["Orthodontie non remboursée","x:orthN"]]],
+  ["Optique",[["Verres et monture simples","opt"],["Verres et monture complexes","x:optC"],["Lentilles acceptées","x:lentA"],["Lentilles refusées","x:lentR"]]],
+  ["Autres",[["Aides auditives","x:aud"],["Médecine douce / bien-être","md"]]]
+];
+// Les mêmes lignes à plat : [libellé, source, gras, bloc].
+const POSTES=[].concat(...BLOCS.map(([bloc,lignes])=>lignes.map(([lab,src,fort])=>[lab,src,fort?1:0,bloc])));
 
 // Postes mis en avant sous le tableau pour la formule conseillée. Hospitalisation
 // et honoraires au parcours OPTAM : le cas courant, et le seul comparable d'une
@@ -86,10 +97,10 @@ function celluleEntete(G,c,o){
 
 function estReco(reco,c){ return reco===(c.key+"|"+c.fi); }
 
-// Les indemnités journalières n'ont de sens que si l'une des formules en verse.
+// Les indemnités journalières n'ont de sens que si l'une des formules en verse : en tête du bloc Hospitalisation.
 function lignes(G,cols){
   const ij=cols.some(c=>{const v=valeur(G,c.key,c.fi,"ij");return v&&v!=="—";});
-  return (ij?[["Indemnités journalières hospitalisation","ij"]]:[]).concat(POSTES);
+  return (ij?[["Indemnités journalières hospitalisation","ij",0,"Hospitalisation"]]:[]).concat(POSTES);
 }
 
 function entete(G,cols,reco,o){
@@ -101,10 +112,20 @@ function entete(G,cols,reco,o){
     +'</th>').join('')+'</tr>';
 }
 
+// Un bandeau par bloc : une case par colonne (et non une seule case étalée), pour que la colonne
+// conseillée garde son cadre d'un bout à l'autre du tableau.
 function corps(G,cols,reco){
-  return lignes(G,cols).map(([lab,src])=>'<tr><td>'+lab+'</td>'
-    +cols.map(c=>'<td'+(estReco(reco,c)?' class="reco"':'')+'>'+valeur(G,c.key,c.fi,src)+'</td>').join('')
-    +'</tr>').join('');
+  let bloc=null, h="";
+  for(const [lab,src,fort,b] of lignes(G,cols)){
+    if(b!==bloc){
+      bloc=b;
+      h+='<tr class="tgsec"><td>'+b+'</td>'+cols.map(c=>'<td'+(estReco(reco,c)?' class="reco"':'')+'></td>').join('')+'</tr>';
+    }
+    h+='<tr'+(fort?' class="fort"':'')+'><td>'+lab+'</td>'
+      +cols.map(c=>'<td'+(estReco(reco,c)?' class="reco"':'')+'>'+valeur(G,c.key,c.fi,src)+'</td>').join('')
+      +'</tr>';
+  }
+  return h;
 }
 
 // Atouts de la formule conseillée, poste par poste ; les postes sans garantie sont omis.
@@ -201,6 +222,7 @@ function documentHTML(G,o){
 }
 
 exporter.POSTES=POSTES;
+exporter.BLOCS=BLOCS;
 exporter.ATOUTS=ATOUTS;
 exporter.LOGOBASE=LOGOBASE;
 exporter.valeur=valeur;

@@ -63,7 +63,8 @@ function html(sel){
   doc=doc.replace(/src="LOGO\/(logo_[a-z]+\.png)"/g,(m,f)=>
     LOGOS.includes(f)?'src="data:image/png;base64,'+lire("docs/"+f).toString("base64")+'"':m);
   // La ligne du besoin, mise en avant comme dans le comparateur.
-  doc=doc.replace('<tr><td>'+sel.ligne+'</td>','<tr class="avant"><td>'+sel.ligne+'</td>');
+  doc=doc.replace(new RegExp('<tr( class="fort")?><td>'+sel.ligne.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+'</td>'),
+    (m,f)=>'<tr class="avant'+(f?' fort':'')+'"><td>'+sel.ligne+'</td>');
   // Ni étoile vide ni bouton : l'image ne conseille pas une formule plutôt qu'une autre.
   return doc.replace("</head>","<style>#tgbox .star{display:none}</style>\n</head>");
 }

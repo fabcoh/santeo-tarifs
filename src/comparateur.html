@@ -178,6 +178,9 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 /* Lignes mises en avant (clic sur le libellé) : fond jaune pâle et valeurs en gras, dans la fenêtre et l'image. */
 #tgbox tbody td:first-child{cursor:pointer}
 #tgbox tbody tr.avant td{background:rgba(255,196,0,.22);font-weight:800}
+#tgbox tbody tr.fort td{font-weight:800}
+#tgbox tbody tr.tgsec td{background:var(--soft);color:var(--accent);font:800 11px 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:.8px;padding:5px 8px;cursor:default}
+#tgbox.capwide tbody tr.tgsec td{font-size:13px;padding:7px 13px}
 #tgbox tbody tr.avant td:first-child{box-shadow:inset 4px 0 0 var(--warn)}
 #tgbox .recolbl{display:block;font:800 10.5px 'Archivo',sans-serif;letter-spacing:.03em;color:var(--warn);margin-bottom:2px;text-transform:none}
 #tgbox .rectip{font-size:11px;color:var(--muted);margin:-4px 0 8px}
@@ -1822,7 +1825,7 @@ function renderTG(cols,title,sub,note,single){
   });
   // Mise en avant d'une ou plusieurs lignes (orthodontie, prothèses…) : clic sur le libellé. Retenue le temps
   // de la page, reprise dans l'image et dans le courrier (mailTableau).
-  ov.querySelectorAll('#tgbox tbody tr').forEach(tr=>{
+  ov.querySelectorAll('#tgbox tbody tr:not(.tgsec)').forEach(tr=>{
     const td=tr.firstElementChild; if(!td)return;
     const lab=td.textContent.trim();
     td.title="Mettre cette ligne en avant (cliquer à nouveau pour l\u2019enlever)";
@@ -2154,7 +2157,7 @@ const APRIL_GAR={"FlexiSante":{"hospO":["n.c.","n.c.","n.c.","n.c.","n.c.","n.c.
 // fi = rang du produit dans APRIL_PRODUITS × 100 + niveau (rang fixe, indépendant de la réponse).
 const APRIL_RANG={}; APRIL_PRODUITS.forEach(g=>g[1].forEach(([c])=>{APRIL_RANG[c]=Object.keys(APRIL_RANG).length;}));
 F.APRIL={label:"APRIL",ins:"april",resp:true,names:[],hospO:[],hospN:[],honoO:[],honoN:[],dent:[],opt:[],aud:[],ch:[],md:[]};
-EX.APRIL={imp:[],orthR:[],orthN:[],lentA:[],lentR:[],aud:[]};
+EX.APRIL={imp:[],orthR:[],orthN:[],lentA:[],lentR:[],aud:[],optC:[],pharR:[],pharN:[]};
 // Documents publiés par APRIL sur april.fr / pro.april.fr (relevés le 02/10/2026), rangés dans docs/ : la « notice
 // garanties » d'APRIL est tableau + notice en un seul PDF. Rien de public pour Mix, Flexi, Optimale, Simply, Pro Privilège.
 const APRIL_DOCS={};
@@ -2175,6 +2178,7 @@ for(const [code,g] of Object.entries(APRIL_GAR)){
     for(const k of ["hospO","hospN","honoO","honoN","dent","opt","aud","ch","md"]) F.APRIL[k][fi]=g[k][i];
     EX.APRIL.imp[fi]=g.imp[i]; EX.APRIL.orthR[fi]=g.orthR[i]; EX.APRIL.orthN[fi]=g.imp[i]==="n.c."?"n.c.":(APRIL_ORTHN_DANS_IMP[code]?g.imp[i]:"—");
     EX.APRIL.lentA[fi]=g.lentA[i]; EX.APRIL.lentR[fi]=g.lentR[i]; EX.APRIL.aud[fi]=g.aud[i];
+    for(const k of ["optC","pharR","pharN"]) EX.APRIL[k][fi]=g[k]?g[k][i]:"n.c.";
     const d=APRIL_DOCS[code]; if(d){ DOCS.APRIL["Tableau de garantie + notice"][fi]=d.tg; DOCS.APRIL.IPID[fi]=d.ipid;
       if(d.cg) DOCS.APRIL["Conditions générales"][fi]=d.cg; if(d.bulletin) DOCS.APRIL["Demande d'adhésion"][fi]=d.bulletin; } });
 }
@@ -2689,8 +2693,11 @@ function mailTableau(cols){
   const lignes=[];
   // Pas de ligne « indemnités journalières » dans le courrier : hors sujet pour
   // comparer des complémentaires (Fabrice, 25/09/2026). Le tableau de la page la garde.
-  for(const [lab,src] of TGROWS){
-    lignes.push([lab,cols.map(c=>String(Tableau.valeur(GAR,c.key,c.fi,src)||"—")),LIGNES_AVANT.has(lab)?1:0]);
+  // Un bandeau par bloc (4e élément « titre »), lignes OPTAM et prothèses en gras (« fort ») — comme le tableau.
+  let bloc=null;
+  for(const [lab,src,fort,b] of TGROWS){
+    if(b!==bloc){ bloc=b; lignes.push([b,[],0,"titre"]); }
+    lignes.push([lab,cols.map(c=>String(Tableau.valeur(GAR,c.key,c.fi,src)||"—")),LIGNES_AVANT.has(lab)?1:0,fort?"fort":""]);
   }
   const colonnes=cols.map(c=>{
     const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi), g=F[c.key];
