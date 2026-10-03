@@ -390,7 +390,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-02T16:46:20Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-02T16:46:20Z</div>
+  <div id="buildstamp" data-build="2026-10-03T05:36:28Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-03T05:36:28Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2356,36 +2356,44 @@ function renderTG(cols,title,sub,note,single){
         // Le même clic envoie le courrier au prospect (Fabrice, 26/09/2026) et en dépose la copie
         // dans la conversation, pour la garder ou la renvoyer depuis le CRM. Sans adresse, l'image
         // part seule : jamais de blocage.
-        let mailMsg="", attente=1200;
+        let mailMsg="", attente=1200, mailEtat="";   // mailEtat : lu par le mode automatique (window.AUTO)
         const dest=String((PR&&PR.email)||"").trim();
         const tgm=mailTableau(cols), cleM=envoiCle(dest,tgm), dejaM=envoiRecent(cleM);
         const adrOk=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(dest);
         // Le même comparatif est déjà parti à cette adresse il y a moins de 10 minutes : l'image est
         // déposée, le mail n'est pas renvoyé (« Envoyer par mail » permet de le renvoyer, après confirmation).
-        if(adrOk&&dejaM){mailMsg=" · mail déjà envoyé à "+dest+" à "+envoiHeure(dejaM)+", pas renvoyé";attente=3500;}
+        if(adrOk&&dejaM){mailMsg=" · mail déjà envoyé à "+dest+" à "+envoiHeure(dejaM)+", pas renvoyé";attente=3500;mailEtat="deja";}
         else if(adrOk){
           btn.textContent="⏳ Mail…";
           try{
             let exp=EXPEDITEURS[0][0];
             try{const m=localStorage.getItem("santeo_exp");if(m&&EXPEDITEURS.some(e=>e[0]===m))exp=m;}catch(_){}
+            if(window.AUTO&&window.AUTO.exp)exp=window.AUTO.exp;
             const t=el=>{const e=box.querySelector(el);return e?e.textContent.trim():"";};
             const rp=await fetch(MAIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},
               body:JSON.stringify(corpsMail({tg:tgm,PR,tetes:{entete:t('.tghdr'),soustitre:t('.src')},dest,exp,b64,
                 prov:(PR&&PR.provenance)||"santeo.net",objet:"Votre offre de mutuelle santé",copie:true}))});
             const d=await rp.json().catch(()=>null);
             if(rp.ok&&d&&d.envoye){
-              mailMsg=" · mail envoyé à "+dest; envoiNote(cleM);
+              mailMsg=" · mail envoyé à "+dest; envoiNote(cleM); mailEtat="envoye";
               const cp=await copieCRM(d);
-              mailMsg+=cp.ok?", "+cp.txt:" · ⚠ "+cp.txt; if(!cp.ok)attente=5000;
-            } else {mailMsg=" · ⚠ mail non envoyé : "+((d&&d.erreur)||("HTTP "+rp.status));attente=5000;}
-          }catch(_){mailMsg=" · ⚠ mail non envoyé : service injoignable";attente=5000;}
-        } else {mailMsg=" · mail non envoyé : pas d'adresse";attente=3500;}
+              mailMsg+=cp.ok?", "+cp.txt:" · ⚠ "+cp.txt; if(!cp.ok){attente=5000;mailEtat="envoye-sans-copie";}
+            } else {mailMsg=" · ⚠ mail non envoyé : "+((d&&d.erreur)||("HTTP "+rp.status));attente=5000;mailEtat="erreur";}
+          }catch(_){mailMsg=" · ⚠ mail non envoyé : service injoignable";attente=5000;mailEtat="erreur";}
+        } else {mailMsg=" · mail non envoyé : pas d'adresse";attente=3500;mailEtat="sans-adresse";}
+        // Mode automatique : la fin se signale à l'appelant, la page ne repart pas vers la conversation.
+        if(window.AUTO){ stat("✅ Image déposée"+mailMsg); window.AUTO.fin({etat:"ok",depot:true,mail:mailEtat,detail:("Image déposée"+mailMsg)}); btn.disabled=false; btn.innerHTML=old; return; }
         stat("✅ Image déposée"+mailMsg+" — retour à la conversation…");
         const back=document.createElement("button");back.textContent="↩ Revenir au CRM";back.style.cssText=bst;back.addEventListener("click",crmBack);btn.after(back);
         // Le tableau se referme seul, un bandeau garde la confirmation, puis retour à la conversation.
         setTimeout(()=>{fermerTableaux();bandeauOk("✅ Image déposée"+mailMsg);crmBack();},attente);
       }
     }catch(err){ try{if(rejectImg)rejectImg(err);}catch(_){};
+      if(a==="crm"&&window.AUTO){
+        const ko=err&&(err.status===401||err.status===403), net=err&&err.status===undefined&&err instanceof TypeError;
+        window.AUTO.fin({etat:"erreur",depot:false,mail:"non",code:(err&&err.status)||0,
+          message:ko?"jeton du CRM refusé (expiré ?)":net?"CRM injoignable":(err&&err.message==="lib"?"capture impossible (html2canvas absent)":"dépôt impossible"+(err&&err.message?" ("+err.message+")":""))});
+      }
       if(a!=="crm"){stat("❌ Capture impossible");}
       else if(err&&(err.status===401||err.status===403)) stat("❌ Dépôt refusé : le lien du CRM a expiré (il vaut 2 h). Rouvrez le comparateur depuis la conversation WhatsApp.");
       // Pas de réponse du tout (« Failed to fetch ») : le CRM pose ses en-têtes CORS sur toutes ses réponses, erreurs
@@ -4496,6 +4504,90 @@ calc();
   m.addEventListener("click",()=>{ window.open(location.href,"_blank","noopener"); });
   try{localStorage.removeItem("santeo_tgplein");}catch(e){}
   document.body.appendChild(m);
+})();
+</script>
+<script>
+// ---- Mode automatique (demande du Claude du CRM, 03/10/2026) ----
+// Le serveur du CRM ouvre la page dans un navigateur sans écran avec
+//   #auto=<JSON en base64url>&crm=<origine du CRM>&t=<jeton>&back=<conversation>
+// La page remplit le profil, calcule, coche les formules, marque la conseillée, puis fait exactement ce
+// que fait « Envoyer dans le CRM » : capture, dépôt dans la conversation, mail au prospect, copie du mail.
+// Aucun clic, aucune fenêtre. La fin se lit dans window.SANTEO_AUTO (etat "en-cours" → "ok" | "erreur"),
+// dans <pre id="santeo-auto" data-etat="…"> et dans le titre (« SANTEO_AUTO OK » / « SANTEO_AUTO ERREUR »).
+// Le mail ne part qu'après un dépôt accepté par le CRM : sans jeton valable, rien ne part.
+(function(){
+  const qp=new URLSearchParams((location.hash||"").replace(/^#/,""));
+  const brut=qp.get("auto"); if(!brut)return;
+  const t0=Date.now(); let fini=false, demande={};
+  const pre=document.createElement("pre"); pre.id="santeo-auto"; pre.hidden=true; pre.dataset.etat="en-cours";
+  document.body.appendChild(pre);
+  window.SANTEO_AUTO={v:1,etat:"en-cours"};
+  function fin(o){
+    if(fini)return; fini=true;
+    const r=Object.assign({v:1,id:demande.id||null},o,{duree_ms:Date.now()-t0});
+    window.SANTEO_AUTO=r; pre.dataset.etat=r.etat; pre.textContent=JSON.stringify(r);
+    document.title="SANTEO_AUTO "+(r.etat==="ok"?"OK":"ERREUR");
+  }
+  const erreur=m=>fin({etat:"erreur",depot:false,mail:"non",message:m});
+  setTimeout(()=>erreur("délai dépassé (100 s)"),100000);
+  const attendre=ms=>new Promise(r=>setTimeout(r,ms));
+  const dateFR=v=>{v=String(v||"").trim();let m=v.match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return m[3]+"/"+m[2]+"/"+m[1];
+    m=v.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);return m?v:"";};
+  (async function(){
+    try{
+      const b64=brut.replace(/-/g,"+").replace(/_/g,"/");
+      demande=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b64+"===".slice((b64.length+3)%4)),c=>c.charCodeAt(0))));
+    }catch(e){ return erreur("paramètre auto illisible (JSON en base64url attendu)"); }
+    if(!window.CRMLINK) return erreur("lien CRM manquant : crm= et t= sont obligatoires");
+    const p=demande.prospect||{};
+    const ddn=dateFR(p.naissance); if(!ddn) return erreur("prospect.naissance manquante ou invalide (jj/mm/aaaa)");
+    const cp=String(p.cp||"").trim(); if(!/^\d{5}$/.test(cp)) return erreur("prospect.cp invalide (5 chiffres)");
+    const reg=String(p.regime||"SAL").toUpperCase(); if(!["SAL","TNS","RL","TNSRL"].includes(reg)) return erreur("prospect.regime inconnu (SAL, TNS, RL, TNSRL)");
+    const exp=String(demande.expediteur||"antony@santeo.net").trim().toLowerCase();
+    if(!["antony@santeo.net","fcohen@santeo.net"].includes(exp)) return erreur("expediteur refusé (antony@santeo.net ou fcohen@santeo.net)");
+    const forms=Array.isArray(demande.formules)?demande.formules:[];
+    if(!forms.length) return erreur("aucune formule");
+    if(forms.length>5) return erreur("5 formules au plus");
+    // Fiche du prospect, comme une fiche importée (en-tête du tableau, mail, « Cette offre m'intéresse »)
+    const cj=dateFR(p.conjoint), enf=(Array.isArray(p.enfants)?p.enfants:[]).map(dateFR).filter(Boolean);
+    PRO.civ=/^mme$/i.test(p.civilite||"")?"Mme":"M."; PRO.nom=String(p.nom||"").trim(); PRO.prenom=String(p.prenom||"").trim();
+    PRO.email=String(p.email||"").trim(); PRO.tel=telFR(String(p.telephone||""))||String(p.telephone||"");
+    PRO.ddn=ddn; PRO.cp5=cp; PRO.cp=cp; PRO.ville=String(p.ville||"").trim(); PRO.adresse=String(p.adresse||"").trim();
+    PRO.conjoint=cj?{ddn:cj}:null; PRO.enfants=enf.map(d=>({ddn:d}));
+    const an=d=>+d.slice(6,10);
+    // Périmètre : seulement les gammes demandées ; aucun filtre de garantie ni de budget
+    filtresRAZ();
+    for(const k in sel) sel[k]=false;
+    const absentes=[];
+    for(const f of forms){
+      const g=F[f.cle];
+      if(f.cle==="APRIL"||!g){ absentes.push({cle:f.cle,rang:f.rang,raison:f.cle==="APRIL"?"APRIL ne part pas au prospect":"gamme inconnue"}); continue; }
+      if(!(Number.isInteger(f.rang)&&f.rang>=0&&f.rang<g.names.length)){ absentes.push({cle:f.cle,rang:f.rang,raison:"rang hors de la gamme"}); continue; }
+      sel[f.cle]=true;
+    }
+    if(!Object.values(sel).some(Boolean)) return fin({etat:"erreur",depot:false,mail:"non",message:"aucune formule utilisable",absentes});
+    document.getElementById("naiss").value=String(an(ddn));
+    document.getElementById("cnj").value=cj?String(an(cj)):"";
+    document.getElementById("cp").value=cp;
+    document.getElementById("regime").value=reg;
+    document.getElementById("kids").value=String(enf.filter(d=>YEAR-an(d)<18).length);
+    calc();
+    // API SANTÉ : tarif demandé à APICIL par la page ; on attend sa réponse (60 s au plus)
+    if(sel.APICIL){ for(let i=0;i<120&&APICIL.etat==="attente";i++) await attendre(500); calc(); }
+    if(document.fonts&&document.fonts.ready) await document.fonts.ready;
+    SENDSEL.clear(); const retenues=[];
+    for(const f of forms){
+      if(!sel[f.cle]||absentes.some(a=>a.cle===f.cle&&a.rang===f.rang)) continue;
+      const r=LASTROWS.find(x=>x.key===f.cle&&x.fi===f.rang);
+      if(!r||r.total==null){ absentes.push({cle:f.cle,rang:f.rang,raison:"non proposée pour ce profil"}); continue; }
+      SENDSEL.add(f.cle+"|"+f.rang); retenues.push({cle:f.cle,rang:f.rang,nom:Tableau.nomComplet(GAR,f.cle,f.rang),tarif:Math.round(r.total*100)/100});
+    }
+    if(!retenues.length) return fin({etat:"erreur",depot:false,mail:"non",message:"aucune formule tarifée pour ce profil",absentes});
+    const c=demande.conseillee; RECO=(c&&SENDSEL.has(c.cle+"|"+c.rang))?c.cle+"|"+c.rang:null;
+    window.AUTO={exp:exp,fin:o=>fin(Object.assign(o,{formules:retenues,absentes}))};
+    viaTableau("crm");
+    if(!document.querySelector('#tgov button[data-a="crm"]')) erreur("tableau de garantie non ouvert");
+  })().catch(e=>erreur("erreur de la page : "+((e&&e.message)||e)));
 })();
 </script>
 
