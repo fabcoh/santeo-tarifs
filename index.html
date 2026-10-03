@@ -418,7 +418,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-03T11:58:46Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-03T11:58:46Z</div>
+  <div id="buildstamp" data-build="2026-10-03T12:30:40Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-03T12:30:40Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -747,13 +747,13 @@ exporter.eur=eur;
 // Lignes du tableau, dans l'ordre d'affichage. « x: » désigne les postes qui ne
 // vivent pas dans la gamme elle-même mais dans les garanties complémentaires.
 // Le tableau est découpé en blocs, pour la lecture chez le prospect (Fabrice, 03/10/2026) : un bandeau de titre
-// par famille, ses lignes dessous. 3e élément à 1 = ligne en gras (parcours OPTAM, prothèses dentaires).
+// par famille, ses lignes dessous. 3e élément à 1 = ligne en gras (parcours OPTAM, prothèses dentaires, verres simples).
 const BLOCS=[
   ["Hospitalisation",[["Hospitalisation Optam","hospO",1],["Hospitalisation hors Optam","hospN"],["Chambre particulière","ch"]]],
   ["Honoraires",[["Consult. spécialistes Optam","honoO",1],["Consult. hors Optam","honoN"]]],
   ["Pharmacie",[["Médicaments remboursés","x:pharR"],["Pharmacie non remboursée","x:pharN"]]],
   ["Dentaire",[["Prothèses dentaires","dent",1],["Implantologie","x:imp"],["Orthodontie remboursée","x:orthR"],["Orthodontie non remboursée","x:orthN"]]],
-  ["Optique",[["Verres et monture simples","opt"],["Verres et monture complexes","x:optC"],["Lentilles acceptées","x:lentA"],["Lentilles refusées","x:lentR"]]],
+  ["Optique",[["Verres et monture simples","opt",1],["Verres et monture complexes","x:optC"],["Lentilles acceptées","x:lentA"],["Lentilles refusées","x:lentR"]]],
   ["Autres",[["Aides auditives","x:aud"],["Médecine douce / bien-être","md"]]]
 ];
 // Les mêmes lignes à plat : [libellé, source, gras, bloc].
