@@ -811,7 +811,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `HORCOM` (00/00), `1010` — **le taux choisi change le tarif** : choix commercial de Fabrice, à fixer avant tout tarif.
   **Sélecteur des produits APRIL** (Fabrice, 02/10/2026) : APRIL est **une compagnie du périmètre comme les autres**
   (`sel.APRIL`, `COMP.APRIL` ; case = pour cette fois, nom = par défaut), dernière de la grille, avec à côté de son nom
-  le bouton **☰ n / 19** qui déplie la liste (`APRIL_PRODUITS`, Particuliers : 14, TNS : 5), cases à cocher, retenues sur
+  le bouton **☰ n / 24** qui déplie la liste (`APRIL_PRODUITS`, Particuliers : 14, TNS : 5, **Autres produits APRIL : 5** —
+  GAN Senior, Protect, Cap Sérénité, Generali, Santé APRIL, ajoutés le 03/10/2026, `APRIL_A_BRANCHER` : jamais envoyés au
+  relais tant que leurs garanties API ne sont pas relevées, annoncés « tarif pas encore branché »), cases à cocher, retenues sur
   l'appareil (`santeo_april`, `window.APRIL_SEL`) ; par défaut Santé Mix Proximité et Simply Santé. **Les tarifs APRIL ne
   sont pas encore branchés** : la sélection dira au futur relais quels produits interroger (quota APRIL).
   **Commission (Fabrice, 02/10/2026)** : tarifer d'abord à la **commission la plus forte**, avec un bouton **Remise** sur la
