@@ -7,7 +7,38 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
-### 03/10/2026 — du comparateur au CRM — Fiches de connaissances : 17 produits
+### 03/10/2026 — du comparateur au CRM — Demande de Fabrice : « IA produits », un chat pour les commerciaux
+
+**Ce que veut Fabrice** : une icône de chat **« IA produits »** dans le CRM, à côté de l'Assistant. Un commercial y pose une
+question libre sur notre offre (« la MCCI rembourse-t-elle l'orthodontie ? », « quelle formule pour 100 € avec de l'ortho pour
+un enfant ? », « délai d'attente chez GAN ? », « la sophrologie chez Cap Évolution ? ») et tu réponds, comme dans une
+conversation. C'est un chat **interne** (commercial ↔ IA), pas un message au prospect. Fabrice préfère que ce soit toi qui le
+portes plutôt qu'un second service côté comparateur : tu as déjà l'IA, la clé serveur et les tarifs.
+
+**Tes sources, toutes publiques** (rien à demander au comparateur) :
+1. **Connaissances produit** — `https://fabcoh.github.io/santeo-tarifs/docs/connaissances/README.md` (index des 17 fiches,
+   une par produit vendu), puis `…/docs/connaissances/<fichier>.md`. Pour une question : lire l'index, ouvrir la ou les fiches du
+   produit, chercher d'abord « Questions fréquentes », puis « Détails pratiques », puis la section du sujet.
+2. **Garanties comparables** — `https://fabcoh.github.io/santeo-tarifs/src/garanties.json` (`F`, `EX`, `COMP`) : la même
+   valeur que le tableau du comparateur, formule par formule (hospitalisation, honoraires, dentaire, implants, orthodontie,
+   optique, lentilles, audio, médecines douces, chambre). C'est la bonne source pour « quelle formule atteint tel niveau ».
+3. **Tarifs** — `src/moteur.js` + `src/tarifs_all.json` (`Moteur.calculer`), que tu as déjà : un tarif se calcule pour un
+   **profil donné** (âge ou date de naissance, code postal, régime, conjoint, enfants). API SANTÉ : `apicil.php` avec ta clé
+   serveur. APRIL : pas encore branché pour toi.
+
+**Règles de réponse** :
+- Répondre **uniquement** d'après ces sources, en citant le produit et la source (« fiche Cap Évolution, tableau p.2 »).
+- Ce qu'une fiche marque « Non précisé dans les documents » : le dire tel quel, ne jamais compléter de mémoire.
+- Un **tarif** n'est donné que pour un profil connu ; sinon demander l'âge, le code postal, le régime et la composition de la
+  famille, puis calculer avec le moteur. Toujours préciser « tarif au jour, à confirmer à l'adhésion ».
+- Un écart entre documents (section « Contradictions » des fiches) se signale, ne se tranche pas.
+- Comparer plusieurs compagnies : partir de `garanties.json`, compléter par les fiches (plafonds, séances, délais).
+- Répondre court, en français, comme un collègue qui connaît les contrats.
+
+**Accès** : les commerciaux du CRM (Fabrice, Antony, Sandra, Caroline). Dis-nous dans ton carnet quand c'est en place, ou ce
+qu'il te manque (par exemple un format de fiche plus pratique pour toi).
+
+
 
 Demande de Fabrice : pouvoir répondre à tout ce qui sort des connaissances de base (sophrologie, nombre de séances d'ostéo
 ou de kiné, plafond dentaire, implants, délais d'attente, âges, assistance…). **Une fiche par produit vendu**, liste dans
