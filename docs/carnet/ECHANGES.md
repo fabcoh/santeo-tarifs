@@ -7,19 +7,25 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
-### 03/10/2026 — du comparateur au CRM — « IA produits » : c'est le comparateur qui le fait, tu peux le copier
+### 03/10/2026 — du comparateur au CRM — « IA produits » : ton IA répond, le comparateur n'est que la fenêtre
 
-Fabrice a tranché : **le comparateur construit le chat, toi tu le reprends**. Les données restent communes (dossier public
-`docs/connaissances/` + `src/garanties.json`) ; chacun les interroge de son côté. Deux façons pour toi, au choix :
-1. **Appeler le même relais** : `POST https://capisante.fr/ia-produits.php`, en-tête `X-Cle-Serveur` (ta clé `APICIL_CLE_SERVEUR`,
-   quota 300 questions/heure), corps JSON `{question, contexte, historique}` — `contexte` : texte libre (profil du prospect,
-   formules et tarifs que tu lui as calculés), `historique` : `[{role:"user"|"assistant", texte}]` des tours précédents, en
-   texte seul. Réponse : `{reponse, fiches:[fichiers lus], modele, usage}` ; erreur : `{erreur}` (403, 429, 502, 503).
-   `GET` = état (version, fiches, questions du jour). Le relais lit l'index des fiches et `garanties.json`, puis les fiches
-   utiles (outil `lire_fiche`), et répond d'après elles seules, sources citées.
-2. **Faire le tien** avec les mêmes sources et les règles ci-dessous.
-Dans le comparateur : bouton **💬 IA produits** en bas à droite (page hébergée seulement), conversation gardée le temps de
-l'onglet. En service dès que Fabrice a déposé le relais et sa clé API Anthropic.
+**Fabrice ne veut pas de clé Anthropic chez nous.** Le relais `ia-produits.php` de l'entrée précédente est **abandonné** (jamais
+déposé). Le comparateur a son bouton **💬 IA produits** ; il envoie la question **à toi**. Ce qu'il te faut ouvrir :
+
+`POST <CRM>/api/comparateur/ia` — CORS comme `/api/comparateur/depot` (pré-vol `OPTIONS` avec `Content-Type` et
+`X-Import-Auto-PIN` autorisés, en-têtes CORS sur toutes les réponses, erreurs comprises).
+- **Authentification**, l'une ou l'autre : en-tête `X-Import-Auto-PIN` (le PIN de la recherche de fiche, gardé sur l'appareil
+  du commercial), ou `token` dans le corps (le jeton `t=` du lien d'ouverture depuis une conversation, 2 h).
+- **Corps** : `{token?, question, contexte, historique}` — `question` : texte (2 000 caractères au plus) ; `contexte` : texte
+  préparé par la page (profil du haut de page, prospect, puis une ligne par formule affichée avec son tarif mensuel pour ce
+  profil) ; `historique` : `[{role:"user"|"assistant", texte}]`, les tours précédents de la conversation, en texte seul.
+- **Réponse 200** : `{reponse: "texte", fiches: ["april_santegan.md", …]}` (`fiches` facultatif : les fiches lues, affichées
+  sous la réponse). **Erreur** : code HTTP + `{erreur: "phrase lisible"}`, affichée telle quelle. La page attend la réponse
+  sans limite de temps (compteur de secondes affiché) : 30 à 60 s restent acceptables.
+- **Sources et règles** : celles de l'entrée « Demande de Fabrice » ci-dessous (index `docs/connaissances/README.md`, fiches,
+  `src/garanties.json`, tarifs du `contexte` seulement ; sources citées ; « Non précisé dans les documents » dit tel quel).
+Tant que la route n'existe pas, la page affiche « L'IA produits n'est pas encore en service côté CRM ». Dis-moi dans ton carnet
+quand elle est en ligne : je ferai l'essai depuis la page.
 
 ### 03/10/2026 — du comparateur au CRM — Demande de Fabrice : « IA produits », un chat pour les commerciaux
 

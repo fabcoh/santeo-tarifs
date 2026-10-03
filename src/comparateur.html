@@ -3803,11 +3803,12 @@ if(__PRIV__){
 calc();
 
 // ---- IA produits (Fabrice, 03/10/2026) ----
-// Chat des commerciaux sur nos produits. La page n'appelle que le relais ia-produits.php (capisante.fr), qui
-// interroge Claude avec nos seules données publiques : index des fiches docs/connaissances/, garanties.json,
-// fiches lues à la demande. La page joint le profil et les tarifs affichés à l'instant. Les mêmes données
-// servent au CRM WhatsApp, qui les interroge de son côté. Historique : la conversation de l'onglet, en texte seul.
-const IA_URL="https://capisante.fr/ia-produits.php";
+// Chat des commerciaux sur nos produits. Pas de clé d'IA chez nous (Fabrice : « je ne veux pas passer par une clé
+// Anthropic ») : la page n'est que la fenêtre, c'est l'IA du CRM WhatsApp qui répond, d'après les données communes
+// (docs/connaissances/, garanties.json) et le profil et les tarifs que la page lui joint. Route du CRM :
+// POST <CRM>/api/comparateur/ia, authentifiée comme la recherche (PIN Import Auto) ou par le jeton t= du lien CRM.
+// Historique : la conversation de l'onglet, en texte seul.
+const IA_CHEMIN="/api/comparateur/ia";
 (function(){
   if(!HOSTED) return;
   const btn=document.getElementById("aibtn"),panel=document.getElementById("aipanel"),log=document.getElementById("ailog"),
@@ -3836,17 +3837,25 @@ const IA_URL="https://capisante.fr/ia-produits.php";
     const att=bulle("r","Je lis nos fiches…"); const t0=Date.now();
     const tic=setInterval(()=>{ att.textContent="Je lis nos fiches… "+Math.round((Date.now()-t0)/1000)+" s"; },1000);
     try{
-      const r=await fetch(IA_URL,{method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({question,contexte:contexte(),historique:hist.map(t=>({role:t.role,texte:t.texte}))})});
+      const lire=k=>{ try{ return localStorage.getItem(k)||""; }catch(_){ return ""; } };
+      const base=((window.CRMLINK&&window.CRMLINK.base)||lire("santeo_crm_base")||"https://whatsappcrm-45ekaxrk.manus.space").replace(/\/+$/,"");
+      const pin=lire("santeo_crm_pin"), jeton=(window.CRMLINK&&window.CRMLINK.token)||"";
+      const h={"Content-Type":"application/json"}; if(pin) h["X-Import-Auto-PIN"]=pin;
+      const r=await fetch(base+IA_CHEMIN,{method:"POST",headers:h,
+        body:JSON.stringify({token:jeton||undefined,question,contexte:contexte(),historique:hist.map(t=>({role:t.role,texte:t.texte}))})});
       let j={}; try{ j=await r.json(); }catch(_){}
       clearInterval(tic);
-      if(!r.ok||!j.reponse){ att.classList.add("ko"); att.textContent=j.erreur||("L'IA produits ne répond pas (HTTP "+r.status+")."); }
+      if(!r.ok||!j.reponse){ att.classList.add("ko");
+        att.textContent=r.status===404?"L'IA produits n'est pas encore en service côté CRM.":j.erreur||j.error||(
+          (r.status===401||r.status===403)?(pin||jeton?"Accès refusé par le CRM : PIN ou lien expiré. Rouvrez depuis le CRM, ou ressaisissez le PIN dans « Fiche CRM ».":"Saisissez d'abord votre PIN dans « Fiche CRM » (une fois par appareil)."):
+          ("L'IA produits ne répond pas (HTTP "+r.status+")."));
+      }
       else{
         att.textContent=j.reponse;
         if(j.fiches&&j.fiches.length){ const s=document.createElement("span"); s.className="aisrc"; s.textContent="Fiches lues : "+j.fiches.join(", "); att.appendChild(s); }
         hist.push({role:"user",texte:question},{role:"assistant",texte:j.reponse,fiches:j.fiches||[]}); garder();
       }
-    }catch(e){ clearInterval(tic); att.classList.add("ko"); att.textContent="IA produits injoignable pour l'instant — réessayez dans une minute."; }
+    }catch(e){ clearInterval(tic); att.classList.add("ko"); att.textContent="CRM injoignable pour l'instant — réessayez dans une minute."; }
     send.disabled=false; log.scrollTop=log.scrollHeight; q.focus();
   }
   btn.hidden=false;

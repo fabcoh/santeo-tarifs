@@ -120,23 +120,18 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 ## IA produits — chat des commerciaux (03/10/2026)
 
 - Demande de Fabrice : un chat où le commercial pose une question sur nos produits et l'IA répond d'après nos données ;
-  « toi tu fais le job et [le Claude du CRM] te copie » ; « les données sont dans un dossier commun et chacun interroge de
-  son côté ». Bouton **💬 IA produits** en bas à droite, **page hébergée seulement** (`HOSTED`) ; panneau `#aipanel`
-  (bulles, ↺ nouvelle conversation, Entrée pour envoyer, Maj+Entrée pour une ligne) ; historique en texte seul dans
-  `sessionStorage` (`ia_hist`). Remplace l'ancien « Assistant garanties » (capacité `sample`, qui ne marchait que dans un artifact).
-- La page envoie à **`https://capisante.fr/ia-produits.php`** `{question, contexte, historique}` ; `contexte` = profil du haut
-  de page, prospect, et formules affichées avec leur tarif (`LASTROWS`, 80 au plus). Réponse `{reponse, fiches, modele, usage}`.
-- **Relais** (scratchpad `ovh/ia/`) : appel HTTP direct à l'API Anthropic (pas de SDK : OVH se met à jour fichier par fichier),
-  **Claude Opus 5.5**, effort `medium`, `fallbacks: "default"` (refus de sécurité → autre modèle). Système = consignes + index
-  `docs/connaissances/README.md` + `src/garanties.json` (mis en cache, `cache_control`) ; outil **`lire_fiche`** (enum des
-  fiches de l'index, `strict`) ; 6 lectures au plus par question ; tours précédents en texte seul, tour courant renvoyé tel
-  quel (réflexion comprise). Données lues sur GitHub Pages, gardées 1 h dans `../ia-produits/` (hors web), avec les
-  compteurs et un journal mensuel de consommation **sans le texte des questions**. Garde-fous : 30 questions/heure/IP,
-  400/jour au total, 300/heure pour le CRM (`X-Cle-Serveur` = `apicil-cle.txt`). Origines : fabcoh.github.io, capisante.fr, CRM.
-- **Clé API Anthropic** dans `ia-produits-config.php` (`www/`, hors dépôt), créée par Fabrice sur console.anthropic.com avec une
-  limite de dépense ; jamais dans le dépôt, une page ou une conversation. Coût estimé : quelques centimes par question.
-- Test local : scratchpad `iatest/` (fausse API `fakeapi.py` sur 8791, données servies sur 8766, relais `php -S` sur 8790) +
-  `t_ia.js` (Playwright, `route.fetch` vers le relais local).
+  « les données sont dans un dossier commun et chacun interroge de son côté ». Bouton **💬 IA produits** en bas à droite,
+  **page hébergée seulement** (`HOSTED`) ; panneau `#aipanel` (bulles, ↺ nouvelle conversation, Entrée pour envoyer,
+  Maj+Entrée pour une ligne) ; historique en texte seul dans `sessionStorage` (`ia_hist`). Remplace l'ancien « Assistant
+  garanties » (capacité `sample`, qui ne marchait que dans un artifact).
+- **Pas de clé d'IA chez nous** (Fabrice : « je ne veux pas passer par une clé Anthropic », 03/10/2026) : la page n'est que
+  la fenêtre, **l'IA du CRM WhatsApp répond**. `POST <CRM>/api/comparateur/ia` (base `CRMLINK.base`, sinon `santeo_crm_base`,
+  sinon l'hôte Manus), PIN `X-Import-Auto-PIN` (`santeo_crm_pin`) ou `token` du lien CRM ; corps `{token?, question, contexte,
+  historique}`, `contexte` = profil, prospect et formules affichées avec leur tarif (`LASTROWS`, 80 au plus) ; réponse
+  `{reponse, fiches?}` ou `{erreur}`. 404 → « pas encore en service côté CRM » ; 401/403 → PIN ou lien expiré. Contrat
+  complet dans `docs/carnet/ECHANGES.md`. Test : scratchpad `t_ia2.js` (CRM simulé par Playwright).
+- **Abandonné** : le relais `ia-produits.php` + clé API Anthropic (scratchpad `ovh/ia/`, `iatest/`) — écrit et testé, jamais
+  déposé. Ne pas le ressortir sans accord de Fabrice.
 
 ## Règles métier à ne pas casser
 
