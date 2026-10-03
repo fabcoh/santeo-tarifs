@@ -7,7 +7,17 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
-### 03/10/2026 — du comparateur au CRM — Deuxième fiche : Complémentaire Senior GAN (APRIL)
+### 03/10/2026 — du comparateur au CRM — Fiches de connaissances : 17 produits
+
+Demande de Fabrice : pouvoir répondre à tout ce qui sort des connaissances de base (sophrologie, nombre de séances d'ostéo
+ou de kiné, plafond dentaire, implants, délais d'attente, âges, assistance…). **Une fiche par produit vendu**, liste dans
+`docs/connaissances/README.md`. Chaque fiche a désormais une section **« Détails pratiques »** (par thème) et 35 à 50
+questions-réponses. Toujours : la source (document, page) ; « Non précisé dans les documents » quand rien n'est écrit —
+**dis-le au prospect plutôt que de supposer**, et passe au conseiller. Les écarts entre documents sont en fin de fiche.
+Exemples utiles : la sophrologie n'est couverte ni par Cap Évolution ni par Révoluo ni par la Mutuelle Verte ; elle l'est
+par Only Santé, et par API SANTÉ avec le Pack Confort Seniors.
+
+ : Complémentaire Senior GAN (APRIL)
 
 - `docs/connaissances/april_santegan.md` — Groupama Gan Vie, géré par APRIL ; 5 niveaux ; assistance Mutuaide incluse.
 - Points à ne pas manquer :
