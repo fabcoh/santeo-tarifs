@@ -704,9 +704,9 @@ Les écarts sont relevés sans être tranchés.
 6. **Euros « en complément » ou « Sécu comprise »** : l'en-tête dit que les montants en euros s'ajoutent à la Sécurité sociale, sauf l'audio (FX p.2). Mais les exemples d'optique retirent la part de la Sécurité sociale du forfait : 2 verres simples + monture en Confort = 150 € au tableau, 0,09 € Sécu + 149,91 € MCCI (FX p.6). Le forfait se comporte donc comme « Sécu comprise ».
 7. **Exemples dont le total ne tombe pas juste** (FX p.6) : généraliste à 30 € en Performance, reste à charge 1 € au lieu de 2 € aux autres niveaux ; lentilles en Confort, 60 € remboursés et 60 € de reste à charge pour 160 € (il manquerait 40 €) ; aide auditive classe II en Performance, 240 + 360 + 260 = 860 € pour 1 476 €.
 8. **Astérisque sans renvoi** : « Équipements 100 % Santé* » en aides auditives ; aucune note ne l'explique (FX p.3).
-9. **Âges d'adhésion** : le comparateur indique « Souscription 18–84 ans » ; la brochure ne donne aucun âge (FX p.1).
-10. **Optique dans le comparateur** : la ligne optique (`opt`) affiche 95 € / 110 € / 120 €, soit **un verre complexe** (FX p.2), et non le forfait 2 verres simples + monture (150 / 200 / 260 €) retenu pour Cap Évolution et la Mutuelle Verte. Harmonisation déjà notée « à faire » dans le dépôt.
-11. **Lentilles refusées par la Sécurité sociale au Start** : le comparateur affiche « 100 % BR » (`lentR`) ; l'exemple donne **0 €** (FX p.6), puisqu'il n'y a pas de base de remboursement.
+9. **Âges d'adhésion** : le comparateur indique « Souscription 18–84 ans » ; la brochure ne donne aucun âge (FX p.1). **Corrigé dans le comparateur le 03/10/2026.**
+10. **Optique dans le comparateur** : la ligne optique (`opt`) affiche 95 € / 110 € / 120 €, soit **un verre complexe** (FX p.2), et non le forfait 2 verres simples + monture (150 / 200 / 260 €) retenu pour Cap Évolution et la Mutuelle Verte. Harmonisation déjà notée « à faire » dans le dépôt. **Corrigé dans le comparateur le 03/10/2026.**
+11. **Lentilles refusées par la Sécurité sociale au Start** : le comparateur affiche « 100 % BR » (`lentR`) ; l'exemple donne **0 €** (FX p.6), puisqu'il n'y a pas de base de remboursement. **Corrigé dans le comparateur le 03/10/2026.**
 12. **Garantie obsèques** : la cellule s'étend sur les quatre niveaux ; la phrase « avant les 65 ans de l'adhérent ou de son conjoint et enfant » ne précise pas si l'âge joue à l'adhésion ou au décès (FX p.4).
 
 ### SOLENCIA
@@ -716,9 +716,9 @@ Les écarts sont relevés sans être tranchés.
 15. **Lentilles en Équilibre** : 50 € remboursés, 60 € de reste à charge pour 160 € (SO p.6).
 16. **Audio en % BR sous une mention en euros** : la ligne dit « les garanties des équipements auditifs exprimées en euros intègrent le remboursement du Régime Obligatoire », mais les valeurs sont en % BR (260 % à 360 %) (SO p.3). L'exemple (SO p.6) concorde avec une BR de 400 € : 260 % = 1 040 €, dont 240 € de Sécu et 800 € de MCCI.
 17. **Origine sans matériel médical ni transport** : « - » au tableau (SO p.3) ; la brochure ne dit pas si le ticket modérateur reste dû.
-18. **Âges d'adhésion** : la brochure vise « les plus de 55 ans » (SO p.1) ; le comparateur affiche « Souscription 62–99 ans » et tarife de 62 à 99 ans. Aucun âge minimum ni maximum dans la brochure.
+18. **Âges d'adhésion** : la brochure vise « les plus de 55 ans » (SO p.1) ; le comparateur affiche « Souscription 62–99 ans » et tarife de 62 à 99 ans. Aucun âge minimum ni maximum dans la brochure. **Corrigé dans le comparateur le 03/10/2026.**
 19. **Médecine douce « par séance »** : le tableau donne un montant sans unité, « dans la limite de 5 séances » (SO p.4) ; l'exemple de l'ostéopathe le traite comme un montant par séance (SO p.6). Le comparateur affiche « 5×40 € » à « 5×60 € », cohérent avec l'exemple.
-20. **Optique dans le comparateur** : `opt` affiche 90 € / 120 € / 160 € / 175 €, soit **un verre complexe** (SO p.2), et non le forfait 2 verres simples + monture (150 / 200 / 300 / 350 €).
+20. **Optique dans le comparateur** : `opt` affiche 90 € / 120 € / 160 € / 175 €, soit **un verre complexe** (SO p.2), et non le forfait 2 verres simples + monture (150 / 200 / 300 / 350 €). **Corrigé dans le comparateur le 03/10/2026.**
 
 ### Communs
 

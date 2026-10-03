@@ -492,7 +492,7 @@ Ne donnent pas lieu à remboursement (NI p.14 et p.15 ; IPID-E p.1) :
 2. **Âge retenu pour la cotisation** : âge atteint **au 31 décembre** de l'année (NI p.5) ; âge atteint **au 1er janvier** (NI p.15, définitions).
 3. **Délai pour demander un remboursement** : 2 ans à compter de la **date de remboursement par la SS** (IPID-E p.2) ; 2 ans à compter de **l'événement (date des soins)** (NI p.17).
 4. **Âge minimum Sérénité** : « plus de 50 ans » (IPID-S p.1) ; « au moins 50 ans », et **45 ans pour le conjoint** (NI p.6 ; FP-S p.1 et p.2). L'IPID ne cite pas le conjoint.
-5. **Âge maximum Équilibre 1** : l'IPID ne donne de limite que pour les niveaux 2–3 et 4–6 (IPID-E p.1) ; « sans limite » (FP-E p.1 et p.2 ; NI p.5). Le comparateur affiche « non précisée à l'IPID ».
+5. **Âge maximum Équilibre 1** : l'IPID ne donne de limite que pour les niveaux 2–3 et 4–6 (IPID-E p.1) ; « sans limite » (FP-E p.1 et p.2 ; NI p.5). Le comparateur affiche « non précisée à l'IPID ». **Corrigé dans le comparateur le 03/10/2026.**
 6. **Orthodontie non remboursée, scellement de sillons, patchs blanchissants** : cités par l'IPID parmi les « autres dispositifs dentaires (selon niveau) » (IPID-E p.1) ; **aucune ligne** aux barèmes (TG-E1 à TG-E6 p.2 ; TG-S p.2). Le scellement figure seulement dans la prévention, avant 14 ans (NI p.13).
 7. **Devis** : « obligatoire pour les équipements optiques, les aides auditives et les prothèses dentaires **pour tout remboursement** » (IPID-E p.1) ; en dentaire, obligatoire seulement **pour tout acte de plus de 1 000 €** (barèmes p.2 ; NI p.21). Conséquence d'un devis absent : « minimum du contrat responsable » (barèmes) ; « ticket modérateur » (NI p.9, p.11, p.12).
 8. **Fin d'adhésion** : adhésion à un contrat collectif obligatoire **du Groupe APICIL** (NI p.4) ; adhésion à un contrat **CSS** (FP-E p.5 ; FP-S p.5).
@@ -507,9 +507,9 @@ Ne donnent pas lieu à remboursement (NI p.14 et p.15 ; IPID-E p.1) :
 
 Écarts avec le comparateur (`src/garanties.json`, `INFO` de `src/comparateur.html`, lus le 03/10/2026) :
 
-17. **Lien « Notice »** : le comparateur pointe, pour les 11 formules, vers `apisante_notice_2026.pdf`, qui est la **fiche produit Équilibre** « à usage exclusif des distributeurs », non contractuelle (FP-E p.1). La vraie notice d'information (`apisante_ni_2026.pdf`) n'est pas liée ; la fiche Sérénité (`apisante_serenite_notice_2026.pdf`) non plus.
-18. **Limites affichées** : « Implantologie limitée à 2 implants » est écrit pour Équilibre 1, 2, 3 et Sérénité 1, qui **n'ont aucun forfait implant** (barèmes p.2).
-19. **INFO « Pharmacie : remboursée quel que soit le service médical rendu, y compris faible »** pour toutes les formules : Équilibre 1 ne couvre **pas** les SMR modéré et faible (TG-E1 p.1).
+17. **Lien « Notice »** : le comparateur pointe, pour les 11 formules, vers `apisante_notice_2026.pdf`, qui est la **fiche produit Équilibre** « à usage exclusif des distributeurs », non contractuelle (FP-E p.1). La vraie notice d'information (`apisante_ni_2026.pdf`) n'est pas liée ; la fiche Sérénité (`apisante_serenite_notice_2026.pdf`) non plus. **Corrigé dans le comparateur le 03/10/2026.**
+18. **Limites affichées** : « Implantologie limitée à 2 implants » est écrit pour Équilibre 1, 2, 3 et Sérénité 1, qui **n'ont aucun forfait implant** (barèmes p.2). **Corrigé dans le comparateur le 03/10/2026.**
+19. **INFO « Pharmacie : remboursée quel que soit le service médical rendu, y compris faible »** pour toutes les formules : Équilibre 1 ne couvre **pas** les SMR modéré et faible (TG-E1 p.1). **Corrigé dans le comparateur le 03/10/2026.**
 20. **Médecines douces « — »** pour les 11 formules : exact pour les formules seules ; le Pack Confort (option) les couvre (TG-S p.2), et le tarif du comparateur ne l'inclut pas.
 21. Toutes les autres valeurs du comparateur relues (hospitalisation et honoraires OPTAM / non OPTAM, prothèses, optique verres simples, audio, chambre, implants, orthodontie, lentilles, plafonds dentaires, parodontologie, chirurgie réfractive, transport, appareillage, nuitée, maison d'accueil) **concordent** avec les barèmes.
 

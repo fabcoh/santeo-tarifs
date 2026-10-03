@@ -251,7 +251,7 @@ Où suis-je couvert ? En France et à l'étranger, sous réserve de l'interventi
 8. **Règlement** : le bulletin commun renvoie au « règlement de la garantie » pour la résiliation (BA p.3) ; le règlement non responsable du dossier ne cite pas LPS Hospi (BA p.54).
 9. **Délai de demande de remboursement** : 2 ans « suivant la date de survenance des soins » (LPS p.3) ; 2 ans « à compter de la date de remboursement des soins par la Sécurité sociale » (LPS p.4).
 10. **Mandat SEPA** : valide après un délai de renonciation « qui ne peut être inférieur à 30 jours » (BA p.6) ; renonciation de 14 jours (BA p.3).
-11. **Comparateur** : il annonce une adhésion « 16 à 100 ans » et un « zonage AVENIR » ; aucun âge ni zone dans les documents LPS Hospi. Ses garanties (100 % BR, forfait 100 % FR, chambre 40 €/j, lit 15 €/nuit, IJ 20 €/j, FPU, transport, Mon soutien psy, Kalixia non) et ses limites de 30, 60 et 90 jours concordent avec le tableau (LPS p.2).
+11. **Comparateur** : il annonce une adhésion « 16 à 100 ans » et un « zonage AVENIR » ; aucun âge ni zone dans les documents LPS Hospi. Ses garanties (100 % BR, forfait 100 % FR, chambre 40 €/j, lit 15 €/nuit, IJ 20 €/j, FPU, transport, Mon soutien psy, Kalixia non) et ses limites de 30, 60 et 90 jours concordent avec le tableau (LPS p.2). **Corrigé dans le comparateur le 03/10/2026.**
 
 ## Questions fréquentes
 
