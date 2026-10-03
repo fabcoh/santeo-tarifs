@@ -224,7 +224,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (Optam, hors Optam, chambre), Honoraires (spécialistes Optam / hors Optam), **Pharmacie** (médicaments remboursés `x:pharR`,
   pharmacie non remboursée `x:pharN`), Dentaire (**Prothèses dentaires**, implantologie, orthodontie), Optique (**verres et
   monture simples** `opt`, **complexes** `x:optC`, lentilles), Autres (audio, médecines douces). Bandeau `tr.tgsec` (une case
-  par colonne, pour garder le cadre de la colonne ⭐) ; lignes **Optam et prothèses en gras** (`tr.fort`), libellé compris ; **les autres libellés en normal** (Fabrice, 03/10/2026). Même découpage dans
+  par colonne, pour garder le cadre de la colonne ⭐) ; lignes **Optam, prothèses et verres simples en gras** (`tr.fort`, la 1ʳᵉ ligne de l'optique ajoutée « pour l'harmonie », Fabrice 03/10/2026), libellé compris ; **les autres libellés en normal** (Fabrice, 03/10/2026). Même découpage dans
   l'image, le courrier (`lignes` à 4ᵉ élément `titre` / `fort`, relais `2026-10-03 blocs`) et `docs/tg/`.
   **Valeurs relevées le 03/10/2026 sur l'image des tableaux de garantie** (scratchpad `releve/A|B|C.json`, pages citées) :
   optique complexe = même méthode que les verres simples de chaque gamme ; pharmacie remboursée = médicaments à 65 % ;

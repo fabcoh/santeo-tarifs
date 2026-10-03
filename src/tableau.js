@@ -27,13 +27,13 @@
 // Lignes du tableau, dans l'ordre d'affichage. « x: » désigne les postes qui ne
 // vivent pas dans la gamme elle-même mais dans les garanties complémentaires.
 // Le tableau est découpé en blocs, pour la lecture chez le prospect (Fabrice, 03/10/2026) : un bandeau de titre
-// par famille, ses lignes dessous. 3e élément à 1 = ligne en gras (parcours OPTAM, prothèses dentaires).
+// par famille, ses lignes dessous. 3e élément à 1 = ligne en gras (parcours OPTAM, prothèses dentaires, verres simples).
 const BLOCS=[
   ["Hospitalisation",[["Hospitalisation Optam","hospO",1],["Hospitalisation hors Optam","hospN"],["Chambre particulière","ch"]]],
   ["Honoraires",[["Consult. spécialistes Optam","honoO",1],["Consult. hors Optam","honoN"]]],
   ["Pharmacie",[["Médicaments remboursés","x:pharR"],["Pharmacie non remboursée","x:pharN"]]],
   ["Dentaire",[["Prothèses dentaires","dent",1],["Implantologie","x:imp"],["Orthodontie remboursée","x:orthR"],["Orthodontie non remboursée","x:orthN"]]],
-  ["Optique",[["Verres et monture simples","opt"],["Verres et monture complexes","x:optC"],["Lentilles acceptées","x:lentA"],["Lentilles refusées","x:lentR"]]],
+  ["Optique",[["Verres et monture simples","opt",1],["Verres et monture complexes","x:optC"],["Lentilles acceptées","x:lentA"],["Lentilles refusées","x:lentR"]]],
   ["Autres",[["Aides auditives","x:aud"],["Médecine douce / bien-être","md"]]]
 ];
 // Les mêmes lignes à plat : [libellé, source, gras, bloc].
