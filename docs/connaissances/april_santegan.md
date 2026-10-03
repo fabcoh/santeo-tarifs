@@ -2,7 +2,7 @@
 
 Sources : `april_santegan_cg_2026.pdf` (Notice d'information valant conditions générales, 34 p., abrégé CG), `april_santegan_tg_2026.pdf` (Notice de garanties, brochure de 12 p. avec le tableau des garanties p.6 et 7, abrégé Notice), `april_santegan_ipid_2026.pdf` (Document d'information produit, 2 p., abrégé IPID), `april_santegan_exemples_2026.pdf` (Exemples de remboursements, abrégé Exemples), `april_santegan_argumentaire_2026.pdf` (Fiche argumentaire, 1 p., abrégé Argumentaire), `april_santegan_bulletin_2026.pdf` (Demande d'adhésion papier, abrégé Bulletin), `april_santegan_assistance_2026.pdf` (Annexe aux conditions générales « Services d'assistance », 24 p., abrégé Assistance).
 
-Lu le 03/10/2026. Les numéros de page sont ceux du PDF (l'annexe Assistance porte une pagination imprimée décalée de 2 ; c'est la page du PDF qui est citée). Une information absente des sept documents est notée « Non précisé dans les documents ».
+Lu le 03/10/2026. Les numéros de page sont ceux du PDF (l'annexe Assistance porte une pagination imprimée décalée de 2 ; c'est la page du PDF qui est citée). Une information absente des sept documents est notée « Non précisé dans les documents ». Complétée le 03/10/2026 : section « Détails pratiques », questions fréquentes, écarts nouveaux, après relecture intégrale des sept documents.
 
 ## Identité
 
@@ -292,6 +292,168 @@ Valeurs du tableau (Notice p.6 et p.7, vérifiées sur l'image des pages ; ident
 
 (Notice p.7)
 
+## Détails pratiques
+
+Limites, conditions et montants, thème par thème, niveau par niveau (N1 à N5). ⏳ = délai d'attente de 3 mois (rien n'est versé les 3 premiers mois d'adhésion) ; ⏱ = limité à 100 % BR les 3 premiers mois (Notice p.2, p.6 et p.7).
+
+### Médecines douces
+
+- **Praticiens couverts** (Notice p.6 ; CG p.28 ; IPID) : ostéopathe, homéopathe, acupuncteur, chiropracteur, microkinésithérapeute, étiopathe, diététicien, naturopathe, podologue, pédicure, réflexologue, sophrologue, luminothérapeute, hypnothérapeute, **psychologue** (non remboursé par la Sécurité sociale).
+- **Non cités** : psychomotricien, ergothérapeute, kinésiologue et tout praticien absent de la liste (Notice p.6).
+- **Montant** ⏳ :
+
+| | N1 | N2 | N3 | N4 | N5 |
+|---|---|---|---|---|---|
+| Forfait par année d'adhésion et par assuré | 60 € | 80 € | 100 € | 120 € | 160 € |
+| Plafond par séance | 50 € | 50 € | 50 € | 50 € | 50 € |
+| Séances remboursées au plein plafond de 50 € (calcul d'après le tableau) | 1 (+ 10 €) | 1 (+ 30 €) | 2 | 2 (+ 20 €) | 3 (+ 10 €) |
+
+  (Notice p.6 ; CG p.28.) Exemple : séance d'ostéopathie à 60 €, N3 → 50 € remboursés par séance, 2 séances dans l'année.
+- **Nombre de séances** : le tableau ne fixe pas de nombre ; l'IPID dit pourtant la garantie « limitée en nombre de séances, par an » (voir « Contradictions »).
+- **Délai d'attente** : 3 mois ; rien n'est versé pour une séance faite pendant cette période (Notice p.2 et p.6).
+- **Conditions sur le praticien** (CG p.21) :
+  - **ostéopathie, chiropraxie** : praticien ayant un **titre exclusif et un code ADELI** de la spécialité, ou professionnel de santé ayant la qualité de médecin, auxiliaire médical ou sage-femme ; actes conformes à la réglementation ;
+  - **acupuncture, étiopathie, hypnothérapie, psychologue, homéopathie** : professionnel de santé du corps médical et/ou titulaire d'un **numéro ADELI** délivré par l'ARS du lieu d'exercice ;
+  - **diététique** : diététicien avec **numéro ADELI** ;
+  - **luminothérapie, micro-kinésithérapie, naturopathie, réflexologie, sophrologie** : actes conformes aux dispositions légales et réglementaires (aucun registre exigé) ;
+  - l'assureur n'est pas responsable de l'aptitude du praticien (CG p.21).
+  - RPPS : Non précisé dans les documents.
+- **Justificatif** : facture acquittée sur papier à en-tête, coordonnées du praticien (pour vérifier sa qualité), nom et prénom de la personne soignée, date des soins (CG p.23). Vaut aussi pour la pédicurie-podologie et les consultations diététiques (CG p.23).
+- **Tiers payant** : pas de tiers payant pour l'ostéopathie dans le réseau Kalixia (Notice p.9).
+
+### Kiné, ostéo, psy
+
+- **Kinésithérapeute** (honoraires paramédicaux, avec infirmiers, orthophonistes, orthoptistes, pédicures-podologues, CG p.8) : N1 125 % BR · N2 150 % · N3 175 % · N4 200 % · N5 200 % BR, y compris à domicile (Notice p.6). Nombre de séances : Non précisé dans les documents. Pas de délai d'attente (Notice p.6).
+- **Recherche et envoi d'un kiné ou d'un infirmier à domicile** par l'assistance Mutuaide ; frais de déplacement, de soins et d'honoraires à la charge du bénéficiaire (Assistance p.13).
+- **Ostéopathe** : forfait médecines naturelles, 50 € par séance au plus, après 3 mois (Notice p.6).
+- **Psychologue remboursé (« Mon soutien psy »)** : 100 % BR, selon les limitations du dispositif (Notice p.7 ; CG p.9). Pas de délai d'attente.
+- **Psychologue non remboursé** : dans le forfait médecines naturelles (50 € par séance au plus), praticien du corps médical ou inscrit à l'ADELI, après 3 mois (Notice p.6 ; CG p.21).
+- **Soutien psychologique par téléphone** (assistance) : 5 rendez-vous au plus par événement et par bénéficiaire avec un psychologue clinicien ; entretiens en face à face ensuite à la charge du bénéficiaire (Assistance p.6 et p.11).
+- **Psychiatre** : honoraires médicaux ; téléconsultation de psychiatres sur rendez-vous via Livi (Notice p.4).
+
+### Dentaire
+
+| Garantie | N1 | N2 | N3 | N4 | N5 |
+|---|---|---|---|---|---|
+| Soins remboursés | 100 % BR | 100 % BR | 100 % BR | 100 % BR | 100 % BR |
+| Inlays-onlays | 125 % BR | 150 % BR | 170 % BR | 200 % BR | 270 % BR |
+| Prothèses modérée et libre ⏱ | 125 % BR | 230 % BR | 300 % BR | 330 % BR | 430 % BR |
+| Orthodontie remboursée ⏱ | 125 % BR | 150 % BR | 175 % BR | 200 % BR | 250 % BR |
+| Prothèses, implants, parodontologie non remboursés, par année d'adhésion et par assuré ⏳ | 200 € | 280 € | 450 € | 620 € | 900 € |
+| Plafond de l'ensemble du poste dentaire hors 100 % Santé | 500 € | 1 000 € | 1 500 € | 2 000 € | 3 000 € |
+
+(Notice p.7 ; CG p.29.)
+
+- **Plafond dentaire** : au-delà, les prestations dentaires remboursées par la Sécurité sociale restent payées à **100 % BR** (Notice p.7).
+  - **Période du plafond** : non écrite sur la ligne du tableau (pas de « par an ») (Notice p.7 ; CG p.29).
+  - **1re année / années suivantes** : aucun palier ; seule différence, les 3 premiers mois (prothèses et orthodontie à 100 % BR, forfait non remboursé à 0 €) (Notice p.2 et p.7).
+- **Implants** : forfait « autres frais dentaires non remboursés » ci-dessus ; soins curatifs seulement, pas l'esthétique (CG p.21). **Nombre d'implants : Non précisé dans les documents.**
+- **Devis obligatoire** : pour les actes à honoraires libres et les actes non remboursés (prothèses, implantologie, parodontologie), devis préalable puis note d'honoraires détaillée (CG p.23). APRIL peut calculer le reste à charge sur devis (CG p.25).
+- **Prothèses provisoires non remboursées** : non prises en charge (CG p.21 et p.22).
+- **Orthodontie** : âge limite et nombre de semestres : Non précisé dans les documents ; l'exemple porte sur un enfant de moins de 16 ans, traitement par semestre, 6 semestres au plus (Exemples). Orthodontie non remboursée : aucune ligne, exclue (CG p.22).
+- **100 % Santé** : frais réels dans la limite des honoraires limites de facturation, sans délai d'attente (Notice p.7 ; IPID).
+
+### Optique
+
+| Équipement classe B (Sécurité sociale comprise) ⏱ | N1 | N2 | N3 | N4 | N5 |
+|---|---|---|---|---|---|
+| Verres simples, ou mixtes simple/complexe ou simple/très complexe | 100 % BR | 200 € | 225 € | 250 € | 350 € |
+| Verres complexes, ou mixtes complexe/très complexe | 100 % BR | 200 € | 225 € | 300 € | 400 € |
+| Verres très complexes | 100 % BR | 300 € | 350 € | 400 € | 500 € |
+
+(Notice p.7, image vérifiée.)
+
+- **Les 3 premiers mois** : classe B limitée à 100 % BR (Notice p.7).
+- **Monture** : 100 € en classe B, 30 € en classe A (Notice p.7).
+- **100 % Santé (classe A)** : frais réels, appairage et adaptation compris ; pas de délai (Notice p.7).
+- **Renouvellement** (Notice p.7 ; CG p.8 et p.10) :
+  - 2 ans depuis la dernière facturation prise en charge par la Sécurité sociale ;
+  - 1 an pour les moins de 16 ans, ou si la vue évolue (16 ans et plus) ;
+  - moins de 16 ans avec évolution de la vue : **sans délai, pour les verres seulement** (CG p.10) ;
+  - situation médicale particulière (liste de l'article L165-1 CSS) : verres sans délai, sur nouvelle prescription (CG p.10) ;
+  - le délai part de l'achat de l'équipement complet ou du dernier élément (verres ou monture) (CG p.8).
+  - Preuve de l'évolution de la vue : nouvelle prescription, ou devis / facture de l'opticien indiquant la nouvelle correction (CG p.10).
+- **Lentilles prescrites** (CG p.21), par année d'adhésion :
+  - acceptées par la Sécurité sociale : 100 % BR + 35 € (N1) · + 50 € · + 65 € · + 75 € · + 100 € (N5), sans délai ;
+  - refusées ⏳ : 35 € (N1) · 50 € · 65 € · 75 € · 100 € (N5) (Notice p.7).
+  - Lentilles jetables : Non précisé dans les documents.
+- **Chirurgie réfractive, implant oculaire non remboursés** ⏳, par année d'adhésion et **par œil** : 125 € (N1) · 175 € · 200 € · 300 € · 450 € (N5) (Notice p.7). Pour les 2 yeux : 250 € à 900 € (Exemples).
+- **Prestation d'adaptation** de la correction (1 équipement classe B) : 100 % BR (Notice p.7).
+
+### Audio
+
+- **Classe I (100 % Santé)** : frais réels ; **classe II, par oreille** : N1 100 % BR · N2 100 % · N3 125 % · N4 150 % · N5 200 % BR ; **accessoires** : 100 % BR (Notice p.7). Pas de délai d'attente.
+- **Fréquence** : un équipement par oreille tous les 4 ans, chaque oreille comptée à part (Notice p.7 ; CG p.8).
+- **Plafond** : 1 700 € par oreille, Sécurité sociale comprise (Notice p.7).
+- Exemple hors 100 % Santé (1 582 € par oreille) : APRIL 160 € (N1, N2) à 560 € (N5) (Exemples).
+- Piles, entretien : Non précisé dans les documents.
+
+### Cure thermale
+
+- **Soins de cure remboursés** : 100 % BR, sans délai (Notice p.6).
+- **Frais annexes** (hébergement et/ou transport restant à charge) ⏳, par année d'adhésion : 100 € (N1) · 125 € · 150 € · 200 € · 300 € (N5) ; indemnité limitée aux frais restant à charge, versée pour chaque cure prise en charge par la Sécurité sociale, sur justificatifs (Notice p.6 ; CG p.24).
+- **Actes médicaux et hospitalisation pendant la cure** : limités au ticket modérateur (CG p.22).
+- Cure non prise en charge par la Sécurité sociale : Non précisé dans les documents (aucune ligne ; frais hors prestations du régime obligatoire exclus sauf mention, CG p.22).
+
+### Pharmacie, vaccins, contraception, sevrage
+
+- **Médicaments remboursés** : 100 % BR (Notice p.6).
+- **Médicaments ou vaccins prescrits non remboursés** ⏳, par année d'adhésion : 35 € (N1) · 50 € · 70 € · 100 € · 150 € (N5) (Notice p.6). Prescription médicale obligatoire (CG p.21).
+- **Aide au sevrage tabagique prescrite non remboursée** ⏳, par année d'adhésion : 20 € (N1) · 30 € · 40 € · 60 € · 90 € (N5) (Notice p.6 ; CG p.21).
+- **Contraception** : Non précisé dans les documents.
+- **Livraison de médicaments** par l'assistance : voir « Assistance » (Assistance p.7 et p.12).
+
+### Maternité, naissance
+
+- **Séjour de maternité** : mêmes garanties que la médecine et la chirurgie (frais de séjour, forfait journalier, honoraires, chambre particulière 30 jours par an après 3 mois, frais d'accompagnant) (Notice p.6).
+- **Prime de naissance** : Non précisé dans les documents (aucune ligne).
+- **Ajouter le nouveau-né** : effet le lendemain de la naissance si APRIL en est informée **dans les 2 mois** ; sinon au 1er janvier suivant (CG p.15).
+- **Assistance parentalité** (Assistance p.8 et p.11) :
+  - auxiliaire de puériculture : 5 heures au plus dans le mois suivant la sortie de maternité (par enfant en cas de naissance multiple), pour un premier enfant ou une naissance multiple ;
+  - aide-ménagère : 40 heures au plus, 2 heures par intervention, sur 40 jours au plus, si séjour de plus de 5 jours à la maternité, naissance multiple, grand prématuré ou alitement imprévu de plus de 15 jours ;
+  - grand prématuré (25e à 32e semaine d'aménorrhée) : hôtel près de l'hôpital situé à plus de 50 km, 60 €/jour, 20 jours au plus ; transport des parents, 350 € au plus, une fois par mois ; frais sur place (parking, essence, péage), 25 €/jour, 30 jours au plus.
+
+### Prévention
+
+- Actes et prestations de prévention (article R.871-2 CSS) pris en charge par la Sécurité sociale : inclus ; actes de l'arrêté du 8 juin 2006 au moins au ticket modérateur (Notice p.6 et p.7).
+- Dépistage, bilan de santé : Non précisé dans les documents.
+- **Deuxième avis médical** : deuxiemeavis.fr, avis écrit d'un médecin expert (Notice p.4).
+
+### Hospitalisation : jours, psychiatrie, SMR
+
+- **Hospitalisation au sens du contrat** : séjour comportant au moins une nuitée ; l'ambulatoire est un séjour de moins de 24 heures sans nuitée (CG p.10).
+- **Frais de séjour et forfait journalier** : frais réels ; forfait journalier sans limitation de durée (Notice p.6 ; CG p.27), hors établissements médico-sociaux (CG p.21 ; IPID).
+- **Honoraires** : DPTAM 125 % (N1) · 150 % · 200 % · 300 % · 400 % BR (N5) ; non DPTAM 100 % · 130 % · 175 % · 200 % · 200 % BR ; **mêmes taux en SMR et en psychiatrie** (Notice p.6).
+- **Chambre particulière** ⏳, par jour : 25 € (N1) · 45 € · 60 € · 80 € · 100 € (N5) :
+  - médecine, chirurgie, HAD, maternité : **30 jours par an** ;
+  - SMR **et psychiatrie** : **15 jours par an** (Notice p.6) ;
+  - aussi en hospitalisation ambulatoire (CG p.21).
+- **Frais d'accompagnant** (hébergement et nourriture facturés par l'établissement) ⏳, par jour : 10 € (N1) · 15 € · 25 € · 30 € · 60 € (N5), **30 jours par an**, en médecine, chirurgie, HAD, maternité et aussi en SMR et psychiatrie (Notice p.6 et p.7 ; CG p.21). Âge du patient : Non précisé dans les documents.
+- **Secteur non conventionné** : 100 % BR (Notice p.7).
+- **Téléphone, télévision** : exclus (« frais annexes », IPID).
+- **Hors UE et AELE** : remboursement des frais de séjour limité (IPID).
+
+### Transport
+
+- Transport sanitaire pris en charge par la Sécurité sociale : 100 % BR (Notice p.6 ; CG p.21).
+- Franchise de 4 € par transport non remboursée (Exemples ; CG p.9).
+- L'assistance organise le transfert à l'hôpital et le retour (ambulance, VSL), mais les frais restent à la charge du bénéficiaire (Assistance p.13).
+
+### Assistance (rappel des plafonds clés, détail en section « Assistance »)
+
+- **Aide-ménagère** : 2 h/jour, 25 heures au plus après hospitalisation d'au moins 24 h ou immobilisation de plus de 8 jours ; 4 h/semaine, 35 heures au plus sur 6 mois en cas de chimiothérapie, radiothérapie, trithérapie, quadrithérapie ou curiethérapie ; 2 h/jour, 10 heures au plus au décès du bénéficiaire (Assistance p.6 à p.8).
+- **Garde d'enfants à domicile** (enfants à charge de moins de 18 ans, de 8 h à 19 h, sauf dimanches et jours fériés) : 12 h/jour, 10 jours au plus (Assistance p.7 et p.12).
+- **Heures et durée** fixées au cas par cas par le service médical de Mutuaide, parfois en dessous des plafonds ; **appel préalable obligatoire** au 01 55 98 58 76, contrat 7759 (Assistance p.4 et p.18).
+
+### Autres
+
+- **Matériel médical** : 100 % (N1) · 125 % · 150 % · 175 % · 225 % BR (N5), y compris renouvellement, réparations, frais d'expédition du matériel et de déplacement de l'intéressé (Notice p.6 ; CG p.21).
+- **Urgences** : forfait patient urgences et actes lourds aux frais réels (Notice p.6).
+- **Étranger** : 100 % BR si la Sécurité sociale française intervient, au niveau des médecins non DPTAM (Notice p.6 ; CG p.20).
+- **Dépassements non déclarés à la Sécurité sociale** : jamais pris en charge (CG p.22).
+- **Télémédecine** : Livi, 7j/7, 24h/24, 5 téléconsultations prises en charge par assuré de plus de 16 ans (Notice p.4).
+- **Délai de remboursement** : Non précisé dans les documents ; sans démarche avec la télétransmission (CG p.23).
+
 ## Bonus fidélité
 
 - Aucun bonus fidélité : Non précisé dans les documents (aucun des sept documents n'en mentionne).
@@ -488,6 +650,14 @@ Autres situations :
 | Hospitalisation ou incapacité du bénéficiaire ayant des animaux | transport et pension des animaux | max. 350 € |
 | Maladie imprévue de la nourrice agréée, ou grève à l'école | garde d'enfants à domicile | 12 h/jour, max. 5 jours |
 
+- Garde d'enfants : enfants à charge de moins de 18 ans, au domicile, de 8 h à 19 h, sauf dimanches et jours fériés (Assistance p.12). Garde de la personne dépendante ou de l'ascendant : de 8 h à 19 h (Assistance p.12).
+- Soutien scolaire : enfant scolarisé du primaire à la terminale, matières principales, hors week-ends, jours fériés et vacances scolaires ; prend fin au retour en classe ou à la fin de l'année scolaire (Assistance p.13).
+- Conduite à l'école : par une assistante maternelle, selon les disponibilités locales (Assistance p.11).
+- Frais d'hébergement du proche : hôtel ou lit accompagnant à l'hôpital ; repas à sa charge (Assistance p.12).
+- Recherche et envoi à domicile d'un kinésithérapeute, d'un infirmier ou d'un autre soignant : organisé par Mutuaide, frais et honoraires à la charge du bénéficiaire (Assistance p.13).
+- Réservation d'un lit à l'hôpital et transfert à l'hôpital : hors urgence, sur prescription ; frais de transport à la charge du bénéficiaire (Assistance p.13).
+- Téléassistance : prolongation possible au-delà de la période prise en charge, à tarif préférentiel (Assistance p.13).
+
 ### Parentalité (Assistance p.8)
 
 | Garantie | Montant / plafond |
@@ -541,6 +711,12 @@ Cancer, AVC avec séquelles neurologiques, infarctus, pontage coronarien, greffe
 | Frais de recherche et de secours | 4 600 € |
 
 - Franchise sur les frais médicaux à l'étranger, plafond des soins dentaires d'urgence, plafond des frais de cercueil : renvoyés au tableau, qui ne les chiffre pas (Assistance p.14 et p.15). Non précisé dans les documents.
+- Présence d'un proche : pour une hospitalisation sur place de plus de 5 jours décidée par Mutuaide, avant rapatriement ; transport aller-retour et hôtel (chambre, petit-déjeuner) ; repas à sa charge (Assistance p.15).
+- Rapatriement : date, moyen et lieu décidés par le médecin de Mutuaide ; refuser la solution proposée met fin à la demande (Assistance p.15).
+- Rapatriement de corps : transport, soins de conservation, frais de cercueil, jusqu'au lieu des obsèques en France (Assistance p.15).
+- Retour anticipé pour attentat (dans un rayon de 100 km) ou catastrophe naturelle : demande dans les 72 heures (Assistance p.15).
+- Frais médicaux à l'étranger : seulement après remboursement des organismes d'assurance, sur justificatifs originaux ; s'arrêtent dès que le rapatriement est possible (Assistance p.14 et p.15).
+- Caution pénale : remboursable dans le mois ; pas pour des faits liés à l'activité professionnelle (Assistance p.14).
 
 ### Exclusions de l'assistance (Assistance p.16 et p.17)
 
@@ -581,6 +757,12 @@ Cancer, AVC avec séquelles neurologiques, infarctus, pontage coronarien, greffe
 16. **Assistance, maternité** : prestations « parentalité » prévues (Assistance p.8) ; les exclusions à domicile visent « les accouchements » et la grossesse sans complication (Assistance p.16).
 17. **Nom du produit** : l'IPID exclut « les frais non pris en charge au titre du produit COMPLEMENTAIRE SANTE GAN » (IPID), alors que le produit s'appelle Complémentaire Senior GAN.
 18. **Millésime** : les Exemples datent de 07/2025 (BR au 1er janvier 2025) ; les CG, la Notice et l'IPID de mars 2026 (Exemples ; CG p.1 ; Notice p.12 ; IPID).
+19. **Médicaments, sevrage, vaccins** : la brochure annonce « jusqu'à 150 € par poste par an et par assuré » pour les médicaments non remboursés, l'aide au sevrage tabagique et les vaccins (Notice p.2) ; le tableau plafonne l'aide au sevrage à 90 € au N5 (Notice p.6 ; CG p.28).
+20. **Définition de l'hospitalisation** : « au moins une nuitée » (CG p.10) ; pour l'assistance, « tout séjour d'au moins 24 heures » (Assistance p.5).
+21. **Période de renouvellement des lunettes** : la définition cite une période « d'1 an, de 2 ans, ou de 6 mois » (CG p.8) ; aucun autre passage ne prévoit de période de 6 mois.
+22. **Plafond dentaire** : la ligne du tableau ne précise pas la période (« Plafond sur l'ensemble du poste dentaire - hors 100 % santé ») (Notice p.7 ; CG p.29), alors que le forfait voisin est « par année d'adhésion et par assuré ». Elle ne dit pas non plus si le forfait « autres frais dentaires non remboursés » entre dans ce plafond.
+23. **Libellé « 100 % BR Santé »** : le tableau écrit « Équipement « 100 % BR Santé » Classe A » et « Équipements « 100 % BR Santé » Classe I » (Notice p.7 ; CG p.29) ; il s'agit, d'après les renvois (5) et (7), du panier « 100 % Santé » remboursé aux frais réels.
+24. **Comparateur Santéo** : Complémentaire Senior GAN figure dans la liste des produits APRIL (« Autres produits APRIL ») mais son tarif n'est pas branché et ses garanties ne sont pas saisies : rien à confronter.
 
 ## Questions fréquentes
 
@@ -598,7 +780,7 @@ Cancer, AVC avec séquelles neurologiques, infarctus, pontage coronarien, greffe
 12. **Et les lentilles ?** Acceptées : 100 % BR + 35 € (N1) à + 100 € (N5) par an. Refusées : 35 € (N1) à 100 € (N5) par an, après 3 mois (Notice p.7).
 13. **Combien pour une chambre particulière ?** 25 € (N1) à 100 € (N5) par jour, 30 jours par an (15 en SMR et psychiatrie), après 3 mois (Notice p.6).
 14. **Les dépassements d'honoraires sont-ils couverts ?** Hospitalisation, médecin DPTAM : 125 % (N1) à 400 % BR (N5) ; non DPTAM : 100 % à 200 % BR. Consultations DPTAM : 125 % à 300 % BR (Notice p.6).
-15. **Combien pour une couronne ?** 100 % Santé : frais réels. Autres prothèses : 125 % (N1) à 430 % BR (N5), 100 % BR les 3 premiers mois, dans un plafond dentaire de 500 € (N1) à 3 000 € (N5) par an (Notice p.7).
+15. **Combien pour une couronne ?** 100 % Santé : frais réels. Autres prothèses : 125 % (N1) à 430 % BR (N5), 100 % BR les 3 premiers mois, dans un plafond dentaire de 500 € (N1) à 3 000 € (N5), au-delà duquel le remboursement revient à 100 % BR ; la période du plafond n'est pas précisée (Notice p.7).
 16. **Les implants sont-ils remboursés ?** Oui, dans le forfait « autres frais dentaires non remboursés » (prothèses, implantologie, parodontologie) : 200 € (N1) à 900 € (N5) par an et par assuré, après 3 mois, sur devis préalable (Notice p.7 ; CG p.23).
 17. **L'orthodontie ?** Orthodontie remboursée : 125 % (N1) à 250 % BR (N5) ; 100 % BR les 3 premiers mois (Notice p.7).
 18. **Les appareils auditifs ?** 100 % Santé : frais réels. Classe II : 100 % (N1, N2) à 200 % BR (N5) par oreille, un tous les 4 ans, 1 700 € par oreille Sécu comprise (Notice p.7).
@@ -609,3 +791,28 @@ Cancer, AVC avec séquelles neurologiques, infarctus, pontage coronarien, greffe
 23. **Y a-t-il une réduction pour un couple ?** Oui, −20 % (Notice p.3).
 24. **Peut-on payer tous les mois ?** Oui, par prélèvement seulement, 16 €/mois minimum (Bulletin p.3).
 25. **Quelle assistance en cas d'hospitalisation ?** Mutuaide, 01 55 98 58 76, contrat 7759 : aide-ménagère jusqu'à 25 heures, garde d'enfants 12 h/jour sur 10 jours, transport d'un proche jusqu'à 350 €, livraison de repas, téléassistance (Assistance p.7 et p.18).
+26. **La sophrologie est-elle remboursée ?** Oui, forfait médecines naturelles : 60 € (N1) à 160 € (N5) par an et par assuré, 50 € par séance au plus, après 3 mois (Notice p.6).
+27. **Combien de séances d'ostéopathe par an ?** Pas de nombre fixé : 50 € au plus par séance, dans le forfait annuel. Au N3 (100 €), 2 séances remboursées 50 € ; au N5 (160 €), 3 séances et 10 € (calcul d'après Notice p.6).
+28. **L'ostéopathe doit-il être inscrit à l'ADELI ?** Oui : titre exclusif et code ADELI d'ostéopathe, ou médecin, auxiliaire médical ou sage-femme (CG p.21).
+29. **Un psychologue non remboursé par la Sécu ?** Oui, dans le forfait médecines naturelles (50 € par séance au plus), s'il appartient au corps médical ou a un numéro ADELI ; après 3 mois (Notice p.6 ; CG p.21). Le psychologue « Mon soutien psy » est remboursé à 100 % BR, sans délai (Notice p.7).
+30. **Le naturopathe, le réflexologue ?** Oui, même forfait, actes conformes à la réglementation (Notice p.6 ; CG p.21).
+31. **Le kiné ?** 125 % BR (N1) à 200 % BR (N4, N5), sans délai d'attente ; nombre de séances non précisé (Notice p.6).
+32. **Le plafond dentaire est-il plus bas la première année ?** Pas de palier par année. Les 3 premiers mois, prothèses et orthodontie sont limitées à 100 % BR et les implants ne sont pas remboursés (Notice p.2 et p.7). Plafond : 500 € (N1) à 3 000 € (N5), puis 100 % BR ; période non précisée (Notice p.7).
+33. **Combien d'implants ?** Non précisé dans les documents. Forfait annuel de 200 € (N1) à 900 € (N5) pour implants, prothèses et parodontologie non remboursés, après 3 mois, sur devis préalable (Notice p.7 ; CG p.23).
+34. **Faut-il un devis pour le dentiste ?** Oui pour les actes à honoraires libres et les actes non remboursés : devis préalable puis note d'honoraires détaillée (CG p.23).
+35. **La chirurgie de la myopie, pour les deux yeux ?** Forfait par œil et par an : 125 € (N1) à 450 € (N5), soit 250 € à 900 € pour les deux yeux, après 3 mois (Notice p.7 ; Exemples).
+36. **Les lentilles jetables ?** Non précisé dans les documents. Lentilles refusées par la Sécurité sociale : 35 € (N1) à 100 € (N5) par an, après 3 mois (Notice p.7).
+37. **Le vaccin contre la grippe ou le zona, s'il n'est pas remboursé ?** Forfait « médicaments ou vaccins prescrits non remboursés » : 35 € (N1) à 150 € (N5) par an, sur prescription, après 3 mois (Notice p.6 ; CG p.21).
+38. **Les substituts nicotiniques ?** Aide au sevrage tabagique prescrite non remboursée : 20 € (N1) à 90 € (N5) par an, après 3 mois (Notice p.6).
+39. **La pilule ou un stérilet ?** Non précisé dans les documents.
+40. **La chambre particulière en psychiatrie ?** Oui : 25 € (N1) à 100 € (N5) par jour, 15 jours par an, après 3 mois (Notice p.6).
+41. **Un proche peut-il dormir à l'hôpital ?** Frais d'accompagnant : 10 € (N1) à 60 € (N5) par jour, 30 jours par an, après 3 mois, y compris en SMR et psychiatrie (Notice p.6 et p.7).
+42. **J'ai une aide-ménagère après une opération ?** Oui, par Mutuaide : 2 h par jour, 25 heures au plus, après une hospitalisation d'au moins 24 h ou une immobilisation de plus de 8 jours. Appeler avant, au 01 55 98 58 76, contrat 7759 (Assistance p.7 et p.18).
+43. **Et pendant une chimiothérapie ?** Aide-ménagère 4 h par semaine, 35 heures au plus, sur 6 mois au plus (Assistance p.8).
+44. **Mes petits-enfants peuvent-ils être gardés ?** La garde d'enfants vise les enfants à charge de moins de 18 ans du bénéficiaire, 12 h par jour, 10 jours au plus (Assistance p.7 et p.12). L'extension « Relai Famille » aux descendants ne couvre que les services marqués d'un astérisque (aide-ménagère, garde ou transfert des personnes dépendantes, livraison de repas, téléassistance) (Assistance p.4 et p.7).
+45. **Y a-t-il une téléassistance ?** Oui, à partir de 2 semaines d'immobilisation, 2 mois au plus (Assistance p.7) ; en cas de maladie redoutée, pour un assuré ou conjoint de plus de 60 ans, installation et accès, maintenance 3 mois au plus (Assistance p.9).
+46. **Je pars en voyage : suis-je couvert ?** Assistance pour un déplacement de moins de 90 jours à plus de 50 km : rapatriement aux frais réels, frais médicaux à l'étranger jusqu'à 11 000 € avec accord préalable (Assistance p.10).
+47. **Qui garde mon chien si je suis hospitalisé ?** Transport et pension de l'animal : 350 € au plus (Assistance p.8).
+48. **Mon conjoint plus jeune peut-il être assuré ?** Oui, le conjoint, partenaire de PACS ou concubin peut être inscrit (CG p.14) ; la condition « 55 ans et plus » vise l'assuré principal (Notice p.2). Âge minimum du conjoint : Non précisé dans les documents.
+49. **Y a-t-il une téléconsultation ?** Livi, 7j/7, 24h/24 : 5 téléconsultations prises en charge par assuré de plus de 16 ans (Notice p.4). L'IPID cite « Médecin Direct » (IPID).
+50. **La télévision à l'hôpital ?** Non : frais annexes (téléphone, télévision) exclus (IPID).

@@ -2,7 +2,7 @@
 
 Sources : `april_santemix_cg_2026.pdf` (Notice valant conditions générales, 26 p., abrégé CG), `april_santemix_tg_2026.pdf` (Notice de garanties, brochure de 12 p. avec le tableau des garanties p.5 et 6, abrégé Notice), `april_santemix_ipid_2026.pdf` (Document d'information produit, abrégé IPID), `april_santemix_exemples_2026.pdf` (Exemples de remboursement 2025, abrégé Exemples), `april_santemix_argumentaire_2026.pdf` (Fiche argumentaire 2025, abrégé Argumentaire), `april_santemix_bulletin_2026.pdf` (Demande d'adhésion papier, abrégé Bulletin).
 
-Lu le 03/10/2026. Les numéros de page sont ceux du PDF. Une information absente des six documents est notée « Non précisé dans les documents ».
+Lu le 03/10/2026. Les numéros de page sont ceux du PDF. Une information absente des six documents est notée « Non précisé dans les documents ». Complétée le 03/10/2026 : section « Détails pratiques », questions fréquentes, écarts nouveaux, après relecture intégrale des six documents.
 
 ## Identité
 
@@ -288,6 +288,146 @@ Valeurs du tableau (Notice p.5 et p.6, vérifiées sur l'image des pages ; ident
 
 - Forfait naissance ou adoption : une seule fois par enfant ; adoption d'un enfant mineur (CG p.9).
 
+## Détails pratiques
+
+Limites, conditions et montants, thème par thème, formule par formule. N1 à N6 = niveau du module concerné (Hospitalisation pour l'hôpital, Frais de santé pour le reste, Renfort = niveau du module Frais de santé). « Santé Complète » = sans Renfort ; « + Renfort Famille » ou « + Renfort Senior » = formule Santé Renforcée.
+
+### Médecines douces
+
+- **Praticiens couverts** (tableau, Notice p.5 ; CG p.20) : ostéopathe, homéopathe, acupuncteur, naturopathe, étiopathe, diététicien, chiropracteur, micro-kinésithérapeute, podologue, réflexologue, sophrologue, luminothérapeute, hypnothérapeute. La définition des CG reprend la même liste sans l'homéopathe (CG p.7).
+- **Non cités dans la liste** : psychologue non remboursé par la Sécurité sociale, psychomotricien, ergothérapeute, kinésiologue, et tout autre praticien absent de la liste ci-dessus (Notice p.5). Le contrat exclut les soins non pris en charge par le régime obligatoire « sauf disposition contraire mentionnée au tableau » (CG p.10).
+- **Montant** : forfait par année d'adhésion et par assuré (Notice p.5) :
+
+| | N1 | N2 | N3 | N4 | N5 | N6 |
+|---|---|---|---|---|---|---|
+| Forfait annuel | - | 40 € | 60 € | 80 € | 100 € | 120 € |
+| Bonus après 2 ans d'adhésion | + 20 € | + 20 € | + 30 € | + 40 € | + 50 € | + 60 € |
+| Bonus après 4 ans (en plus) | + 20 € | + 20 € | + 30 € | + 40 € | + 50 € | + 60 € |
+| Total annuel à partir de la 5e année (calcul d'après le tableau) | 40 € | 80 € | 120 € | 160 € | 200 € | 240 € |
+
+- **Par séance** : aucun plafond par séance ; « forfait non limité par acte » (Notice p.3 ; Argumentaire).
+- **Nombre de séances par an** : non limité ; seul le forfait annuel compte (Notice p.3). Aucun nombre n'est fixé dans les documents.
+- **Identique pour toutes les formules** : la garantie relève du module Frais de santé ; les Renforts n'ajoutent rien en médecines douces (Notice p.5 et p.6).
+- **Conditions sur le praticien** (diplôme, inscription ADELI ou RPPS) : Non précisé dans les documents.
+- **Justificatif** : note ou facture acquittée portant le **numéro SIRET du praticien**, le nom et le prénom de l'assuré et les actes réalisés (CG p.10 et p.11).
+- **Tiers payant** : pas de tiers payant pour l'ostéopathie, même dans le réseau Kalixia (« hors ostéopathie ») ; l'ostéopathie fait partie du réseau Kalixia (tarifs négociés) (Notice p.5 et p.8).
+
+### Kiné, ostéo, psy
+
+- **Kinésithérapeute** (honoraires paramédicaux, avec infirmiers, orthophonistes, orthoptistes, pédicures-podologues, CG p.7) : N1 100 % BR · N2 100 % BR · N3 125 % BR · N4 150 % BR · N5 175 % BR · N6 200 % BR, y compris à domicile (Notice p.5). Nombre de séances : Non précisé dans les documents.
+- **Ostéopathe** : forfait médecines naturelles ci-dessus ; pas de tiers payant (Notice p.5 et p.8).
+- **Psychologue remboursé (« Mon soutien psy »)** : 100 % BR à tous les niveaux ; consultations prescrites par le médecin traitant et remboursées par la Sécurité sociale ; séances « selon les limitations prévues par le dispositif » (nombre non chiffré dans les documents) (Notice p.5 ; CG p.7).
+- **Psychologue non remboursé** : absent de la liste du forfait médecines naturelles (Notice p.5).
+- **Psychiatre** : honoraires médicaux (DPTAM 100 % à 300 % BR selon le niveau) ; hors parcours de soins coordonnés, neuropsychiatrie et psychiatrie à 100 % BR (Notice p.5 ; CG p.7).
+
+### Dentaire
+
+- **Soins et inlays-onlays remboursés** : N1 100 % BR · N2 125 % · N3 150 % · N4 175 % · N5 200 % · N6 250 % BR (Notice p.5).
+- **Panier 100 % Santé** (soins et prothèses) : frais réels, dans la limite des honoraires limites de facturation (Notice p.5 ; CG p.8).
+- **Prothèses « Offre modérée » et « Offre libre » remboursées** : N1 100 % BR · N2 150 % · N3 200 % · N4 250 % · N5 300 % · N6 350 % BR (Notice p.5).
+- **Plafond dentaire** (prothèses modérée et libre, hors 100 % Santé), **par année d'adhésion et par assuré** : N1 et N2 sans plafond (« - ») · N3 1 400 € · N4 1 500 € · N5 1 600 € · N6 1 800 € (Notice p.5 ; CG p.8).
+  - **1re année / années suivantes** : même plafond chaque année d'adhésion ; aucune progression prévue (Notice p.5 ; CG p.8).
+  - Une fois le plafond atteint, « la prise en charge continue de s'effectuer mais à hauteur du montant indiqué au tableau des garanties » (CG p.8). Le montant appliqué au-delà n'est pas chiffré autrement.
+- **Implants, parodontologie, prothèses non remboursées** :
+  - Santé Complète : rien ; les prothèses dentaires non prises en charge par la Sécurité sociale sont exclues sauf mention au tableau (CG p.10).
+  - + Renfort Famille ou + Renfort Senior : forfait « autres frais dentaires non remboursés : prothèses, implantologie, parodontologie (sauf esthétique) », par année d'adhésion et par assuré : N1 100 € · N2 150 € · N3 200 € · N4 250 € · N5 300 € · N6 350 € (Notice p.6 ; CG p.9).
+  - **Nombre d'implants** : Non précisé dans les documents (seul le forfait annuel compte).
+- **Orthodontie remboursée par la Sécurité sociale** :
+  - Santé Complète : 100 % BR à tous les niveaux (Notice p.5).
+  - + Renfort Famille : forfait par année d'adhésion et par assuré N1 200 € · N2 300 € · N3 400 € · N4 500 € · N5 600 € · N6 700 €, + 100 € après 2 ans, + 100 € de plus après 4 ans (Notice p.6).
+  - + Renfort Senior : pas de forfait orthodontie (Notice p.6).
+  - **Âge limite, nombre de semestres** : Non précisé dans les documents. L'exemple chiffré porte sur un enfant de moins de 16 ans, « 6 semestres max. » (Exemples).
+- **Orthodontie non remboursée** (adulte, notamment) : aucune ligne au tableau ; exclue (CG p.10).
+- **Devis** : demande de devis dentaire depuis l'espace assuré (Notice p.8) ; « pensez à nous faire parvenir votre devis » (Exemples).
+
+### Optique
+
+- **Prescription obligatoire** : seuls les frais d'optique prescrits sont remboursés (CG p.8).
+- **Lunettes classe B** (forfait Sécurité sociale et ticket modérateur compris, par équipement) :
+
+| Équipement | N1 | N2 | N3 | N4 | N5 | N6 |
+|---|---|---|---|---|---|---|
+| 2 verres simples | 100 % BR | 100 € | 150 € | 200 € | 250 € | 300 € |
+| 1 verre simple + 1 complexe | 100 % BR | 125 € | 150 € | 200 € | 250 € | 300 € |
+| 2 verres complexes ou très complexes | 100 % BR | 200 € | 275 € | 350 € | 425 € | 500 € |
+| Bonus après 2 ans / après 4 ans | - | + 50 € / + 50 € | + 50 € / + 50 € | + 50 € / + 50 € | + 50 € / + 50 € | + 50 € / + 50 € |
+
+  (Notice p.6, image vérifiée : aux N3 à N6, une seule case couvre les catégories 1 et 2.)
+- **Monture** : 100 € au plus en classe B, 30 € en classe A (Notice p.6).
+- **100 % Santé (classe A)** : frais réels, appairage et adaptation compris (Notice p.6).
+- **Renouvellement** : un équipement tous les 2 ans ; 1 an avant 16 ans ou si la vue évolue ; renouvellement anticipé possible (article L165-1 CSS) sur prescription et justificatif d'évolution de la vue, sinon pas de prise en charge (Notice p.6 ; CG p.11).
+- **Lentilles** (y compris jetables, CG p.8), par année d'adhésion et par assuré :
+  - acceptées par la Sécurité sociale : N1 100 % BR · N2 100 % BR + 20 € · N3 + 70 € · N4 + 120 € · N5 + 170 € · N6 + 220 € ;
+  - refusées : N1 rien · N2 50 € · N3 100 € · N4 150 € · N5 200 € · N6 250 € (Notice p.6).
+- **Chirurgie réfractive, laser, implant oculaire**, par année d'adhésion et **par assuré** (pas par œil) : N1 rien · N2 100 € · N3 150 € · N4 200 € · N5 250 € · N6 300 € (Notice p.6). L'exemple « myopie, 2 yeux » donne les mêmes montants (Exemples).
+- **Tiers payant** optique : réseau Kalixia (Notice p.8) ; sans tiers payant, envoyer factures et ordonnances (CG p.11).
+
+### Audio
+
+- **Classe I (100 % Santé)** : frais réels ; **classe II** : 100 % BR par oreille ; **accessoires** : 100 % BR, à tous les niveaux (Notice p.6). Les accessoires visés comprennent piles, consommables et accessoires (CG p.8).
+- **Fréquence** : un équipement par oreille tous les 4 ans (Notice p.6).
+- **Plafond** : 1 700 € par aide auditive, Sécurité sociale comprise (Notice p.6).
+- **+ Renfort Senior** : forfait par oreille tous les 4 ans, accessoires et entretien compris, en plus du socle : N1 100 € · N2 150 € · N3 200 € · N4 250 € · N5 300 € · N6 350 €, + 50 € par oreille après 2 ans, + 50 € de plus après 4 ans (Notice p.6 ; CG p.9).
+- Âge minimum ou maximum : Non précisé dans les documents.
+
+### Cure thermale
+
+- **+ Renfort Senior** : soins de cure remboursés 100 % BR, et forfait frais annexes (hébergement et transport), par année d'adhésion et par assuré : N1 100 € · N2 150 € · N3 200 € · N4 250 € · N5 300 € · N6 350 € (Notice p.6 ; CG p.9).
+- **Santé Complète et + Renfort Famille** : aucune ligne « cure thermale » au tableau (Notice p.5 et p.6).
+- **Cure avec hospitalisation** : relève des séjours en soins médicaux et de réadaptation (frais de séjour aux frais réels) (CG p.6).
+- **Exclus** : cures non prises en charge par l'Assurance Maladie, thalassothérapie (CG p.10).
+- **Justificatifs** : factures des frais médicaux, de transport et d'hébergement (CG p.11).
+
+### Pharmacie, vaccins, contraception, sevrage
+
+- **Médicaments remboursés** : 100 % BR à tous les niveaux (Notice p.5).
+- **Médicaments et vaccins prescrits non remboursés** :
+  - Santé Complète : rien (pas de ligne au tableau).
+  - + Renfort Famille ou + Renfort Senior : forfait par année d'adhésion et par assuré N1 30 € · N2 40 € · N3 50 € · N4 60 € · N5 70 € · N6 80 € (Notice p.6). Couvre « les frais de pharmacie ou vaccins médicalement prescrits » non remboursés (CG p.9) : produits pharmaceutiques réglementés, APSI réglementés, compléments alimentaires à TVA 5,5 % ; pas les produits à TVA 20 % (CG p.9).
+- **Contraception** : Non précisé dans les documents.
+- **Sevrage tabagique** : Non précisé dans les documents.
+
+### Maternité, naissance
+
+- **Séjour de maternité** : mêmes garanties que la médecine et la chirurgie (frais de séjour et forfait journalier aux frais réels, honoraires, chambre particulière N2 à N6, frais d'accompagnant) (Notice p.5).
+- **Prime de naissance ou d'adoption** : seulement avec le Renfort Famille : N1 100 € · N2 130 € · N3 160 € · N4 190 € · N5 220 € · N6 250 €, une fois par enfant ; adoption d'un enfant mineur (Notice p.6 ; CG p.9). Pièces : livret de famille ou extrait d'acte de naissance ; jugement d'adoption (CG p.11).
+- **Assurer le nouveau-né** : ajout d'un assuré à la date demandée, au plus tôt le lendemain de la réception de la demande d'ajout par APRIL (CG p.13). Aucun effet rétroactif à la naissance n'est prévu.
+
+### Prévention
+
+- Actes de prévention de l'arrêté du 8 juin 2006 remboursés au moins au ticket modérateur (Notice p.5).
+- Dépistage, bilan de santé, vaccins remboursés hors pharmacie : Non précisé dans les documents.
+
+### Hospitalisation : jours, psychiatrie, SMR
+
+- **Hospitalisation au sens du contrat** : séjour d'au moins 24 heures ; aussi la chirurgie ambulatoire codée ADC/KC de moins de 24 heures et l'hospitalisation à domicile prise en charge par l'Assurance Maladie (CG p.19).
+- **Frais de séjour et forfait journalier** : frais réels, sans limite de durée indiquée (Notice p.5).
+- **Chambre particulière** (médecine, chirurgie, HAD, maternité), par jour : N1 rien · N2 40 € · N3 55 € · N4 70 € · N5 85 € · N6 100 € ; aussi en ambulatoire (CG p.6). **Nombre de jours : aucune limite indiquée** au tableau (Notice p.5).
+- **SMR** (soins médicaux et de réadaptation : établissements climatiques, de rééducation, de réadaptation, de diététique, cures thermales avec hospitalisation, maison de repos, convalescence, moyens séjours, CG p.6) : séjour et forfait journalier aux frais réels, honoraires 100 % BR ; chambre particulière N2 40 € à N6 100 € par jour, **dans la limite de 30 jours** (Notice p.5). Que les 30 jours s'entendent par séjour ou par an : Non précisé dans les documents.
+- **Psychiatrie** : séjour et forfait journalier aux frais réels, honoraires 100 % BR ; **chambre particulière exclue** (Notice p.5 ; CG p.6 ; IPID).
+- **Frais d'accompagnant** (lit et repas facturés par l'établissement), par jour : N1 rien · N2 20 € · N3 25 € · N4 30 € · N5 35 € · N6 40 € ; médecine, chirurgie, HAD, maternité seulement ; **exclus en SMR, rééducation et psychiatrie** (Notice p.5 ; CG p.6 ; IPID). Nombre de jours et âge du patient : Non précisé dans les documents.
+- **Forfait confort TV / téléphone** : par an et par assuré N1 rien · N2 20 € · N3 25 € · N4 30 € · N5 35 € · N6 40 € (Notice p.5). Voir l'écart avec les exclusions (section « Contradictions »).
+- **Honoraires** (médecine, chirurgie) : DPTAM N1 100 % → N6 300 % BR ; non DPTAM N1 et N2 100 % → N5 et N6 200 % BR (Notice p.5).
+- **Secteur non conventionné** : 100 % BR (Notice p.5).
+- **Non garantis** : EHPAD, maisons d'accueil spécialisées, gérontologie, instituts médico-pédagogiques, appartements privatifs, hôtels hospitaliers non pris en charge (CG p.10) ; longs séjours (IPID).
+- **Prise en charge hospitalière** : à demander depuis l'espace assuré (Notice p.8).
+
+### Transport
+
+- Transports prescrits et remboursés par l'Assurance Maladie (ambulance, VSL, taxi conventionné) : 100 % BR à tous les niveaux (Notice p.5 ; CG p.7).
+- Franchise de 4 € par transport non remboursée (Exemples ; CG p.10).
+- Transport non remboursé par la Sécurité sociale : Non précisé dans les documents (aucune ligne).
+
+### Autres
+
+- **Urgences** : forfait patient urgences et actes lourds aux frais réels (Notice p.5).
+- **Matériel médical** (orthèses, attelles, béquilles, prothèses orthopédiques et capillaires hors 100 % Santé, petit et gros appareillage) : N1 et N2 100 % BR · N3 125 % · N4 150 % · N5 175 % · N6 200 % BR ; prothèses capillaires 100 % Santé et location de véhicule pour personne handicapée 100 % Santé : frais réels (Notice p.5 ; CG p.7).
+- **Analyses, laboratoire** : même ligne que les paramédicaux, 100 % à 200 % BR (Notice p.5).
+- **Étranger** : soins inopinés pris en charge par la Sécurité sociale française, 100 % BR, en euros ; actes hors nomenclature exclus (CG p.7).
+- **Télémédecine** : généraliste ou spécialiste en visio, 7 j/7 de 6 h à 0 h, depuis l'espace assuré (Notice p.8).
+- **Assistance** (aide-ménagère, garde d'enfants) : aucune garantie d'assistance dans les documents. L'Association des Assurés APRIL propose un « Soutien Hospitalisation » (garde d'enfants, aide-ménagère) et d'autres soutiens sous conditions publiées sur www.association-assures-april.fr, non chiffrés dans les documents (Notice p.9).
+- **Délai de remboursement** : Non précisé dans les documents ; remboursement automatique avec la télétransmission (CG p.10).
+
 ## Bonus fidélité
 
 Le bonus s'ajoute après la 2e année d'adhésion, puis une seconde fois après la 4e (CG p.7, p.8, p.9 ; Notice p.3). « Après 2 années d'adhésion et à date anniversaire de votre contrat » (Notice p.3 ; Argumentaire).
@@ -443,6 +583,11 @@ Document de 03/2025, calculs sur la BR au 1er juin 2024 ; « Pour une estimation
 8. **Formalités médicales** : « Pas de formalité médicale » (Notice p.3 ; Argumentaire ; CG p.3) ; la même brochure parle, dans « Pourquoi choisir APRIL ? », d'un « recueil de votre état de santé, avec la Télésélection médicale » (Notice p.10).
 9. **Délai de 2 ans** : l'IPID le fait courir à partir du remboursement de la Sécurité sociale (IPID) ; les CG à partir de l'événement qui donne naissance à l'action (CG p.16).
 10. **Millésime** : les Exemples datent de 03/2025 (BR au 1er juin 2024) ; les CG, la Notice et l'IPID de mars 2026 (Exemples ; CG p.1 ; Notice p.12 ; IPID).
+11. **TV / téléphone à l'hôpital** : le tableau prévoit un « forfait confort extra hospitalier (frais TV/Téléphone) » de 20 € (N2) à 40 € (N6) par an (Notice p.5 ; CG p.20) ; les exclusions écartent « les frais de téléphone, télévision, internet, blanchissage » non pris en charge par l'Assurance Maladie (CG p.10), sans réserver le cas du tableau.
+12. **Chambre particulière en SMR** : « dans la limite de 30 jours » (Notice p.5), sans dire s'il s'agit de 30 jours par séjour ou par an.
+13. **Exemples, spécialiste OPTAM** (dépense 54 €, Sécurité sociale 20,05 €) : restes à charge imprimés 22,50 € (N1), 14,63 € (N2), 6,75 € (N3), alors que dépense − Sécurité sociale − APRIL donne 24,50 €, 16,63 € et 8,75 € (Exemples, image vérifiée). Le document équivalent de Complémentaire Senior GAN imprime bien 16,63 € et 8,75 €.
+14. **Exemples, pédiatre OPTAM, N1** : remboursement APRIL imprimé 10,05 € pour un niveau à 100 % BR, alors que le ticket modérateur vaut 35 − 24,50 = 10,50 € ; reste à charge imprimé 15,45 € (Exemples, image vérifiée).
+15. **Comparateur Santéo** : la ligne APRIL Santé Mix affiche les niveaux « en diagonale » (même niveau Hospitalisation et Frais de santé) et sans Renfort ; « implantologie : — » y est juste pour Santé Complète, mais un forfait de 100 € à 350 € existe avec un Renfort (Notice p.6). Les autres valeurs affichées concordent avec le tableau (Notice p.5 et p.6).
 
 ## Questions fréquentes
 
@@ -462,7 +607,7 @@ Document de 03/2025, calculs sur la BR au 1er juin 2024 ; « Pour une estimation
 14. **Les implants sont-ils remboursés ?** Seulement avec un Renfort : forfait « autres frais dentaires non remboursés » (prothèses, implantologie, parodontologie) de 100 € (N1) à 350 € (N6) par an et par assuré (Notice p.6).
 15. **L'orthodontie ?** 100 % BR dans le socle ; avec le Renfort Famille, forfait de 200 € (N1) à 700 € (N6) par an, + 100 € après 2 ans, + 100 € après 4 ans (Notice p.5 et p.6).
 16. **Les appareils auditifs ?** 100 % Santé : frais réels ; classe II : 100 % BR par oreille, un équipement tous les 4 ans, plafond 1 700 € par aide ; + 100 € à 350 € par oreille avec le Renfort Senior (Notice p.6).
-17. **L'ostéopathe est-il remboursé ?** Oui, dans le forfait médecines naturelles : 40 € (N2) à 120 € (N6) par an et par assuré ; rien au N1 ; pas de tiers payant Kalixia pour l'ostéopathie (Notice p.5 et p.8).
+17. **L'ostéopathe est-il remboursé ?** Oui, dans le forfait médecines naturelles : 40 € (N2) à 120 € (N6) par an et par assuré ; pas de forfait au N1, où le tableau imprime toutefois un bonus de + 20 € après 2 ans ; pas de tiers payant Kalixia pour l'ostéopathie (Notice p.5 et p.8).
 18. **Faut-il avancer les frais ?** Non avec le tiers payant, sur présentation de la carte (CG p.10) ; tiers payant systématique avec Kalixia, hors ostéopathie (Notice p.8).
 19. **Y a-t-il une prime de naissance ?** Avec le Renfort Famille : 100 € (N1) à 250 € (N6), une fois par enfant (Notice p.6 ; CG p.9).
 20. **Peut-on prendre des niveaux différents ?** Oui entre Hospitalisation et Frais de santé, 2 niveaux d'écart au plus ; le Renfort suit le niveau Frais de santé ; un seul niveau par famille (Notice p.2 et p.5).
@@ -471,3 +616,28 @@ Document de 03/2025, calculs sur la BR au 1er juin 2024 ; « Pour une estimation
 23. **Y a-t-il une réduction pour un couple ?** Oui, −10 % (Notice p.4 ; Bulletin p.3).
 24. **Peut-on payer tous les mois ?** Oui, par prélèvement seulement, 16 €/mois minimum (CG p.15 ; Bulletin p.3).
 25. **Que se passe-t-il en cas d'impayé ?** Mise en demeure ; suspension 30 jours après ; résiliation 10 jours plus tard (CG p.15).
+26. **La sophrologie est-elle remboursée ?** Oui, dans le forfait médecines naturelles : 40 € (N2) à 120 € (N6) par an et par assuré, plus le bonus fidélité après 2 et 4 ans ; pas de forfait au N1 hors bonus (Notice p.5).
+27. **Combien de séances d'ostéopathe par an ?** Pas de nombre fixé ni de plafond par séance : le forfait annuel est « non limité par acte » (Notice p.3 ; Argumentaire). Exemple au N4 : 80 € par an, quel que soit le nombre de séances (Notice p.5).
+28. **Le naturopathe, l'acupuncteur, le chiropracteur, l'hypnothérapeute, le diététicien, le réflexologue ?** Oui, tous dans le même forfait annuel (Notice p.5).
+29. **Le psychomotricien ou un psychologue non remboursé ?** Non cités dans la liste du forfait médecines naturelles (Notice p.5). Seul le psychologue « Mon soutien psy » est remboursé, à 100 % BR (Notice p.5).
+30. **Faut-il un praticien diplômé ou inscrit à l'ADELI ?** Non précisé dans les documents. La facture doit porter le numéro SIRET du praticien (CG p.10).
+31. **Le kiné est-il bien remboursé ?** Honoraires paramédicaux : 100 % BR (N1, N2), 125 % (N3), 150 % (N4), 175 % (N5), 200 % BR (N6) ; nombre de séances non précisé (Notice p.5).
+32. **Le plafond dentaire est-il plus bas la première année ?** Non : même plafond chaque année d'adhésion, 1 400 € (N3) à 1 800 € (N6) ; aucun plafond aux N1 et N2 (Notice p.5 ; CG p.8).
+33. **Combien d'implants sont remboursés ?** Non précisé dans les documents. Avec un Renfort, un forfait annuel de 100 € (N1) à 350 € (N6) couvre implants, parodontologie et prothèses non remboursées ; rien sans Renfort (Notice p.6).
+34. **La parodontologie ?** Même forfait du Renfort : 100 € à 350 € par an et par assuré, sauf esthétique (Notice p.6 ; CG p.9).
+35. **Jusqu'à quel âge l'orthodontie est-elle couverte ?** Non précisé dans les documents. L'orthodontie remboursée par la Sécurité sociale est à 100 % BR, et jusqu'à 700 € par an avec le Renfort Famille (Notice p.5 et p.6).
+36. **Les lentilles jetables ?** Oui, comprises dans les lentilles (CG p.8) : refusées par la Sécurité sociale 50 € (N2) à 250 € (N6) par an (Notice p.6).
+37. **La chirurgie de la myopie est-elle remboursée par œil ?** Non, par année et par assuré : 100 € (N2) à 300 € (N6), rien au N1 (Notice p.6 ; Exemples).
+38. **Quelle monture au maximum ?** 100 € en classe B, 30 € en classe A (Notice p.6).
+39. **La cure thermale ?** Seulement avec le Renfort Senior : soins à 100 % BR et 100 € (N1) à 350 € (N6) par an pour l'hébergement et le transport (Notice p.6 ; CG p.9).
+40. **Les vaccins non remboursés ?** Avec un Renfort, dans le forfait médicaments prescrits non remboursés : 30 € (N1) à 80 € (N6) par an (Notice p.6 ; CG p.9). Rien en Santé Complète.
+41. **La pilule, les patchs anti-tabac ?** Contraception et sevrage tabagique : Non précisé dans les documents. Un médicament prescrit non remboursé entre dans le forfait du Renfort s'il est un produit pharmaceutique réglementé (CG p.9).
+42. **La chambre particulière en psychiatrie ?** Non, exclue (CG p.6 ; IPID ; Notice p.5).
+43. **Combien de jours de chambre particulière ?** Aucune limite indiquée en médecine, chirurgie et maternité ; 30 jours en soins de suite et de réadaptation (Notice p.5).
+44. **Le lit d'un parent qui accompagne un enfant hospitalisé ?** Frais d'accompagnant 20 € (N2) à 40 € (N6) par jour, en médecine, chirurgie et maternité ; pas en SMR ni en psychiatrie (Notice p.5 ; IPID).
+45. **Y a-t-il une assistance (aide-ménagère, garde d'enfants) ?** Aucune garantie d'assistance dans les documents. L'Association des Assurés APRIL offre un « Soutien Hospitalisation » (garde d'enfants, aide-ménagère) sous conditions, non chiffré (Notice p.9).
+46. **Mon bébé est-il couvert dès la naissance ?** L'ajout prend effet au plus tôt le lendemain de la réception de la demande par APRIL (CG p.13) : faire la demande sans attendre. Avec le Renfort Famille, prime de naissance de 100 € à 250 € (Notice p.6).
+47. **Y a-t-il une téléconsultation ?** Oui, généraliste ou spécialiste en visio, 7 j/7 de 6 h à minuit, depuis l'espace assuré (Notice p.8).
+48. **Sous quel délai suis-je remboursé ?** Non précisé dans les documents. Avec la télétransmission, sans démarche (CG p.10).
+49. **Les soins à l'étranger ?** Soins imprévus pris en charge par la Sécurité sociale française : 100 % BR, en euros (CG p.7 ; Notice p.5).
+50. **La télévision à l'hôpital ?** Forfait confort 20 € (N2) à 40 € (N6) par an (Notice p.5) ; voir l'écart avec les exclusions (CG p.10).
