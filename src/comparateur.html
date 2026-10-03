@@ -1711,7 +1711,8 @@ function chargerPdfjs(){
 // ---- Cotisation écrite sur le tableau de garantie officiel (Fabrice, 03/10/2026) ----
 // « 23,42€/m » en noir gras, juste au-dessus du nom de la formule, en tête de sa colonne, sur la première page où elle
 // figure. Emplacements relevés à la main sur chaque PDF et vérifiés sur image (TAMPONS : fichier → formule → page,
-// centre x, ligne de base y en points PDF, taille). Sert à l'aperçu 👁 et aux pièces jointes du courrier.
+// centre x, ligne de base y en points PDF, taille). Pièces jointes du courrier seulement : dans l'aperçu 👁 rien n'est
+// encore retenu, le prix n'y apprendrait rien (Fabrice, 03/10/2026).
 const TAMPONS={};
 function cleTampon(key,fi){
   if(key==="APRIL"){ const code=Object.keys(APRIL_RANG).find(c=>APRIL_RANG[c]===Math.floor(fi/100)); return code?["APRIL:"+code+"|"+(fi%100)]:[]; }
@@ -1780,10 +1781,7 @@ function verifDocs(r){
     zone.innerHTML=""; info.textContent="Chargement de « "+nom+" »…";
     try{
       const lib=await chargerPdfjs();
-      let src=url;
-      if(estTableau(nom)&&r.total!=null){ try{ const t=await pdfAvecTarifs(url,[{key:r.key,fi:r.fi,total:r.total}]); if(t.poses) src={data:t.octets}; }catch(_){ } }
-      if(n!==jeton) return;
-      const pdf=await lib.getDocument(src).promise; if(n!==jeton) return;
+      const pdf=await lib.getDocument(url).promise; if(n!==jeton) return;
       const N=pdf.numPages, dep=Math.min(N,DOCPAGE[url.split("/").pop()]||1);
       const larg=Math.min(zone.clientWidth-20,960);
       let fin=dep-1;
