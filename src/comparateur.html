@@ -198,6 +198,24 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #reload:active{transform:rotate(180deg)}
 #reload{touch-action:manipulation;-webkit-user-select:none;user-select:none}
 #aipanel[hidden]{display:none}#aipanel:not([hidden]){display:flex}
+#aibtn{position:fixed;bottom:16px;right:16px;z-index:150;padding:10px 16px;border-radius:99px;border:0;background:var(--accent);color:var(--accent-ink);font:700 14px 'Archivo',sans-serif;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.28)}
+#aibtn[hidden]{display:none}
+#aipanel{position:fixed;bottom:68px;right:16px;z-index:150;width:min(460px,calc(100vw - 32px));height:min(620px,calc(100vh - 100px));flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 34px rgba(0,0,0,.3);overflow:hidden}
+#aipanel .aihead{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+#aipanel .aihead b{font-family:'Archivo',sans-serif;font-size:15px}
+#aipanel .aisous{font-size:10.5px;color:var(--muted);flex:1;min-width:0}
+#aipanel .aihead button{border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:6px;padding:2px 8px;cursor:pointer;font-size:13px}
+#ailog{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--ground)}
+#ailog .aim{max-width:88%;padding:8px 11px;border-radius:12px;font-size:13.5px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+#ailog .aim.q{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:4px}
+#ailog .aim.r{align-self:flex-start;background:var(--panel);border:1px solid var(--line);border-bottom-left-radius:4px}
+#ailog .aim.r.ko{border-color:var(--bad,#b42318);color:var(--bad,#b42318)}
+#ailog .aisrc{display:block;margin-top:6px;font-size:11px;color:var(--muted)}
+#ailog .aivide{color:var(--muted);font-size:12.5px;line-height:1.5}
+.aiform{display:flex;gap:6px;padding:10px;border-top:1px solid var(--line);background:var(--panel)}
+.aiform textarea{flex:1;resize:none;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--ground);color:var(--ink);font:inherit;font-size:13.5px}
+.aiform button{border:0;border-radius:8px;padding:0 14px;background:var(--accent);color:var(--accent-ink);font:700 13px 'Archivo',sans-serif;cursor:pointer}
+.aiform button:disabled{opacity:.5;cursor:wait}
 .sendchk{display:block;width:18px;height:18px;margin:5px auto 0;accent-color:var(--accent)}
 .sendko{display:block;width:18px;height:18px;margin:5px auto 0;opacity:.35;cursor:not-allowed}
 .rowstar{border:0;background:transparent;cursor:pointer;font-size:15px;line-height:1;padding:0 0 0 6px;color:var(--muted);vertical-align:-1px}
@@ -318,18 +336,19 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 .addb{border:1.5px dashed var(--accent);background:var(--soft);color:var(--accent);border-radius:9px;padding:7px 13px;cursor:pointer;font:800 12.5px 'Archivo',sans-serif}
 .addb:hover{background:var(--accent);color:var(--accent-ink);border-style:solid}
 </style>
-<button id="aibtn" title="Assistant IA" style="position:fixed;bottom:16px;right:16px;z-index:60;display:none;padding:10px 16px;border-radius:99px;border:1px solid var(--line);background:var(--accent);color:var(--accent-ink);font:700 14px 'Archivo',sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)">🤖 Assistant</button>
-<div id="aipanel" hidden style="position:fixed;bottom:66px;right:16px;z-index:60;width:min(440px,92vw);max-height:70vh;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.25)">
-  <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)">
-    <b style="font-family:'Archivo',sans-serif">Assistant garanties</b>
-    <span style="font-size:10.5px;color:var(--muted)">documents contractuels seuls font foi</span>
-    <button id="aiclose" style="margin-left:auto;border:1px solid var(--line);background:var(--soft);color:var(--ink);border-radius:6px;padding:2px 8px;cursor:pointer">✕</button>
+<button id="aibtn" title="IA produits : une question sur nos contrats" aria-haspopup="dialog" hidden>💬 IA produits</button>
+<div id="aipanel" hidden role="dialog" aria-labelledby="aititre">
+  <div class="aihead">
+    <b id="aititre">IA produits</b>
+    <span class="aisous">nos fiches et garanties · les documents contractuels font foi</span>
+    <button id="ainew" type="button" title="Nouvelle conversation">↺</button>
+    <button id="aiclose" type="button" title="Fermer">✕</button>
   </div>
-  <div id="ailog" style="flex:1;overflow:auto;padding:12px;font-size:13.5px;line-height:1.5;white-space:pre-wrap"></div>
-  <div style="display:flex;gap:6px;padding:10px;border-top:1px solid var(--line)">
-    <input id="aiq" placeholder="Ta question sur les garanties…" style="flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:var(--ground);color:var(--ink);font:inherit">
-    <button id="aisend" style="border:none;background:var(--accent);color:var(--accent-ink);border-radius:7px;padding:8px 14px;font-weight:700;cursor:pointer">Envoyer</button>
-  </div>
+  <div id="ailog" aria-live="polite"></div>
+  <form id="aiform" class="aiform">
+    <textarea id="aiq" rows="2" placeholder="Ex. : la sophrologie est-elle remboursée chez Cap Évolution ?"></textarea>
+    <button id="aisend" type="submit">Envoyer</button>
+  </form>
 </div>
 <button id="reload" title="Recharger la dernière version" aria-label="Recharger">↻</button>
 <div class="wrap">
@@ -3783,60 +3802,59 @@ if(__PRIV__){
 });
 calc();
 
-// ---- Assistant IA (capacité sample) ----
-(async()=>{
-  const s=await CUSE("sample");
-  if(!s) return;
-  const btn=document.getElementById("aibtn"),panel=document.getElementById("aipanel"),
-        log=document.getElementById("ailog"),q=document.getElementById("aiq"),send=document.getElementById("aisend");
-  btn.style.display="block";
-  btn.addEventListener("click",()=>{panel.hidden=!panel.hidden;if(!panel.hidden)q.focus();});
-  document.getElementById("aiclose").addEventListener("click",()=>panel.hidden=true);
-  const hist=[];
-  const GKEYS={MCCINOVA:["mccinova"],FLEXIA:["flexia"],SOLENCIA:["solencia","solencia"],CAPEVO:["evolution","évolution","capevo","acces","accès","tranquillité","sérénité"],LPSH:["lps","hospi","hospitalisation seule"],CAPNR:["cap nr","capnr","cap 100","cap 130","cap 160","cap 200","cap 300","cap 400","essentiel"],REV:["revoluo","révoluo","rev "],RF50:["rf50","rf 50","renfort 50"],RF100:["rf100","rf 100","renfort 100"],MV:["verte","gci"],TALIS:["talis"]};
-  const DOCK={MCCINOVA:"MCCIDOC",FLEXIA:"FLEXDOC",SOLENCIA:"SOLDOC",CAPEVO:"CAPEVODOC",CAPNR:"CAPNRDOC",REV:"REVDOC",RF50:"REVDOC",RF100:"REVDOC",MV:"MVDOC",TALIS:"TALISDOC"};
-  function summary(){
-    let out="";
-    for(const k of Object.keys(F)){
-      const f=F[k],e=EX[k]||{};
-      out+="## "+f.label+" ("+COMP[k]+", "+(f.resp?"responsable":"non responsable")+")\nFormules: "+f.names.join(", ")+"\n";
-      out+="Hospi Optam: "+f.hospO.join("/")+" | hors Optam: "+f.hospN.join("/")+" | Chambre: "+f.ch.join("/")+"\n";
-      out+="Consult Optam: "+f.honoO.join("/")+" | hors: "+f.honoN.join("/")+"\n";
-      out+="Prothèses dentaires: "+f.dent.join("/")+" | Implant: "+(e.imp||[]).join("/")+" | Ortho R: "+(e.orthR||[]).join("/")+" | Ortho NR: "+(e.orthN||[]).join("/")+"\n";
-      out+="Optique: "+f.opt.join("/")+" | Lentilles acc: "+(e.lentA||[]).join("/")+" | réf: "+(e.lentR||[]).join("/")+" | Audio: "+(e.aud||[]).join("/")+" | Méd douce: "+f.md.join("/")+"\n";
-      out+="Notes: "+(TGNOTE[k]||"")+"\n\n";
-    }
-    return out;
+// ---- IA produits (Fabrice, 03/10/2026) ----
+// Chat des commerciaux sur nos produits. La page n'appelle que le relais ia-produits.php (capisante.fr), qui
+// interroge Claude avec nos seules données publiques : index des fiches docs/connaissances/, garanties.json,
+// fiches lues à la demande. La page joint le profil et les tarifs affichés à l'instant. Les mêmes données
+// servent au CRM WhatsApp, qui les interroge de son côté. Historique : la conversation de l'onglet, en texte seul.
+const IA_URL="https://capisante.fr/ia-produits.php";
+(function(){
+  if(!HOSTED) return;
+  const btn=document.getElementById("aibtn"),panel=document.getElementById("aipanel"),log=document.getElementById("ailog"),
+        q=document.getElementById("aiq"),send=document.getElementById("aisend");
+  let hist=[]; try{ hist=JSON.parse(sessionStorage.getItem("ia_hist")||"[]")||[]; }catch(_){}
+  const garder=()=>{ try{ sessionStorage.setItem("ia_hist",JSON.stringify(hist.slice(-20))); }catch(_){} };
+  const bulle=(cls,txt)=>{ const d=document.createElement("div"); d.className="aim "+cls; d.textContent=txt; log.appendChild(d); log.scrollTop=log.scrollHeight; return d; };
+  function vide(){ log.innerHTML='<div class="aivide">Posez une question sur nos contrats : délais d\'attente, âges, médecines douces, séances, plafonds dentaires, implants, assistance… L\'IA lit nos fiches produit et le tableau affiché, et cite ses sources. Exemples :<br>• La sophrologie est-elle remboursée chez Cap Évolution ?<br>• Quel délai d\'attente chez GAN Senior ?<br>• Quelle formule à moins de 100 € rembourse l\'orthodontie ?</div>'; }
+  function rejouer(){ log.innerHTML=""; if(!hist.length) return vide();
+    hist.forEach(t=>{ const d=bulle(t.role==="user"?"q":"r",t.texte); if(t.fiches&&t.fiches.length){ const s=document.createElement("span"); s.className="aisrc"; s.textContent="Fiches lues : "+t.fiches.join(", "); d.appendChild(s);} }); }
+  function contexte(){
+    const v=id=>(document.getElementById(id)||{}).value||"";
+    const reg={SAL:"salarié",TNS:"TNS",RL:"Alsace-Moselle salarié",TNSRL:"Alsace-Moselle TNS"}[v("regime")]||v("regime");
+    let c="Profil saisi : assuré "+(v("naiss")||"non saisi")+", conjoint "+(v("cnj")||"aucun")+", "+(+v("kids")||0)+" enfant(s) mineur(s), régime "+reg+", département ou code postal "+(v("cp")||"non saisi")+".\n";
+    if(PRO&&(PRO.nom||PRO.prenom)) c+="Prospect : "+[PRO.civ,PRO.prenom,PRO.nom].filter(Boolean).join(" ")+".\n";
+    const rows=(LASTROWS||[]).slice(0,80);
+    if(rows.length){ c+="Formules affichées, tarif mensuel pour ce profil :\n";
+      rows.forEach(r=>{ c+="- "+(r.gamme+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")+" : "+(r.total!=null?eur(r.total):"tarif indisponible")+(r.resp===false?" (non responsable)":"")+"\n"; }); }
+    else c+="Aucune formule affichée (profil incomplet).\n";
+    return c;
   }
-  function docsFor(question){
-    const ql=question.toLowerCase();
-    const picked=new Set();
-    for(const[k,words]of Object.entries(GKEYS)) if(words.some(w=>ql.includes(w))) picked.add(DOCK[k]);
-    let out="";
-    for(const d of picked) out+="\n\n===== DOCUMENT "+d+" =====\n"+(D.DOCSMD[d]||"");
-    return out;
-  }
-  async function ask(){
-    const question=q.value.trim(); if(!question) return;
-    q.value=""; send.disabled=true;
-    log.textContent+=(log.textContent?"\n\n":"")+"❓ "+question+"\n→ ";
-    const anchor=log.textContent.length;
-    const ctxIn=document.getElementById("naiss").value+" ans/année, régime "+document.getElementById("regime").value+", dépt "+document.getElementById("cp").value;
-    const instr="Tu es l'assistant du comparateur mutuelle de Santéo (courtier Capi Finance). Tu réponds UNIQUEMENT sur les gammes ci-dessous, en français, de façon concise et exacte, en citant les chiffres des données fournies. Si l'information n'est pas dans les données, dis-le. Termine par: «Seuls les documents contractuels font foi.» Profil client en cours: "+ctxIn+".\n\n=== SYNTHÈSE DES GAMMES ===\n"+summary()+docsFor(question);
-    const turns=[{role:"user",content:instr+"\n\nQuestion: "+question}];
-    for(const t of hist) turns.splice(turns.length-1,0,t);
+  async function poser(){
+    const question=q.value.trim(); if(!question||send.disabled) return;
+    if(!hist.length) log.innerHTML="";
+    bulle("q",question); q.value=""; send.disabled=true;
+    const att=bulle("r","Je lis nos fiches…"); const t0=Date.now();
+    const tic=setInterval(()=>{ att.textContent="Je lis nos fiches… "+Math.round((Date.now()-t0)/1000)+" s"; },1000);
     try{
-      const r=await s(turns,{cache:false,onText:({text})=>{log.textContent=log.textContent.slice(0,anchor)+text;log.scrollTop=log.scrollHeight;}});
-      log.textContent=log.textContent.slice(0,anchor)+r.text;
-      hist.push({role:"user",content:question},{role:"assistant",content:r.text});
-      if(hist.length>8)hist.splice(0,hist.length-8);
-    }catch(e){
-      log.textContent+="[Assistant indisponible: "+(e&&e.code||e)+"]";
-    }
-    send.disabled=false; log.scrollTop=log.scrollHeight;
+      const r=await fetch(IA_URL,{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({question,contexte:contexte(),historique:hist.map(t=>({role:t.role,texte:t.texte}))})});
+      let j={}; try{ j=await r.json(); }catch(_){}
+      clearInterval(tic);
+      if(!r.ok||!j.reponse){ att.classList.add("ko"); att.textContent=j.erreur||("L'IA produits ne répond pas (HTTP "+r.status+")."); }
+      else{
+        att.textContent=j.reponse;
+        if(j.fiches&&j.fiches.length){ const s=document.createElement("span"); s.className="aisrc"; s.textContent="Fiches lues : "+j.fiches.join(", "); att.appendChild(s); }
+        hist.push({role:"user",texte:question},{role:"assistant",texte:j.reponse,fiches:j.fiches||[]}); garder();
+      }
+    }catch(e){ clearInterval(tic); att.classList.add("ko"); att.textContent="IA produits injoignable pour l'instant — réessayez dans une minute."; }
+    send.disabled=false; log.scrollTop=log.scrollHeight; q.focus();
   }
-  send.addEventListener("click",ask);
-  q.addEventListener("keydown",e=>{if(e.key==="Enter")ask();});
+  btn.hidden=false;
+  btn.addEventListener("click",()=>{ panel.hidden=!panel.hidden; if(!panel.hidden){ rejouer(); q.focus(); } });
+  document.getElementById("aiclose").addEventListener("click",()=>{ panel.hidden=true; });
+  document.getElementById("ainew").addEventListener("click",()=>{ hist=[]; garder(); vide(); q.focus(); });
+  document.getElementById("aiform").addEventListener("submit",e=>{ e.preventDefault(); poser(); });
+  q.addEventListener("keydown",e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); poser(); } });
 })();
 </script>
 <script>

@@ -7,6 +7,20 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 03/10/2026 — du comparateur au CRM — « IA produits » : c'est le comparateur qui le fait, tu peux le copier
+
+Fabrice a tranché : **le comparateur construit le chat, toi tu le reprends**. Les données restent communes (dossier public
+`docs/connaissances/` + `src/garanties.json`) ; chacun les interroge de son côté. Deux façons pour toi, au choix :
+1. **Appeler le même relais** : `POST https://capisante.fr/ia-produits.php`, en-tête `X-Cle-Serveur` (ta clé `APICIL_CLE_SERVEUR`,
+   quota 300 questions/heure), corps JSON `{question, contexte, historique}` — `contexte` : texte libre (profil du prospect,
+   formules et tarifs que tu lui as calculés), `historique` : `[{role:"user"|"assistant", texte}]` des tours précédents, en
+   texte seul. Réponse : `{reponse, fiches:[fichiers lus], modele, usage}` ; erreur : `{erreur}` (403, 429, 502, 503).
+   `GET` = état (version, fiches, questions du jour). Le relais lit l'index des fiches et `garanties.json`, puis les fiches
+   utiles (outil `lire_fiche`), et répond d'après elles seules, sources citées.
+2. **Faire le tien** avec les mêmes sources et les règles ci-dessous.
+Dans le comparateur : bouton **💬 IA produits** en bas à droite (page hébergée seulement), conversation gardée le temps de
+l'onglet. En service dès que Fabrice a déposé le relais et sa clé API Anthropic.
+
 ### 03/10/2026 — du comparateur au CRM — Demande de Fabrice : « IA produits », un chat pour les commerciaux
 
 **Ce que veut Fabrice** : une icône de chat **« IA produits »** dans le CRM, à côté de l'Assistant. Un commercial y pose une

@@ -117,6 +117,27 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (non écrite dans le tableau ; la fenêtre Infos le dit). Révoluo : la réduction famille −5 / −10 % du tarif n'est dans aucun
   document (seule la gratuité du 3ᵉ enfant de moins de 20 ans l'est) ; le Renfort 25 existe mais n'est pas proposé.
 
+## IA produits — chat des commerciaux (03/10/2026)
+
+- Demande de Fabrice : un chat où le commercial pose une question sur nos produits et l'IA répond d'après nos données ;
+  « toi tu fais le job et [le Claude du CRM] te copie » ; « les données sont dans un dossier commun et chacun interroge de
+  son côté ». Bouton **💬 IA produits** en bas à droite, **page hébergée seulement** (`HOSTED`) ; panneau `#aipanel`
+  (bulles, ↺ nouvelle conversation, Entrée pour envoyer, Maj+Entrée pour une ligne) ; historique en texte seul dans
+  `sessionStorage` (`ia_hist`). Remplace l'ancien « Assistant garanties » (capacité `sample`, qui ne marchait que dans un artifact).
+- La page envoie à **`https://capisante.fr/ia-produits.php`** `{question, contexte, historique}` ; `contexte` = profil du haut
+  de page, prospect, et formules affichées avec leur tarif (`LASTROWS`, 80 au plus). Réponse `{reponse, fiches, modele, usage}`.
+- **Relais** (scratchpad `ovh/ia/`) : appel HTTP direct à l'API Anthropic (pas de SDK : OVH se met à jour fichier par fichier),
+  **Claude Opus 5.5**, effort `medium`, `fallbacks: "default"` (refus de sécurité → autre modèle). Système = consignes + index
+  `docs/connaissances/README.md` + `src/garanties.json` (mis en cache, `cache_control`) ; outil **`lire_fiche`** (enum des
+  fiches de l'index, `strict`) ; 6 lectures au plus par question ; tours précédents en texte seul, tour courant renvoyé tel
+  quel (réflexion comprise). Données lues sur GitHub Pages, gardées 1 h dans `../ia-produits/` (hors web), avec les
+  compteurs et un journal mensuel de consommation **sans le texte des questions**. Garde-fous : 30 questions/heure/IP,
+  400/jour au total, 300/heure pour le CRM (`X-Cle-Serveur` = `apicil-cle.txt`). Origines : fabcoh.github.io, capisante.fr, CRM.
+- **Clé API Anthropic** dans `ia-produits-config.php` (`www/`, hors dépôt), créée par Fabrice sur console.anthropic.com avec une
+  limite de dépense ; jamais dans le dépôt, une page ou une conversation. Coût estimé : quelques centimes par question.
+- Test local : scratchpad `iatest/` (fausse API `fakeapi.py` sur 8791, données servies sur 8766, relais `php -S` sur 8790) +
+  `t_ia.js` (Playwright, `route.fetch` vers le relais local).
+
 ## Règles métier à ne pas casser
 
 - **MCCINOVA** : mineurs au tarif 18 ans ; cadre « Conditions MCCINOVA » (âge atteint dans l'année, enfants
