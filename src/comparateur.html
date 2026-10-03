@@ -1957,6 +1957,8 @@ function renderTG(cols,title,sub,note,single){
   bar.innerHTML='<label style="display:inline-flex;align-items:center;gap:5px;font:600 12.5px \'Archivo\',sans-serif;margin-right:6px;cursor:pointer"><input type="checkbox" id="tgnoprices" style="accent-color:var(--accent)">Sans tarifs</label>'
     +'<button data-a="mail" title="Copier l\u2019image et ouvrir votre messagerie" aria-label="Messagerie" style="'+ico+';color:var(--ink)">'+svgMail+'</button>'
     +'<button data-a="wa" title="Envoyer l\u2019image sur WhatsApp" aria-label="WhatsApp" style="'+ico+'">'+svgWa+'</button>'
+    // Télécharger la capture (Fabrice, 03/10/2026) : la même image que celle envoyée, rangée dans Téléchargements.
+    +'<button data-a="dl" title="Télécharger l\u2019image du tableau" aria-label="Télécharger" style="'+ico+';color:var(--ink)"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5"/><path d="M4 17v3h16v-3"/></svg></button>'
     +'<button data-a="mel" style="'+bst+';background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">Envoyer par mail</button>'
     +'<button data-a="mel2" title="Envoyer par mail à un autre destinataire" aria-label="Autre destinataire" style="'+ico+';color:var(--accent)">'+svgAutre+'</button>'
     +(window.CRMLINK?'<button data-a="crm" title="Dépose l\u2019image dans la conversation et envoie le mail au prospect (copie dans le CRM)" style="'+bst+';background:#059669;color:#fff;border-color:#059669">Envoyer dans le CRM</button>':'')
