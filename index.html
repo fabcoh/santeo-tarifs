@@ -109,7 +109,9 @@ td.g{text-align:center;font-variant-numeric:tabular-nums}
 th.num,td.num{text-align:right}
 td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13.5px}
 td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
-tr.offer{cursor:pointer}
+.rowvoir{border:1px solid var(--line);background:var(--panel);border-radius:6px;cursor:pointer;font-size:13px;line-height:1;padding:2px 5px;margin-left:6px;vertical-align:1px}
+.rowvoir:hover{border-color:var(--accent)}
+tr.offer{cursor:pointer;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 tr.offer:hover td{background:var(--soft)}
 .total{font-weight:700;font-size:15px}
 .caret{display:inline-block;width:14px;color:var(--muted);transition:transform .15s;font-size:11px}
@@ -390,7 +392,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-03T06:22:23Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-03T06:22:23Z</div>
+  <div id="buildstamp" data-build="2026-10-03T06:31:00Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-03T06:31:00Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2167,6 +2169,95 @@ function showDoc(name,url){
   ov.addEventListener("click",ev=>{if(ev.target===ov||ev.target.classList.contains("close"))ov.remove();});
   document.body.appendChild(ov);
 }
+// ---- Vérifier une garantie sur le document officiel (Fabrice, 03/10/2026) ----
+// Appui long sur une ligne de résultats (ou clic droit sur ordinateur) : fenêtre par-dessus qui affiche les PDF de la
+// formule dans la page (pdf.js, chargé au premier usage) — un PDF dans un cadre ne s'affiche pas sur téléphone Android.
+// DOCPAGE : page où commence le tableau des garanties, quand elle est connue ; sinon la page 1.
+const DOCPAGE={"april_santemix_tg_2026.pdf":5};
+let PDFJS=null;
+function chargerPdfjs(){
+  if(PDFJS) return PDFJS;
+  PDFJS=new Promise((ok,ko)=>{
+    if(window.pdfjsLib) return ok(window.pdfjsLib);
+    const sc=document.createElement("script");
+    sc.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    sc.onload=()=>{ try{ window.pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"; ok(window.pdfjsLib);}catch(e){ko(e);} };
+    sc.onerror=()=>{PDFJS=null;ko(new Error("lecteur PDF indisponible"));};
+    document.head.appendChild(sc);
+  });
+  return PDFJS;
+}
+function verifDocs(r){
+  const docs=Object.entries(docsDe(r));
+  const titre=(((F[r.key]&&F[r.key].label)||r.gamme)+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2");
+  if(!docs.length){ overlay('<button class="close">Fermer ✕</button><h2>'+titre+'</h2><div class="ipost">Aucun document en ligne pour cette formule.</div>',520); return; }
+  // Le tableau de garantie d'abord : c'est lui qu'on vérifie.
+  docs.sort((a,b)=>(/^Tableau/.test(b[0])?1:0)-(/^Tableau/.test(a[0])?1:0));
+  const ov=overlay('<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px">'
+    +'<h2 style="margin:0;flex:1 1 220px;min-width:0">Vérifier — '+titre+'</h2><button class="close">Fermer ✕</button></div>'
+    +'<div id="vdtabs" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">'
+    +docs.map(([n,u],k)=>'<button type="button" class="tgbtn" data-k="'+k+'">'+n+'</button>').join("")
+    +'<button type="button" class="tgbtn" id="vdzoom" style="margin-left:auto">🔍 Agrandir</button>'
+    +'<a class="tgbtn" id="vdouv" target="_blank" rel="noopener">Ouvrir dans un onglet ↗</a></div>'
+    +'<div id="vdinfo" style="font:600 12.5px \'IBM Plex Sans\',sans-serif;color:var(--muted);margin-bottom:6px"></div>'
+    +'<div id="vdpages" style="height:70vh;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--soft);border-radius:8px;padding:8px"></div>',1000);
+  let jeton=0, ZOOM=false;
+  // Agrandir : les pages passent au double de la largeur, la zone défile dans les deux sens (lecture sur téléphone).
+  ov.querySelector("#vdzoom").addEventListener("click",e=>{ ZOOM=!ZOOM; e.target.textContent=ZOOM?"🔍 Réduire":"🔍 Agrandir";
+    const z=ov.querySelector("#vdpages"); z.style.alignItems=ZOOM?"flex-start":"center";
+    const larg=Math.min(z.clientWidth-20,960);
+    z.querySelectorAll("canvas.vdpage").forEach(c=>{ c.style.width=(ZOOM?2*larg:larg)+"px"; c.style.maxWidth=ZOOM?"none":"100%"; }); });
+  async function montrer(k){
+    const n=++jeton, [nom,url]=docs[k];
+    ov.querySelectorAll("#vdtabs [data-k]").forEach(b=>{b.style.outline=(+b.dataset.k===k)?"2px solid var(--accent)":"";});
+    ov.querySelector("#vdouv").href=url;
+    const zone=ov.querySelector("#vdpages"), info=ov.querySelector("#vdinfo");
+    zone.innerHTML=""; info.textContent="Chargement de « "+nom+" »…";
+    try{
+      const lib=await chargerPdfjs();
+      const pdf=await lib.getDocument(url).promise; if(n!==jeton) return;
+      const N=pdf.numPages, dep=Math.min(N,DOCPAGE[url.split("/").pop()]||1);
+      const larg=Math.min(zone.clientWidth-20,960);
+      let fin=dep-1;
+      const rendre=async(de,a,avant)=>{
+        const ref=avant?zone.firstChild:null;
+        for(let i=de;i<=a;i++){ if(n!==jeton) return;
+          const pg=await pdf.getPage(i), v1=pg.getViewport({scale:1}), sc=Math.max(.5,larg/v1.width)*2;
+          const vp=pg.getViewport({scale:sc}), c=document.createElement("canvas");
+          c.width=vp.width; c.height=vp.height; c.className="vdpage"; c.style.cssText="width:"+(ZOOM?2*larg:larg)+"px;max-width:"+(ZOOM?"none":"100%")+";height:auto;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.18);flex:none";
+          c.title="Page "+i; avant?zone.insertBefore(c,ref):zone.insertBefore(c,zone.querySelector(".vdplus"));
+          await pg.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;
+        }
+      };
+      const suite=()=>{ const old=zone.querySelector(".vdplus"); if(old) old.remove();
+        if(fin<N){ const b=document.createElement("button"); b.type="button"; b.className="tgbtn vdplus"; b.textContent="Pages suivantes ("+(fin+1)+"–"+Math.min(N,fin+4)+" sur "+N+")";
+          b.addEventListener("click",async()=>{ const a=Math.min(N,fin+4), de=fin+1; fin=a; b.remove(); await rendre(de,a); suite(); }); zone.appendChild(b); } };
+      if(dep>1){ const b=document.createElement("button"); b.type="button"; b.className="tgbtn"; b.textContent="Pages 1–"+(dep-1);
+        b.addEventListener("click",async()=>{ b.remove(); await rendre(1,dep-1,true); }); zone.appendChild(b); }
+      fin=Math.min(N,dep+2); await rendre(dep,fin); suite();
+      info.textContent=nom+" · "+N+" page"+(N>1?"s":"")+(dep>1?" · ouvert page "+dep+" (tableau des garanties)":"");
+    }catch(e){ if(n===jeton) info.textContent="Lecture impossible ("+((e&&e.message)||"erreur")+") : utilisez « Ouvrir dans un onglet »."; }
+  }
+  ov.querySelectorAll("#vdtabs [data-k]").forEach(b=>b.addEventListener("click",()=>montrer(+b.dataset.k)));
+  montrer(0);
+}
+// Appui long (doigt ou souris, 0,5 s) sur une ligne de résultats ; clic droit sur ordinateur. Le clic qui suit
+// l'appui long n'ouvre pas le détail de la ligne.
+(function(){
+  let t=null, x0=0, y0=0, cible=null;
+  const stop=()=>{ clearTimeout(t); t=null; };
+  const ligne=e=>{ const tr=e.target.closest&&e.target.closest("#rows tr.offer");
+    if(!tr||e.target.closest("input,button,a,label")) return null; return tr; };
+  const ouvrir=tr=>{ const r=LASTROWS.find(x=>x.key+"|"+x.fi===tr.dataset.rk); if(r) verifDocs(r); };
+  document.addEventListener("pointerdown",e=>{ const tr=ligne(e); if(!tr||e.button>0) return;
+    x0=e.clientX; y0=e.clientY; cible=tr; stop();
+    t=setTimeout(()=>{ t=null; window.APPUI_LONG=Date.now(); ouvrir(cible); },500); });
+  document.addEventListener("pointermove",e=>{ if(t&&(Math.abs(e.clientX-x0)>10||Math.abs(e.clientY-y0)>10)) stop(); });
+  ["pointerup","pointercancel","scroll"].forEach(ev=>document.addEventListener(ev,stop,true));
+  document.addEventListener("contextmenu",e=>{ const tr=ligne(e); if(!tr) return; e.preventDefault();
+    if(window.APPUI_LONG&&Date.now()-window.APPUI_LONG<1500) return;   // l'appui long l'a déjà ouverte
+    stop(); window.APPUI_LONG=Date.now(); ouvrir(tr); });
+})();
 // Valeur d'une garantie pour une formule donnée (gamme key, indice fi)
 function tgVal(key,fi,src){ return Tableau.valeur(GAR,key,fi,src); }
 // Tableau de garantie d'une gamme (toutes ses formules)
@@ -2446,8 +2537,15 @@ const APRIL_PRODUITS=[
   ["Particuliers",[["SanteMix","Santé Mix Proximité"],["SimplySante","Simply Santé"],["FlexiSante","Flexi Santé"],["OnlySante","Only Santé"],
     ["SanteTranquil","Tranquillité Santé"],["SanteZen","Santé Zen"],["SantePeps","Santé Peps"],["SanteBrio","Santé Brio"],["SantePrimo","Santé Primo"],
     ["SanteOptimale","Santé Optimale"],["SanteGlobale","Santé Globale +"],["SanteVita","Vita Santé"],["SanteMoove","Moove Santé"],["HospiPlus","Hospi +"]]],
-  ["TNS",[["SantePro","Santé Pro"],["SanteProStart","Santé Pro Start"],["SanteProPrivilege","Santé Pro Privilège"],["SanteSolution","Santé PRO Solution"],["SantePremium","Santé PRO Premium"]]]
+  ["TNS",[["SantePro","Santé Pro"],["SanteProStart","Santé Pro Start"],["SanteProPrivilege","Santé Pro Privilège"],["SanteSolution","Santé PRO Solution"],["SantePremium","Santé PRO Premium"]]],
+  // Les autres produits santé du catalogue de l'API (GET /products, 02/10/2026), ajoutés à la liste le 03/10/2026 à la
+  // demande de Fabrice. En dernier groupe : le rang des produits déjà présents (donc leur fi) ne bouge pas.
+  ["Autres produits APRIL",[["SanteGan","Complémentaire Senior GAN"],["SanteProtect","Santé Protect (Malakoff Humanis)"],
+    ["SanteCapSerenite","Cap Sérénité"],["SanteGenerali","Santé Generali"],["SanteApril","Santé APRIL"]]]
 ];
+// Produits de la liste que le relais ne tarife pas encore : garanties APRIL à relever par l'API (préproduction en panne
+// depuis le 03/10/2026). Cochés, ils sont annoncés comme tels au lieu de disparaître.
+const APRIL_A_BRANCHER={SanteGan:1,SanteProtect:1,SanteCapSerenite:1,SanteGenerali:1,SanteApril:1};
 // Fermés à CAPI FINANCE en préproduction (« Produit non disponible », 02/10/2026) ; Hospi + ne se vend qu'en complément.
 const APRIL_FERMES={SanteBrio:"non ouvert à notre compte",SantePrimo:"non ouvert à notre compte",SanteGlobale:"non ouvert à notre compte",
   SanteMoove:"non ouvert à notre compte",SanteSolution:"non ouvert à notre compte",SantePremium:"non ouvert à notre compte",HospiPlus:"vendu seulement en complément d'un autre produit"};
@@ -2582,7 +2680,7 @@ function aprilCP(brut,dept){
 }
 function aprilProfil(age,cnjAge,hasCnj,kids,reg,cpBrut,dept){
   const brut=(cpBrut||"").trim();
-  const ouverts=APRIL_SEL.filter(c=>!APRIL_FERMES[c]);
+  const ouverts=APRIL_SEL.filter(c=>!APRIL_FERMES[c]&&!APRIL_A_BRANCHER[c]);
   const cp=aprilCP(brut,dept);
   if(!cp||!ouverts.length) return null;
   const a=[{role:"AssurePrincipal",naissance:apicilNaiss(age,apicilDDNAssure())}];
@@ -2653,7 +2751,7 @@ function aprilRendu(){
   else{
     // Les niveaux sont dans le tableau des formules ; ici, seulement ce qui n'a pas pu être tarifé.
     const vus=new Set(st.res.map(p=>p.produit));
-    const ko=st.res.filter(p=>p.etat!=="ok").concat(APRIL_SEL.filter(c=>!vus.has(c)).map(c=>({produit:c,message:APRIL_FERMES[c]||"non proposé par le relais"})));
+    const ko=st.res.filter(p=>p.etat!=="ok").concat(APRIL_SEL.filter(c=>!vus.has(c)).map(c=>({produit:c,message:APRIL_FERMES[c]||(APRIL_A_BRANCHER[c]?"tarif pas encore branché (API APRIL à relever)":"non proposé par le relais")})));
     const nok=st.res.filter(p=>p.etat==="ok").length;
     let h='<div class="apn">'+nok+' produit'+(nok>1?"s":"")+' tarifé'+(nok>1?"s":"")+' — dans le tableau ci-dessus, lignes « APRIL ».</div>';
     for(const p of ko) h+='<div class="apl"><div class="apnom">'+(APRIL_NOM[p.produit]||p.produit)+'</div><div class="apko">'+(p.message||"non proposé pour ce profil")+'</div></div>';
@@ -3671,7 +3769,7 @@ function render(rows,warns){
       '<td><span class="caret">▶</span>'+(r.key==="APRIL"?'<input type="checkbox" class="sendko" disabled title="Garanties APRIL pas encore saisies : pas d\'envoi au prospect">'
         :'<input type="checkbox" class="sendchk"'+(SENDSEL.has(rk)?" checked":"")+' data-rk="'+rk+'" title="Cocher pour envoyer par mail / WhatsApp">')+'</td>'+
       '<td><div class="gamme"><span class="dot '+r.ins+'"></span><span class="gname '+(r.resp?"rp":"nrp")+'">'+r.gamme+'</span></div>'
-      +'<div class="fname">'+r.formule+(r.key==="APRIL"?'':'<button class="rowstar'+(isR?" on":"")+'" data-star="'+rk+'" title="Conseiller cette formule">'+(isR?"⭐":"☆")+'</button>')+'</div>'
+      +'<div class="fname">'+r.formule+'<button type="button" class="rowvoir" data-voir="'+rk+'" title="Voir le tableau de garantie officiel" aria-label="Voir le document">👁</button>'+(r.key==="APRIL"?'':'<button class="rowstar'+(isR?" on":"")+'" data-star="'+rk+'" title="Conseiller cette formule">'+(isR?"⭐":"☆")+'</button>')+'</div>'
       +'<div class="chips">'+(isR?'<span class="chip reco">⭐ Je vous conseille</span>':"")+chips+"</div></td>"+
       '<td class="num total">'+eur(r.total)+(r.incomplete?" *":"")+"</td>"+
       '<td class="g">'+r.dent+"</td>"+
@@ -3708,6 +3806,8 @@ function render(rows,warns){
         else if(btn.dataset.tg){ if(SENDSEL.size) showTGSel(); else showTG(btn.dataset.tg); } // formules cochées → tableau de la sélection (toutes gammes)
       });
     });
+    tb.querySelectorAll(".rowvoir").forEach(b=>b.addEventListener("click",ev=>{
+      ev.stopPropagation(); const r=LASTROWS.find(x=>x.key+"|"+x.fi===b.dataset.voir); if(r) verifDocs(r); }));
     tb.querySelectorAll(".rowstar").forEach(b=>b.addEventListener("click",ev=>{
       ev.stopPropagation();
       const id=b.dataset.star;
@@ -3737,7 +3837,9 @@ function render(rows,warns){
     });
     syncSendAll();
     tb.querySelectorAll("tr.offer").forEach(tr=>{
+      tr.title="Appui long (ou clic droit) : vérifier sur le document officiel";
       tr.addEventListener("click",()=>{
+        if(window.APPUI_LONG&&Date.now()-window.APPUI_LONG<1500){ window.APPUI_LONG=0; return; }   // fin d'un appui long
         const rk=tr.dataset.rk;
         openKeys.has(rk)?openKeys.delete(rk):openKeys.add(rk);
         calc();

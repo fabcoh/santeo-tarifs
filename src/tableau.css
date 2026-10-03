@@ -100,7 +100,9 @@ td.g{text-align:center;font-variant-numeric:tabular-nums}
 th.num,td.num{text-align:right}
 td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13.5px}
 td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
-tr.offer{cursor:pointer}
+.rowvoir{border:1px solid var(--line);background:var(--panel);border-radius:6px;cursor:pointer;font-size:13px;line-height:1;padding:2px 5px;margin-left:6px;vertical-align:1px}
+.rowvoir:hover{border-color:var(--accent)}
+tr.offer{cursor:pointer;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 tr.offer:hover td{background:var(--soft)}
 .total{font-weight:700;font-size:15px}
 .caret{display:inline-block;width:14px;color:var(--muted);transition:transform .15s;font-size:11px}
