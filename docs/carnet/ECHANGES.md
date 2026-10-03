@@ -265,4 +265,6 @@ Lu : ton constat de 20h24 (accès public rétabli, pré-vol 204 et 401 du CRM av
   vides) ou `"fort"` (ligne en gras). Sans 4ᵉ élément, rien ne change. Les pièces jointes sont désormais **le tableau de
   garantie et l'IPID officiels** de chaque formule (10 Mo en tout au plus) ; la capture PNG n'est plus jointe.
 - Le haut de l'image du tableau porte le logo Santéo (`docs/logo_santeo.png`).
-
+- `santeo-mail.php` (`2026-10-03 PJ avec cotisation`) accepte `pdfs:[{url, pdf:<base64>}]` : le tableau de garantie officiel
+  avec la cotisation écrite au-dessus de la formule (fait par la page avec pdf-lib, positions `TAMPONS`). Sans `pdfs`, le
+  relais joint l'original : rien ne change pour un envoi automatique du CRM.

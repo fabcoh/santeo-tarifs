@@ -649,6 +649,15 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   l'envoi** : 5 Mo par fichier, **10 Mo en tout** ; au-delà, IPID d'abord puis tableaux du plus léger au plus lourd, le
   reste garde son lien sous la colonne. La réponse porte `piecesJointes`, `piecesJointesMo`, `nonJointes`. Relais
   `2026-10-03 PJ tableau + IPID (Revoluo)`, puis `2026-10-03 blocs`. Exemple réel : Cap Évolution + MV GCI 150 + Rev 4 = 6 fichiers, 7,4 Mo.
+  **La cotisation est écrite sur le tableau de garantie joint** (Fabrice, 03/10/2026) : « 23,42€/m », noir gras, juste
+  au-dessus du nom de la formule, en tête de sa colonne, sur la 1ʳᵉ page où elle figure. La page le fait avec pdf-lib
+  (`pdfAvecTarifs`, `pdfsTarifs`) et envoie les PDF au relais (`pdfs:[{url, pdf}]`, base64) ; le relais ne les accepte que
+  pour un tableau officiel d'une formule envoyée (`%PDF`…`%%EOF`, 5 Mo), sinon il télécharge l'original
+  (`piecesJointes[].tarif`). Corps de requête porté à 40 Mo ; relais `2026-10-03 PJ avec cotisation`. **Emplacements** :
+  `TAMPONS` (fichier → `CLE|fi` → page, centre x, ligne de base y en points PDF, taille), 117 relevés sur image le 03/10/2026
+  (scratchpad `tampons/`, aperçus + `h.py`) ; RF50 / RF100 prennent la colonne « Rev N » (la colonne du renfort est commune) —
+  Rev N seul et Rev N + renfort envoyés ensemble : un seul prix écrit. **Pas dans l'aperçu 👁** (Fabrice : rien n'y est
+  sélectionné). Un tableau de garantie remplacé dans `docs/` → **refaire son emplacement**.
   **Attention aux variables dans le relais** : la boucle des colonnes écrasait `$nom`, le nom du prospect, et
   le courrier disait « Bonjour Monsieur MCCINOVA ESSENTIELLE ». Les variables de colonne sont préfixées.
 - Fichiers dans `www/` : `santeo-mail.php` + `santeo-mail-config.php` (**clé, hors dépôt**).
