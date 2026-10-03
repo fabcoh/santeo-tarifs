@@ -101,6 +101,8 @@ td.g{text-align:center;font-variant-numeric:tabular-nums}
 th.num,td.num{text-align:right}
 td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13.5px}
 td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.rowvoir{border:1px solid var(--line);background:var(--panel);border-radius:6px;cursor:pointer;font-size:13px;line-height:1;padding:2px 5px;margin-left:6px;vertical-align:1px}
+.rowvoir:hover{border-color:var(--accent)}
 tr.offer{cursor:pointer;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 tr.offer:hover td{background:var(--soft)}
 .total{font-weight:700;font-size:15px}
@@ -3244,7 +3246,7 @@ function render(rows,warns){
       '<td><span class="caret">▶</span>'+(r.key==="APRIL"?'<input type="checkbox" class="sendko" disabled title="Garanties APRIL pas encore saisies : pas d\'envoi au prospect">'
         :'<input type="checkbox" class="sendchk"'+(SENDSEL.has(rk)?" checked":"")+' data-rk="'+rk+'" title="Cocher pour envoyer par mail / WhatsApp">')+'</td>'+
       '<td><div class="gamme"><span class="dot '+r.ins+'"></span><span class="gname '+(r.resp?"rp":"nrp")+'">'+r.gamme+'</span></div>'
-      +'<div class="fname">'+r.formule+(r.key==="APRIL"?'':'<button class="rowstar'+(isR?" on":"")+'" data-star="'+rk+'" title="Conseiller cette formule">'+(isR?"⭐":"☆")+'</button>')+'</div>'
+      +'<div class="fname">'+r.formule+'<button type="button" class="rowvoir" data-voir="'+rk+'" title="Voir le tableau de garantie officiel" aria-label="Voir le document">👁</button>'+(r.key==="APRIL"?'':'<button class="rowstar'+(isR?" on":"")+'" data-star="'+rk+'" title="Conseiller cette formule">'+(isR?"⭐":"☆")+'</button>')+'</div>'
       +'<div class="chips">'+(isR?'<span class="chip reco">⭐ Je vous conseille</span>':"")+chips+"</div></td>"+
       '<td class="num total">'+eur(r.total)+(r.incomplete?" *":"")+"</td>"+
       '<td class="g">'+r.dent+"</td>"+
@@ -3281,6 +3283,8 @@ function render(rows,warns){
         else if(btn.dataset.tg){ if(SENDSEL.size) showTGSel(); else showTG(btn.dataset.tg); } // formules cochées → tableau de la sélection (toutes gammes)
       });
     });
+    tb.querySelectorAll(".rowvoir").forEach(b=>b.addEventListener("click",ev=>{
+      ev.stopPropagation(); const r=LASTROWS.find(x=>x.key+"|"+x.fi===b.dataset.voir); if(r) verifDocs(r); }));
     tb.querySelectorAll(".rowstar").forEach(b=>b.addEventListener("click",ev=>{
       ev.stopPropagation();
       const id=b.dataset.star;
