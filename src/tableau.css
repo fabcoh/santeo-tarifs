@@ -177,6 +177,9 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 /* Lignes mises en avant (clic sur le libellé) : fond jaune pâle et valeurs en gras, dans la fenêtre et l'image. */
 #tgbox tbody td:first-child{cursor:pointer}
 #tgbox tbody tr.avant td{background:rgba(255,196,0,.22);font-weight:800}
+#tgbox tbody tr.fort td{font-weight:800}
+#tgbox tbody tr.tgsec td{background:var(--soft);color:var(--accent);font:800 11px 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:.8px;padding:5px 8px;cursor:default}
+#tgbox.capwide tbody tr.tgsec td{font-size:13px;padding:7px 13px}
 #tgbox tbody tr.avant td:first-child{box-shadow:inset 4px 0 0 var(--warn)}
 #tgbox .recolbl{display:block;font:800 10.5px 'Archivo',sans-serif;letter-spacing:.03em;color:var(--warn);margin-bottom:2px;text-transform:none}
 #tgbox .rectip{font-size:11px;color:var(--muted);margin:-4px 0 8px}

@@ -1,6 +1,6 @@
 {
- "empreinte": "bbbb5643533014c1",
- "genere": "2026-10-03T09:44:47.209Z",
+ "empreinte": "f81f9f2891d117c1",
+ "genere": "2026-10-03T11:12:44.294Z",
  "source": "Comparateur Santéo — src/selections.js sur src/garanties.json",
  "niveaux": {
   "1": "100 % (ou un forfait en euros)",
@@ -16,7 +16,7 @@
    "niveau": 1,
    "fichier": "dentaire-1.png",
    "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/dentaire-1.png",
-   "ligneMiseEnAvant": "Dentaire — prothèses",
+   "ligneMiseEnAvant": "Prothèses dentaires",
    "formules": [
     {
      "key": "CAPEVO",
@@ -81,7 +81,7 @@
    "niveau": 2,
    "fichier": "dentaire-2.png",
    "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/dentaire-2.png",
-   "ligneMiseEnAvant": "Dentaire — prothèses",
+   "ligneMiseEnAvant": "Prothèses dentaires",
    "formules": [
     {
      "key": "CAPEVO",
@@ -146,7 +146,7 @@
    "niveau": 3,
    "fichier": "dentaire-3.png",
    "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/dentaire-3.png",
-   "ligneMiseEnAvant": "Dentaire — prothèses",
+   "ligneMiseEnAvant": "Prothèses dentaires",
    "formules": [
     {
      "key": "CAPEVO",
@@ -211,7 +211,7 @@
    "niveau": 4,
    "fichier": "dentaire-4.png",
    "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/dentaire-4.png",
-   "ligneMiseEnAvant": "Dentaire — prothèses",
+   "ligneMiseEnAvant": "Prothèses dentaires",
    "formules": [
     {
      "key": "CAPEVO",
@@ -276,7 +276,7 @@
    "niveau": 1,
    "fichier": "optique-1.png",
    "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/optique-1.png",
-   "ligneMiseEnAvant": "Optique (équipement)",
+   "ligneMiseEnAvant": "Verres et monture simples",
    "formules": [
     {
      "key": "CAPEVO",
@@ -341,7 +341,7 @@
    "niveau": 2,
    "fichier": "optique-2.png",
    "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/optique-2.png",
-   "ligneMiseEnAvant": "Optique (équipement)",
+   "ligneMiseEnAvant": "Verres et monture simples",
    "formules": [
     {
      "key": "CAPEVO",
@@ -406,7 +406,7 @@
    "niveau": 3,
    "fichier": "optique-3.png",
    "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/optique-3.png",
-   "ligneMiseEnAvant": "Optique (équipement)",
+   "ligneMiseEnAvant": "Verres et monture simples",
    "formules": [
     {
      "key": "CAPEVO",
@@ -471,7 +471,7 @@
    "niveau": 4,
    "fichier": "optique-4.png",
    "url": "https://fabcoh.github.io/santeo-tarifs/docs/tg/optique-4.png",
-   "ligneMiseEnAvant": "Optique (équipement)",
+   "ligneMiseEnAvant": "Verres et monture simples",
    "formules": [
     {
      "key": "CAPEVO",
