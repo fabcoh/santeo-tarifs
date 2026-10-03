@@ -32,4 +32,13 @@ Adresse publique : `https://fabcoh.github.io/santeo-tarifs/docs/connaissances/<f
 | `april_santepro.md` | Santé TNS APRIL (« Santé Pro ») | APRIL (QUATREM) |
 | `april_santeprostart.md` | Santé TNS Start APRIL (« Santé Pro Start ») | APRIL (PREPAR-IARD) |
 
+**Fiche générale** (réglementation, valable pour tous les contrats) :
+
+| Fichier | Sujet | Source |
+|---|---|---|
+| `general_100sante_dentaire.md` | 100 % Santé dentaire : paniers par dent et matériau, bases Sécu, prix plafonds 2026, couronnes, bridges, dentiers ; lire un « % de la base » en euros | Assurance Maladie (ameli.fr), vérifié le 03/10/2026 |
+
+Pour une question de prothèse dentaire : la fiche générale pour le panier et les bases, la fiche du produit pour ce que le
+contrat rembourse au-delà.
+
 Pas encore de fiche (aucun document) : APRIL Flexi Santé, Santé Optimale, Simply Santé, Santé Pro Privilège.
