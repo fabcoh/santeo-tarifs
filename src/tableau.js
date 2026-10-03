@@ -53,10 +53,20 @@ const ATOUTS=[["hospitalisation","hospO"],["honoraires spécialistes","honoO"],
 const LOGOS={mcci:"logo_mcci.png",avenir:"logo_avenir.png",mverte:"logo_mverte.png",apicil:"logo_apicil.png",revoluo:"logo_revoluo.png"};
 const LOGOBASE="https://fabcoh.github.io/santeo-tarifs/docs/";
 
-// Notre logo, dans la case vide en tête de la colonne des postes, sur la ligne des logos des compagnies, centré
-// (Fabrice, 03/10/2026 : « en plus petit… pas trop gros »). Visible dans la fenêtre comme dans l'image.
+// Notre logo et nos mentions légales, en bas du tableau (Fabrice, 03/10/2026 : « pas jolie le logo en haut,
+// place-le en bas du tableau avec les infos légales »). Visible dans la fenêtre comme dans l'image.
 function marque(base){
   return '<img class="tgmarque" src="'+((base||LOGOBASE)+"logo_santeobleu.png")+'" alt="Santéo" onerror="this.remove()">';
+}
+const LEGAL=[
+  "Vos données sont nécessaires au bon traitement de votre devis santé par notre équipe uniquement, elles ne sont pas revendues à des tiers, et seront conservées le temps de traitement de votre demande. Vous disposez d’un droit d’accès et de suppression de vos données par un simple mail : gestion@santeo.net.",
+  "CAPI FINANCE — 72 rue du Rendez-vous, 75012 Paris · tél. 01 53 19 17 17 · gestion@santeo.net",
+  "Garantie financière et assurance de responsabilité civile professionnelle conformes aux articles L.530-1 et L.530-2 du code des Assurances : MATRISK ASSURANCE n° MRCSBRO202310FR00000000053466A00 — SAS au capital de 21 342 € — SIRET 388 103 301 00049 — APE 66222Z — courtier d’assurance n° ORIAS 07001983 (www.orias.fr), sous le contrôle de l’ACPR, 4 place de Budapest, CS 92459, 75436 Paris Cedex 09. N° CNIL 1939276.",
+  "Nous sommes membres d’Endya, association d’autorégulation du courtage. En application de l’article L.616-1 du Code de la consommation, le Médiateur de l’Assurance est compétent pour intervenir sur tout litige n’ayant pu être réglé dans le cadre d’une réclamation préalable directement introduite auprès des services de votre courtier. Il peut être saisi par courrier : La Médiation de l’Assurance, TSA 50110, 75441 Paris Cedex 09, ou le.mediateur@mediation-assurance.org.",
+  "Mentions légales sur santeo.net/mentions-legales. Santéo est la marque commerciale de CAPI FINANCE."
+];
+function legal(base){
+  return '<div class="tglegal">'+marque(base)+LEGAL.map(t=>'<p>'+t+'</p>').join('')+'</div>';
 }
 
 const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
@@ -106,7 +116,7 @@ function lignes(G,cols){
 function entete(G,cols,reco,o){
   o=o||{};
   const multi=cols.some(c=>c.key!==cols[0].key);
-  return '<tr><th class="tgcoin">'+marque(o.base)+'</th>'+cols.map((c,ci)=>'<th class="pick'+(estReco(reco,c)?' reco':'')+'" data-ci="'+ci+'">'
+  return '<tr><th></th>'+cols.map((c,ci)=>'<th class="pick'+(estReco(reco,c)?' reco':'')+'" data-ci="'+ci+'">'
     +celluleEntete(G,c,{reco:estReco(reco,c),multi:multi,base:o.base,
                         tarif:o.tarifs?o.tarifs[c.key+"|"+c.fi]:undefined})
     +'</th>').join('')+'</tr>';
@@ -208,7 +218,7 @@ function bloc(G,o){
     +'<div style="overflow-x:auto"><table><thead>'
     +entete(G,o.cols,o.reco,{tarifs:o.sansTarifs?null:o.tarifs,base:o.base})
     +'</thead><tbody>'+corps(G,o.cols,o.reco)+'</tbody></table></div>'
-    +'<div class="foot">'+pied(G,o.cols,o.note,o.reco)+'</div>';
+    +'<div class="foot">'+pied(G,o.cols,o.note,o.reco)+'</div>'+legal(o.base);
 }
 
 // Document autonome, à ouvrir dans un navigateur sans écran puis à capturer sur #tgbox.
@@ -228,6 +238,8 @@ exporter.LOGOBASE=LOGOBASE;
 exporter.valeur=valeur;
 exporter.logo=logo;
 exporter.marque=marque;
+exporter.legal=legal;
+exporter.LEGAL=LEGAL;
 exporter.celluleEntete=celluleEntete;
 exporter.lignes=lignes;
 exporter.entete=entete;
