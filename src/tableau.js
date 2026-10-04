@@ -207,6 +207,33 @@ function pied(G,cols,note,reco,reg){
   return av+blocs;
 }
 
+// Base du devis, en bas du tableau, avant nos mentions (Fabrice, 04/10/2026) : date, assurés, département,
+// régime, puis la validité en plus petit et en italique. b = {date:"jj/mm/aaaa", dept, cp, regime,
+// assures:[{lien:"assure"|"conjoint"|"enfant", naissance:"jj/mm/aaaa"|"aaaa"|âge|""}]}. Absent : rien.
+const VALIDITE=10;
+const REGIMES={SAL:"Sécurité sociale (salarié)",TNS:"Sécurité sociale (TNS)",RL:"Alsace-Moselle (salarié)",TNSRL:"Alsace-Moselle (TNS)"};
+function naissanceTxt(n,lien){
+  n=String(n||"").trim();
+  if(/^\d{2}\/\d{2}\/\d{4}$/.test(n))return "né(e) le "+n;
+  if(/^\d{4}$/.test(n))return "né(e) en "+n;
+  if(/^\d{1,3}$/.test(n))return n+" ans";
+  return lien==="enfant"?"mineur":"date non communiquée";
+}
+function baseDevisLignes(b){
+  if(!b||!Array.isArray(b.assures)||!b.assures.length||!/^\d{2}\/\d{2}\/\d{4}$/.test(b.date||""))return null;
+  const [j,m,a]=b.date.split("/").map(Number), fin=new Date(a,m-1,j+VALIDITE);
+  const jusqu=String(fin.getDate()).padStart(2,"0")+"/"+String(fin.getMonth()+1).padStart(2,"0")+"/"+fin.getFullYear();
+  const n=b.assures.length, lieu=b.cp?"Département "+String(b.cp).slice(0,2)+" ("+b.cp+")":(b.dept?"Département "+b.dept:"");
+  return {titre:"Devis établi le "+b.date,
+          resume:[n+" assuré"+(n>1?"s":""),lieu,REGIMES[b.regime]?"Régime : "+REGIMES[b.regime]:""].filter(Boolean).join(" · "),
+          assures:b.assures.map((x,i)=>"Assuré "+(i+1)+(x.lien==="conjoint"?" (conjoint)":x.lien==="enfant"?" (enfant)":"")+" : "+naissanceTxt(x.naissance,x.lien)),
+          validite:"Devis valable "+VALIDITE+" jours à compter du "+b.date+", soit jusqu’au "+jusqu+"."};
+}
+function baseDevis(b){
+  const L=baseDevisLignes(b); if(!L)return "";
+  return '<div class="tgbase"><p><b>'+L.titre+'</b> · '+L.resume+'</p>'+L.assures.map(t=>'<p>'+t+'</p>').join('')
+    +'<p class="tgvalid">'+L.validite+'</p></div>';
+}
 const MENTION=' · synthèse d’après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.';
 
 // Corps du cadre, tel qu'il est capturé : ni bouton de fermeture, ni barre d'actions.
@@ -218,7 +245,7 @@ function bloc(G,o){
     +'<div style="overflow-x:auto"><table><thead>'
     +entete(G,o.cols,o.reco,{tarifs:o.sansTarifs?null:o.tarifs,base:o.base})
     +'</thead><tbody>'+corps(G,o.cols,o.reco)+'</tbody></table></div>'
-    +'<div class="foot">'+pied(G,o.cols,o.note,o.reco)+'</div>'+legal(o.base);
+    +'<div class="foot">'+pied(G,o.cols,o.note,o.reco)+'</div>'+baseDevis(o.devis)+legal(o.base);
 }
 
 // Document autonome, à ouvrir dans un navigateur sans écran puis à capturer sur #tgbox.
@@ -240,6 +267,9 @@ exporter.logo=logo;
 exporter.marque=marque;
 exporter.legal=legal;
 exporter.LEGAL=LEGAL;
+exporter.VALIDITE=VALIDITE;
+exporter.baseDevis=baseDevis;
+exporter.baseDevisLignes=baseDevisLignes;
 exporter.celluleEntete=celluleEntete;
 exporter.lignes=lignes;
 exporter.entete=entete;

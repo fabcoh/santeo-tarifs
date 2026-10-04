@@ -194,6 +194,11 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox.capwide thead th{font-size:14.5px}
 #tgbox .tglegal{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font:400 10.5px/1.5 'IBM Plex Sans',sans-serif}
 #tgbox .tglegal p{margin:0 0 5px}
+#tgbox .tgbase{margin-top:14px;padding-top:10px;border-top:1px solid var(--line);color:var(--ink);font:400 11px/1.5 'IBM Plex Sans',sans-serif}
+#tgbox .tgbase p{margin:0 0 2px}
+#tgbox .tgbase .tgvalid{margin-top:5px;font-size:10px;font-style:italic;color:var(--muted)}
+#tgbox.capwide .tgbase{font-size:12px}
+#tgbox.capwide .tgbase .tgvalid{font-size:11px}
 #tgbox .tgmarque{display:block;height:34px;width:auto;margin:0 0 8px}
 #tgbox.capwide .tglegal{font-size:11.5px}
 #tgbox.capwide .tgmarque{height:40px}
@@ -1876,13 +1881,26 @@ function logoHTML(key){ return Tableau.logo(GAR,key); }
 // Bas du tableau : les atouts de la formule marquée de l'étoile — voir src/tableau.js.
 function tgFoot(cols,note){ return Tableau.pied(GAR,cols,note,RECO,regimeActuel()); }
 function avantagesTG(key,fi){ return Tableau.atouts(GAR,key,fi); }
+// Base du devis (Fabrice, 04/10/2026), en bas du tableau et du courrier : date du jour, assurés tels qu'ils ont
+// fait le tarif (date de la fiche, sinon l'année ou l'âge du haut de page ; mineurs selon leur nombre), département,
+// régime. La validité (10 jours) est calculée par Tableau.baseDevisLignes, le relais refait le même calcul.
+function devisBase(){
+  const PR=typeof PRO!=="undefined"?PRO:{}, v=id=>{const e=document.getElementById(id);return e?String(e.value||"").trim():"";};
+  const assures=[{lien:"assure",naissance:PR.ddn||v("naiss")}];
+  const cj=(PR.conjoint&&PR.conjoint.ddn)||v("cnj"); if(cj)assures.push({lien:"conjoint",naissance:cj});
+  const enf=Array.isArray(PR.enfants)?PR.enfants:[];
+  for(let i=0;i<(+v("kids")||0);i++)assures.push({lien:"enfant",naissance:(enf[i]&&enf[i].ddn)||""});
+  const cp=v("cp");
+  return {date:new Date().toLocaleDateString("fr-FR"),cp:/^\d{5}$/.test(cp)?cp:"",dept:/^\d{5}$/.test(cp)?"":cp,
+          regime:regimeActuel(),assures};
+}
 function renderTG(cols,title,sub,note,single){
   const multi=cols.some(c=>c.key!==cols[0].key);
   const isReco=c=>RECO===(c.key+"|"+c.fi);
   let head=Tableau.entete(GAR,cols,RECO);
   let body=Tableau.corps(GAR,cols,RECO);
   const ov=document.createElement('div');ov.id='tgov';ov.className='tgmain';
-  ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+tgFoot(cols,note)+'</div>'+Tableau.legal()+'</div>';
+  ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+tgFoot(cols,note)+'</div>'+Tableau.baseDevis(devisBase())+Tableau.legal()+'</div>';
   ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
   document.body.appendChild(ov);
   // Pas de consigne au-dessus du tableau : l'étoile porte son infobulle (« Conseiller cette formule »).
@@ -2825,7 +2843,9 @@ function corpsMail({tg,PR,tetes,dest,exp,b64,prov,objet,copie,pdfs}){
           entete:(tetes&&tetes.entete)||"",soustitre:(tetes&&tetes.soustitre)||"",
           // La capture n'est plus jointe (pièces jointes = tableau de garantie + IPID, 03/10/2026) ; les tableaux de
           // garantie partent avec la cotisation écrite au-dessus de chaque formule.
-          colonnes:tg.colonnes,lignes:tg.lignes,pdfs:pdfs||[]};
+          colonnes:tg.colonnes,lignes:tg.lignes,pdfs:pdfs||[],
+          // Base du devis, rendue par le relais en fin de courrier (04/10/2026).
+          devis:devisBase()};
   if(copie)c.copie=true;
   return c;
 }
