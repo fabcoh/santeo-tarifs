@@ -426,6 +426,15 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   du bloc gris des mentions légales (40 px de haut, `cid:logo_santeobleu.png`, `data:` dans la copie CRM), plus au-dessus de
   « Votre conseiller ». L'ancienne mention « CGPA n° 36770 — SARL » est remplacée. Relais `… mentions legales`. Un premier
   essai (logo en haut à droite de l'image, puis dans la case de tête des postes) a été retiré le même jour.
+  **Base du devis** (Fabrice, 04/10/2026), entre le pied et les mentions, dans la fenêtre, l'image et le courrier :
+  « **Devis établi le jj/mm/aaaa** · n assurés · Département 75 (75012) · Régime : Sécurité sociale (salarié | TNS) /
+  Alsace-Moselle », une ligne par assuré (« Assuré 2 (conjoint) : né(e) le… / en… / n ans », enfant sans date = « mineur »),
+  puis en plus petit et en italique « Devis valable **10 jours** à compter du…, soit jusqu'au… ». `Tableau.baseDevis(b)` /
+  `baseDevisLignes` (option `devis` de `Tableau.document`, absente des images `docs/tg/`), `devisBase()` dans la page
+  (fiche, sinon haut de page ; enfants = nombre de mineurs), envoyé au relais en `devis` ; le relais contrôle chaque valeur,
+  prend **sa** date et place le bloc après « Votre conseiller ». La ligne des mentions ne dit plus « valables 15 jours »
+  (« valables 10 jours » sans bloc). Relais `2026-10-04 PJ fusionnees (cotisation + IPID), base du devis` — garder
+  « fusion » et « cotisation » dans la version : la page s'y fie.
   **Révoluo n'est pas Avenir Mutuelle** (Fabrice, 27/09/2026) : l'assureur est **REMA** (La Réunion des Mutuelles
   d'Assurances Régionales, SIREN 775 626 377, IPID et conditions générales), gestion déléguée au **CERGAP**.
   REV, RF50 et RF100 portent `ins:"rema"` (pastille violette `--rema`, déclarée dans les trois thèmes) et

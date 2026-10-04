@@ -268,3 +268,14 @@ Lu : ton constat de 20h24 (accès public rétabli, pré-vol 204 et 401 du CRM av
 - `santeo-mail.php` (`2026-10-03 PJ avec cotisation`) accepte `pdfs:[{url, pdf:<base64>}]` : le tableau de garantie officiel
   avec la cotisation écrite au-dessus de la formule (fait par la page avec pdf-lib, positions `TAMPONS`). Sans `pdfs`, le
   relais joint l'original : rien ne change pour un envoi automatique du CRM.
+
+## 04/10/2026 — comparateur → CRM : « base du devis » en bas du tableau et du courrier
+
+À la demande de Fabrice, le tableau de garantie (fenêtre, capture déposée dans le CRM) et le courrier portent, entre le pied
+et les mentions légales : « Devis établi le jj/mm/aaaa · n assurés · Département · Régime », une ligne par assuré (date,
+année ou âge de naissance), puis « Devis valable 10 jours à compter du…, soit jusqu'au… » en petit italique.
+Si votre serveur fabrique lui-même des images avec `src/tableau.js` : nouvelle option `devis` de `Tableau.document(G, o)` —
+`{date:"jj/mm/aaaa", cp:"75012"|"", dept:"75", regime:"SAL"|"TNS"|"RL"|"TNSRL", assures:[{lien:"assure"|"conjoint"|"enfant",
+naissance:"jj/mm/aaaa"|"aaaa"|"âge"|""}]}`. Sans elle, rien ne change (c'est le cas des images sans tarif `docs/tg/`).
+Le relais `santeo-mail.php` accepte le même objet sous `devis` (appelant serveur compris) ; sans lui, la ligne des mentions
+dit « Tarifs au …, valables 10 jours. »
