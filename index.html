@@ -202,6 +202,11 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox.capwide thead th{font-size:14.5px}
 #tgbox .tglegal{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font:400 10.5px/1.5 'IBM Plex Sans',sans-serif}
 #tgbox .tglegal p{margin:0 0 5px}
+#tgbox .tgbase{margin-top:14px;padding-top:10px;border-top:1px solid var(--line);color:var(--ink);font:400 11px/1.5 'IBM Plex Sans',sans-serif}
+#tgbox .tgbase p{margin:0 0 2px}
+#tgbox .tgbase .tgvalid{margin-top:5px;font-size:10px;font-style:italic;color:var(--muted)}
+#tgbox.capwide .tgbase{font-size:12px}
+#tgbox.capwide .tgbase .tgvalid{font-size:11px}
 #tgbox .tgmarque{display:block;height:34px;width:auto;margin:0 0 8px}
 #tgbox.capwide .tglegal{font-size:11.5px}
 #tgbox.capwide .tgmarque{height:40px}
@@ -421,7 +426,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-03T16:23:15Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-03T16:23:15Z</div>
+  <div id="buildstamp" data-build="2026-10-04T07:46:43Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-04T07:46:43Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -930,6 +935,33 @@ function pied(G,cols,note,reco,reg){
   return av+blocs;
 }
 
+// Base du devis, en bas du tableau, avant nos mentions (Fabrice, 04/10/2026) : date, assurés, département,
+// régime, puis la validité en plus petit et en italique. b = {date:"jj/mm/aaaa", dept, cp, regime,
+// assures:[{lien:"assure"|"conjoint"|"enfant", naissance:"jj/mm/aaaa"|"aaaa"|âge|""}]}. Absent : rien.
+const VALIDITE=10;
+const REGIMES={SAL:"Sécurité sociale (salarié)",TNS:"Sécurité sociale (TNS)",RL:"Alsace-Moselle (salarié)",TNSRL:"Alsace-Moselle (TNS)"};
+function naissanceTxt(n,lien){
+  n=String(n||"").trim();
+  if(/^\d{2}\/\d{2}\/\d{4}$/.test(n))return "né(e) le "+n;
+  if(/^\d{4}$/.test(n))return "né(e) en "+n;
+  if(/^\d{1,3}$/.test(n))return n+" ans";
+  return lien==="enfant"?"mineur":"date non communiquée";
+}
+function baseDevisLignes(b){
+  if(!b||!Array.isArray(b.assures)||!b.assures.length||!/^\d{2}\/\d{2}\/\d{4}$/.test(b.date||""))return null;
+  const [j,m,a]=b.date.split("/").map(Number), fin=new Date(a,m-1,j+VALIDITE);
+  const jusqu=String(fin.getDate()).padStart(2,"0")+"/"+String(fin.getMonth()+1).padStart(2,"0")+"/"+fin.getFullYear();
+  const n=b.assures.length, lieu=b.cp?"Département "+String(b.cp).slice(0,2)+" ("+b.cp+")":(b.dept?"Département "+b.dept:"");
+  return {titre:"Devis établi le "+b.date,
+          resume:[n+" assuré"+(n>1?"s":""),lieu,REGIMES[b.regime]?"Régime : "+REGIMES[b.regime]:""].filter(Boolean).join(" · "),
+          assures:b.assures.map((x,i)=>"Assuré "+(i+1)+(x.lien==="conjoint"?" (conjoint)":x.lien==="enfant"?" (enfant)":"")+" : "+naissanceTxt(x.naissance,x.lien)),
+          validite:"Devis valable "+VALIDITE+" jours à compter du "+b.date+", soit jusqu’au "+jusqu+"."};
+}
+function baseDevis(b){
+  const L=baseDevisLignes(b); if(!L)return "";
+  return '<div class="tgbase"><p><b>'+L.titre+'</b> · '+L.resume+'</p>'+L.assures.map(t=>'<p>'+t+'</p>').join('')
+    +'<p class="tgvalid">'+L.validite+'</p></div>';
+}
 const MENTION=' · synthèse d’après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.';
 
 // Corps du cadre, tel qu'il est capturé : ni bouton de fermeture, ni barre d'actions.
@@ -941,7 +973,7 @@ function bloc(G,o){
     +'<div style="overflow-x:auto"><table><thead>'
     +entete(G,o.cols,o.reco,{tarifs:o.sansTarifs?null:o.tarifs,base:o.base})
     +'</thead><tbody>'+corps(G,o.cols,o.reco)+'</tbody></table></div>'
-    +'<div class="foot">'+pied(G,o.cols,o.note,o.reco)+'</div>'+legal(o.base);
+    +'<div class="foot">'+pied(G,o.cols,o.note,o.reco)+'</div>'+baseDevis(o.devis)+legal(o.base);
 }
 
 // Document autonome, à ouvrir dans un navigateur sans écran puis à capturer sur #tgbox.
@@ -963,6 +995,9 @@ exporter.logo=logo;
 exporter.marque=marque;
 exporter.legal=legal;
 exporter.LEGAL=LEGAL;
+exporter.VALIDITE=VALIDITE;
+exporter.baseDevis=baseDevis;
+exporter.baseDevisLignes=baseDevisLignes;
 exporter.celluleEntete=celluleEntete;
 exporter.lignes=lignes;
 exporter.entete=entete;
@@ -2433,13 +2468,26 @@ function logoHTML(key){ return Tableau.logo(GAR,key); }
 // Bas du tableau : les atouts de la formule marquée de l'étoile — voir src/tableau.js.
 function tgFoot(cols,note){ return Tableau.pied(GAR,cols,note,RECO,regimeActuel()); }
 function avantagesTG(key,fi){ return Tableau.atouts(GAR,key,fi); }
+// Base du devis (Fabrice, 04/10/2026), en bas du tableau et du courrier : date du jour, assurés tels qu'ils ont
+// fait le tarif (date de la fiche, sinon l'année ou l'âge du haut de page ; mineurs selon leur nombre), département,
+// régime. La validité (10 jours) est calculée par Tableau.baseDevisLignes, le relais refait le même calcul.
+function devisBase(){
+  const PR=typeof PRO!=="undefined"?PRO:{}, v=id=>{const e=document.getElementById(id);return e?String(e.value||"").trim():"";};
+  const assures=[{lien:"assure",naissance:PR.ddn||v("naiss")}];
+  const cj=(PR.conjoint&&PR.conjoint.ddn)||v("cnj"); if(cj)assures.push({lien:"conjoint",naissance:cj});
+  const enf=Array.isArray(PR.enfants)?PR.enfants:[];
+  for(let i=0;i<(+v("kids")||0);i++)assures.push({lien:"enfant",naissance:(enf[i]&&enf[i].ddn)||""});
+  const cp=v("cp");
+  return {date:new Date().toLocaleDateString("fr-FR"),cp:/^\d{5}$/.test(cp)?cp:"",dept:/^\d{5}$/.test(cp)?"":cp,
+          regime:regimeActuel(),assures};
+}
 function renderTG(cols,title,sub,note,single){
   const multi=cols.some(c=>c.key!==cols[0].key);
   const isReco=c=>RECO===(c.key+"|"+c.fi);
   let head=Tableau.entete(GAR,cols,RECO);
   let body=Tableau.corps(GAR,cols,RECO);
   const ov=document.createElement('div');ov.id='tgov';ov.className='tgmain';
-  ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+tgFoot(cols,note)+'</div>'+Tableau.legal()+'</div>';
+  ov.innerHTML='<div id="tgbox"><button class="close">Fermer ✕</button><h2>'+title+'</h2><div class="src">'+sub+' · synthèse d\u2019après le tableau de garantie officiel — seuls les documents contractuels (TG, notice, IPID) font foi.</div><div style="overflow-x:auto"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div><div class="foot">'+tgFoot(cols,note)+'</div>'+Tableau.baseDevis(devisBase())+Tableau.legal()+'</div>';
   ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
   document.body.appendChild(ov);
   // Pas de consigne au-dessus du tableau : l'étoile porte son infobulle (« Conseiller cette formule »).
@@ -3382,7 +3430,9 @@ function corpsMail({tg,PR,tetes,dest,exp,b64,prov,objet,copie,pdfs}){
           entete:(tetes&&tetes.entete)||"",soustitre:(tetes&&tetes.soustitre)||"",
           // La capture n'est plus jointe (pièces jointes = tableau de garantie + IPID, 03/10/2026) ; les tableaux de
           // garantie partent avec la cotisation écrite au-dessus de chaque formule.
-          colonnes:tg.colonnes,lignes:tg.lignes,pdfs:pdfs||[]};
+          colonnes:tg.colonnes,lignes:tg.lignes,pdfs:pdfs||[],
+          // Base du devis, rendue par le relais en fin de courrier (04/10/2026).
+          devis:devisBase()};
   if(copie)c.copie=true;
   return c;
 }

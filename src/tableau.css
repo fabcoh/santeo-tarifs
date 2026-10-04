@@ -193,6 +193,11 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox.capwide thead th{font-size:14.5px}
 #tgbox .tglegal{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font:400 10.5px/1.5 'IBM Plex Sans',sans-serif}
 #tgbox .tglegal p{margin:0 0 5px}
+#tgbox .tgbase{margin-top:14px;padding-top:10px;border-top:1px solid var(--line);color:var(--ink);font:400 11px/1.5 'IBM Plex Sans',sans-serif}
+#tgbox .tgbase p{margin:0 0 2px}
+#tgbox .tgbase .tgvalid{margin-top:5px;font-size:10px;font-style:italic;color:var(--muted)}
+#tgbox.capwide .tgbase{font-size:12px}
+#tgbox.capwide .tgbase .tgvalid{font-size:11px}
 #tgbox .tgmarque{display:block;height:34px;width:auto;margin:0 0 8px}
 #tgbox.capwide .tglegal{font-size:11.5px}
 #tgbox.capwide .tgmarque{height:40px}
