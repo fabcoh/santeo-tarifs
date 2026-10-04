@@ -194,6 +194,8 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox.capwide thead th{font-size:14.5px}
 #tgbox .tglegal{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font:400 10.5px/1.5 'IBM Plex Sans',sans-serif}
 #tgbox .tglegal p{margin:0 0 5px}
+#tgbox .tglegal .tgdepuis{font-weight:600;color:var(--ink)}
+#tgbox .tgnrl{color:var(--nrc,#B42318)}
 #tgbox .tgbase{margin-top:14px;padding-top:10px;border-top:1px solid var(--line);color:var(--ink);font:400 11px/1.5 'IBM Plex Sans',sans-serif}
 #tgbox .tgbase p{margin:0 0 2px}
 #tgbox .tgbase .tgvalid{margin-top:5px;font-size:10px;font-style:italic;color:var(--muted)}
@@ -1879,7 +1881,7 @@ var RECO=null; // formule conseillée : "cle|indice"
 const LIGNES_AVANT=new Set(); // libellés des lignes mises en avant dans le tableau de garantie
 function logoHTML(key){ return Tableau.logo(GAR,key); }
 // Bas du tableau : les atouts de la formule marquée de l'étoile — voir src/tableau.js.
-function tgFoot(cols,note){ return Tableau.pied(GAR,cols,note,RECO,regimeActuel()); }
+function tgFoot(cols,note){ return Tableau.piedCourt(GAR,cols); }
 function avantagesTG(key,fi){ return Tableau.atouts(GAR,key,fi); }
 // Base du devis (Fabrice, 04/10/2026), en bas du tableau et du courrier : date du jour, assurés tels qu'ils ont
 // fait le tarif (date de la fiche, sinon l'année ou l'âge du haut de page ; mineurs selon leur nombre), département,

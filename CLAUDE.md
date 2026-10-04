@@ -200,6 +200,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   envoyé », la fenêtre d'envoi et le tableau de garantie (`fermerTableaux()`, `#tgov.tgmain`) disparaissent, et
   un bandeau vert (`bandeauOk`) confirme l'envoi 3 s. Même chose après un dépôt CRM réussi, juste avant le
   retour à la conversation. Un échec, lui, laisse tout ouvert, avec son message.
+  **Bas du tableau raccourci** (Fabrice, 04/10/2026, capture du 04/10 à l'appui : « tu supprimes la partie sous le tableau des
+  explications ») : **ni atouts de l'étoile ni bloc par colonne** (documents, limites) — `Tableau.piedCourt(G, cols)` ne garde
+  qu'une ligne « <formule> : contrat non responsable. » par formule concernée (gamme `resp:false`, ou limites qui commencent
+  par « Contrat NON responsable » : GCI 500). Puis la base du devis, puis **logo Santéo + « Courtier comparateur depuis 1992 »
+  + « Infos légales : www.santeo.net »** (`Tableau.legal`, les longues mentions ne restent que dans le courrier). Dans la
+  fenêtre, l'image et `docs/tg/`. `Tableau.pied` reste exporté. Ce qui suit décrit l'**ancien** bas de tableau :
   **Bas du tableau**, dans cet ordre :
   1. les atouts de la formule marquée de l'⭐, poste par poste — hospitalisation, honoraires, chambre, dentaire,
      implantologie, orthodontie, optique, lentilles, audio, médecines douces ; les postes sans garantie sont

@@ -65,8 +65,10 @@ const LEGAL=[
   "Nous sommes membres d’Endya, association d’autorégulation du courtage. En application de l’article L.616-1 du Code de la consommation, le Médiateur de l’Assurance est compétent pour intervenir sur tout litige n’ayant pu être réglé dans le cadre d’une réclamation préalable directement introduite auprès des services de votre courtier. Il peut être saisi par courrier : La Médiation de l’Assurance, TSA 50110, 75441 Paris Cedex 09, ou le.mediateur@mediation-assurance.org.",
   "Mentions légales sur santeo.net/mentions-legales. Santéo est la marque commerciale de CAPI FINANCE."
 ];
+// Sous le tableau, seulement le logo et deux lignes (Fabrice, 04/10/2026 : « tu supprimes les textes au-dessus du logo,
+// laisse juste le logo Santéo et les infos légales sur santeo.net »). LEGAL reste pour qui en aurait besoin (le courrier).
 function legal(base){
-  return '<div class="tglegal">'+marque(base)+LEGAL.map(t=>'<p>'+t+'</p>').join('')+'</div>';
+  return '<div class="tglegal">'+marque(base)+'<p class="tgdepuis">Courtier comparateur depuis 1992</p><p>Infos légales : www.santeo.net</p></div>';
 }
 
 const eur=v=>v==null?"—":v.toLocaleString("fr-FR",{minimumFractionDigits:2,maximumFractionDigits:2})+" €";
@@ -207,6 +209,16 @@ function pied(G,cols,note,reco,reg){
   return av+blocs;
 }
 
+// Pied court (Fabrice, 04/10/2026) : ni atouts de l'étoile ni limites par formule ; seule reste la mention
+// « contrat non responsable », due au prospect, une ligne par formule concernée.
+function piedCourt(G,cols){
+  return cols.map(x=>{const g=G.gammes[x.key];
+    // Gamme non responsable, ou formule seule (GCI 500) dont les limites commencent par la mention.
+    const nr=g&&(g.resp===false||/^\s*Contrat NON responsable/i.test(String(limites(G,x.key,x.fi)||"")));
+    return nr?'<div class="tgnrl"><b>'+nomComplet(G,x.key,x.fi)+'</b> : contrat non responsable.</div>':"";})
+    .filter(Boolean).join("");
+}
+
 // Base du devis, en bas du tableau, avant nos mentions (Fabrice, 04/10/2026) : date, assurés, département,
 // régime, puis la validité en plus petit et en italique. b = {date:"jj/mm/aaaa", dept, cp, regime,
 // assures:[{lien:"assure"|"conjoint"|"enfant", naissance:"jj/mm/aaaa"|"aaaa"|âge|""}]}. Absent : rien.
@@ -245,7 +257,7 @@ function bloc(G,o){
     +'<div style="overflow-x:auto"><table><thead>'
     +entete(G,o.cols,o.reco,{tarifs:o.sansTarifs?null:o.tarifs,base:o.base})
     +'</thead><tbody>'+corps(G,o.cols,o.reco)+'</tbody></table></div>'
-    +'<div class="foot">'+pied(G,o.cols,o.note,o.reco)+'</div>'+baseDevis(o.devis)+legal(o.base);
+    +'<div class="foot">'+piedCourt(G,o.cols)+'</div>'+baseDevis(o.devis)+legal(o.base);
 }
 
 // Document autonome, à ouvrir dans un navigateur sans écran puis à capturer sur #tgbox.
@@ -269,6 +281,7 @@ exporter.legal=legal;
 exporter.LEGAL=LEGAL;
 exporter.VALIDITE=VALIDITE;
 exporter.baseDevis=baseDevis;
+exporter.piedCourt=piedCourt;
 exporter.baseDevisLignes=baseDevisLignes;
 exporter.celluleEntete=celluleEntete;
 exporter.lignes=lignes;
