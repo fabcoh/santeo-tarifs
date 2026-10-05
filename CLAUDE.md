@@ -367,7 +367,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   droit sur ordinateur, ouvre `verifDocs(r)` — une fenêtre par-dessus qui affiche **dans la page** les PDF de la formule
   (tableau de garantie d'abord, puis IPID, notice, CG…), rendus par **pdf.js** chargé au premier usage depuis cdnjs (un PDF
   dans un cadre ne s'affiche pas sur Android). `DOCPAGE` ouvre directement la page du tableau quand elle est connue
-  (Santé Mix : p. 5). « 🔍 Agrandir » double la largeur des pages, « Ouvrir dans un onglet » reste en secours. Le clic qui
+  (Santé Mix : p. 5). **Ouverture directe sur la page des garanties de la formule** (Fabrice, 05/10/2026 : « éviter les pages de
+  présentation ») : `pageGaranties(url, r)` prend la page de son tampon de cotisation (`TAMPONS`, compté de 0), sinon la 1ʳᵉ page
+  tamponnée du fichier, sinon `DOCPAGE` ; le bouton « Pages 1–n » garde l'accès au début. Test : scratchpad `t_pagegar.js`.
+  « 🔍 Agrandir » double la largeur des pages, « Ouvrir dans un onglet » reste en secours. Le clic qui
   suit l'appui long n'ouvre pas le détail de la ligne (`window.APPUI_LONG`). Testé souris et tactile (Playwright, CDP).
 - **Documents par formule** : dans `DOCS`, une valeur est une adresse valable pour toute la gamme, ou un
   **tableau indexé sur la formule** quand le document en dépend — APICIL publie une plaquette par gamme
