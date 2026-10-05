@@ -50,7 +50,7 @@ const ATOUTS=[["hospitalisation","hospO"],["honoraires spécialistes","honoO"],
 // Logos déposés dans docs/ (PNG à fond transparent, hauteur utile ~40 px).
 // Une gamme peut porter son propre logo (`logo`), distinct de son assureur (`ins`) : Révoluo est vendue
 // par Avenir Mutuelle mais sous sa marque.
-const LOGOS={mcci:"logo_mcci.png",avenir:"logo_avenir.png",mverte:"logo_mverte.png",apicil:"logo_apicil.png",revoluo:"logo_revoluo.png"};
+const LOGOS={mcci:"logo_mcci.png",avenir:"logo_avenir.png",mverte:"logo_mverte.png",apicil:"logo_apicil.png",revoluo:"logo_revoluo.png",april:"logo_april.png"};
 const LOGOBASE="https://fabcoh.github.io/santeo-tarifs/docs/";
 
 // Notre logo et nos mentions légales, en bas du tableau (Fabrice, 03/10/2026 : « pas jolie le logo en haut,
