@@ -2378,6 +2378,15 @@ function aprilRendu(){
     const vus=new Set(st.res.map(p=>p.produit));
     const ko=st.res.filter(p=>p.etat!=="ok").concat(APRIL_SEL.filter(c=>!vus.has(c)).map(c=>({produit:c,message:APRIL_FERMES[c]||(APRIL_A_BRANCHER[c]?"tarif pas encore branché (API APRIL à relever)":"non proposé par le relais")})));
     const nok=st.res.filter(p=>p.etat==="ok").length;
+    // Panne d'APRIL (Fabrice, 05/10/2026) : quand aucun produit n'est tarifé et que tous les refus viennent de leur
+    // serveur (5xx, délai dépassé), une seule ligne claire au lieu d'un « réponse vide (HTTP 502) » par produit.
+    const panne=st.res.length&&!nok&&st.res.every(p=>p.etat==="ok"||+p.code>=500||!+p.code||/ne repond pas|delai/i.test(p.message||""));
+    if(panne){
+      const c=(st.res.find(p=>+p.code>=500)||{}).code;
+      corps='<div class="apko">APRIL indisponible pour le moment : leur serveur ne répond pas'+(c?' (HTTP '+c+')':'')+'. Rien à corriger dans le comparateur — réessayez plus tard.</div>';
+      box.innerHTML='<div class="aph"><b>APRIL</b><span class="apn">tarifs et garanties de l\'API APRIL</span></div>'+corps;
+      return;
+    }
     let h='<div class="apn">'+nok+' produit'+(nok>1?"s":"")+' tarifé'+(nok>1?"s":"")+' — dans le tableau ci-dessus, lignes « APRIL ».</div>';
     for(const p of ko) h+='<div class="apl"><div class="apnom">'+(APRIL_NOM[p.produit]||p.produit)+'</div><div class="apko">'+(p.message||"non proposé pour ce profil")+'</div></div>';
     corps=h+(st.cpApproche?'<div class="apn" style="margin-top:5px">Code postal pris au chef-lieu ('+st.cpApproche+') : saisir les 5 chiffres pour un tarif exact.</div>':'')+(st.famille?'<div class="apn" style="margin-top:5px">Tarif famille à confirmer : la préproduction APRIL ne reçoit pas encore le lien de parenté des assurés.</div>':'');
