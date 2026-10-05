@@ -70,7 +70,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   garanties identiques mot pour mot, grilles concordantes avec `tarifs_all.json` (contrôle par sondage sur les 4 zones),
   `TAMPONS` inchangés (mêmes pages). Le tableau MCCINOVA déposé est identique au texte près à celui en place : gardé.
   `DOCS` des trois gammes : Tableau de garantie + IPID + Notice. Bulletin : sans objet (extranet MCCI). La fiche `mcci.md`
-  est à reprendre avec les règlements.
+  est à reprendre avec les règlements. Page de dépôt (v16) : les 8 PDF téléversés dans ses assets et ajoutés à `APERCU`,
+  `catalogue/etat` (lignes MCCI) écrit, les 11 dépôts passés en `remplace` (9) / `refuse` (2 : mauvais fichier dans la case).
   **LPS Hospi, bulletin 2026** (05/10/2026 : Fabrice dépose « adhesion.fdf.pdf », « remplace adhésion et ajoute notice ») : le
   fichier est **identique octet pour octet** à `bulletin_avenir_2026.pdf` (dossier Cap Évolution, 72 p.) ; ses **6 premières pages**
   sont le bulletin commun Avenir (case `LPS HOSPI`), extraites dans `docs/bulletin_lps_2026.pdf` (pypdf, 101 champs, 1,5 Mo) —
