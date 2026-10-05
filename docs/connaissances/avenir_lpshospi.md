@@ -3,15 +3,15 @@
 Sources :
 - `lps_hospi_2026.pdf` (4 p., abrégé **LPS**) : couverture p.1, tableau des garanties et points forts p.2 (« dépliant » 04/2026), IPID p.3 et 4 (« IPID_LPS_HOSPI_2026 »). **Ce fichier ne contient pas de bulletin d'adhésion.**
 - Bulletin individuel d'adhésion **commun aux garanties Avenir Mutuelle**, qui porte une case « LPS Hospi » à cocher : lu dans `bulletin_capnr_2026.pdf` p.1 à 6 (abrégé **BA**), pages identiques dans `bulletin_talis_2026.pdf` et `bulletin_avenir_2026.pdf`. Les statuts d'Avenir Mutuelle joints à ce bulletin (BA p.37 à 51) sont cités **Statuts p.N** (page propre « N sur 15 »).
+- `lps_notice_2026.pdf` (2 p., abrégé **DG**) : « Descriptif de garanties » LPS Hospi, référence « LPS HOSPI_2024 », déposé par Fabrice le 05/10/2026.
 - Pour l'assistance seulement : notice « Garantie d'assistance — Avenir Mutuelle Santé » de Ressources Mutuelles Assistance, jointe au tableau CAP NR, `capnr_tg_2026.pdf` p.15 à 28 (abrégé **RMA**). Voir l'avertissement de la section « Assistance ».
 
 **Documents manquants** :
-- **la notice (descriptif de garanties) de LPS Hospi n'existe pas dans le dossier** ;
 - **le règlement mutualiste applicable à LPS Hospi non plus** : le règlement « garanties non responsables » joint aux bulletins vise les gammes CAP non responsable, TALIS et SURCO CAP et ne cite pas LPS Hospi (BA p.54, règlement p.3) ;
-- pas de notice d'assistance propre à LPS Hospi ;
+- pas de notice d'assistance propre à LPS Hospi : le descriptif renvoie à « la notice d'information spécifique » de RMA (DG p.1) ;
 - pas d'exemples de remboursement, bien que le tableau y renvoie (« Cf. annexe », LPS p.2).
 
-Lu le 03/10/2026. Les numéros de page sont ceux du PDF. Une information absente des documents est notée « Non précisé dans les documents ».
+Lu le 03/10/2026 ; descriptif de garanties ajouté le 05/10/2026. Les numéros de page sont ceux du PDF. Une information absente des documents est notée « Non précisé dans les documents ».
 
 ## Identité
 
@@ -147,7 +147,7 @@ Valeurs lues sur l'image de la page (LPS p.2). BR = base de remboursement de la 
 
 - Kiné en ville : non couvert (LPS p.2).
 - Ostéopathe : non couvert (LPS p.2).
-- **Psychologue** : oui, dans le dispositif « Mon soutien psy », 100 % BR, prise en charge intégrale dans la limite des séances remboursées par la Sécurité sociale, psychologue éligible au dispositif (LPS p.2). Nombre de séances : celui de la Sécurité sociale, non chiffré dans le document.
+- **Psychologue** : oui, dans le dispositif « Mon soutien psy », 100 % BR, prise en charge intégrale dans la limite des séances remboursées par la Sécurité sociale, psychologue éligible au dispositif (LPS p.2). Le descriptif précise : prise en charge intégrale **dans la limite de 8 séances par an et par bénéficiaire âgé de plus de 3 ans**, psychologue éligible à « MonPsy » (registre ADELI, parcours en psychologie clinique, 3 ans d'expérience au moins) (DG p.1).
 - Psychiatre en consultation de ville : non couvert (LPS p.2).
 
 ### Dentaire
@@ -187,7 +187,11 @@ Valeurs lues sur l'image de la page (LPS p.2). BR = base de remboursement de la 
 - **Psychiatrie** : la chambre particulière est prévue pour les moyens et longs séjours en psychiatrie, dans les limites de 30, 60 puis 90 jours (LPS p.2).
 - **Soins de suite** : maison de repos, maison de convalescence, centre de réadaptation, maison d'enfants médicalisée : chambre particulière dans les mêmes limites (LPS p.2).
 - **Exclus** : gériatrie, gérontologie, moyens et longs séjours pour la chambre ; maison de retraite, maisons d'accueil spécialisées, établissements médico-sociaux (LPS p.2 et 3). Voir les « Contradictions » sur les moyens et longs séjours.
-- **Indemnités journalières** : 20 € par jour d'hospitalisation, dès le 1er jour, sans limitation de durée (LPS p.2). Durée minimale d'hospitalisation, exclusions : Non précisé dans les documents.
+- **Indemnités journalières** : 20 € par jour d'hospitalisation, dès le 1er jour, sans limitation de durée (LPS p.2) ; « allocation forfaitaire journalière… sans limitation de durée » (DG p.1). Durée minimale d'hospitalisation : Non précisé dans les documents.
+- **Nuitée** : un séjour comportant au moins une nuit de 22 h à 6 h (DG p.1).
+- **Non remboursés** : forfaits d'accueil, dépenses à caractère personnel, suppléments (forfait hôtelier, téléphone, journal…), sauf mention au tableau (DG p.1). Visites avec déplacements non médicalement justifiés : 100 % du tarif de convention (DG p.1).
+- **Forfait journalier en gériatrie, gérontologie, moyens et longs séjours** : limité à 30 jours par an et par bénéficiaire ; placements à l'année et temporaires exclus (DG p.1).
+- **Limite annuelle** : par année civile (1er janvier – 31 décembre), ou de la date d'effet au 31 décembre la première année (DG p.2).
 - Urgences sans hospitalisation : forfait patient urgence pris en charge à chaque passage (LPS p.2).
 - Actes lourds : participation forfaitaire prise en charge (LPS p.2).
 - Ambulatoire : Non précisé dans les documents.
@@ -204,14 +208,15 @@ Valeurs lues sur l'image de la page (LPS p.2). BR = base de remboursement de la 
 ## Assistance RMA
 
 - Le tableau LPS Hospi annonce « Prestations garanties par Ressources Mutuelles Assistance (RMA) : OUI » (LPS p.2), et cite « Garde des enfants ou des personnes dépendantes à charge. Avance des frais médicaux à l'étranger… » (LPS p.2).
-- **Le contenu de cette assistance n'est pas dans les documents LPS Hospi.** La seule notice RMA du dossier est la notice « Avenir Mutuelle Santé », jointe au tableau CAP NR ; elle couvre « l'Adhérent à AVENIR MUTUELLE » et ses ayants droit (RMA p.18, « 4 sur 14 »). Rien dans les documents LPS ne confirme que c'est la même notice : **à faire confirmer par Avenir Mutuelle avant de l'annoncer à un prospect.**
+- Le descriptif LPS Hospi (DG p.1) cite : rapatriement vers une structure médicale proche du domicile, transport d'un proche au chevet, frais médicaux et d'hospitalisation à l'étranger, assistance psychologique ; immobilisé à domicile ou hospitalisé plus de 24 heures : garde des enfants et conduite à l'école, aide-ménagère, garde des animaux, cours à domicile, remboursement des frais de télévision. Assureur : RMA, 46 rue du Moulin, BP 62127, 44121 Vertou Cedex. **Montants et plafonds : renvoyés à « la notice d'information spécifique », absente du dossier LPS.**
+- **Le détail chiffré de cette assistance n'est pas dans les documents LPS Hospi.** La seule notice RMA du dossier est la notice « Avenir Mutuelle Santé », jointe au tableau CAP NR ; elle couvre « l'Adhérent à AVENIR MUTUELLE » et ses ayants droit (RMA p.18, « 4 sur 14 »). Rien dans les documents LPS ne confirme que c'est la même notice : **à faire confirmer par Avenir Mutuelle avant de l'annoncer à un prospect.**
 - Pour mémoire, ce que prévoit cette notice (RMA p.15 à 28) : appel 24 h/24 au 09 69 36 88 20 ; dès une hospitalisation en ambulatoire, aide à domicile 10 heures, garde des enfants de moins de 16 ans 40 heures, garde des personnes dépendantes 40 heures, garde des animaux 30 jours, téléassistance 3 mois, proche au chevet 500 € ; forfait connectivité 5 €/jour pendant 30 jours au-delà de 24 heures d'hospitalisation ; école à domicile 10 heures par semaine dès 14 jours d'absence ; aide à domicile pendant une chimiothérapie ou radiothérapie ; à l'étranger (voyages privés de 31 jours au plus), avance de frais médicaux 4 600 € et prise en charge du reste à charge 4 600 € ; en cas de décès, avance de fonds 3 050 € et transfert du corps 3 000 €. Détail complet dans `avenir_capnr.md`, section « Assistance RMA ».
 
 ## Autres services
 
-- **Téléconsultation** : oui (LPS p.2 et 3). Prestataire, horaires : Non précisé dans les documents LPS Hospi.
+- **Téléconsultation** : oui (LPS p.2 et 3), assurée par **Médecin Direct** (Teladoc Health France) (DG p.1). Horaires : Non précisé dans les documents.
 - **Noé Santé** : oui (LPS p.2 et 3). Détail : Non précisé dans les documents LPS Hospi.
-- **Deuxiemeavis.fr** : oui ; « deuxième avis médical » (LPS p.2 et 3).
+- **Deuxiemeavis.fr** : oui (LPS p.2 et 3) ; avis sur dossier d'un médecin spécialisé en moins de 7 jours, 300 médecins, 700 maladies, entièrement pris en charge ; renseignements au 0805 65 30000 (gratuit) ; plateforme éditée par CARIANS (DG p.1).
 - **Kalixia** : non (LPS p.2).
 - Tiers payant, télétransmission : la case télétransmission figure au bulletin (BA p.3). Tiers payant : Non précisé dans les documents.
 
@@ -244,7 +249,7 @@ Où suis-je couvert ? En France et à l'étranger, sous réserve de l'interventi
 1. **Forfait journalier** : l'IPID le liste comme « Forfait journalier hospitalier **illimité** » parmi les garanties incluses (LPS p.3), puis le limite à 30, 60 puis 90 jours dans les restrictions (LPS p.3), comme le tableau (LPS p.2).
 2. **Moyens et longs séjours** : ils ne sont « pas assimilés » à une hospitalisation (renvoi *, LPS p.2 ; LPS p.3) ; le forfait journalier y est pourtant « limité à 30 jours par an » (renvoi 1) ; la chambre particulière cite « les moyens et longs séjours en Psychiatrie » dans les séjours couverts, puis exclut « moyens et longs séjours » à la fin du même renvoi (renvoi 2, LPS p.2).
 3. **Chambre particulière** : « 1re année d'adhésion civile » (LPS p.2) ; « par an et par bénéficiaire la première année d'adhésion » (LPS p.3).
-4. **Lit d'accompagnant** : « enfant à charge de moins de 16 ans » au tableau (LPS p.2) ; l'IPID ne donne pas d'âge (LPS p.3).
+4. **Lit d'accompagnant** : « enfant à charge de moins de 16 ans » au tableau (LPS p.2) ; l'IPID et le descriptif ne donnent pas d'âge, le descriptif disant « en cas d'hospitalisation », 30 jours par an et par bénéficiaire (LPS p.3, DG p.1).
 5. **Niveaux** : l'IPID dit que les montants « diffèrent selon le niveau de garantie souscrit » (LPS p.3) ; le tableau n'a qu'une colonne (LPS p.2).
 6. **Exemples de remboursement** annoncés (« Cf. annexe », LPS p.2), absents.
 7. **Assistance** : annoncée (LPS p.2) sans notice propre ; voir la section « Assistance RMA ».
@@ -252,6 +257,7 @@ Où suis-je couvert ? En France et à l'étranger, sous réserve de l'interventi
 9. **Délai de demande de remboursement** : 2 ans « suivant la date de survenance des soins » (LPS p.3) ; 2 ans « à compter de la date de remboursement des soins par la Sécurité sociale » (LPS p.4).
 10. **Mandat SEPA** : valide après un délai de renonciation « qui ne peut être inférieur à 30 jours » (BA p.6) ; renonciation de 14 jours (BA p.3).
 11. **Comparateur** : il annonce une adhésion « 16 à 100 ans » et un « zonage AVENIR » ; aucun âge ni zone dans les documents LPS Hospi. Ses garanties (100 % BR, forfait 100 % FR, chambre 40 €/j, lit 15 €/nuit, IJ 20 €/j, FPU, transport, Mon soutien psy, Kalixia non) et ses limites de 30, 60 et 90 jours concordent avec le tableau (LPS p.2). **Corrigé dans le comparateur le 03/10/2026.**
+12. **Psychologue** : « dans la limite des séances remboursées par la Sécurité sociale » (LPS p.2) ; « dans la limite de 8 séances par an », plus de 3 ans (DG p.1). Le descriptif porte la référence 2024.
 
 ## Questions fréquentes
 
@@ -263,7 +269,7 @@ Où suis-je couvert ? En France et à l'étranger, sous réserve de l'interventi
 6. **Les lunettes, les lentilles ?** Non (LPS p.2).
 7. **Les appareils auditifs ?** Non (LPS p.2).
 8. **L'ostéopathe, la sophrologie, l'acupuncture ?** Non (LPS p.2).
-9. **Le psychologue ?** Oui, « Mon soutien psy » : 100 % BR, dans la limite des séances remboursées par la Sécurité sociale, psychologue éligible (LPS p.2).
+9. **Le psychologue ?** Oui, « Mon soutien psy » : prise en charge intégrale, **8 séances par an** et par bénéficiaire de plus de 3 ans, psychologue éligible (DG p.1 ; LPS p.2).
 10. **Le kiné ?** Non en ville (LPS p.2).
 11. **Faut-il un questionnaire de santé ?** Non, ni examen médical (LPS p.2).
 12. **Y a-t-il un délai d'attente ?** Aucun n'est mentionné (LPS p.2 à 4). Mais forfait journalier et chambre sont limités à 30 jours la 1re année (LPS p.2).

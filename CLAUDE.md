@@ -62,7 +62,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (et non 200 %) ; en hospitalisation hors OPTAM, 200 % est juste. Le poste optique reprend désormais,
   comme Cap Évolution, le forfait **2 verres simples** 16 ans et plus : 100 % / 100 / 150 / 200 / 250 € (Fabrice,
   26/09/2026 — c'étaient les verres mixtes, 150 / 250 / 300 / 350 €, qui flattaient la Mutuelle Verte).
-  Manque encore : la notice de LPS HOSPI.
+  **Notice LPS Hospi reçue** (05/10/2026, page de dépôt, « NOTICE.pdf ») : `docs/lps_notice_2026.pdf`, « Descriptif de garanties »
+  2 p., réf. « LPS HOSPI_2024 », `DOCS.LPSH.Notice`. Concorde avec le comparateur ; apporte psychologue 8 séances/an (> 3 ans),
+  lit d'accompagnant 30 j, nuitée 22 h–6 h, liste de l'assistance RMA (montants renvoyés à une notice RMA absente), Médecin Direct.
+  Fiche `avenir_lpshospi.md` mise à jour (source **DG**).
   **MCCI, dépôt du 05/10/2026** (11 PDF, trois mal rangés, identifiés par leur contenu) : IPID et **règlement mutualiste** (en vigueur
   au 1er avril 2026, rangé comme « notice ») des trois gammes — `mccinova|flexia|solencia_ipid_2026.pdf`, `…_notice_2026.pdf`
   (44 / 63 / 60 p.) ; `flexia_tg_2026.pdf` (11 p.) et `solencia_tg_2026.pdf` (9 p.) remplacés par une version qui **ajoute les grilles
@@ -79,7 +82,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   remplit pas. `fillAdh` le charge pour `LPSH` (`DOSSIER`) et lui ajoute `lps_hospi_2026.pdf` (10 p.). **La case « LPS Hospi »
   n'était jamais cochée** : corrigé (`C("LPS HOSPI")` + formule). **Aucune notice LPS dans ce fichier** : la suite est le
   dossier Cap Évolution (descriptif, IPID, assistance RMA, statuts AG 2026, règlement mutualiste **garanties responsables** —
-  qui ne vaut pas pour LPS, non responsable). La notice LPS reste à obtenir d'Avenir.
+  qui ne vaut pas pour LPS, non responsable). La notice LPS est arrivée à part le même jour (voir plus haut).
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
 - **Avenir Mutuelle, mise à jour du 28/09/2026** (dépôt de Fabrice sur la page de dépôt) : Cap Évolution, Cap Évolution
   TNS, CAP NR, TALIS — tableau de garantie, IPID, notice et bulletin. **Aucune garantie ne change** : les pages de
@@ -1092,8 +1095,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Sérénité 102,91 → 240,23). Test : scratchpad `t_aprilautres.js`.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
-- LPS Hospi : dossier complet à obtenir — `lps_hospi_2026.pdf` (4 p.) ne porte que le tableau et l'IPID ; ni notice, ni règlement,
-  ni détail de l'assistance.
+- LPS Hospi : restent à obtenir le règlement mutualiste et la notice d'assistance RMA propres à LPS (le descriptif est reçu).
 - ~~Harmonisation optique FLEXIA / SOLENCIA~~ : faite le 03/10/2026 (forfait monture + 2 verres simples : FLEXIA 100 % BR /
   150 / 200 / 260 €, SOLENCIA 150 / 200 / 300 / 350 € ; lentilles non remboursées FLEXIA Start « — »).
 
