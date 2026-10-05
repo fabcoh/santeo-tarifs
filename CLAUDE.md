@@ -107,6 +107,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   pièce « Manquant » ; « sans objet » compte comme fournie) a son nom **en rouge**, dans le tableau comme dans la liste « Produit »
   (Fabrice : rouge plutôt que barré, 03/10/2026). Boutons « Nouveau PDF » / 👁 alignés en bas de case (`margin-top:auto`).
 
+  **05/10/2026 (Fabrice)** : option **« ⚠ Documents à compléter (n produits) »** en tête de la liste « Produit » (`MANQUE`) :
+  seuls les produits incomplets, toutes compagnies ou celle choisie ; l'historique suit. **Bulletin « sans objet »** pour MCCI
+  (« vente en ligne sur le site MCCI » — Fabrice : « parfois on doit faire la vente sur le site en direct, comme pour APRIL ou
+  VERALTI ») et pour APRIL (« April-On ou l'API ») sauf Mix et GAN qui ont le leur ; une case « sans objet » accepte quand même
+  un PDF. Aperçu 👁 de `bulletin_lps_2026.pdf` ajouté à `APERCU`. Page version 14.
+
 ## Fiches de connaissances — `docs/connaissances/` (03/10/2026)
 
 - Demande de Fabrice : que le Claude du CRM réponde à tout ce qui sort des connaissances de base (sophrologie, séances d'ostéo
