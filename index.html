@@ -428,7 +428,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-05T13:46:42Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-05T13:46:42Z</div>
+  <div id="buildstamp" data-build="2026-10-05T13:48:20Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-05T13:48:20Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2322,6 +2322,16 @@ function showDoc(name,url){
 // formule dans la page (pdf.js, chargé au premier usage) — un PDF dans un cadre ne s'affiche pas sur téléphone Android.
 // DOCPAGE : page où commence le tableau des garanties, quand elle est connue ; sinon la page 1.
 const DOCPAGE={"april_santemix_tg_2026.pdf":5};
+// Page des garanties de la formule (Fabrice, 05/10/2026 : « arriver directement aux garanties, éviter les pages de
+// présentation ») : celle où la cotisation est tamponnée (TAMPONS, pages comptées de 0), sinon la 1re page tamponnée du
+// fichier, sinon DOCPAGE, sinon la page 1.
+function pageGaranties(url,r){
+  const f=url.split("/").pop(), T=TAMPONS[f];
+  if(T){ const k=r?cleTampon(r.key,r.fi).find(c=>T[c]):null;
+    if(k) return T[k].page+1;
+    return Math.min(...Object.values(T).map(t=>t.page))+1; }
+  return DOCPAGE[f]||1;
+}
 let PDFJS=null;
 function chargerPdfjs(){
   if(PDFJS) return PDFJS;
@@ -2435,7 +2445,7 @@ function verifDocs(r){
     try{
       const lib=await chargerPdfjs();
       const pdf=await lib.getDocument(url).promise; if(n!==jeton) return;
-      const N=pdf.numPages, dep=Math.min(N,DOCPAGE[url.split("/").pop()]||1);
+      const N=pdf.numPages, dep=Math.min(N,pageGaranties(url,r));
       const larg=Math.min(zone.clientWidth-20,960);
       let fin=dep-1;
       const rendre=async(de,a,avant)=>{
