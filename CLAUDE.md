@@ -1082,6 +1082,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Cocher un produit n'interroge que lui (`aprilDemande` n'envoie que les manquants), les lignes déjà là restent affichées
   (« Tarif en cours pour … ») ; décocher ne demande rien. Âge, CP, régime, famille, date d'effet ou Remise changent la base :
   tout est redemandé. Une panne (5xx, code 0) n'est jamais gardée. Test : scratchpad `t_aprilcache.js`.
+  **Autres produits APRIL branchés** (Fabrice, 05/10/2026 : « pourquoi je n'ai pas les tarifs ») : préproduction revenue,
+  appels réels — `SanteGan` (55 ans dans l'année d'effet, 5 niv.), `SanteProtect` (5 niv.), `SanteCapSerenite` (50 ans, 6 niv.),
+  tous `MaladieChirurgie`, commissions 3010 / 1515, **responsables** (renvoi du résumé). GAN garde ses garanties lues dans la
+  notice + ses 4 PDF (`APRIL_DOCS`) ; Protect et Cap Sérénité : aucun document public, « n.c. » partout. `SanteGenerali` (« plus
+  commercialisé ») et `SanteApril` (« non disponible ») passent dans `APRIL_FERMES` ; `APRIL_A_BRANCHER` est vide. Relais
+  `april.php` version `2026-10-05 April-On, GAN Protect Cap Serenite` (scratchpad `livrer/april.php`) — **à déposer par Fabrice**,
+  sinon le relais ignore ces trois codes. Test : scratchpad `t_aprilautres.js`.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir — `lps_hospi_2026.pdf` (4 p.) ne porte que le tableau et l'IPID ; ni notice, ni règlement,
