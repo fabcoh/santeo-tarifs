@@ -1203,7 +1203,19 @@ function beforeGenerate(run){
   go();
 }
 
-const MCCI_EXTRANET="https://www.extranetcourtage.mcci.fr/#/broker/projects";
+// Adresses de production (souscription en ligne) : modifiées par Fabrice sur la page de dépôt, reportées dans
+// docs/liens_adhesion.json, lu au chargement (repli : ces valeurs). Clés = lignes de la page de dépôt.
+let LIENS_ADH={MCCINOVA:"https://www.extranetcourtage.mcci.fr/#/broker/projects",FLEXIA:"https://www.extranetcourtage.mcci.fr/#/broker/projects",SOLENCIA:"https://www.extranetcourtage.mcci.fr/#/broker/projects"};
+(async()=>{ for(const u of ["docs/liens_adhesion.json","https://fabcoh.github.io/santeo-tarifs/docs/liens_adhesion.json"]){
+  try{ const r=await fetch(u,{cache:"no-cache"}); if(!r.ok) continue; const d=await r.json();
+       if(d&&d.lignes&&typeof d.lignes==="object"){ LIENS_ADH=Object.fromEntries(Object.entries(d.lignes).filter(([,v])=>/^https:\/\//.test(String(v||"")))); return; } }catch(e){} } })();
+// Ligne de la page de dépôt pour une formule du comparateur.
+function lienAdh(r){
+  const reg=(document.getElementById("regime")||{}).value||"";
+  const id=r.key==="MV"?(r.fi<4?"MV_100_300":"MV_500"):r.key==="APICIL"?(r.fi<6?"API_EQ":"API_SER"):(r.key==="RF50"||r.key==="RF100")?"REV"
+          :(r.key==="CAPEVO"&&/^TNS/.test(reg)&&LIENS_ADH.CAPEVO_TNS)?"CAPEVO_TNS":r.key;
+  return LIENS_ADH[id]||"";
+}
 function showAdh(r){
   const fmtD=d=>("0"+d.getDate()).slice(-2)+"/"+("0"+(d.getMonth()+1)).slice(-2)+"/"+d.getFullYear();
   const reg=document.getElementById("regime").value;
@@ -3456,8 +3468,8 @@ function render(rows,warns){
         Object.entries(docsDe(r)).map(([n,u])=>'<a class="tgbtn doc" href="'+u+'" target="_blank" rel="noopener" onclick="event.stopPropagation();try{var w=window.open(this.href,\'docwin\',\'popup,width=980,height=860,left=120,top=60\');if(w){event.preventDefault();w.focus();}}catch(e){}">'+n+' ↗</a>').join('')+
         ((INFO[r.key]&&INFO[r.key].length)?'<button class="tgbtn ibtn" data-info="'+i+'" title="Limites, plafonds et exclusions" aria-label="Informations"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16.5"></line><circle cx="12" cy="7.6" r="1.1" fill="currentColor" stroke="none"></circle></svg><span>Infos</span></button>':'')+
         (__ADH__&&["CAPEVO","CAPNR","TALIS","MV","REV","RF50","RF100"].includes(r.key)?'<button class="tgbtn" data-adh="'+i+'">📝 Adhésion</button>':'')+
-        // MCCI se souscrit sur son extranet courtage, sans bulletin papier (Fabrice, 05/10/2026) : le bouton y ouvre un onglet.
-        (__ADH__&&["MCCINOVA","FLEXIA","SOLENCIA"].includes(r.key)?'<a class="tgbtn" href="'+MCCI_EXTRANET+'" target="_blank" rel="noopener" title="Créer le dossier sur l\u2019extranet courtage MCCI">📝 Adhésion (site MCCI)</a>':'')+
+        // Adresse de production (souscription en ligne, page de dépôt) : MCCI n'a que celle-ci, sans bulletin papier (Fabrice, 05/10/2026).
+        (__ADH__&&r.key!=="APRIL"&&lienAdh(r)?'<a class="tgbtn" href="'+lienAdh(r).replace(/"/g,"&quot;")+'" target="_blank" rel="noopener" title="Créer le dossier sur le site de la compagnie (adresse de production)">'+(["MCCINOVA","FLEXIA","SOLENCIA"].includes(r.key)?"📝 Adhésion (site MCCI)":"🌐 Souscrire en ligne")+'</a>':'')+
         (r.key==="APICIL"?'<button class="tgbtn" data-devis="'+i+'" title="Enregistrer ce devis chez APICIL">🧾 Devis</button>':'')+
         (r.key==="APRIL"?'<button class="tgbtn" data-aprilon="'+i+'" title="Enregistre ce projet chez APRIL et l\u2019ouvre tout rempli dans April-On (rien n\u2019est signé, aucun mail au client). ESSAI : APRIL n\u2019a ouvert que son environnement de test, le projet n\u2019apparaîtra pas dans votre April-On habituel.">↗ April-On (essai)</button>':'')+
         (r.key==="APRIL"?'<span class="apn">'+(APRIL_DOCS[r.april]?"Garanties vérifiées sur le document APRIL ; « n.c. » = non vérifié.":"Pas de document APRIL public : garanties non affichées.")+'</span>':'<button class="tgbtn" data-tg="'+r.key+'">📄 Tableau de garantie</button>')+'</div>'+

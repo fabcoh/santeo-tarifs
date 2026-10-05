@@ -310,10 +310,18 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Décision de Fabrice (01/10/2026) : on n'y touche pas pour le moment.** La branche est en conflit avec `main`
   (`ECHANGES.md`) ; si la question revient, la faire reprendre par le Claude du CRM, qui seul parle à Manus —
   ne pas ouvrir de PR dans son dépôt depuis ici.
-- **Adhésion MCCI = extranet courtage** (Fabrice, 05/10/2026 : « on clique sur adhésion, cela ouvre le site MCCI ») : dans le
-  détail d'une ligne MCCINOVA, FLEXIA ou SOLENCIA, **📝 Adhésion (site MCCI)** est un lien vers `MCCI_EXTRANET`
-  (`https://www.extranetcourtage.mcci.fr/#/broker/projects`), nouvel onglet, sans bulletin ni code d'adhésion (l'extranet a
-  sa propre connexion). Rien n'est transmis à MCCI : le commercial y crée le dossier. Test : scratchpad `t_mcci.js`.
+- **Adresses de production (souscription en ligne)** (Fabrice, 05/10/2026 : « on clique sur adhésion, cela ouvre le site MCCI »,
+  puis « je peux modifier les adresses depuis l'artefact et cela va dans le comparateur ») : dans le détail d'une ligne, un lien
+  ouvre le site de la compagnie — **📝 Adhésion (site MCCI)** pour MCCINOVA / FLEXIA / SOLENCIA
+  (`https://www.extranetcourtage.mcci.fr/#/broker/projects`), **🌐 Souscrire en ligne** pour toute autre gamme qui en reçoit une
+  (en plus de son bulletin). Pas de code d'adhésion : le site a sa propre connexion ; rien n'est transmis à la compagnie.
+  **Source** : `docs/liens_adhesion.json` (`lignes` = ids de la page de dépôt ; `lienAdh(r)` : MV → `MV_100_300`/`MV_500`,
+  APICIL → `API_EQ`/`API_SER`, RF50/RF100 → `REV`, CAPEVO + TNS → `CAPEVO_TNS` s'il existe), lu au chargement, repli sur
+  `LIENS_ADH` dans la page. **Fabrice modifie l'adresse dans la case « Bulletin d'adhésion » de la page de dépôt** (« Adresse
+  de production », ✎ Modifier / Ajouter, https seul) → base `catalogue/liens` (`lignes`, `majLe`, `aReporter:true`). La page
+  privée ne peut pas écrire dans le dépôt GitHub : **quand il dit « liens modifiés »**, lire `catalogue/liens`, recopier
+  `lignes` dans `docs/liens_adhesion.json`, pousser, puis remettre `aReporter:false`. APRIL garde son bouton April-On.
+  Tests : scratchpad `t_mcci.js`, `t_mcci2.js`, `depot/t_lien.js`.
 - **Titre de la fenêtre d'adhésion** (01/10/2026) : « Adhésion — gamme formule · xx,xx €/mois » (`#adhtit`), le tarif
   retenu pour vérifier ; il suit le recalcul « Souscripteur non assuré » de Révoluo.
   **Une fiche n'est pas une liste** (30/09/2026, fiche 294413) : la fiche complète porte ses propres tableaux
