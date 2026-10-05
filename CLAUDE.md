@@ -685,6 +685,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   bien chez Mailgun (vérifié par Fabrice) — une fausse piste du 03/10 (`santeo-mail.multipart-non-depose.php`) n'a pas servi.
   **Attention aux variables dans le relais** : la boucle des colonnes écrasait `$nom`, le nom du prospect, et
   le courrier disait « Bonjour Monsieur MCCINOVA ESSENTIELLE ». Les variables de colonne sont préfixées.
+- **Signature « Votre conseiller »** (Fabrice, 05/10/2026) : Fabrice Cohen — **01 53 19 86 36** (la ligne du cabinet, plus le
+  portable 06 22 19 73 49). `$TEL_CONSEILLER` dans `santeo-mail.php` l'emporte sur `santeo-mail-config.php`, qui porte la clé
+  et n'est donc pas à rouvrir. Relais `2026-10-05 … tel conseiller`.
 - Fichiers dans `www/` : `santeo-mail.php` + `santeo-mail-config.php` (**clé, hors dépôt**).
 - **L'expéditeur est choisi dans une liste fermée côté serveur** (`fcohen@`, `sandra@`, `caroline@`,
   `antony@`) : la page n'envoie qu'une adresse, le relais refuse tout ce qui n'est pas dans la liste. Sinon
