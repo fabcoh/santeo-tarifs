@@ -156,4 +156,7 @@ def wrap(body):
 (DIST/"comparateur-claude.html").write_text(wrap(variant(True, True, "", False, "", None, hosted=True)), encoding="utf-8")
 # Page GitHub Pages : import automatique (#fiche=), copie d'image directe, bulletin PDF sous code d'accès
 (DIST/"index.html").write_text(wrap(variant(True, True, "", False, "", None, hosted=True, gate=ADH_GATE)), encoding="utf-8")
+# Numéro de la construction, lu par la page ouverte (Fabrice, 05/10/2026 : « j'ai toujours le grand format ») :
+# un onglet resté ouvert compare le sien à celui-ci et se recharge s'il est dépassé.
+(DIST/"version.json").write_text('{"build":"'+BUILD+'"}\n', encoding="utf-8")
 print("dist/ construit :", ", ".join(p.name for p in sorted(DIST.iterdir())))

@@ -33,7 +33,7 @@ jobs:
         run: python3 build.py
 
       - name: Placer la page a la racine
-        run: cp dist/index.html index.html
+        run: cp dist/index.html index.html && cp dist/version.json version.json
 
       # Images des sélections sans tarif pour le CRM (docs/tg/) : refaites seulement quand
       # ce qu'elles montrent a changé — la vérification se passe de navigateur.
@@ -57,7 +57,7 @@ jobs:
             echo "Aucun changement a publier."
             exit 0
           fi
-          git add index.html src/garanties.json src/tableau.css docs/tg
+          git add index.html version.json src/garanties.json src/tableau.css docs/tg
           git commit -m "Comparateur : construction automatique"
           # La branche a pu avancer pendant la construction (envoi suivant) : on se replace dessus avant de pousser.
           # En cas de conflit, la construction déclenchée par cet envoi plus récent publiera à notre place.

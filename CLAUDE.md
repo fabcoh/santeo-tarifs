@@ -844,6 +844,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `fenetreOuverte()` (`#tgov`, `#dvov`, `#impov`) suspend ce rechargement : le commercial qui va consulter
   MyVERALTI ou sa messagerie retrouve sa souscription telle qu'il l'a laissée.
 
+- **Version publiée** (Fabrice, 05/10/2026 : « j'ai toujours le grand format » — capture faite avec une page d'avant la
+  publication). `build.py` écrit `dist/version.json` (`{"build": …}`), l'Action le recopie à la racine et le commit avec
+  `index.html`. La page compare son `data-build` (`#buildstamp`) à `version.json?t=…` (`cache:"no-store"`) **à chaque retour
+  sur l'onglet et à chaque nouvelle fiche** (`hashchange` : l'onglet `santeo_tarif` que le CRM réutilise ne fait que changer
+  l'adresse après le #, rien ne le rechargeait) ; plus récente → rechargement (la fiche suit par le #), jamais par-dessus
+  une fenêtre ouverte, une lecture par minute au plus. `window.verifierVersion`. Test : scratchpad `t_version.js`.
+
 ## Couleurs
 
 - Les variables de thème sont déclarées **trois fois** : `:root`, le bloc `prefers-color-scheme: dark` et
