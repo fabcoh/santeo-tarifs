@@ -2941,7 +2941,9 @@ function mailTableau(cols){
     return {key:c.key, fi:c.fi, gamme:g.label, formule:g.names[c.fi], nom:Tableau.nomComplet(GAR,c.key,c.fi),
             logo:(g.logo||g.ins)?("logo_"+(g.logo||g.ins)+".png"):"", compagnie:(COMP[c.key]||""),
             prix:r?eur(r.total):"", reco:RECO===(c.key+"|"+c.fi),
-            docs:Tableau.documents(GAR,c.key,c.fi,regimeActuel()), limites:nr+(lim||"")};
+            // Dans le courrier, sous chaque colonne : GARANTIES puis IPID - NOTICE, rien d'autre (Fabrice, 05/10/2026 : conditions
+            // générales et demande d'adhésion APRIL retirées). La fenêtre « Vérifier » de la page les garde.
+            docs:Tableau.documents(GAR,c.key,c.fi,regimeActuel()).filter(d=>!/^(Conditions générales|Demande d.adhésion)/i.test(d.libelle||d[0]||"")), limites:nr+(lim||"")};
   });
   return {colonnes:colonnes,lignes:lignes};
 }
