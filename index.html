@@ -428,7 +428,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-05T10:57:45Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-05T10:57:45Z</div>
+  <div id="buildstamp" data-build="2026-10-05T11:24:57Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-05T11:24:57Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1803,6 +1803,7 @@ function beforeGenerate(run){
   go();
 }
 
+const MCCI_EXTRANET="https://www.extranetcourtage.mcci.fr/#/broker/projects";
 function showAdh(r){
   const fmtD=d=>("0"+d.getDate()).slice(-2)+"/"+("0"+(d.getMonth()+1)).slice(-2)+"/"+d.getFullYear();
   const reg=document.getElementById("regime").value;
@@ -4055,6 +4056,8 @@ function render(rows,warns){
         Object.entries(docsDe(r)).map(([n,u])=>'<a class="tgbtn doc" href="'+u+'" target="_blank" rel="noopener" onclick="event.stopPropagation();try{var w=window.open(this.href,\'docwin\',\'popup,width=980,height=860,left=120,top=60\');if(w){event.preventDefault();w.focus();}}catch(e){}">'+n+' ↗</a>').join('')+
         ((INFO[r.key]&&INFO[r.key].length)?'<button class="tgbtn ibtn" data-info="'+i+'" title="Limites, plafonds et exclusions" aria-label="Informations"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16.5"></line><circle cx="12" cy="7.6" r="1.1" fill="currentColor" stroke="none"></circle></svg><span>Infos</span></button>':'')+
         (true&&["CAPEVO","CAPNR","TALIS","MV","REV","RF50","RF100"].includes(r.key)?'<button class="tgbtn" data-adh="'+i+'">📝 Adhésion</button>':'')+
+        // MCCI se souscrit sur son extranet courtage, sans bulletin papier (Fabrice, 05/10/2026) : le bouton y ouvre un onglet.
+        (true&&["MCCINOVA","FLEXIA","SOLENCIA"].includes(r.key)?'<a class="tgbtn" href="'+MCCI_EXTRANET+'" target="_blank" rel="noopener" title="Créer le dossier sur l\u2019extranet courtage MCCI">📝 Adhésion (site MCCI)</a>':'')+
         (r.key==="APICIL"?'<button class="tgbtn" data-devis="'+i+'" title="Enregistrer ce devis chez APICIL">🧾 Devis</button>':'')+
         (r.key==="APRIL"?'<button class="tgbtn" data-aprilon="'+i+'" title="Enregistre ce projet chez APRIL et l\u2019ouvre tout rempli dans April-On (rien n\u2019est signé, aucun mail au client). ESSAI : APRIL n\u2019a ouvert que son environnement de test, le projet n\u2019apparaîtra pas dans votre April-On habituel.">↗ April-On (essai)</button>':'')+
         (r.key==="APRIL"?'<span class="apn">'+(APRIL_DOCS[r.april]?"Garanties vérifiées sur le document APRIL ; « n.c. » = non vérifié.":"Pas de document APRIL public : garanties non affichées.")+'</span>':'<button class="tgbtn" data-tg="'+r.key+'">📄 Tableau de garantie</button>')+'</div>'+
