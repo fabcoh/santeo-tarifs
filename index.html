@@ -428,7 +428,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-04T10:04:27Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-04T10:04:27Z</div>
+  <div id="buildstamp" data-build="2026-10-05T04:19:12Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-05T04:19:12Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -4200,6 +4200,24 @@ function applyImport(raw){
   document.addEventListener("visibilitychange",()=>{
     if(document.visibilityState==="visible"&&Date.now()-t0>FRESH&&!fenetreOuverte())refresh();});
   window.addEventListener("pageshow",e=>{if(e.persisted&&Date.now()-t0>FRESH&&!fenetreOuverte())refresh();});
+  // Version publiée (Fabrice, 05/10/2026 : « j'ai toujours le grand format », capture faite avec une page de la veille) :
+  // l'onglet que le CRM réutilise ne fait que changer d'adresse après le # — rien ne le recharge. À chaque retour sur
+  // l'onglet et à chaque nouvelle fiche, la page lit version.json (sans cache) ; plus récente que la sienne → rechargement,
+  // jamais par-dessus une fenêtre ouverte. Hors ligne ou fichier absent : rien ne se passe.
+  const ICI=(document.getElementById("buildstamp")||{}).dataset?.build||"";
+  let vu=0;
+  const verifierVersion=async(nouvelleFiche)=>{
+    if(!/^https:/.test(location.protocol)||!ICI||/^__/.test(ICI)||Date.now()-vu<60000)return;
+    vu=Date.now();
+    try{
+      const r=await fetch("version.json?t="+Date.now(),{cache:"no-store"}); if(!r.ok)return;
+      const v=(await r.json()).build||"";
+      if(v&&v>ICI&&!fenetreOuverte()){ if(nouvelleFiche)location.reload(); else refresh(); }
+    }catch(e){}
+  };
+  window.verifierVersion=verifierVersion;
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")verifierVersion(false);});
+  window.addEventListener("hashchange",()=>{vu=0;verifierVersion(true);});
 })();
 const urlImported=(function(){
   PRO=PRO||{}; // le lien peut arriver avant l'initialisation plus bas
