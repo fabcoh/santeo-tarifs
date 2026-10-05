@@ -167,6 +167,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   2 enfants payants max, pas de DOM-TOM, jusqu'à 80 ans. Grille alignée sur le tarificateur showcase : ×0,999 au centime.
   Renfort 50 éligible Rev 2–8, Renfort 100 éligible Rev 2–6. Option « Souscripteur non assuré » (enfants seuls) :
   bloc adhérent rempli, ligne « Adhérent » des assurés vide, cotisation recalculée. Génération = 2 PDF (bulletin + SEPA).
+  **Autorisation d'utilisation du compte CERGAP** (Fabrice, 05/10/2026 : « intégrer ce document dans le SEPA… SEPA puis nouveau
+  doc à la suite ») : `docs/autorisation_compte_revoluo_2026.pdf` (1 p., 13 champs) est ajouté **en page 2 du mandat SEPA**
+  (`fillSepaREV`) : Je soussigné = l'adhérent (nom, prénom, adresse, CP ville — ce champ a deux widgets, il remplit aussi « FAIT
+  A »), COTISATIONS et PRESTATIONS cochées, « LE » = date de signature, n° de contrat vide ; **« souscrit par (titulaire
+  principal) » = l'adhérent, sauf « Souscripteur non assuré »** (« la mère ou le père à retirer du contrat et souscrit par
+  l'enfant ») : le 1ᵉʳ enfant, à défaut le conjoint. Rempli et enregistré à part, page copiée, champs rattachés au formulaire
+  (30 champs, modifiables). **Liens ⬇ par fichier** sous le message de génération : le 2ᵉ téléchargement automatique est
+  souvent bloqué par le navigateur. Test : scratchpad `t_sepaautor.js`.
 - **Lentilles : le forfait seul, en euros** (Fabrice, 25/09/2026). `EX.*.lentA` / `lentR` portaient « 100 % +50 € »
   et « +50 € » pour Mutuelle Verte, RÉVOLUO et les renforts ; c'est désormais « 50 € ». La part Sécu (100 %) est
   implicite, les mentions du courrier la rappellent. Un « 100 % » seul (Rev 1) ou « 100 % BR » (FLEXIA, APICIL)

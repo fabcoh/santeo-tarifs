@@ -1487,7 +1487,43 @@ async function fillSepaREV(g){
     if(m){D(m[1],64,168);D(m[2],100,168);D(m[3],136,168);}
     if(g("avil"))D(g("avil"),64,145);
   }catch(e){}
+  // Autorisation d'utilisation du compte CERGAP, à la suite du mandat (Fabrice, 05/10/2026 : « SEPA puis nouveau doc à la
+  // suite »). Rempli puis enregistré à part pour figer ses apparences, ses champs restent modifiables dans le PDF fusionné.
+  try{
+    const b2=await loadAutorisationBytes(), src=await PDFLib.PDFDocument.load(b2), f2=src.getForm();
+    const T2=(n,v)=>{try{if(v!==""&&v!=null)f2.getTextField(n).setText(String(v));}catch(e){}};
+    const nom=g("anom").toUpperCase(), pre=g("apre");
+    T2("Nom",nom); T2("Prénom",pre); T2("Adresse",g("aadr")); T2("CP ville",[g("acp"),g("avil")].filter(Boolean).join(" "));
+    // « Je soussigné » = le titulaire du compte, c'est-à-dire l'adhérent. « souscrit par (titulaire principal du contrat) » :
+    // l'adhérent lui-même, sauf « Souscripteur non assuré » (Fabrice, 05/10/2026 : « la mère [ou le père] à retirer du contrat
+    // et souscrit par l'enfant ») — alors le premier enfant, à défaut le conjoint assuré.
+    let titu=[nom,pre];
+    if(noSubChecked()){
+      const cj=[g("cnom").toUpperCase(),g("cpre")], k0=[(g("knom0")||g("anom")).toUpperCase(),g("kpre0")];
+      titu=g("kpre0")?k0:(g("cpre")?cj:titu);
+    }
+    T2("par",titu.filter(Boolean).join(" ")); T2("Date du jour",sig);
+    try{f2.getCheckBox("COTISATIONS").check();}catch(e){} try{f2.getCheckBox("PRESTATIONS").check();}catch(e){}
+    const fini=await PDFLib.PDFDocument.load(await src.save());
+    const [pg2]=await pdf.copyPages(fini,[0]); pdf.addPage(pg2);
+    // Les widgets copiés ne sont pas encore des champs du formulaire : on rattache chaque champ (le parent quand il y en a un).
+    const af=pdf.getForm().acroForm, vus=new Set(), annots=pg2.node.Annots();
+    if(annots) for(let i=0;i<annots.size();i++){
+      const ref=annots.get(i), d=pdf.context.lookup(ref); if(!d||!d.get) continue;
+      const par=d.get(PDFLib.PDFName.of("Parent")), cible=par||((d.get(PDFLib.PDFName.of("T")))?ref:null);
+      if(cible&&!vus.has(cible.toString())){ vus.add(cible.toString()); af.addField(cible); }
+    }
+  }catch(e){ console.warn("autorisation CERGAP non jointe",e); }
   return pdf;
+}
+const AUTORISATION=["docs/autorisation_compte_revoluo_2026.pdf","https://fabcoh.github.io/santeo-tarifs/docs/autorisation_compte_revoluo_2026.pdf"];
+async function loadAutorisationBytes(){
+  let last;
+  for(const u of AUTORISATION){
+    try{ const rp=await fetch(u,{cache:"force-cache"}); if(rp.ok) return new Uint8Array(await rp.arrayBuffer()); last="HTTP "+rp.status; }
+    catch(e){ last=e&&e.message||String(e); }
+  }
+  throw new Error("autorisation CERGAP introuvable ("+last+")");
 }
 // Souscripteur non assuré : le bloc ADHÉRENT (souscripteur) est rempli, la ligne « Adhérent » des personnes à assurer reste vide
 function noSubChecked(){const e=document.getElementById("nosub");return !!(e&&e.checked);}
@@ -1589,9 +1625,17 @@ async function fillAdh(r,ov){
           const pdfS=await fillSepaREV(g); const outS=await pdfS.save();
           await new Promise(res=>setTimeout(res,600));
           const fS="sepa_REVOLUO_"+(g("anom")||"client")+".pdf"; await SAVE(fS,outS); gen.push({name:fS,data:outS});
-          st.textContent=warn+"✅ 2 fichiers téléchargés : bulletin d\u2019adhésion + mandat SEPA.";
+          st.textContent=warn+"✅ 2 fichiers : bulletin d\u2019adhésion + mandat SEPA et autorisation d\u2019utilisation du compte.";
         }catch(e){ st.textContent=warn+"✅ Bulletin téléchargé — ❌ mandat SEPA : "+(e&&e.message||e); }
       } else st.textContent=warn+"✅ Bulletin téléchargé.";
+      // Le navigateur bloque souvent le 2e téléchargement automatique (Fabrice, 05/10/2026 : « il ne se télécharge pas ») :
+      // un lien par fichier, sous le message, pour le récupérer d'un clic.
+      try{
+        const liens=document.createElement("div"); liens.style.cssText="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px";
+        gen.forEach(f=>{ const a=document.createElement("a"); a.className="tgbtn"; a.style.textDecoration="none";
+          a.href=URL.createObjectURL(new Blob([f.data],{type:"application/pdf"})); a.download=f.name; a.textContent="⬇ "+f.name; liens.appendChild(a); });
+        st.appendChild(liens);
+      }catch(e){}
       try{signPopup(gen,g,r);}catch(e){}
       return;
     }
