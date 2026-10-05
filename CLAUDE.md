@@ -1099,6 +1099,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `april.php` version `2026-10-05 April-On, GAN Protect Cap Serenite` (scratchpad `livrer/april.php`), **déposé par Fabrice et
   vérifié le 05/10/2026** par un appel réel au relais (70 ans, Paris : GAN 121,05 → 343,32 ; Protect 120,51 → 229,30 ; Cap
   Sérénité 102,91 → 240,23). Test : scratchpad `t_aprilautres.js`.
+  **Liste remaniée** (Fabrice, 05/10/2026 : « remettre GAN, Malakoff dans les choix principaux ») : plus de groupe « Autres
+  produits » ; GAN, Protect et Cap Sérénité parmi les Particuliers, les produits barrés en fin de groupe, mention « Barré : APRIL
+  ne le propose pas à notre compte (raison au survol) ». **Les fi ne bougent pas** : `APRIL_RANG` suit `APRIL_ORDRE_RANG`, ordre
+  figé du 03/10 (un nouveau produit s'ajoute à la fin), indépendant de l'affichage. Test : scratchpad `t_aprilordre.js`.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : restent à obtenir le règlement mutualiste et la notice d'assistance RMA propres à LPS (le descriptif est reçu).
