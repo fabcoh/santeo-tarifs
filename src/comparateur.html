@@ -1584,7 +1584,8 @@ async function fillAdh(r,ov){
     // LPS Hospi : bulletin seul (6 p.) intégré à la page, complété par ses garanties/IPID. Repli sur le bulletin seul si le dossier est injoignable.
     // Cap Evolution TNS a son propre dossier (même bulletin, documentation TNS derrière, 87 p.).
     const tnsDossier=/^TNS/.test(document.getElementById("regime").value);
-    const DOSSIER={CAPEVO:tnsDossier?"bulletin_avenir_tns_2026.pdf":"bulletin_avenir_2026.pdf",CAPNR:"bulletin_capnr_2026.pdf",TALIS:"bulletin_talis_2026.pdf"}[r.key];
+    // LPS Hospi : bulletin 2026 (6 premières pages du dossier Avenir déposé par Fabrice le 05/10/2026), suivi de ses garanties/IPID.
+    const DOSSIER={CAPEVO:tnsDossier?"bulletin_avenir_tns_2026.pdf":"bulletin_avenir_2026.pdf",CAPNR:"bulletin_capnr_2026.pdf",TALIS:"bulletin_talis_2026.pdf",LPSH:"bulletin_lps_2026.pdf"}[r.key];
     let bytes=null;
     if(DOSSIER){
       for(const u of ["docs/"+DOSSIER,"https://fabcoh.github.io/santeo-tarifs/docs/"+DOSSIER]){
@@ -1614,6 +1615,8 @@ async function fillAdh(r,ov){
     if(r.key==="CAPEVO"){C(reg==="TNS"||reg==="TNSRL"?"EVO TNS":"EVO SAL");S("OPTION CHOISIE LISTE",{0:"ACCÈS",1:"ÉQUILIBRE",2:"TRANQUILLITÉ",3:"SÉRÉNITÉ"}[r.fi]);}
     else if(r.key==="CAPNR"){C("CAP  NR");T("BESOINS 1","Formule choisie : "+r.formule);SOPT("OPTION CHOISIE LISTE",r.formule);}
     else if(r.key==="TALIS"){C(r.fi===0?"TALIS":"TALIS +");C("TALIS ADHERENT");SOPT("OPTION CHOISIE LISTE",r.formule);}
+    // La case « LPS Hospi » n'était jamais cochée (relevé le 05/10/2026) : le bulletin partait sans produit.
+    else if(r.key==="LPSH"){C("LPS HOSPI");SOPT("OPTION CHOISIE LISTE",r.formule);}
     T("COTISATION MENS",r.total.toFixed(2).replace(".",","));
     const eff=g("aeff").split("/");
     if(eff.length===3){T("JOUR EFFET ADHESION",eff[0]);T("MOIS EFFET ADHESION",eff[1]);T("ANNEE EFFET ADHESION",eff[2]);}

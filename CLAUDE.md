@@ -64,6 +64,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   26/09/2026 — c'étaient les verres mixtes, 150 / 250 / 300 / 350 €, qui flattaient la Mutuelle Verte).
   Manquent encore : IPID et notice de MCCINOVA, FLEXIA, SOLENCIA (gammes MCCI, pas encore vendues),
   notice de LPS HOSPI.
+  **LPS Hospi, bulletin 2026** (05/10/2026 : Fabrice dépose « adhesion.fdf.pdf », « remplace adhésion et ajoute notice ») : le
+  fichier est **identique octet pour octet** à `bulletin_avenir_2026.pdf` (dossier Cap Évolution, 72 p.) ; ses **6 premières pages**
+  sont le bulletin commun Avenir (case `LPS HOSPI`), extraites dans `docs/bulletin_lps_2026.pdf` (pypdf, 101 champs, 1,5 Mo) —
+  seuls changent la page 5 (« Couverture Santé Solidaire ») et `NUM ADHERENT` → `NUMERO D'ADHERENT`, champ que la page ne
+  remplit pas. `fillAdh` le charge pour `LPSH` (`DOSSIER`) et lui ajoute `lps_hospi_2026.pdf` (10 p.). **La case « LPS Hospi »
+  n'était jamais cochée** : corrigé (`C("LPS HOSPI")` + formule). **Aucune notice LPS dans ce fichier** : la suite est le
+  dossier Cap Évolution (descriptif, IPID, assistance RMA, statuts AG 2026, règlement mutualiste **garanties responsables** —
+  qui ne vaut pas pour LPS, non responsable). La notice LPS reste à obtenir d'Avenir.
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
 - **Avenir Mutuelle, mise à jour du 28/09/2026** (dépôt de Fabrice sur la page de dépôt) : Cap Évolution, Cap Évolution
   TNS, CAP NR, TALIS — tableau de garantie, IPID, notice et bulletin. **Aucune garantie ne change** : les pages de
