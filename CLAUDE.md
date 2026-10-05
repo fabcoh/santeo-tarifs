@@ -1037,7 +1037,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   504 depuis la nuit du 02 au 03/10). La forme exacte de la réponse (`content`) est celle de la notice, à confirmer.
   **Préproduction APRIL en panne** (constaté le 05/10/2026 : `POST /projects/prices` → HTTP 502 réponse vide sur tous les
   produits, 504 depuis la nuit du 02 au 03/10). Mail rédigé pour Damien Valcarcel (rétablissement, passage en production,
-  Swagger, exemple famille, tableaux de garanties des 5 produits sans PDF public). Quand aucun produit n'est tarifé et que
+  Swagger, exemple famille, tableaux de garanties de Flexi, Optimale, Simply et Pro Privilège — **Santé Mix a son kit complet dans `docs/` depuis le 03/10**, une première version du mail l'oubliait). Quand aucun produit n'est tarifé et que
   tous les refus viennent d'APRIL (5xx, délai), `aprilRendu` affiche **une seule ligne** « APRIL indisponible pour le moment :
   leur serveur ne répond pas (HTTP 502). Rien à corriger dans le comparateur » (test : scratchpad `t_aprilpanne.js`).
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
