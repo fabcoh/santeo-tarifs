@@ -62,8 +62,15 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (et non 200 %) ; en hospitalisation hors OPTAM, 200 % est juste. Le poste optique reprend désormais,
   comme Cap Évolution, le forfait **2 verres simples** 16 ans et plus : 100 % / 100 / 150 / 200 / 250 € (Fabrice,
   26/09/2026 — c'étaient les verres mixtes, 150 / 250 / 300 / 350 €, qui flattaient la Mutuelle Verte).
-  Manquent encore : IPID et notice de MCCINOVA, FLEXIA, SOLENCIA (gammes MCCI, pas encore vendues),
-  notice de LPS HOSPI.
+  Manque encore : la notice de LPS HOSPI.
+  **MCCI, dépôt du 05/10/2026** (11 PDF, trois mal rangés, identifiés par leur contenu) : IPID et **règlement mutualiste** (en vigueur
+  au 1er avril 2026, rangé comme « notice ») des trois gammes — `mccinova|flexia|solencia_ipid_2026.pdf`, `…_notice_2026.pdf`
+  (44 / 63 / 60 p.) ; `flexia_tg_2026.pdf` (11 p.) et `solencia_tg_2026.pdf` (9 p.) remplacés par une version qui **ajoute les grilles
+  de tarifs au 1er janvier 2026** (FLEXIA 18–84 ans, SOLENCIA **62–99 ans**, âge atteint dans l'année ; 4 zones) — pages de
+  garanties identiques mot pour mot, grilles concordantes avec `tarifs_all.json` (contrôle par sondage sur les 4 zones),
+  `TAMPONS` inchangés (mêmes pages). Le tableau MCCINOVA déposé est identique au texte près à celui en place : gardé.
+  `DOCS` des trois gammes : Tableau de garantie + IPID + Notice. Bulletin : sans objet (extranet MCCI). La fiche `mcci.md`
+  est à reprendre avec les règlements.
   **LPS Hospi, bulletin 2026** (05/10/2026 : Fabrice dépose « adhesion.fdf.pdf », « remplace adhésion et ajoute notice ») : le
   fichier est **identique octet pour octet** à `bulletin_avenir_2026.pdf` (dossier Cap Évolution, 72 p.) ; ses **6 premières pages**
   sont le bulletin commun Avenir (case `LPS HOSPI`), extraites dans `docs/bulletin_lps_2026.pdf` (pypdf, 101 champs, 1,5 Mo) —

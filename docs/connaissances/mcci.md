@@ -1,5 +1,11 @@
 # MCCI — MCCINOVA, FLEXIA, SOLENCIA — fiche de connaissances
 
+> **05/10/2026** : reçus de MCCI l'**IPID** et le **règlement mutualiste** (en vigueur au 1er avril 2026) de chaque gamme —
+> `mccinova_ipid_2026.pdf`, `mccinova_notice_2026.pdf` (44 p.), `flexia_ipid_2026.pdf`, `flexia_notice_2026.pdf` (63 p.),
+> `solencia_ipid_2026.pdf`, `solencia_notice_2026.pdf` (60 p.) — et des tableaux FLEXIA (11 p.) et SOLENCIA (9 p.) qui ajoutent les
+> **grilles de tarifs au 1er janvier 2026** (FLEXIA 18–84 ans, SOLENCIA 62–99 ans, 4 zones), pages de garanties inchangées.
+> La fiche ci-dessous date des tableaux seuls : les réponses « Non précisé » sont à reprendre avec ces règlements.
+
 Sources : les trois brochures « tableau de garantie » de la MCCI, seuls documents disponibles pour ces gammes.
 
 | Abréviation | Fichier | Pages | Contenu |
@@ -776,7 +782,7 @@ Les écarts sont relevés sans être tranchés.
 
 ### SOLENCIA
 
-37. **Pour qui est SOLENCIA ?** Conçue pour les plus de 55 ans ; solidaire et responsable, 100 % Santé (SO p.1). Âges d'adhésion exacts : Non précisé dans les documents.
+37. **Pour qui est SOLENCIA ?** Conçue pour les plus de 55 ans ; solidaire et responsable, 100 % Santé (SO p.1). **Grille de cotisations de 62 à 99 ans**, âge atteint dans l'année, tarifs au 1er janvier 2026 (SO 2026 p.7–8, version reçue le 05/10/2026) ; enfants bénéficiaires jusqu'à 28 ans sous conditions (étudiants, apprentis, revenus ≤ SMIC).
 38. **Le sophrologue est-il remboursé ?** Oui, dans le **forfait prévention** : 50 € (Origine) à 200 € (Absolue) par an, partagé avec podologie, densitométrie, psychologue, bilan de santé, analyses prescrites (SO p.4).
 39. **L'ostéopathe ? Combien de séances ?** **5 séances par an**, 40 € (Origine), 50 € (Équilibre, Plénitude), 60 € (Absolue) par séance d'après l'exemple (SO p.4, p.6).
 40. **Quel plafond dentaire ?** **2 000 € par an** sur les prothèses et inlays des paniers modéré et libre, à tous les niveaux (SO p.4).

@@ -20,7 +20,7 @@ Adresse publique : `https://fabcoh.github.io/santeo-tarifs/docs/connaissances/<f
 | `avenir_lpshospi.md` | LPS Hospi Santé (hospitalisation seule, non responsable) | Avenir Mutuelle |
 | `rema_revoluo.md` | Révoluo Rev 1 à 8, Renforts 25, 50 et 100 | REMA, gestion CERGAP |
 | `mutuelleverte_gci.md` | GCI 100, 150, 200, 300 (responsables) et GCI 500 (non responsable) | La Mutuelle Verte |
-| `mcci.md` | MCCINOVA, FLEXIA, SOLENCIA (tableaux de garantie seuls) | MCCI |
+| `mcci.md` | MCCINOVA, FLEXIA, SOLENCIA (tableaux ; IPID et règlements reçus le 05/10, fiche à compléter) | MCCI |
 | `apicil_apisante.md` | API SANTÉ Équilibre 1 à 6, Sérénité 1 à 5, Packs Confort | APICIL |
 | `april_santemix.md` | Santé Mix Proximité | APRIL (QUATREM) |
 | `april_santegan.md` | Complémentaire Senior GAN | APRIL (Groupama Gan Vie) |
