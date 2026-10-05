@@ -23,6 +23,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   commit avec `index.html`. Ils sont servis par GitHub Pages : `https://fabcoh.github.io/santeo-tarifs/src/…`.
 - **L'image du tableau reste une capture** : la page avec html2canvas, un serveur avec un navigateur sans
   écran (Playwright) sur `Tableau.document(...)`. Aucune image identique n'est possible sans moteur de rendu.
+  **Rien ne colle pendant la capture** (Fabrice, 05/10/2026, 7 formules sur téléphone : 1ʳᵉ colonne vide et 3ᵉ rognée dans l'image) :
+  la règle globale `td:nth-child(2){position:sticky}` du tableau des formules collait aussi la 1ʳᵉ formule du tableau de garantie ;
+  défilé à l'horizontale, html2canvas décalait ces cellules. `#tgbox td:nth-child(2)` n'est plus collée, `.capwide` retire tout
+  `sticky`, et `capture()` remet les défilements horizontaux à zéro. Test : scratchpad `t_cap7m.js` (412 px, défilé).
   **Sa largeur est plafonnée à ~2000 px** : `scale = min(2, 2000 / largeur du tableau)`. Cinq colonnes
   (Mutuelle Verte : 1996 px, 715 ko) gardent le ×2 ; API SANTÉ, à **onze formules**, sortait en 3392 px et
   1 Mo — 1,36 Mo une fois encodé en base64 pour le dépôt CRM, et une vignette illisible dans WhatsApp
