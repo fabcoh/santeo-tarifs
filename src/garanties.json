@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmp7l92xqh2.js",
+ "genere": "/tmp/tmpivu2e5iw.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -1914,7 +1914,8 @@
    ]
   },
   "LPSH": {
-   "Garanties + IPID": "https://fabcoh.github.io/santeo-tarifs/docs/lps_hospi_2026.pdf"
+   "Garanties + IPID": "https://fabcoh.github.io/santeo-tarifs/docs/lps_hospi_2026.pdf",
+   "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/lps_notice_2026.pdf"
   },
   "APICIL": {
    "Tableau de garantie": [
