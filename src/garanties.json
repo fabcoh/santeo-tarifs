@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmpi3dfsylp.js",
+ "genere": "/tmp/tmp7l92xqh2.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -1802,7 +1802,7 @@
  "notes": {
   "MCCINOVA": "Grille MCCINOVA (18–90 ans, tarif national). Pas d’optique, d’audio ni de 100 % Santé. Chambre particulière à partir du 4ᵉ jour. 30 premiers jours limités à la formule Socle. Statut responsable à confirmer auprès de MCCI.",
   "FLEXIA": "Contrat solidaire et responsable, 100 % Santé. Plafond prothèses 2 500 €/an (Confort+). Capital obsèques 1 500 € avant 65 ans. Grille tarifaire 18–84 ans.",
-  "SOLENCIA": "Contrat solidaire et responsable, 100 % Santé. Destinée aux plus de 55 ans ; grille tarifaire 62–99 ans. Plafond dentaire 2 000 €/an. Cures 100–300 %, prévention 50–200 €/an.",
+  "SOLENCIA": "Contrat solidaire et responsable, 100 % Santé. Grille officielle 62–99 ans (âge atteint dans l’année, tarifs au 1er janvier 2026) ; la brochure la dit « conçue pour les plus de 55 ans ». Plafond dentaire 2 000 €/an. Cures 100–300 %, prévention 50–200 €/an.",
   "CAPEVO": "Contrat responsable. Plafonds dentaires progressifs 600–1 300 € selon ancienneté. Audio enfant −20 ans : 840–1 700 €. Pharmacie non remb. 30 €/an (Équilibre+).",
   "CAPNR": "Contrat NON responsable. Adhésion dès 16 ans, aucun âge maximum écrit ; tarif par zone AVENIR. Plafonds dentaires 600–1 500 € selon ancienneté et formule. Lentilles incluses dans le forfait optique global (130–450 €). Fidélité optique dès la 3ᵉ année. Frais funéraires 200–1 000 €.",
   "REV": "Contrat responsable et solidaire, 100 % Santé. Adhésion après 18 ans, jusqu’à 80 ans (Rev 7/8 : 70 ans), pas de DOM-TOM. Plafond dentaire 1 400 € (Rev 7) / 2 000 € (Rev 8). Chambre limitée 90 j (30 j psy).",
@@ -1855,13 +1855,19 @@
  },
  "documents": {
   "MCCINOVA": {
-   "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/mccinova_tg_2026.pdf"
+   "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/mccinova_tg_2026.pdf",
+   "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/mccinova_ipid_2026.pdf",
+   "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/mccinova_notice_2026.pdf"
   },
   "FLEXIA": {
-   "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/flexia_tg_2026.pdf"
+   "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/flexia_tg_2026.pdf",
+   "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/flexia_ipid_2026.pdf",
+   "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/flexia_notice_2026.pdf"
   },
   "SOLENCIA": {
-   "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/solencia_tg_2026.pdf"
+   "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/solencia_tg_2026.pdf",
+   "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/solencia_ipid_2026.pdf",
+   "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/solencia_notice_2026.pdf"
   },
   "CAPEVO": {
    "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/capevo_tg_2026.pdf",

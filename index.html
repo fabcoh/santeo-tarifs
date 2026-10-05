@@ -428,7 +428,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-05T11:27:25Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-05T11:27:25Z</div>
+  <div id="buildstamp" data-build="2026-10-05T11:34:26Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-05T11:34:26Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1225,9 +1225,9 @@ function buildHead(){
 // sur la formule quand le document en dépend : plaquettes APICIL par gamme Équilibre,
 // IPID distinct pour GCI 100-300 (responsable) et pour GCI 500 (non responsable).
 const DOCS={
-  MCCINOVA:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/mccinova_tg_2026.pdf"},
-  FLEXIA:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/flexia_tg_2026.pdf"},
-  SOLENCIA:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/solencia_tg_2026.pdf"},
+  MCCINOVA:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/mccinova_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/mccinova_ipid_2026.pdf", "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/mccinova_notice_2026.pdf"},
+  FLEXIA:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/flexia_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/flexia_ipid_2026.pdf", "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/flexia_notice_2026.pdf"},
+  SOLENCIA:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/solencia_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/solencia_ipid_2026.pdf", "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/solencia_notice_2026.pdf"},
   CAPEVO:{"Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/capevo_tg_2026.pdf", "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/capevo_ipid_2026.pdf", "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/capevo_notice_2026.pdf"},
   // Cap Evolution TNS est un autre produit Avenir (autre caisse, autre kit) : ses propres documents.
   // L'IPID est commun aux deux (millésime 2024, « CAP EVOLUTION », quatre niveaux).
@@ -1244,7 +1244,7 @@ const DOCS={
 const TGNOTE={
   MCCINOVA:"Grille MCCINOVA (18–90 ans, tarif national). Pas d\u2019optique, d\u2019audio ni de 100 % Sant\u00e9. Chambre particuli\u00e8re \u00e0 partir du 4\u1d49 jour. 30 premiers jours limit\u00e9s \u00e0 la formule Socle. Statut responsable \u00e0 confirmer aupr\u00e8s de MCCI.",
   FLEXIA:"Contrat solidaire et responsable, 100 % Sant\u00e9. Plafond proth\u00e8ses 2 500 \u20ac/an (Confort+). Capital obs\u00e8ques 1 500 \u20ac avant 65 ans. Grille tarifaire 18\u201384 ans.",
-  SOLENCIA:"Contrat solidaire et responsable, 100 % Sant\u00e9. Destin\u00e9e aux plus de 55 ans ; grille tarifaire 62\u201399 ans. Plafond dentaire 2 000 \u20ac/an. Cures 100\u2013300 %, pr\u00e9vention 50\u2013200 \u20ac/an.",
+  SOLENCIA:"Contrat solidaire et responsable, 100 % Sant\u00e9. Grille officielle 62\u201399 ans (\u00e2ge atteint dans l\u2019ann\u00e9e, tarifs au 1er janvier 2026) ; la brochure la dit \u00ab con\u00e7ue pour les plus de 55 ans \u00bb. Plafond dentaire 2 000 \u20ac/an. Cures 100\u2013300 %, pr\u00e9vention 50\u2013200 \u20ac/an.",
   CAPEVO:"Contrat responsable. Plafonds dentaires progressifs 600\u20131 300 \u20ac selon anciennet\u00e9. Audio enfant \u221220 ans : 840\u20131 700 \u20ac. Pharmacie non remb. 30 \u20ac/an (\u00c9quilibre+).",
   CAPNR:"Contrat NON responsable. Adh\u00e9sion d\u00e8s 16 ans, aucun \u00e2ge maximum \u00e9crit ; tarif par zone AVENIR. Plafonds dentaires 600\u20131 500 \u20ac selon anciennet\u00e9 et formule. Lentilles incluses dans le forfait optique global (130\u2013450 \u20ac). Fid\u00e9lit\u00e9 optique d\u00e8s la 3\u1d49 ann\u00e9e. Frais fun\u00e9raires 200\u20131 000 \u20ac.",
   REV:"Contrat responsable et solidaire, 100 % Sant\u00e9. Adh\u00e9sion apr\u00e8s 18 ans, jusqu\u2019\u00e0 80 ans (Rev 7/8 : 70 ans), pas de DOM-TOM. Plafond dentaire 1 400 \u20ac (Rev 7) / 2 000 \u20ac (Rev 8). Chambre limit\u00e9e 90 j (30 j psy).",
