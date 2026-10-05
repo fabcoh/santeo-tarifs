@@ -1043,6 +1043,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Swagger, exemple famille, tableaux de garanties de Flexi, Optimale, Simply et Pro Privilège — **Santé Mix a son kit complet dans `docs/` depuis le 03/10**, une première version du mail l'oubliait). Quand aucun produit n'est tarifé et que
   tous les refus viennent d'APRIL (5xx, délai), `aprilRendu` affiche **une seule ligne** « APRIL indisponible pour le moment :
   leur serveur ne répond pas (HTTP 502). Rien à corriger dans le comparateur » (test : scratchpad `t_aprilpanne.js`).
+  **Tarifs APRIL gardés par produit** (Fabrice, 05/10/2026 : « quand je clique sur une nouvelle garantie d'APRIL, es-tu
+  obligé de recharger les autres ? ») : `APRIL_CACHE` (`base` = profil sans la liste des produits, `res` par code produit).
+  Cocher un produit n'interroge que lui (`aprilDemande` n'envoie que les manquants), les lignes déjà là restent affichées
+  (« Tarif en cours pour … ») ; décocher ne demande rien. Âge, CP, régime, famille, date d'effet ou Remise changent la base :
+  tout est redemandé. Une panne (5xx, code 0) n'est jamais gardée. Test : scratchpad `t_aprilcache.js`.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : dossier complet à obtenir — `lps_hospi_2026.pdf` (4 p.) ne porte que le tableau et l'IPID ; ni notice, ni règlement,

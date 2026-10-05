@@ -2334,22 +2334,43 @@ async function aprilOn(r,btn){
   }catch(e){ if(w)w.close(); alert("Projet APRIL non créé : relais injoignable."); btn.textContent=old; }
   btn.disabled=false;
 }
-function aprilDemande(profil,cle){
-  APRIL_ST={cle:cle,etat:"attente",res:null,message:""};
+function aprilDemande(pa,cle){
+  const base=aprilBase(pa);
+  if(APRIL_CACHE.base!==base) APRIL_CACHE={base,res:{},famille:false};
+  const manque=pa.produits.filter(c=>!APRIL_CACHE.res[c]);
+  APRIL_ST=aprilEtat(cle,manque);
   clearTimeout(aprilTimer);
-  aprilTimer=setTimeout(()=>aprilCharge(profil,cle),600);
+  if(manque.length) aprilTimer=setTimeout(()=>aprilCharge(Object.assign({},pa,{produits:manque}),cle,base),600);
 }
-async function aprilCharge(profil,cle){
-  let st;
+// Tarifs APRIL gardés par produit (Fabrice, 05/10/2026 : « quand je clique sur une nouvelle garantie d'APRIL, es-tu
+// obligé de recharger les autres ? ») : tant que le profil ne change pas (âge, CP, régime, famille, date d'effet,
+// remise), cocher un produit n'interroge que lui, et en décocher un ne demande rien. Une panne d'APRIL (5xx,
+// délai dépassé) n'est jamais gardée : le produit sera redemandé au prochain calcul.
+let APRIL_CACHE={base:"",res:{},famille:false};
+function aprilBase(pa){ const o=Object.assign({},pa); delete o.produits; return JSON.stringify(o); }
+function aprilGardable(p){ return p&&(p.etat==="ok"||(+p.code>0&&+p.code<500)); }
+function aprilEtat(cle,enCours,extra,message){
+  let pa=null; try{pa=JSON.parse(cle);}catch(e){}
+  const res=((pa&&pa.produits)||[]).map(c=>APRIL_CACHE.res[c]||(extra||[]).find(p=>p.produit===c)).filter(Boolean);
+  const st={cle,res,famille:APRIL_CACHE.famille,message:message||"",enCours:enCours||[],cpApproche:APRIL_ST.cpApproche};
+  st.etat=res.length?"ok":(st.enCours.length?"attente":(message?"erreur":"ok"));
+  return st;
+}
+async function aprilCharge(profil,cle,base){
+  let extra=[], message="";
   try{
     const rp=await fetch(APRIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(profil)});
     let d=null; try{d=JSON.parse(await rp.text())}catch(e){}
-    if(rp.status===404) st={cle,etat:"erreur",res:null,message:"relais APRIL pas encore en ligne"};
-    else if(!rp.ok) st={cle,etat:"erreur",res:null,message:(d&&d.erreur)?d.erreur:"service indisponible (HTTP "+rp.status+")"};
-    else if(!d||!Array.isArray(d.produits)) st={cle,etat:"erreur",res:null,message:"réponse inattendue du relais"};
-    else st={cle,etat:"ok",res:d.produits,famille:!!d.famille,message:""};
-  }catch(e){ st={cle,etat:"erreur",res:null,message:"relais APRIL injoignable"}; }
-  if(APRIL_ST.cle===cle){ st.cpApproche=APRIL_ST.cpApproche; APRIL_ST=st; aprilRendu(); calc(); }
+    if(rp.status===404) message="relais APRIL pas encore en ligne";
+    else if(!rp.ok) message=(d&&d.erreur)?d.erreur:"service indisponible (HTTP "+rp.status+")";
+    else if(!d||!Array.isArray(d.produits)) message="réponse inattendue du relais";
+    else if(APRIL_CACHE.base===base){
+      APRIL_CACHE.famille=!!d.famille;
+      for(const p of d.produits){ if(aprilGardable(p)) APRIL_CACHE.res[p.produit]=p; else extra.push(p); }
+    }
+  }catch(e){ message="relais APRIL injoignable"; }
+  if(message) extra=profil.produits.map(c=>({produit:c,etat:"refus",code:0,message}));
+  if(APRIL_ST.cle===cle){ APRIL_ST=aprilEtat(cle,[],extra,message); aprilRendu(); calc(); }
 }
 // Un produit modulable (Santé Mix, Flexi Santé) rend des combinaisons « 03|02 » — un niveau par module.
 // Le comparateur en retient la diagonale (même niveau partout) : « Niv. 3 » = 03|03.
@@ -2375,12 +2396,12 @@ function aprilRendu(){
   else if(st.etat==="erreur") corps='<div class="apn">APRIL : '+st.message+'.</div>';
   else{
     // Les niveaux sont dans le tableau des formules ; ici, seulement ce qui n'a pas pu être tarifé.
-    const vus=new Set(st.res.map(p=>p.produit));
+    const vus=new Set(st.res.map(p=>p.produit).concat(st.enCours||[]));
     const ko=st.res.filter(p=>p.etat!=="ok").concat(APRIL_SEL.filter(c=>!vus.has(c)).map(c=>({produit:c,message:APRIL_FERMES[c]||(APRIL_A_BRANCHER[c]?"tarif pas encore branché (API APRIL à relever)":"non proposé par le relais")})));
     const nok=st.res.filter(p=>p.etat==="ok").length;
     // Panne d'APRIL (Fabrice, 05/10/2026) : quand aucun produit n'est tarifé et que tous les refus viennent de leur
     // serveur (5xx, délai dépassé), une seule ligne claire au lieu d'un « réponse vide (HTTP 502) » par produit.
-    const panne=st.res.length&&!nok&&st.res.every(p=>p.etat==="ok"||+p.code>=500||!+p.code||/ne repond pas|delai/i.test(p.message||""));
+    const panne=st.res.length&&!nok&&!(st.enCours||[]).length&&st.res.every(p=>p.etat==="ok"||+p.code>=500||!+p.code||/ne repond pas|delai/i.test(p.message||""));
     if(panne){
       const c=(st.res.find(p=>+p.code>=500)||{}).code;
       corps='<div class="apko">APRIL indisponible pour le moment : leur serveur ne répond pas'+(c?' (HTTP '+c+')':'')+'. Rien à corriger dans le comparateur — réessayez plus tard.</div>';
@@ -2388,6 +2409,7 @@ function aprilRendu(){
       return;
     }
     let h='<div class="apn">'+nok+' produit'+(nok>1?"s":"")+' tarifé'+(nok>1?"s":"")+' — dans le tableau ci-dessus, lignes « APRIL ».</div>';
+    if((st.enCours||[]).length) h+='<div class="apn">Tarif en cours pour '+st.enCours.map(c=>APRIL_NOM[c]||c).join(", ")+'…</div>';
     for(const p of ko) h+='<div class="apl"><div class="apnom">'+(APRIL_NOM[p.produit]||p.produit)+'</div><div class="apko">'+(p.message||"non proposé pour ce profil")+'</div></div>';
     corps=h+(st.cpApproche?'<div class="apn" style="margin-top:5px">Code postal pris au chef-lieu ('+st.cpApproche+') : saisir les 5 chiffres pour un tarif exact.</div>':'')+(st.famille?'<div class="apn" style="margin-top:5px">Tarif famille à confirmer : la préproduction APRIL ne reçoit pas encore le lien de parenté des assurés.</div>':'');
   }
