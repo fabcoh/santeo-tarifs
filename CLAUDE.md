@@ -887,7 +887,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   développements finis en PPR. Identifiants `clientId` / `clientSecret` (couple propre à CAPI FINANCE) : **jamais dans ce
   dépôt ni dans la page** — dans un `april-config.php` hors dépôt sur capisante.fr, comme APICIL ; même architecture
   (relais PHP, IP française, page qui n'appelle que le relais). Le secret PPR a transité par une conversation Claude le
-  02/10/2026 : en demander un nouveau avant la production, et ne jamais coller celui de production ici.
+  02/10/2026 : Fabrice ne juge pas utile de le renouveler (05/10/2026) ; ne jamais coller celui de production ici.
   `ppr-api.april.fr` est **bloqué depuis une session Claude** (proxy) : la documentation doit être fournie par Fabrice.
   Application `45254-5594-capi-finance` (créée le 01/10/2026), **trois API souscrites** : *Individual Healthcare and
   Borrower Portfolio* (« courante », REST, domaine Santé Prévoyance Apporteurs — à confirmer : sans doute la santé des
