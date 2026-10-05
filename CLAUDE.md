@@ -310,6 +310,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Décision de Fabrice (01/10/2026) : on n'y touche pas pour le moment.** La branche est en conflit avec `main`
   (`ECHANGES.md`) ; si la question revient, la faire reprendre par le Claude du CRM, qui seul parle à Manus —
   ne pas ouvrir de PR dans son dépôt depuis ici.
+- **Adhésion MCCI = extranet courtage** (Fabrice, 05/10/2026 : « on clique sur adhésion, cela ouvre le site MCCI ») : dans le
+  détail d'une ligne MCCINOVA, FLEXIA ou SOLENCIA, **📝 Adhésion (site MCCI)** est un lien vers `MCCI_EXTRANET`
+  (`https://www.extranetcourtage.mcci.fr/#/broker/projects`), nouvel onglet, sans bulletin ni code d'adhésion (l'extranet a
+  sa propre connexion). Rien n'est transmis à MCCI : le commercial y crée le dossier. Test : scratchpad `t_mcci.js`.
 - **Titre de la fenêtre d'adhésion** (01/10/2026) : « Adhésion — gamme formule · xx,xx €/mois » (`#adhtit`), le tarif
   retenu pour vérifier ; il suit le recalcul « Souscripteur non assuré » de Révoluo.
   **Une fiche n'est pas une liste** (30/09/2026, fiche 294413) : la fiche complète porte ses propres tableaux
