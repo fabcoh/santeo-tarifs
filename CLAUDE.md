@@ -1103,6 +1103,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   produits » ; GAN, Protect et Cap Sérénité parmi les Particuliers, les produits barrés en fin de groupe, mention « Barré : APRIL
   ne le propose pas à notre compte (raison au survol) ». **Les fi ne bougent pas** : `APRIL_RANG` suit `APRIL_ORDRE_RANG`, ordre
   figé du 03/10 (un nouveau produit s'ajoute à la fin), indépendant de l'affichage. Test : scratchpad `t_aprilordre.js`.
+  **Envoi APRIL ouvert** (Fabrice, 05/10/2026 : « redonne la main pour envoyer les propositions… contour rouge mais cliquable…
+  le temps qu'on passe en prod ») : la case d'envoi des lignes APRIL est une `sendchk` normale cerclée de rouge (`.sendapr`,
+  `--nrc`), infobulle « tarif de préproduction, à vérifier dans April-On » ; l'étoile ⭐ aussi. `F.APRIL.names[fi]` = « <produit>
+  Niv. n », `LIMITES.APRIL[fi]` = « Contrat NON responsable. » pour Only / Flexi (ligne du bas du tableau). Tableau, image, mail
+  fonctionnent ; **limites** : pas de logo APRIL (le nom s'affiche), `interet.php` ne connaît pas APRIL (`garanties.json` ne le porte
+  pas) — la page « Cette offre m'intéresse » n'aura ni synthèse de garanties ni recalcul. Mode automatique du CRM : APRIL toujours
+  écarté. À refermer ou à finir au passage en production. Test : scratchpad `t_aprilenvoi.js`.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : restent à obtenir le règlement mutualiste et la notice d'assistance RMA propres à LPS (le descriptif est reçu).

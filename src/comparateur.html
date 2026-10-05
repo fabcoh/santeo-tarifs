@@ -235,6 +235,8 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 .aiform button:disabled{opacity:.5;cursor:wait}
 .sendchk{display:block;width:18px;height:18px;margin:5px auto 0;accent-color:var(--accent)}
 .sendko{display:block;width:18px;height:18px;margin:5px auto 0;opacity:.35;cursor:not-allowed}
+/* APRIL en préproduction (Fabrice, 05/10/2026) : envoi permis, case cerclée de rouge pour rappeler que le tarif vient de la préproduction. */
+.sendchk.sendapr{outline:2px solid var(--nrc);outline-offset:1px;border-radius:3px}
 .rowstar{border:0;background:transparent;cursor:pointer;font-size:15px;line-height:1;padding:0 0 0 6px;color:var(--muted);vertical-align:-1px}
 .rowstar:hover{color:var(--warn)}
 .rowstar.on{color:var(--warn)}
@@ -2325,7 +2327,11 @@ DOCS.APRIL={"Tableau de garantie + notice":[],IPID:[],"Conditions générales":[
 const APRIL_ORTHN_DANS_IMP={OnlySante:1,SantePro:1,SanteProStart:1};
 for(const [code,g] of Object.entries(APRIL_GAR)){
   const r=APRIL_RANG[code]; if(r==null) continue;
+  const nomP=(APRIL_PRODUITS.flatMap(x=>x[1]).find(x=>x[0]===code)||[code,code])[1];
+  if(!Array.isArray(LIMITES.APRIL)) LIMITES.APRIL=[];
   g.niv.forEach((n,i)=>{ const fi=r*100+n;
+    // Nom et mention « non responsable » pour le tableau de garantie, l'image et le courrier (envoi ouvert le 05/10/2026).
+    F.APRIL.names[fi]=nomP+" Niv. "+n; LIMITES.APRIL[fi]=g.resp===false?"Contrat NON responsable.":"";
     for(const k of ["hospO","hospN","honoO","honoN","dent","opt","aud","ch","md"]) F.APRIL[k][fi]=g[k][i];
     EX.APRIL.imp[fi]=g.imp[i]; EX.APRIL.orthR[fi]=g.orthR[i]; EX.APRIL.orthN[fi]=g.imp[i]==="n.c."?"n.c.":(APRIL_ORTHN_DANS_IMP[code]?g.imp[i]:"—");
     EX.APRIL.lentA[fi]=g.lentA[i]; EX.APRIL.lentR[fi]=g.lentR[i]; EX.APRIL.aud[fi]=g.aud[i];
@@ -3471,10 +3477,9 @@ function render(rows,warns){
       const chips=sur.concat(r.chips).map(c=>'<span class="chip '+c[0]+'">'+c[1]+"</span>").join("");
       const isR=RECO===rk;
       let h='<tr class="offer'+(isOpen?" open":"")+(isR?" reco":"")+'" data-rk="'+rk+'">'+
-      '<td><span class="caret">▶</span>'+(r.key==="APRIL"?'<input type="checkbox" class="sendko" disabled title="Garanties APRIL pas encore saisies : pas d\'envoi au prospect">'
-        :'<input type="checkbox" class="sendchk"'+(SENDSEL.has(rk)?" checked":"")+' data-rk="'+rk+'" title="Cocher pour envoyer par mail / WhatsApp">')+'</td>'+
+      '<td><span class="caret">▶</span>'+'<input type="checkbox" class="sendchk'+(r.key==="APRIL"?' sendapr':'')+'"'+(SENDSEL.has(rk)?" checked":"")+' data-rk="'+rk+'" title="'+(r.key==="APRIL"?"APRIL : tarif de préproduction, à vérifier dans April-On avant de l\u2019envoyer":"Cocher pour envoyer par mail / WhatsApp")+'">'+'</td>'+
       '<td><div class="gamme"><span class="dot '+r.ins+'"></span><span class="gname '+(r.resp?"rp":"nrp")+'">'+r.gamme+'</span></div>'
-      +'<div class="fname">'+r.formule+'<button type="button" class="rowvoir" data-voir="'+rk+'" title="Voir le tableau de garantie officiel" aria-label="Voir le document">👁</button>'+(r.key==="APRIL"?'':'<button class="rowstar'+(isR?" on":"")+'" data-star="'+rk+'" title="Conseiller cette formule">'+(isR?"⭐":"☆")+'</button>')+'</div>'
+      +'<div class="fname">'+r.formule+'<button type="button" class="rowvoir" data-voir="'+rk+'" title="Voir le tableau de garantie officiel" aria-label="Voir le document">👁</button>'+('<button class="rowstar'+(isR?" on":"")+'" data-star="'+rk+'" title="Conseiller cette formule">'+(isR?"⭐":"☆")+'</button>')+'</div>'
       +'<div class="chips">'+(isR?'<span class="chip reco">⭐ Je vous conseille</span>':"")+chips+"</div></td>"+
       '<td class="num total">'+eur(r.total)+(r.incomplete?" *":"")+"</td>"+
       '<td class="g">'+r.dent+"</td>"+
