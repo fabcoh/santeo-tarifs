@@ -234,6 +234,8 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 .aiform button:disabled{opacity:.5;cursor:wait}
 .sendchk{display:block;width:18px;height:18px;margin:5px auto 0;accent-color:var(--accent)}
 .sendko{display:block;width:18px;height:18px;margin:5px auto 0;opacity:.35;cursor:not-allowed}
+/* APRIL en préproduction (Fabrice, 05/10/2026) : envoi permis, case cerclée de rouge pour rappeler que le tarif vient de la préproduction. */
+.sendchk.sendapr{outline:2px solid var(--nrc);outline-offset:1px;border-radius:3px}
 .rowstar{border:0;background:transparent;cursor:pointer;font-size:15px;line-height:1;padding:0 0 0 6px;color:var(--muted);vertical-align:-1px}
 .rowstar:hover{color:var(--warn)}
 .rowstar.on{color:var(--warn)}
