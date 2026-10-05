@@ -1725,6 +1725,12 @@ const DOCPAGE={"april_santemix_tg_2026.pdf":5};
 // Page des garanties de la formule (Fabrice, 05/10/2026 : « arriver directement aux garanties, éviter les pages de
 // présentation ») : celle où la cotisation est tamponnée (TAMPONS, pages comptées de 0), sinon la 1re page tamponnée du
 // fichier, sinon DOCPAGE, sinon la page 1.
+// Recadrage à l'affichage (Fabrice, 05/10/2026 : « les tableaux API SANTÉ sont mal présentés ») : les plaquettes
+// Équilibre n'ont qu'une colonne, la moitié droite de la page est vide. On n'affiche que [x0, x1] (points PDF) ; le
+// fichier, lui, n'est pas modifié (pièces jointes, « Ouvrir dans un onglet »). Les renvois en bas de tableau, en très
+// petits caractères, débordent un peu à droite : ils restent lisibles dans l'onglet.
+const DOCCROP={};
+for(let n=1;n<=6;n++) DOCCROP["apisante_eq"+n+"_tg_2026.pdf"]=[18,350];
 function pageGaranties(url,r){
   const f=url.split("/").pop(), T=TAMPONS[f];
   if(T){ const k=r?cleTampon(r.key,r.fi).find(c=>T[c]):null;
@@ -1851,9 +1857,10 @@ function verifDocs(r){
       const rendre=async(de,a,avant)=>{
         const ref=avant?zone.firstChild:null;
         for(let i=de;i<=a;i++){ if(n!==jeton) return;
-          const pg=await pdf.getPage(i), v1=pg.getViewport({scale:1}), sc=Math.max(.5,larg/v1.width)*2;
-          const vp=pg.getViewport({scale:sc}), c=document.createElement("canvas");
-          c.width=vp.width; c.height=vp.height; c.className="vdpage"; c.style.cssText="width:"+(ZOOM?2*larg:larg)+"px;max-width:"+(ZOOM?"none":"100%")+";height:auto;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.18);flex:none";
+          const pg=await pdf.getPage(i), v1=pg.getViewport({scale:1}), cr=DOCCROP[url.split("/").pop()];
+          const w0=cr?cr[1]-cr[0]:v1.width, sc=Math.max(.5,larg/w0)*2;
+          const vp=pg.getViewport(cr?{scale:sc,offsetX:-cr[0]*sc}:{scale:sc}), c=document.createElement("canvas");
+          c.width=Math.round(w0*sc); c.height=vp.height; c.className="vdpage"; c.style.cssText="width:"+(ZOOM?2*larg:larg)+"px;max-width:"+(ZOOM?"none":"100%")+";height:auto;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.18);flex:none";
           c.title="Page "+i; avant?zone.insertBefore(c,ref):zone.insertBefore(c,zone.querySelector(".vdplus"));
           await pg.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;
         }

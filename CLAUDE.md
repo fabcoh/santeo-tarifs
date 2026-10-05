@@ -370,6 +370,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (Santé Mix : p. 5). **Ouverture directe sur la page des garanties de la formule** (Fabrice, 05/10/2026 : « éviter les pages de
   présentation ») : `pageGaranties(url, r)` prend la page de son tampon de cotisation (`TAMPONS`, compté de 0), sinon la 1ʳᵉ page
   tamponnée du fichier, sinon `DOCPAGE` ; le bouton « Pages 1–n » garde l'accès au début. Test : scratchpad `t_pagegar.js`.
+  **Recadrage à l'affichage** (Fabrice, 05/10/2026 : « les tableaux API SANTÉ sont mal présentés ») : `DOCCROP` (fichier → [x0, x1]
+  en points) — les plaquettes Équilibre 1–6 n'ont qu'une colonne, seule la bande 18–350 pt est rendue (texte ×1,8). Le PDF n'est
+  pas modifié (pièces jointes, onglet) ; les renvois en petits caractères débordent un peu à droite. Test : scratchpad `t_crop.js`.
   « 🔍 Agrandir » double la largeur des pages, « Ouvrir dans un onglet » reste en secours. Le clic qui
   suit l'appui long n'ouvre pas le détail de la ligne (`window.APPUI_LONG`). Testé souris et tactile (Playwright, CDP).
 - **Documents par formule** : dans `DOCS`, une valeur est une adresse valable pour toute la gamme, ou un
