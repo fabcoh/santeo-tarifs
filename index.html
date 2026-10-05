@@ -197,6 +197,11 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox th.pick:hover .star{opacity:1;color:var(--warn)}
 #tgbox.capwide .recolbl{font-size:13px}
 #tgbox.capwide{max-width:none;max-height:none;height:auto;overflow:visible;flex:0 0 auto;align-self:flex-start}
+/* Le tableau des formules colle ses deux premières colonnes (case, gamme) ; dans le tableau de garantie, la 2ᵉ colonne est une
+   formule et ne doit pas coller. Pendant la capture, plus rien ne colle : avec un tableau défilé à l'horizontale (téléphone,
+   7 formules), html2canvas décalait les cellules collées et vidait la 1ʳᵉ colonne (Fabrice, 05/10/2026). */
+#tgbox th:nth-child(2),#tgbox td:nth-child(2){position:static;left:auto}
+#tgbox.capwide th,#tgbox.capwide td{position:static!important;left:auto!important}
 #tgbox.capwide table{width:max-content}
 #tgbox.capwide th,#tgbox.capwide td{white-space:nowrap;font-size:15.5px;padding:9px 13px}
 #tgbox.capwide thead th{font-size:14.5px}
@@ -430,7 +435,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-05T16:33:12Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-05T16:33:12Z</div>
+  <div id="buildstamp" data-build="2026-10-05T17:28:00Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-05T17:28:00Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2673,6 +2678,8 @@ function renderTG(cols,title,sub,note,single){
     if(typeof html2canvas==="undefined")throw new Error("lib");
     const wrap2=box.querySelector('div[style*="overflow-x"]');
     const savedWrap=wrap2?wrap2.style.cssText:"";
+    // Tout défilement horizontal remis à zéro avant la capture (fenêtre, cadre du tableau) : sinon décalage dans l'image.
+    try{ let e=box; while(e){ if(e.scrollLeft) e.scrollLeft=0; e=e.parentElement; } if(wrap2) wrap2.scrollLeft=0; }catch(_){}
     box.classList.add("capwide"); if(wrap2)wrap2.style.overflowX="visible";
     // Si des formules sont cochées (envoi), la capture ne montre que leurs colonnes
     const selFi=(key&&typeof SENDSEL!=="undefined")?[...SENDSEL].filter(x=>x.split("|")[0]===key).map(x=>+x.split("|")[1]):[];

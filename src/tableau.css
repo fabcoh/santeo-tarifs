@@ -188,6 +188,11 @@ tr.detail td{background:var(--soft);padding:8px 10px 10px 34px;font-size:13px}
 #tgbox th.pick:hover .star{opacity:1;color:var(--warn)}
 #tgbox.capwide .recolbl{font-size:13px}
 #tgbox.capwide{max-width:none;max-height:none;height:auto;overflow:visible;flex:0 0 auto;align-self:flex-start}
+/* Le tableau des formules colle ses deux premières colonnes (case, gamme) ; dans le tableau de garantie, la 2ᵉ colonne est une
+   formule et ne doit pas coller. Pendant la capture, plus rien ne colle : avec un tableau défilé à l'horizontale (téléphone,
+   7 formules), html2canvas décalait les cellules collées et vidait la 1ʳᵉ colonne (Fabrice, 05/10/2026). */
+#tgbox th:nth-child(2),#tgbox td:nth-child(2){position:static;left:auto}
+#tgbox.capwide th,#tgbox.capwide td{position:static!important;left:auto!important}
 #tgbox.capwide table{width:max-content}
 #tgbox.capwide th,#tgbox.capwide td{white-space:nowrap;font-size:15.5px;padding:9px 13px}
 #tgbox.capwide thead th{font-size:14.5px}
