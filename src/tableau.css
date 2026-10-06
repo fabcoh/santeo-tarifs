@@ -333,7 +333,13 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 .volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
 .volet.open .chev{transform:rotate(180deg)}
 #tgbox .optgrp{margin-top:12px}
-#tgbox .mdlcarte{border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin:8px 0;background:var(--card)}
+#tgbox .mdlcarte{border:1px solid var(--line);border-radius:9px;padding:6px 10px;margin:5px 0;background:var(--card)}
+#tgbox .mdlcarte .mdlexp{margin:2px 0 0;color:var(--muted);font-weight:500}
+#tgbox details.mdldet{margin-top:3px}
+#tgbox details.mdldet>summary,#tgbox details.mdlsave>summary{cursor:pointer;font:700 11.5px 'IBM Plex Sans',sans-serif;color:var(--accent);list-style:none}
+#tgbox details.mdldet>summary::before{content:"▸ "} #tgbox details.mdldet[open]>summary::before{content:"▾ "}
+#tgbox details.mdlsave{margin-top:12px;border-top:1px solid var(--line);padding-top:9px}
+#tgbox details.mdlsave>summary{font:800 12.5px 'Archivo',sans-serif}
 #tgbox .mdlcarte.actif{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 #tgbox .mdltete{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font:800 14px 'Archivo',sans-serif}
 #tgbox .mdltete small{font:600 11.5px 'IBM Plex Sans',sans-serif;color:var(--muted)}

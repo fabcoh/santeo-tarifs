@@ -342,7 +342,13 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 .volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
 .volet.open .chev{transform:rotate(180deg)}
 #tgbox .optgrp{margin-top:12px}
-#tgbox .mdlcarte{border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin:8px 0;background:var(--card)}
+#tgbox .mdlcarte{border:1px solid var(--line);border-radius:9px;padding:6px 10px;margin:5px 0;background:var(--card)}
+#tgbox .mdlcarte .mdlexp{margin:2px 0 0;color:var(--muted);font-weight:500}
+#tgbox details.mdldet{margin-top:3px}
+#tgbox details.mdldet>summary,#tgbox details.mdlsave>summary{cursor:pointer;font:700 11.5px 'IBM Plex Sans',sans-serif;color:var(--accent);list-style:none}
+#tgbox details.mdldet>summary::before{content:"▸ "} #tgbox details.mdldet[open]>summary::before{content:"▾ "}
+#tgbox details.mdlsave{margin-top:12px;border-top:1px solid var(--line);padding-top:9px}
+#tgbox details.mdlsave>summary{font:800 12.5px 'Archivo',sans-serif}
 #tgbox .mdlcarte.actif{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 #tgbox .mdltete{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font:800 14px 'Archivo',sans-serif}
 #tgbox .mdltete small{font:600 11.5px 'IBM Plex Sans',sans-serif;color:var(--muted)}
@@ -457,7 +463,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-06T13:57:01Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-06T13:57:01Z</div>
+  <div id="buildstamp" data-build="2026-10-06T14:50:52Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-06T14:50:52Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -4399,19 +4405,19 @@ async function modeleEcrit(corps){
 function ouvrirModeles(){
   const esc=v=>String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
   const ov=overlay('<button class="close">Fermer ✕</button><h2>📁 Modèles de filtre</h2>'
-    +'<div class="src" id="mdlsrc">Lecture des modèles…</div><div id="mdlliste"></div>'
-    +'<div class="optgrp"><h3>Enregistrer la sélection actuelle</h3><div id="mdlcour"></div>'
+    +'<div class="mdlnote" id="mdlsrc" style="margin:0 0 4px">Lecture des modèles…</div><div id="mdlliste"></div>'
+    +'<details class="mdlsave" id="mdlsave_d"><summary>＋ Enregistrer la sélection actuelle</summary><details class="mdldet"><summary>Sélection actuelle</summary><div id="mdlcour"></div></details>'
     +'<div class="mdlform"><label id="mdlfl" class="mdlfl" hidden><input type="checkbox" id="mdlform_f" checked> <span></span></label>'
     +'<input id="mdlnom" maxlength="60" placeholder="Nom du modèle (ex. Dentaire implant)">'
     +'<textarea id="mdlexp" maxlength="400" rows="2" placeholder="Explication (ex. gros besoin dentaire, implants ≥ 500 €)"></textarea>'
     +'<button type="button" class="tgbtn ok" id="mdlsave">💾 Enregistrer</button><span id="mdlmsg"></span></div>'
     +'<div class="mdlnote">Le budget n\'est pas enregistré : il dépend du prospect. Un nom déjà pris remplace ce modèle. '
-    +'Les formules cochées sont retenues d\'office (gamme et niveau) : à l\'application, elles seules s\'affichent.</div></div>',560);
+    +'Les formules cochées sont retenues d\'office (gamme et niveau) : à l\'application, elles seules s\'affichent.</div></details>',560);
   const liste=ov.querySelector("#mdlliste"), msg=ov.querySelector("#mdlmsg");
   const parDefaut=()=>{ try{ const e=localStorage.getItem("santeo_exp")||""; return e.split("@")[0]; }catch(e){ return ""; } };
   const rendu=()=>{
     ov.querySelector("#mdlsrc").textContent = MODELES_PARTAGE
-      ? "Modèles partagés entre conseillers. Appliquer remplace la sélection en cours (compagnies, produits, colonnes, seuils)."
+      ? "Partagés entre conseillers · Appliquer remplace la sélection en cours."
       : "⚠ Relais des modèles injoignable : les modèles s'enregistrent sur cet appareil seulement.";
     const cour=modeleCle(modeleCourant());
     liste.innerHTML=MODELES.length?MODELES.map((m,i)=>'<div class="mdlcarte'+(modeleCle(m)===cour?' actif':'')+'">'
@@ -4421,10 +4427,11 @@ function ouvrirModeles(){
         +'<button type="button" class="tgbtn" data-ed="'+i+'" title="Reprendre son nom et son explication pour l\'enregistrer à nouveau avec la sélection actuelle">✎</button>'
         +'<button type="button" class="tgbtn" data-sup="'+i+'" title="Supprimer ce modèle">🗑</button></span></div>'
         +(m.explication?'<div class="mdlexp">'+esc(m.explication)+'</div>':'')
-        +modeleResume(m)
+        +'<details class="mdldet"><summary>Détail</summary>'+modeleResume(m)
         +((m.par||m.maj)?'<div class="mdlpar">'+(m.par?esc(m.par):'')+(m.maj?(m.par?' · ':'')+new Date(m.maj).toLocaleDateString("fr-FR"):'')+'</div>':'')
-        +'</div>').join(""):'<div class="mdlvide">Aucun modèle pour l\'instant : réglez compagnies, options et seuils, puis enregistrez ci-dessous.</div>';
+        +'</details></div>').join(""):'<div class="mdlvide">Aucun modèle pour l\'instant : réglez compagnies, options et seuils, puis enregistrez ci-dessous.</div>';
     ov.querySelector("#mdlcour").innerHTML=modeleResume(modeleCourant());
+    if(!MODELES.length&&MODELES_PARTAGE!==null) ov.querySelector("#mdlsave_d").open=true;   // aucun modèle : on propose d'en créer un
     // Formules cochées : retenues d'office dans le modèle (Fabrice, 06/10/2026 : « afficher la sélection quand je clique
     // sur le modèle ») — à l'application, elles seules s'affichent. Décocher pour un modèle de compagnies et de seuils seuls.
     const fl=ov.querySelector("#mdlfl"), n=SENDSEL.size;
@@ -4437,7 +4444,7 @@ function ouvrirModeles(){
     const b=e.target.closest("button"); if(!b)return;
     if(b.dataset.ap!=null){ const m=MODELES[+b.dataset.ap]; modeleApplique(m); ov.remove(); try{ bandeauOk("Modèle « "+m.nom+" » appliqué"); }catch(_){} return; }
     if(b.dataset.ed!=null){ const m=MODELES[+b.dataset.ed]; ov.querySelector("#mdlnom").value=m.nom; ov.querySelector("#mdlexp").value=m.explication||"";
-      ov.querySelector("#mdlnom").focus(); msg.textContent="Réglez la sélection, puis Enregistrer : le modèle sera remplacé."; return; }
+      ov.querySelector("#mdlsave_d").open=true; ov.querySelector("#mdlnom").focus(); msg.textContent="Réglez la sélection, puis Enregistrer : le modèle sera remplacé."; return; }
     if(b.dataset.sup!=null){
       const m=MODELES[+b.dataset.sup];
       if(!b.dataset.sur){ b.dataset.sur="1"; b.textContent="Supprimer ?"; return; }   // second clic pour confirmer
