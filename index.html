@@ -454,7 +454,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-06T08:47:59Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-06T08:47:59Z</div>
+  <div id="buildstamp" data-build="2026-10-06T10:07:50Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-06T10:07:50Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -3177,6 +3177,9 @@ function calc(){
 let LASTROWS=[];
 // ---- Envoi des formules cochées par WhatsApp (prix) ou email (garanties + prix + liens PDF) ----
 const SENDSEL=new Set();
+// « Afficher la sélection » (Fabrice, 06/10/2026) : le tableau ne montre plus que les formules cochées.
+// Un modèle de filtre enregistré dans cet état retient ces formules (gamme + niveau).
+let VOIRSEL=false;
 function selRows(){return LASTROWS.filter(r=>SENDSEL.has(r.key+"|"+r.fi));}
 function offreTxt(r,full){
   const f=F[r.key], e=EX[r.key]||{};
@@ -3269,12 +3272,13 @@ function doMail(){
 }
 function updateSendBar(){
   let bar=document.getElementById("sendbar");
-  if(!SENDSEL.size){if(bar)bar.remove();return;}
+  if(!SENDSEL.size){if(bar)bar.remove(); if(VOIRSEL){VOIRSEL=false;setTimeout(calc,0);} return;}
   if(!bar){
     bar=document.createElement("div");
     bar.id="sendbar";
-    bar.style.cssText="position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:200;display:flex;gap:8px;align-items:center;background:var(--ink);color:var(--ground);border-radius:14px;padding:9px 14px;box-shadow:0 8px 26px rgba(0,0,0,.35);font:700 13.5px 'Archivo',sans-serif;max-width:96vw";
+    bar.style.cssText="position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;align-items:center;background:var(--ink);color:var(--ground);border-radius:14px;padding:9px 14px;box-shadow:0 8px 26px rgba(0,0,0,.35);font:700 13.5px 'Archivo',sans-serif;max-width:96vw";
     bar.innerHTML='<span id="sbcount"></span>'
+      +'<button id="sbvs" style="border:1px solid var(--soft);border-radius:9px;background:transparent;color:inherit;padding:7px 11px;font:800 13px \'Archivo\',sans-serif;cursor:pointer"></button>'
       +'<button id="sbtg" title="Tableau de garantie des formules cochées (toutes gammes) — puis 📷 pour copier l\'image" style="border:0;border-radius:9px;background:var(--soft);color:var(--ink);padding:8px 11px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">📄 Garanties</button>'
       +'<button id="sbwa" style="border:0;border-radius:9px;background:#25D366;color:#fff;padding:8px 13px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">🟢 WhatsApp</button>'
       +'<button id="sbml" title="Envoyer le tableau de garantie par mail au prospect" style="border:0;border-radius:9px;background:var(--accent);color:var(--accent-ink);padding:8px 13px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">✉️ Email</button>'
@@ -3284,9 +3288,14 @@ function updateSendBar(){
     bar.querySelector("#sbwa").addEventListener("click",doWhatsApp);
     // « Email » envoie le courrier au prospect : il passe par le tableau, dont le courrier reprend les colonnes.
     bar.querySelector("#sbml").addEventListener("click",()=>viaTableau("mel"));
-    bar.querySelector("#sbx").addEventListener("click",()=>{SENDSEL.clear();updateSendBar();calc();});
+    bar.querySelector("#sbx").addEventListener("click",()=>{SENDSEL.clear();VOIRSEL=false;updateSendBar();calc();});
+    bar.querySelector("#sbvs").addEventListener("click",()=>{VOIRSEL=!VOIRSEL;updateSendBar();calc();});
   }
   bar.querySelector("#sbcount").textContent=SENDSEL.size+" formule"+(SENDSEL.size>1?"s":"");
+  const vs=bar.querySelector("#sbvs");
+  vs.textContent=VOIRSEL?"☰ Tout afficher":"👁 Afficher la sélection";
+  vs.title=VOIRSEL?"Revenir à toutes les formules":"N'afficher que les formules cochées";
+  vs.style.background=VOIRSEL?"var(--soft)":"transparent"; vs.style.color=VOIRSEL?"var(--ink)":"inherit";
   if(window.CRMLINK){const w=bar.querySelector("#sbwa");w.textContent="📲 Capture → WhatsApp";
     w.title="Déposer la capture du tableau de garantie (formules cochées, ⭐ comprise) dans la conversation WhatsApp du CRM";}
 }
@@ -3474,6 +3483,7 @@ function fapplique(rows){
 // d'un prospect à l'autre ferait disparaître des offres sans que personne comprenne
 // pourquoi. Ils sont donc effacés dès qu'une nouvelle fiche arrive.
 function filtresRAZ(){
+  VOIRSEL=false;
   for(const k in FILTRES) delete FILTRES[k];
   try{ localStorage.removeItem("santeo_filtres"); }catch(e){}
   selDefaut();                               // compagnies par défaut, ou aucune coche = toutes les compagnies
@@ -4127,9 +4137,16 @@ async function souscrire(o){
   });
 }
 
+let RENDU_PREC="";
 function render(rows,warns){
   const finfo=fapplique(rows);
   rows=finfo.rows; fmaj(finfo);
+  if(VOIRSEL&&SENDSEL.size){
+    const n0=rows.length; rows=rows.filter(r=>SENDSEL.has(r.key+"|"+r.fi));
+    warns=warns.concat(["👁 Sélection seule : "+rows.length+" formule"+(rows.length>1?"s":"")+" cochée"+(rows.length>1?"s":"")+" sur "+n0
+      +(rows.length<SENDSEL.size?" ("+(SENDSEL.size-rows.length)+" cochée(s) hors du tableau : non proposée(s) à ce profil ou écartée(s) par un filtre)":"")
+      +". Bouton « Tout afficher » en bas pour revenir à la liste complète."]);
+  }
   if(Object.keys(FILTRES).length&&!rows.length) warns=warns.concat(["Aucune offre ne satisfait les filtres de garantie — assouplissez un critère."]);
   LASTROWS=rows;
   // Le cadre des conditions ne concerne que MCCINOVA : affiché seulement si la gamme figure dans le tableau
@@ -4138,11 +4155,12 @@ function render(rows,warns){
   const tb=document.getElementById("rows");
   if(!rows.length){
     const parFiltre=Object.keys(FILTRES).length&&finfo.total;
+    RENDU_PREC="";
     tb.innerHTML='<tr><td colspan="'+NC+'" class="empty">'
       +(parFiltre?"Aucune des "+finfo.total+" offres ne satisfait les filtres de garantie. Assouplissez un critère dans le panneau ⚖."
                  :(parseAge(document.getElementById("naiss").value)!=null?"Aucune formule dans le périmètre choisi : cochez d'autres compagnies dans le panneau ⚖."+(sel.APRIL?" Tarifs APRIL : voir le bloc APRIL ci-dessous.":""):"Renseigne une année de naissance (ou un âge) pour lancer le calcul."))+'</td></tr>';}
   else{
-    tb.innerHTML=rows.map((r,i)=>{
+    const corps=rows.map((r,i)=>{
       const rk=r.key+"|"+r.fi;
       const isOpen=openKeys.has(rk);
       const bud=fbudget();
@@ -4181,6 +4199,10 @@ function render(rows,warns){
       }
       return h;
     }).join("");
+    // Même tableau qu'avant : on n'y touche pas. Quitter un champ (CP…) recalcule au mousedown ; reconstruire les lignes
+    // à ce moment avalait le clic sur la case d'envoi qui suivait (constaté le 06/10/2026).
+    if(corps===RENDU_PREC&&tb.querySelector("tr.offer")) syncSendAll(); else {
+    RENDU_PREC=corps; tb.innerHTML=corps;
     tb.querySelectorAll(".tgbtn").forEach(btn=>{
       btn.addEventListener("click",ev=>{
         ev.stopPropagation();
@@ -4230,6 +4252,7 @@ function render(rows,warns){
         calc();
       });
     });
+    }
   }
   document.getElementById("warns").innerHTML=warns.map(w=>'<div class="warnbox">'+w+"</div>").join("");
 }
@@ -4296,15 +4319,22 @@ async function modelesCharge(){
 function modeleCourant(){
   const f={}; for(const k in FILTRES) if(k!=="budget") f[k]=FILTRES[k];
   return {sel:Object.keys(sel).filter(k=>sel[k]), april:sel.APRIL?APRIL_SEL.slice():[],
-          options:Object.keys(exOn).filter(k=>exOn[k]), filtres:f};
+          options:Object.keys(exOn).filter(k=>exOn[k]), filtres:f, formules:VOIRSEL?[...SENDSEL]:[]};
 }
-const modeleCle=m=>JSON.stringify([[...(m.sel||[])].sort(),[...(m.april||[])].sort(),[...(m.options||[])].sort(),
+const modeleCle=m=>JSON.stringify([[...(m.sel||[])].sort(),[...(m.april||[])].sort(),[...(m.options||[])].sort(),[...(m.formules||[])].sort(),
   Object.keys(m.filtres||{}).sort().map(k=>k+"="+m.filtres[k])]);
 function modelesSum(){
   const s=document.getElementById("vmsum"); if(!s)return;
   const c=modeleCle(modeleCourant()), m=MODELES.find(x=>modeleCle(x)===c);
   s.textContent=m?"« "+m.nom+" »":(MODELES.length?MODELES.length+" enregistré"+(MODELES.length>1?"s":""):"");
   document.getElementById("vm").classList.toggle("open",!!m);
+}
+// Nom d'une formule « clé|fi » (ex. « APRIL Santé Mix Proximité Niv. 2 », « M. VERTE GCI 150 »)
+function nomFormule(rk){
+  const [k,fi]=String(rk).split("|"), f=F[k], n=f&&f.names?f.names[+fi]:null;
+  if(!f) return rk;
+  try{ const t=Tableau.nomComplet(GAR,k,+fi); if(t) return k==="APRIL"&&!/^APRIL/.test(t)?"APRIL "+t:t; }catch(e){}
+  return ((k==="APRIL"?"APRIL":f.label)+" "+(n||("n° "+fi))).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2");
 }
 // Résumé lisible d'un modèle : ce qu'il coche et ce qu'il filtre
 function modeleResume(m){
@@ -4317,6 +4347,7 @@ function modeleResume(m){
   if((m.april||[]).length&&(m.sel||[]).includes("APRIL")) lignes.push(["APRIL",m.april.map(nomA).join(", ")]);
   if((m.options||[]).length) lignes.push(["Colonnes ajoutées",m.options.map(k=>libO[k]||k).join(", ")]);
   const f=Object.keys(m.filtres||{});
+  if((m.formules||[]).length) lignes.push(["Formules seules",m.formules.map(nomFormule).join(" · ")]);
   if(f.length) lignes.push(["Seuils",f.map(k=>(libP[k]||k)+" ≥ "+String(m.filtres[k]).replace(/(%|€)$/," $1")).join(" · ")]);
   return lignes.map(([l,v])=>'<div class="mdl"><span>'+l+'</span>'+esc(v)+'</div>').join("");
 }
@@ -4333,6 +4364,10 @@ function modeleApplique(m){
   for(const k in FILTRES) delete FILTRES[k];
   Object.assign(FILTRES,m.filtres||{}); if(bud) FILTRES.budget=bud;
   try{ localStorage.setItem("santeo_filtres",JSON.stringify(FILTRES)); }catch(e){}
+  // Formules retenues (« Afficher la sélection ») : cochées et seules affichées ; sinon la liste complète
+  if((m.formules||[]).length){ SENDSEL.clear(); m.formules.forEach(x=>SENDSEL.add(x)); VOIRSEL=true; }
+  else VOIRSEL=false;
+  updateSendBar();
   // Le panneau ⚖ se reconstruit avec la nouvelle sélection (cases, liste APRIL, seuils)
   const c=document.getElementById("fcorps");
   if(c&&c.dataset.pret){ delete c.dataset.pret; c.innerHTML=""; fconstruit(); }
@@ -4354,7 +4389,8 @@ function ouvrirModeles(){
     +'<div class="mdlform"><input id="mdlnom" maxlength="60" placeholder="Nom du modèle (ex. Dentaire implant)">'
     +'<textarea id="mdlexp" maxlength="400" rows="2" placeholder="Explication (ex. gros besoin dentaire, implants ≥ 500 €)"></textarea>'
     +'<button type="button" class="tgbtn ok" id="mdlsave">💾 Enregistrer</button><span id="mdlmsg"></span></div>'
-    +'<div class="mdlnote">Le budget n\'est pas enregistré : il dépend du prospect. Un nom déjà pris remplace ce modèle.</div></div>',560);
+    +'<div class="mdlnote">Le budget n\'est pas enregistré : il dépend du prospect. Un nom déjà pris remplace ce modèle. '
+    +'Pour retenir des formules précises (gamme et niveau) : cochez-les, « 👁 Afficher la sélection » en bas, puis enregistrez.</div></div>',560);
   const liste=ov.querySelector("#mdlliste"), msg=ov.querySelector("#mdlmsg");
   const parDefaut=()=>{ try{ const e=localStorage.getItem("santeo_exp")||""; return e.split("@")[0]; }catch(e){ return ""; } };
   const rendu=()=>{
@@ -4398,8 +4434,10 @@ function ouvrirModeles(){
     const btn=e.currentTarget; btn.disabled=true; msg.textContent="Enregistrement…";
     try{
       if(MODELES_PARTAGE===false) throw Object.assign(new Error("hors ligne"),{local:true});
-      await modeleEcrit({action:"enregistrer",modele:m});
+      const rep=await modeleEcrit({action:"enregistrer",modele:m});
       msg.textContent="✅ « "+nom+" » enregistré pour tous les conseillers.";
+      if(m.formules.length&&!((rep.modele||{}).formules||[]).length)
+        msg.textContent+=" ⚠ Formules non retenues : le relais modeles.php est à mettre à jour.";
     }catch(err){
       if(!err.local&&MODELES_PARTAGE){ msg.textContent="⚠ "+err.message; btn.disabled=false; return; }
       const l=modelesLocaux(), i=l.findIndex(x=>x.nom.toLowerCase()===nom.toLowerCase());
