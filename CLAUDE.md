@@ -302,6 +302,17 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **À l'arrivée d'une fiche**, `filtresApercu()` ouvre le panneau **6 secondes** puis le referme : le
   commercial voit qu'il repart vierge sans avoir à aller le vérifier. Dès qu'il y touche — bouton ⚖, clic ou
   saisie dans le panneau — le minuteur est annulé et le panneau lui appartient.
+- **Modèles de filtre** (Fabrice, 06/10/2026 : « Dentaire implant », « valable pour tous, Antony et moi ») : bouton
+  **📁 Modèles de filtre** sous « Options par poste » (`ouvrirModeles`). Un modèle = nom + explication + `sel` (compagnies et
+  gammes cochées), `april` (produits APRIL, seulement si APRIL est cochée), `options` (`exOn`), `filtres` (seuils de `FILTRES`) —
+  **jamais le budget**, propre au prospect. **Appliquer remplace** la sélection en cours (le budget saisi reste), reconstruit le
+  panneau ⚖ et recalcule ; ✎ reprend nom et explication pour réenregistrer ; 🗑 en deux clics ; un nom déjà pris remplace le
+  modèle. Le bouton affiche le nom du modèle qui correspond exactement à la sélection (`modelesSum`, à chaque `calc`).
+  **Partage** : relais `https://capisante.fr/modeles.php` (scratchpad `livrer/modeles.php`, à déposer dans `www/`) — GET =
+  liste, POST `enregistrer` / `supprimer` ; fichier `modeles-filtres.json` **hors du dossier web**, version précédente dans
+  `modeles-filtres.avant.json` ; site appelant autorisé, 30 écritures/heure/IP, 80 modèles, contenu contrôlé champ par champ.
+  Relais injoignable → modèles « (cet appareil) » dans `santeo_modeles`. Une nouvelle fiche (`filtresRAZ`) remet toujours à
+  zéro : on applique le modèle après l'arrivée de la fiche. Test : scratchpad `t_modeles.js` (relais réel sous `php -S`).
 - **Case « tout cocher »** en tête de la colonne des cases (Fabrice, 26/09/2026) : coche ou décoche toutes les
   formules affichées — donc après filtres et périmètre. Pleine si toutes le sont, tiret si une partie
   (`syncSendAll()`). **`buildHead()` ne remplace l'en-tête que s'il a changé** : quitter un champ (CP…) recalcule
