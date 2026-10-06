@@ -308,7 +308,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **jamais le budget**, propre au prospect. **Appliquer remplace** la sélection en cours (le budget saisi reste), reconstruit le
   panneau ⚖ et recalcule ; ✎ reprend nom et explication pour réenregistrer ; 🗑 en deux clics ; un nom déjà pris remplace le
   modèle. Le bouton affiche le nom du modèle qui correspond exactement à la sélection (`modelesSum`, à chaque `calc`).
-  **Partage** : relais `https://capisante.fr/modeles.php` (scratchpad `livrer/modeles.php`, à déposer dans `www/`) — GET =
+  **Partage** : relais `https://capisante.fr/modeles.php` (scratchpad `livrer/modeles.php`, **déposé dans `www/` et vérifié le 06/10/2026** : lecture, écriture, suppression, appelant étranger refusé) — GET =
   liste, POST `enregistrer` / `supprimer` ; fichier `modeles-filtres.json` **hors du dossier web**, version précédente dans
   `modeles-filtres.avant.json` ; site appelant autorisé, 30 écritures/heure/IP, 80 modèles, contenu contrôlé champ par champ.
   Relais injoignable → modèles « (cet appareil) » dans `santeo_modeles`. Une nouvelle fiche (`filtresRAZ`) remet toujours à
