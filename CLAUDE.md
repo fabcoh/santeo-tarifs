@@ -313,6 +313,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `modeles-filtres.avant.json` ; site appelant autorisé, 30 écritures/heure/IP, 80 modèles, contenu contrôlé champ par champ.
   Relais injoignable → modèles « (cet appareil) » dans `santeo_modeles`. Une nouvelle fiche (`filtresRAZ`) remet toujours à
   zéro : on applique le modèle après l'arrivée de la fiche. Test : scratchpad `t_modeles.js` (relais réel sous `php -S`).
+  **« 👁 Afficher la sélection »** (Fabrice, 06/10/2026 : « si je coche une case, afficher la sélection… retrouver uniquement ce qui
+  est coché ») : bouton de la barre flottante (`#sbvs`, ↔ « ☰ Tout afficher ») ; `VOIRSEL` réduit le tableau aux formules cochées
+  (`SENDSEL`), après filtres, avec une ligne d'avertissement (cochées absentes comptées) ; ✕, plus aucune case cochée ou nouvelle
+  fiche (`filtresRAZ`) le coupent. **Un modèle enregistré dans cet état retient `formules`** (`clé|fi`, niveau compris ; APRIL
+  `rang × 100 + niveau`) : l'appliquer les coche et n'affiche qu'elles. Relais `2026-10-06 modeles de filtre, formules` (un relais
+  plus ancien les ignore : la page le signale). Test : scratchpad `t_vsel.js`.
+  **Clic perdu corrigé au passage** : quitter le CP recalcule au `mousedown` et `render` reconstruisait les lignes, avalant le
+  1ᵉʳ clic sur une case d'envoi. `render` ne touche plus aux lignes si leur HTML n'a pas changé (`RENDU_PREC`).
 - **Case « tout cocher »** en tête de la colonne des cases (Fabrice, 26/09/2026) : coche ou décoche toutes les
   formules affichées — donc après filtres et périmètre. Pleine si toutes le sont, tiret si une partie
   (`syncSendAll()`). **`buildHead()` ne remplace l'en-tête que s'il a changé** : quitter un champ (CP…) recalcule
