@@ -1136,7 +1136,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   set ». `$type` `Sante` ou `SantePrev` : même prix ; `attachmentMandatoryScheme` des enfants : facultatif, même prix. Vérifié par
   appels réels sur les 12 produits ouverts (couple + 2 enfants ; couple de 62/64 ans pour Simply, Only, GAN, Cap Sérénité) ; la
   remise famille d'APRIL se voit sur l'assuré principal (Zen 55,70 € seul, 50,13 € en famille). Une ligne par assuré et par
-  niveau (`TarifDetaille`), additionnées par le relais. Relais `2026-10-06 familles (insureds)…`, qui répond `liensFamille:true` :
+  niveau (`TarifDetaille`), additionnées par le relais. Relais `2026-10-06 familles (insureds)…` (**déposé et vérifié le 06/10/2026** : couple + 2 enfants, Lyon, Zen 205,46 €, Mix 149,47 €, Vita 180,93 € au niveau 1), qui répond `liensFamille:true` :
   la page retire alors « Tarif famille à confirmer ». **La préproduction n'ouvre qu'aux heures ouvrées, du lundi au vendredi**
   (Damien, 06/10/2026) : les pannes de nuit et de week-end étaient normales. Production : sur simple demande écrite.
   **Liste remaniée** (Fabrice, 05/10/2026 : « remettre GAN, Malakoff dans les choix principaux ») : plus de groupe « Autres
