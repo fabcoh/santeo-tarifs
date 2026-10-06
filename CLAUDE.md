@@ -319,6 +319,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   fiche (`filtresRAZ`) le coupent. **Un modèle enregistré dans cet état retient `formules`** (`clé|fi`, niveau compris ; APRIL
   `rang × 100 + niveau`) : l'appliquer les coche et n'affiche qu'elles. Relais `2026-10-06 modeles de filtre, formules` (un relais
   plus ancien les ignore : la page le signale). Test : scratchpad `t_vsel.js`.
+  **Formules cochées retenues d'office** (Fabrice, 06/10/2026 : « il faut afficher la sélection quand je clique sur le modèle et
+  filtrer mes choix ») : à l'enregistrement, case « Retenir les n formules cochées » (cochée par défaut dès qu'une case d'envoi
+  l'est, `#mdlform_f`) — plus besoin de passer d'abord par « Afficher la sélection ». **Appliquer** ouvre aussi le panneau ⚖
+  6 s (`filtresApercu`), détail des compagnies déplié si le modèle en restreint. Test : scratchpad `t_vsel2.js`, `t_appl.js`.
   **Clic perdu corrigé au passage** : quitter le CP recalcule au `mousedown` et `render` reconstruisait les lignes, avalant le
   1ᵉʳ clic sur une case d'envoi. `render` ne touche plus aux lignes si leur HTML n'a pas changé (`RENDU_PREC`).
 - **Case « tout cocher »** en tête de la colonne des cases (Fabrice, 26/09/2026) : coche ou décoche toutes les
