@@ -323,6 +323,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   filtrer mes choix ») : à l'enregistrement, case « Retenir les n formules cochées » (cochée par défaut dès qu'une case d'envoi
   l'est, `#mdlform_f`) — plus besoin de passer d'abord par « Afficher la sélection ». **Appliquer** ouvre aussi le panneau ⚖
   6 s (`filtresApercu`), détail des compagnies déplié si le modèle en restreint. Test : scratchpad `t_vsel2.js`, `t_appl.js`.
+  **Fenêtre compacte** (Fabrice, 06/10/2026 : « plusieurs filtres pré-enregistrés, minimise les infos pour garder le titre et
+  commentaire ») : une carte par modèle = nom + explication + Appliquer / ✎ / 🗑 ; le résumé (compagnies, formules, seuils,
+  auteur, date) est replié sous « ▸ Détail » ; « ＋ Enregistrer la sélection actuelle » est replié (`#mdlsave_d`, ouvert par ✎ ou
+  quand aucun modèle n'existe). Test : scratchpad `t_mdlvue.js`.
   **Clic perdu corrigé au passage** : quitter le CP recalcule au `mousedown` et `render` reconstruisait les lignes, avalant le
   1ᵉʳ clic sur une case d'envoi. `render` ne touche plus aux lignes si leur HTML n'a pas changé (`RENDU_PREC`).
 - **Case « tout cocher »** en tête de la colonne des cases (Fabrice, 26/09/2026) : coche ou décoche toutes les
