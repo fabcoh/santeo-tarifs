@@ -1130,6 +1130,15 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `april.php` version `2026-10-05 April-On, GAN Protect Cap Serenite` (scratchpad `livrer/april.php`), **déposé par Fabrice et
   vérifié le 05/10/2026** par un appel réel au relais (70 ans, Paris : GAN 121,05 → 343,32 ; Protect 120,51 → 229,30 ; Cap
   Sérénité 102,91 → 240,23). Test : scratchpad `t_aprilautres.js`.
+  **Familles APRIL résolues** (06/10/2026, exemple « Santé ZEN Famille » envoyé par Damien Valcarcel) : tous les assurés vont
+  dans **`products[].insureds`** (liste, au pluriel), chacun `{$id, role: AssurePrincipal | Conjoint | Enfant, person}` ; les
+  garanties pointent vers chacun. L'ancien `insured` (objet, assuré principal seul) faisait dire à Santé Zen « Relation must be
+  set ». `$type` `Sante` ou `SantePrev` : même prix ; `attachmentMandatoryScheme` des enfants : facultatif, même prix. Vérifié par
+  appels réels sur les 12 produits ouverts (couple + 2 enfants ; couple de 62/64 ans pour Simply, Only, GAN, Cap Sérénité) ; la
+  remise famille d'APRIL se voit sur l'assuré principal (Zen 55,70 € seul, 50,13 € en famille). Une ligne par assuré et par
+  niveau (`TarifDetaille`), additionnées par le relais. Relais `2026-10-06 familles (insureds)…`, qui répond `liensFamille:true` :
+  la page retire alors « Tarif famille à confirmer ». **La préproduction n'ouvre qu'aux heures ouvrées, du lundi au vendredi**
+  (Damien, 06/10/2026) : les pannes de nuit et de week-end étaient normales. Production : sur simple demande écrite.
   **Liste remaniée** (Fabrice, 05/10/2026 : « remettre GAN, Malakoff dans les choix principaux ») : plus de groupe « Autres
   produits » ; GAN, Protect et Cap Sérénité parmi les Particuliers, les produits barrés en fin de groupe, mention « Barré : APRIL
   ne le propose pas à notre compte (raison au survol) ». **Les fi ne bougent pas** : `APRIL_RANG` suit `APRIL_ORDRE_RANG`, ordre

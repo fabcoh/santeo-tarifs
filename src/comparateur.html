@@ -2483,7 +2483,8 @@ async function aprilCharge(profil,cle,base){
     else if(!rp.ok) message=(d&&d.erreur)?d.erreur:"service indisponible (HTTP "+rp.status+")";
     else if(!d||!Array.isArray(d.produits)) message="réponse inattendue du relais";
     else if(APRIL_CACHE.base===base){
-      APRIL_CACHE.famille=!!d.famille;
+      // Relais du 06/10/2026 : liens de parenté transmis (« insureds »), le tarif famille n'est plus « à confirmer ».
+      APRIL_CACHE.famille=!!d.famille&&!d.liensFamille;
       for(const p of d.produits){ if(aprilGardable(p)) APRIL_CACHE.res[p.produit]=p; else extra.push(p); }
     }
   }catch(e){ message="relais APRIL injoignable"; }
@@ -2529,7 +2530,7 @@ function aprilRendu(){
     let h='<div class="apn">'+nok+' produit'+(nok>1?"s":"")+' tarifé'+(nok>1?"s":"")+' — dans le tableau ci-dessus, lignes « APRIL ».</div>';
     if((st.enCours||[]).length) h+='<div class="apn">Tarif en cours pour '+st.enCours.map(c=>APRIL_NOM[c]||c).join(", ")+'…</div>';
     for(const p of ko) h+='<div class="apl"><div class="apnom">'+(APRIL_NOM[p.produit]||p.produit)+'</div><div class="apko">'+(p.message||"non proposé pour ce profil")+'</div></div>';
-    corps=h+(st.cpApproche?'<div class="apn" style="margin-top:5px">Code postal pris au chef-lieu ('+st.cpApproche+') : saisir les 5 chiffres pour un tarif exact.</div>':'')+(st.famille?'<div class="apn" style="margin-top:5px">Tarif famille à confirmer : la préproduction APRIL ne reçoit pas encore le lien de parenté des assurés.</div>':'');
+    corps=h+(st.cpApproche?'<div class="apn" style="margin-top:5px">Code postal pris au chef-lieu ('+st.cpApproche+') : saisir les 5 chiffres pour un tarif exact.</div>':'')+(st.famille?'<div class="apn" style="margin-top:5px">Tarif famille à confirmer : le relais APRIL ne transmet pas encore le lien de parenté des assurés (relais à mettre à jour).</div>':'');
   }
   box.innerHTML='<div class="aph"><b>APRIL</b><span class="apn">tarifs et garanties de l\'API APRIL</span>'
     +'<button type="button" id="aprrem" class="'+(aprilRemise?"on":"")+'" title="Retarifer en commission 15/15">'+(aprilRemise?"Remise appliquée":"Remise")+'</button></div>'+corps;
