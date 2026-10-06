@@ -1134,6 +1134,16 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `april.php` version `2026-10-05 April-On, GAN Protect Cap Serenite` (scratchpad `livrer/april.php`), **déposé par Fabrice et
   vérifié le 05/10/2026** par un appel réel au relais (70 ans, Paris : GAN 121,05 → 343,32 ; Protect 120,51 → 229,30 ; Cap
   Sérénité 102,91 → 240,23). Test : scratchpad `t_aprilautres.js`.
+  **Flexi Santé et Santé Optimale : kits April-On reçus** (Fabrice, 06/10/2026 : notice valant CG, demande d'adhésion, IPID,
+  exemples de remboursement, fiche argumentaire). Garanties relues **sur l'image** de la notice (Flexi FLI062025 p. 12–13, Optimale
+  OPL042026 p. 8–9) et rangées dans `APRIL_GAR` (bonus fidélité et renforts jamais comptés). **Flexi a deux formules** : Complète
+  (« Conforme 100 % Santé – Responsable », modules 1–6) et Eco (non responsable, optique-dentaire 1–4) ; le relais tarife la
+  **Complète** (`GarantieHospitalisation` + `GarantieDentaireOptiqueAuditives`, sans « Eco ») → Flexi passe **Responsable** (le
+  document l'écrit ; l'API ne le disait pas). L'IPID fourni est celui de l'**Eco** : rangé (`april_flexisante_eco_ipid_2026.pdf`)
+  mais **non relié** — IPID de la Complète à demander. Fichiers `april_flexisante_*` / `april_santeoptimale_*` (`tg` = la notice,
+  `bulletin`, `exemples`, `argumentaire`) ; `DOCPAGE` 12 / 8 ; `TAMPONS` (au-dessus de « Niveau n », page 11 / 7 comptée de 0).
+  Les fichiers envoyés pour « Simply Santé » le même jour étaient ceux de Santé Optimale (identiques octet pour octet) : Simply et
+  Pro Privilège restent sans document. Test : scratchpad `t_flexopt.js`.
   **Familles APRIL résolues** (06/10/2026, exemple « Santé ZEN Famille » envoyé par Damien Valcarcel) : tous les assurés vont
   dans **`products[].insureds`** (liste, au pluriel), chacun `{$id, role: AssurePrincipal | Conjoint | Enfant, person}` ; les
   garanties pointent vers chacun. L'ancien `insured` (objet, assuré principal seul) faisait dire à Santé Zen « Relation must be
