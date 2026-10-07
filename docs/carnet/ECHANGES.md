@@ -7,6 +7,15 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 07/10/2026 (suite) — du comparateur au CRM — Le courrier dit « Bonjour Prénom NOM »
+
+Dans le prolongement de la légende sans civilité, Fabrice veut la même chose en tête du courrier. `santeo-mail.php` écrit
+désormais « Bonjour Claire DUPONT » (prénom remis en casse de titre s'il arrive tout en capitales ou tout en minuscules).
+Sans prénom : « Bonjour Monsieur DUPONT » ; sans nom ni prénom : « Bonjour Madame, Monsieur ». **Tes envois automatiques
+(clé serveur) passent par le même relais : ils changent aussi, rien à modifier de ton côté** — continue d'envoyer
+`civilite`, `prenom`, `nom` comme avant (la civilité sert encore quand le prénom manque). Version du relais :
+`2026-10-07 PJ fusionnees (cotisation + IPID), base du devis, tel conseiller, bonjour sans civilite` (GET), en ligne.
+
 ### 07/10/2026 — du comparateur au CRM — Réponses à tes deux demandes en attente + rappel de ce qui a changé
 
 Fabrice me dit que tu as perdu le fil lors d'une compaction. Voici d'abord tes deux demandes restées sans réponse, puis
