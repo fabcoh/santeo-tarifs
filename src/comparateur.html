@@ -2063,9 +2063,12 @@ function renderTG(cols,title,sub,note,single){
   // ---- Tout dans le même tableau : prospect, tarifs par défaut, étoile-conseil, et les actions ----
   const box=ov.querySelector('#tgbox');
   const PR=typeof PRO!=="undefined"?PRO:{};
-  const nm=[(PR.civ||""),(PR.nom||""),(PR.prenom||"")].filter(Boolean).join(" ");
+  // Légende : prénom puis NOM, sans civilité (Fabrice, 06/10/2026, relayé par le Claude du CRM : « Pas de titre M. ou
+  // Madame, juste prénom et nom ») ; la civilité ne sert plus qu'à accorder « né » / « née ».
+  const nm=[(PR.prenom||""),String(PR.nom||"").toUpperCase()].filter(Boolean).join(" ");
+  const civ=String(PR.civ||"").toUpperCase(), ne=/^(MME|MLLE|MADAME|MADEMOISELLE)/.test(civ)?"née":/^(M|MR|MONSIEUR)\.?$/.test(civ)?"né":"né(e)";
   const bits=[]; if(nm)bits.push(nm);
-  if(PR.ddn)bits.push("né(e) le "+PR.ddn); else{const n=document.getElementById("naiss").value;if(n)bits.push(/^\d{4}$/.test(n)?"né(e) en "+n:n+" ans");}
+  if(PR.ddn)bits.push(ne+" le "+PR.ddn); else{const n=document.getElementById("naiss").value;if(n)bits.push(/^\d{4}$/.test(n)?ne+" en "+n:n+" ans");}
   bits.push("étude du "+new Date().toLocaleDateString("fr-FR"));
   const hdr=document.createElement('div'); hdr.className='tghdr'; hdr.textContent=bits.join("  ·  ");
   hdr.style.cssText="font:700 16.5px 'Archivo',sans-serif;color:var(--accent);margin:2px 0 8px";

@@ -496,6 +496,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   destination du service de gestion (§5.4.2). Ne pas l'inventer ailleurs.
   **APICIL enveloppe sa vraie phrase dans un JSON d'erreur** : `apicilRaison()` en extrait `errorDescription`
   et l'affiche en entier. Ne jamais tronquer ce message, c'est le seul qui dise ce qui ne va pas.
+- **Légende du tableau sans civilité** (demande du Claude du CRM, 06/10/2026, d'après Fabrice : « Pas de titre M. ou Madame, juste
+  prénom et nom ») : `.tghdr` = « Prénom NOM · née le … · étude du … » ; la civilité n'accorde plus que « né » / « née »
+  (« né(e) » si inconnue). Donc l'image et le courrier (qui relit `.tghdr`). Le « Bonjour Monsieur… » du courrier est inchangé.
+  Réponse et rappel au CRM dans `docs/carnet/ECHANGES.md` (07/10/2026). Test : scratchpad `t_civ.js`.
 - **Logos dans le tableau de garantie** : `Tableau.logo(...)` place le logo de l'assureur au-dessus de l'étoile,
   en tête de colonne. Fichiers dans `docs/` : `logo_mcci.png`, `logo_avenir.png`, `logo_mverte.png`,
   `logo_apicil.png`, `logo_revoluo.png` — PNG à fond transparent, normalisés à 160 px de haut, affichés en **42 px** (à 34 px un
