@@ -25,6 +25,7 @@ Rappel de ce qui ne change pas : expéditeur **WhatsApp CRM <noreply@santeo.net>
 moment, fiche (`client`), `lienConversation` / `lienFiche`, conversation dans `texte`.
 
 GET : version `… fiche client, renvoi gestion vers fcohen, objet statut + demande` ; `interne.champs` liste tout.
+**En ligne depuis le 08/10/2026** (vérifié : le GET l'annonce, sans clé serveur → 403).
 
 ---
 

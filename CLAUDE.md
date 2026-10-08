@@ -935,7 +935,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   le vider pour basculer, le CRM n'a rien à changer). **Objet composé par le relais** (Fabrice, 08/10/2026 : « client ou prospect
   et sa demande principale » ; « c'est au CRM d'indiquer, toi tu ne fais que l'envoi ») : `statut` (client | prospect) +
   `demandePrincipale` → « Client — Claire DUPONT — Changement de formule » ; `objet` en repli. Version `… fiche client, renvoi
-  gestion vers fcohen, objet statut + demande` (à déposer). Contrat dans `docs/carnet/ECHANGES.md`. Test : scratchpad `tinterne/` (faux Mailgun sous `php -S`).
+  gestion vers fcohen, objet statut + demande`, **déposé et vérifié le 08/10/2026**. Contrat dans `docs/carnet/ECHANGES.md`. Test : scratchpad `tinterne/` (faux Mailgun sous `php -S`).
   **Expéditeur imposé en automatique** (Fabrice, 02/10/2026) : `antony@` pour les fiches d'Antony, `fcohen@` pour les siennes ;
   avec la clé serveur, le relais refuse tout autre expéditeur. Clé copiée par Fabrice dans les secrets Manus (`APICIL_CLE_SERVEUR`).
 
