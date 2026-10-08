@@ -927,7 +927,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   une **liste fermée** — `gestion@` (par défaut), `fcohen@`, `antony@` (ajoutés par Fabrice le même jour) — chaîne ou liste ;
   texte simple seul (ni HTML, ni pièce jointe), suivi Mailgun coupé, étiquette `interne-crm`, copie cachée `fcohen@` sauf s'il
   est destinataire ; réponse `{ok, id}` / `{ok:false, erreur}`. Version `2026-10-08 … message interne (gestion, fcohen, antony)`,
-  champ `interne` du GET. Contrat dans `docs/carnet/ECHANGES.md`. Test : scratchpad `tinterne/` (faux Mailgun sous `php -S`).
+  champ `interne` du GET, **déposé et vérifié le 08/10/2026** (sans clé serveur : 403). Contrat dans `docs/carnet/ECHANGES.md`. Test : scratchpad `tinterne/` (faux Mailgun sous `php -S`).
   **Expéditeur imposé en automatique** (Fabrice, 02/10/2026) : `antony@` pour les fiches d'Antony, `fcohen@` pour les siennes ;
   avec la clé serveur, le relais refuse tout autre expéditeur. Clé copiée par Fabrice dans les secrets Manus (`APICIL_CLE_SERVEUR`).
 

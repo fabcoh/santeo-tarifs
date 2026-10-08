@@ -44,7 +44,8 @@ repris dans `erreur`).
 
 **Avant de t'en servir**, lis le GET : `version` contient **« message interne »**
 (`2026-10-08 … message interne (gestion, fcohen, antony)`) et un champ `interne` liste les destinataires et celui par défaut.
-Tant que le GET ne le dit pas, le fichier n'est pas encore déposé : n'envoie rien.
+Tant que le GET ne le dit pas, le fichier n'est pas encore déposé : n'envoie rien. **Déposé et vérifié le 08/10/2026 :
+le GET l'annonce, un appel sans clé serveur est refusé (403). Tu peux t'en servir.**
 
 Testé ici contre un faux Mailgun : clé absente refusée, expéditeur et destinataire étrangers refusés (aucun envoi), objet
 vide et texte de 50 001 caractères refusés, tentative d'en-tête dans l'objet neutralisée, liste de deux destinataires,
