@@ -7,6 +7,49 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 08/10/2026 — du comparateur au CRM — Mode « message interne » de `santeo-mail.php` (réponse à ta demande du 08/10)
+
+Fait, avec un ajout de Fabrice : **trois destinataires possibles** au lieu d'un — `gestion@santeo.net` (par défaut),
+`fcohen@santeo.net`, `antony@santeo.net`. La liste est **fermée côté relais** : tu ne fais que choisir dedans.
+
+**Requête** — `POST https://capisante.fr/santeo-mail.php`, en-tête `X-Cle-Serveur` (la même clé), corps JSON :
+
+```json
+{"type":"interne",
+ "expediteur":"antony@santeo.net",
+ "destinataire":"gestion@santeo.net",
+ "objet":"Client en gestion — Mme DUPONT (contrat signé) — 14 h",
+ "texte":"14:02  Bonjour, …\n14:05  …"}
+```
+
+- `type` : `"interne"` exactement. Sans lui, la requête suit le chemin habituel du comparatif.
+- `expediteur` : `antony@santeo.net` ou `fcohen@santeo.net`, rien d'autre.
+- `destinataire` : **facultatif** (absent → `gestion@santeo.net`) ; une chaîne **ou** une liste, chaque adresse prise dans
+  `gestion@` / `fcohen@` / `antony@santeo.net` (casse indifférente). Une seule adresse hors liste → refus, rien ne part.
+- `objet` : 200 caractères au plus, ramené à une ligne (retours à la ligne et caractères de contrôle remplacés par une espace).
+- `texte` : 50 000 caractères au plus, **texte simple** ; retours à la ligne et tabulations gardés, autres caractères de
+  contrôle retirés ; le HTML n'est pas interprété (le mail n'a pas de partie HTML). UTF-8 obligatoire.
+- Tout autre champ est ignoré : pas d'image, pas de pièce jointe, pas de HTML.
+
+**Ce que fait le relais** : `from` = « Antony <antony@santeo.net> » (nom de la configuration), `Reply-To` = l'expéditeur,
+`to` = le ou les destinataires, **copie cachée `fcohen@santeo.net` sauf s'il est déjà destinataire**, suivi des clics et
+ouvertures **coupé** (`o:tracking=no`), étiquette Mailgun `interne-crm`, et une ligne de pied
+« Message interne envoyé automatiquement par le CRM WhatsApp (relais santeo-mail.php). ». Quota : celui de l'appelant serveur
+(200 envois/heure, partagé avec tes comparatifs automatiques).
+
+**Réponses** : `200 {"ok":true,"id":"<…@santeo.net>","destinataire":["gestion@santeo.net"],"expediteur":"antony@santeo.net"}`
+— sinon `{"ok":false,"erreur":"…"}` : 403 sans clé serveur (une page ne peut pas s'en servir), 400 expéditeur / destinataire
+non autorisé, objet ou texte vide ou trop long, encodage ; 429 quota ; 500 configuration ; 502 Mailgun (code et message
+repris dans `erreur`).
+
+**Avant de t'en servir**, lis le GET : `version` contient **« message interne »**
+(`2026-10-08 … message interne (gestion, fcohen, antony)`) et un champ `interne` liste les destinataires et celui par défaut.
+Tant que le GET ne le dit pas, le fichier n'est pas encore déposé : n'envoie rien.
+
+Testé ici contre un faux Mailgun : clé absente refusée, expéditeur et destinataire étrangers refusés (aucun envoi), objet
+vide et texte de 50 001 caractères refusés, tentative d'en-tête dans l'objet neutralisée, liste de deux destinataires,
+copie cachée retirée quand `fcohen@` est destinataire. Les envois de comparatifs ne changent pas.
+
 ### 07/10/2026 (suite) — du comparateur au CRM — Le courrier dit « Bonjour Prénom NOM »
 
 Dans le prolongement de la légende sans civilité, Fabrice veut la même chose en tête du courrier. `santeo-mail.php` écrit
