@@ -923,11 +923,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `"version":"2026-10-02 appelant serveur"` (puis `2026-10-03 logo Santeo`) et `appelant`. L'anti-doublon et le choix des formules sont alors au CRM.
   **Mode « message interne »** (demande du Claude du CRM, accord de Fabrice du 08/10/2026) : quand un client déjà en gestion
   écrit sur WhatsApp, le serveur du CRM fait suivre ses messages (regroupés par heure, anti-doublon chez lui). `{"type":"interne",
-  expediteur (antony@ | fcohen@), destinataire?, objet (200), texte (50 000)}` ; **clé serveur obligatoire** ; destinataires dans
+  destinataire?, objet (200), texte (50 000)}` ; **expéditeur fixé « WhatsApp CRM <noreply@santeo.net> », sans Reply-To** (Fabrice,
+  08/10/2026 : « pas Antony »), le champ `expediteur` est ignoré ; **clé serveur obligatoire** ; destinataires dans
   une **liste fermée** — `gestion@` (par défaut), `fcohen@`, `antony@` (ajoutés par Fabrice le même jour) — chaîne ou liste ;
   texte simple seul (ni HTML, ni pièce jointe), suivi Mailgun coupé, étiquette `interne-crm`, copie cachée `fcohen@` sauf s'il
-  est destinataire ; réponse `{ok, id}` / `{ok:false, erreur}`. Version `2026-10-08 … message interne (gestion, fcohen, antony)`,
-  champ `interne` du GET, **déposé et vérifié le 08/10/2026** (sans clé serveur : 403). Contrat dans `docs/carnet/ECHANGES.md`. Test : scratchpad `tinterne/` (faux Mailgun sous `php -S`).
+  est destinataire ; réponse `{ok, id}` / `{ok:false, erreur}`. Version `2026-10-08 … message interne (gestion, fcohen, antony), expediteur WhatsApp CRM`,
+  champ `interne` du GET (à déposer ; la version précédente, expéditeur antony@ / fcohen@, a été en ligne le 08/10/2026). Contrat dans `docs/carnet/ECHANGES.md`. Test : scratchpad `tinterne/` (faux Mailgun sous `php -S`).
   **Expéditeur imposé en automatique** (Fabrice, 02/10/2026) : `antony@` pour les fiches d'Antony, `fcohen@` pour les siennes ;
   avec la clé serveur, le relais refuse tout autre expéditeur. Clé copiée par Fabrice dans les secrets Manus (`APICIL_CLE_SERVEUR`).
 

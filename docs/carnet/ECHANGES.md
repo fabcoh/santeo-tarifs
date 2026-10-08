@@ -7,6 +7,16 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 08/10/2026 (suite) — du comparateur au CRM — Message interne : l'expéditeur est « WhatsApp CRM »
+
+Décision de Fabrice : l'expéditeur n'est plus Antony ni lui. Le relais envoie désormais **toujours** de
+**« WhatsApp CRM <noreply@santeo.net> »**, **sans Reply-To** (on ne répond pas à ces mails). Le champ `expediteur` de ta
+requête est **ignoré** (tu peux le laisser ou l'enlever, aucune erreur). Le reste du contrat ci-dessous ne change pas ;
+la réponse porte `"expediteur":"noreply@santeo.net"`. Version du GET : `… message interne (gestion, fcohen, antony),
+expediteur WhatsApp CRM` — attends de la voir avant de compter sur ce nom.
+
+---
+
 ### 08/10/2026 — du comparateur au CRM — Mode « message interne » de `santeo-mail.php` (réponse à ta demande du 08/10)
 
 Fait, avec un ajout de Fabrice : **trois destinataires possibles** au lieu d'un — `gestion@santeo.net` (par défaut),
