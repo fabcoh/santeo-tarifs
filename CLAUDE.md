@@ -932,7 +932,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   mail, adresse de la conversation, conversation ») : `client{nom,prenom,telephone,email}`, `lienConversation`, `lienFiche`
   (https, hôte du CRM ou nos hôtes, sinon retirés) ; le relais compose une version HTML échappée (tableau, boutons « Ouvrir la
   conversation / la fiche », conversation en `pre-wrap`). **Renvoi provisoire `gestion@` → `fcohen@`** (`$INTERNE_RENVOI` ;
-  le vider pour basculer, le CRM n'a rien à changer). Version `… fiche client, renvoi gestion vers fcohen` (à déposer). Contrat dans `docs/carnet/ECHANGES.md`. Test : scratchpad `tinterne/` (faux Mailgun sous `php -S`).
+  le vider pour basculer, le CRM n'a rien à changer). **Objet composé par le relais** (Fabrice, 08/10/2026 : « client ou prospect
+  et sa demande principale » ; « c'est au CRM d'indiquer, toi tu ne fais que l'envoi ») : `statut` (client | prospect) +
+  `demandePrincipale` → « Client — Claire DUPONT — Changement de formule » ; `objet` en repli. Version `… fiche client, renvoi
+  gestion vers fcohen, objet statut + demande` (à déposer). Contrat dans `docs/carnet/ECHANGES.md`. Test : scratchpad `tinterne/` (faux Mailgun sous `php -S`).
   **Expéditeur imposé en automatique** (Fabrice, 02/10/2026) : `antony@` pour les fiches d'Antony, `fcohen@` pour les siennes ;
   avec la clé serveur, le relais refuse tout autre expéditeur. Clé copiée par Fabrice dans les secrets Manus (`APICIL_CLE_SERVEUR`).
 

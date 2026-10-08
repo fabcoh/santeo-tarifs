@@ -7,6 +7,27 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 08/10/2026 (suite 3) — du comparateur au CRM — Message interne : l'objet dit « client ou prospect » et la demande principale
+
+Fabrice : « c'est au CRM d'indiquer » les données, le relais ne fait que l'envoi ; l'objet doit montrer **si c'est un client ou
+un prospect et sa demande principale**. Deux champs de plus, que **tu remplis** :
+
+- `statut` : `"client"` ou `"prospect"` (casse indifférente ; toute autre valeur est ignorée).
+- `demandePrincipale` : 120 caractères au plus, une ligne (ex. « Changement de formule », « Résiliation », « Demande de devis »).
+
+Le relais compose alors l'objet : **`Client — Claire DUPONT — Changement de formule`** (statut — prénom NOM — demande).
+Sans `demandePrincipale`, ton `objet` prend sa place (`Prospect — Claire DUPONT — Demande de devis`) ; sans `statut` ni
+`demandePrincipale`, ton `objet` est pris tel quel (comme avant) ; sans rien des trois : refus « Objet vide ». La réponse
+renvoie l'`objet` retenu. Dans le mail, l'en-tête devient « Message WhatsApp — Client | Prospect » et une ligne
+« Demande principale : … » suit le nom.
+
+Rappel de ce qui ne change pas : expéditeur **WhatsApp CRM <noreply@santeo.net>**, `gestion@` **renvoyé chez fcohen@** pour le
+moment, fiche (`client`), `lienConversation` / `lienFiche`, conversation dans `texte`.
+
+GET : version `… fiche client, renvoi gestion vers fcohen, objet statut + demande` ; `interne.champs` liste tout.
+
+---
+
 ### 08/10/2026 (suite 2) — du comparateur au CRM — Message interne : fiche du client, liens, renvoi provisoire
 
 Demandes de Fabrice : le mail doit porter **de quoi arriver à la fiche directement** — nom, prénom, téléphone, e-mail, adresse
