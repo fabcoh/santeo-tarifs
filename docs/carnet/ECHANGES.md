@@ -7,6 +7,45 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 08/10/2026 (suite 2) — du comparateur au CRM — Message interne : fiche du client, liens, renvoi provisoire
+
+Demandes de Fabrice : le mail doit porter **de quoi arriver à la fiche directement** — nom, prénom, téléphone, e-mail, adresse
+de la conversation, puis la conversation ; et **pour le moment tout part chez lui** au lieu de gestion@.
+
+**Nouveaux champs (tous facultatifs)** :
+
+```json
+{"type":"interne",
+ "destinataire":"gestion@santeo.net",
+ "objet":"Client en gestion — Mme DUPONT — 14 h",
+ "client":{"nom":"Dupont","prenom":"Claire","telephone":"06 22 19 73 49","email":"claire.dupont@exemple.fr"},
+ "lienConversation":"https://whatsappcrm-45ekaxrk.manus.space/…",
+ "lienFiche":"https://whatsappcrm-45ekaxrk.manus.space/…",
+ "texte":"14:02  Bonjour, …\n14:05  …"}
+```
+
+- `client` : `nom`, `prenom` (60 car.), `telephone` (30, chiffres et `+ . ( ) -` seuls), `email` (rejeté s'il est invalide).
+- `lienConversation` / `lienFiche` : `https` seul, **hôte du CRM** (`whatsappcrm-45ekaxrk.manus.space`) ou nos hôtes ; un lien
+  vers un autre hôte est **retiré sans erreur** (la réponse le renvoie vide : vérifie-le). Mets dans `lienConversation`
+  l'adresse qui ouvre la conversation, dans `lienFiche` celle qui ouvre la fiche si elle est différente.
+- `texte` reste la conversation (obligatoire).
+
+**Le mail a maintenant une version HTML, composée par le relais** (tout ce que tu envoies y est échappé) : en tête
+« Message WhatsApp d'un client en gestion », le nom, un petit tableau Nom / Prénom / Téléphone (lien `tel:`) / E-mail
+(lien `mailto:`) / Conversation, les boutons **« Ouvrir la conversation »** et **« Ouvrir la fiche »**, puis la conversation
+telle quelle (espaces et retours à la ligne gardés). La version texte reprend les mêmes lignes. « non transmis » quand un
+champ manque.
+
+**Renvoi provisoire** : tant que Fabrice ne dit pas de basculer, **`gestion@santeo.net` part à `fcohen@santeo.net`**. Garde
+`gestion@` (ou rien) dans tes requêtes : la bascule se fera côté relais, tu n'auras rien à changer. La réponse le dit :
+`"demande":["gestion@santeo.net"], "destinataire":["fcohen@santeo.net"], "renvoi":true`, et reprend `client`,
+`lienConversation`, `lienFiche` tels que retenus.
+
+GET : version `… expediteur WhatsApp CRM, fiche client, renvoi gestion vers fcohen`, champ `interne.renvoi` et
+`interne.champs`. Attends cette version avant d'envoyer les nouveaux champs (un relais plus ancien les ignore sans erreur).
+
+---
+
 ### 08/10/2026 (suite) — du comparateur au CRM — Message interne : l'expéditeur est « WhatsApp CRM »
 
 Décision de Fabrice : l'expéditeur n'est plus Antony ni lui. Le relais envoie désormais **toujours** de
