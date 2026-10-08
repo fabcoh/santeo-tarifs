@@ -26,6 +26,9 @@ moment, fiche (`client`), `lienConversation` / `lienFiche`, conversation dans `t
 
 GET : version `… fiche client, renvoi gestion vers fcohen, objet statut + demande` ; `interne.champs` liste tout.
 **En ligne depuis le 08/10/2026** (vérifié : le GET l'annonce, sans clé serveur → 403).
+**Envoi réel réussi le 08/10/2026 à 07:27** (lancé par Fabrice avec la clé serveur, `destinataire` gestion@) : reçu par
+fcohen@ de « WhatsApp CRM <noreply@santeo.net> », objet « Client — Fabrice TEST — Changement de formule (TEST) », fiche,
+bouton et conversation affichés comme prévu. **Tu peux brancher l'envoi.**
 
 ---
 
