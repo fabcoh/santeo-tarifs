@@ -164,6 +164,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 
 ## Règles métier à ne pas casser
 
+- **Conjoint non éligible = gamme non tarifée** (Fabrice, 09/10/2026, capture : SOLENCIA 62–99 ans tarifée « 99,37 € * » pour un
+  assuré de 78 ans et un conjoint de 44 ans — « sortir le tarif peut nous tromper ») : `cnjHors()` dans `src/moteur.js`. Hors des âges
+  de la gamme (MCCINOVA 18–90, FLEXIA 18–84, SOLENCIA 62–99, Révoluo 18–80, Mutuelle Verte dès 18, Cap Évolution / CAP NR / LPS /
+  TALIS dès 16), aucune ligne de la gamme et une alerte « conjoint non éligible à n ans — gamme non tarifée ». Avant, MCCI sortait un
+  total sans le conjoint (« * ») et Révoluo l'omettait sans rien dire au-delà de 80 ans. APICIL et APRIL : l'API en décide.
 - **MCCINOVA** : mineurs au tarif 18 ans ; cadre « Conditions MCCINOVA » (âge atteint dans l'année, enfants
   jusqu'à 28 ans) affiché seulement si la gamme est dans le tableau.
 - **RÉVOLUO / RF50 / RF100** : grille × zone (75 = zone 1) × régime (TNS ×0,90 ; Alsace-Moselle ×0,65 sans zone),
