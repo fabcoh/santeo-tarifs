@@ -463,7 +463,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-09T05:47:52Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-09T05:47:52Z</div>
+  <div id="buildstamp" data-build="2026-10-09T14:26:32Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-09T14:26:32Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -541,6 +541,13 @@ function calculer(e){
   if(age==null) return {rows,warns};
   const isRL=(reg==="RL"||reg==="TNSRL"), isTNS=(reg==="TNS"||reg==="TNSRL");
   const chMadelin=isTNS?[["info","Madelin à confirmer"]]:[];
+  // Conjoint hors des âges de la gamme : la gamme n'est pas tarifée du tout. Un total sans le conjoint
+  // passerait pour le prix du couple (Fabrice, 09/10/2026, exemple SOLENCIA).
+  function cnjHors(nom,minA,maxA){
+    if(!hasCnj||cnjAge==null||(cnjAge>=minA&&cnjAge<=maxA)) return false;
+    warns.push(nom+" : conjoint non éligible à "+cnjAge+" ans ("+(maxA>=100?"à partir de "+minA+" ans":"grille "+minA+"–"+maxA+" ans")+") — gamme non tarifée.");
+    return true;
+  }
 
   function push(key,fi,suffix,chips,pA,pC,pK,kidNote,incomplete){
     const total=Math.round((pA+(pC||0)+(pK||0))*100)/100,f=F[key];
@@ -552,10 +559,11 @@ function calculer(e){
   function mcci(key,suffix,grid,chips,minA,maxA,childPrice,childLabel){
     if(isRL||!on(key))return;
     if(age<minA||age>maxA){warns.push(F[key].label+" : non éligible à "+age+" ans (grille "+minA+"–"+maxA+" ans).");return}
+    if(cnjHors(F[key].label,minA,maxA)) return;
     for(let i=0;i<F[key].names.length;i++){
       const pA=grid[age][i];
       let pC=null,cW=false;
-      if(hasCnj&&cnjAge!=null){ if(cnjAge>=minA&&cnjAge<=maxA)pC=grid[cnjAge][i]; else cW=true; }
+      if(hasCnj&&cnjAge!=null) pC=grid[cnjAge][i];
       let pK=null,kidNote="";
       if(kids>0){ if(childPrice){pK=Math.round(childPrice[i]*kids*100)/100;kidNote=kids+" × "+eur(childPrice[i])+(childLabel?" — "+childLabel:"");} else kidNote="pas de tarif enfant publié"; }
       push(key,i,suffix,chips.slice(),pA,hasCnj?(cW?undefined:pC):null,pK,kidNote,(hasCnj&&cW)||(kids>0&&pK==null));
@@ -567,7 +575,7 @@ function calculer(e){
     mcci("SOLENCIA","",D.SOLENCIA[zone],[["resp","Responsable"]],62,99,D.SOLENCIA[zone]["E"]);
   } else if(!isRL) warns.push("Code postal manquant ou hors zonage : FLEXIA et SOLENCIA non calculées.");
   // CAP EVOLUTION — bloc par régime
-  if(on("CAPEVO")&&age>=16){
+  if(on("CAPEVO")&&age>=16&&!cnjHors("CAP EVOLUTION",16,100)){
     const g=D.CAPEVO[reg];
     const a=String(Math.min(Math.max(age,16),100));
     for(let i=0;i<4;i++){
@@ -585,7 +593,7 @@ function calculer(e){
     const g=D.CAPNR;
     const c=isRL?0:(dept&&D.AVZ[dept]?D.AVZ[dept]:null);
     if(c===null){ if(!isRL) warns.push("CAP NR : code postal requis pour le zonage AVENIR."); }
-    else if(age>=16&&age<=100){
+    else if(age>=16&&age<=100&&!cnjHors("CAP NR",16,100)){
       const a=String(age);
       for(let f=0;f<7;f++){
         const pA=g[a][f*8+c*2];
@@ -613,6 +621,7 @@ function calculer(e){
     if(isDom) warns.push("REVOLUO : pas de souscription DOM-TOM.");
     else if(coef===null) warns.push("REVOLUO : département requis pour le zonage.");
     else if(age>80) warns.push("REVOLUO : non éligible à "+age+" ans (grille 18–80 ans).");
+    else if(cnjHors("REVOLUO",18,80)) {}
     else for(const key of ["REV","RF50","RF100"]){
       if(!on(key)) continue;
       const g0=D.RVL[key];
@@ -649,6 +658,7 @@ function calculer(e){
     if(dept&&dept.length===3) warns.push("M. VERTE : grille DOM non fournie (gamme courtage).");
     else if(mz===null) warns.push("M. VERTE : zone inconnue pour ce département — non calculée.");
     else if(age<18) warns.push("M. VERTE : adhésion à partir de 18 ans.");
+    else if(cnjHors("M. VERTE",18,200)) {}
     else {
       const gr=g[mz];
       if(kids>2) warns.push("M. VERTE : 2 enfants payants appliqués — la gratuité du 3ᵉ enfant et suivants est à confirmer auprès de la mutuelle.");
@@ -673,7 +683,7 @@ function calculer(e){
     const g=D.LPSH;
     const c=isRL?3:(dept&&D.AVZ[dept]?D.AVZ[dept]-1:null);
     if(c===null){ warns.push("LPS HOSPI : code postal requis pour le zonage AVENIR."); }
-    else if(age>=16&&age<=100){
+    else if(age>=16&&age<=100&&!cnjHors("LPS HOSPI",16,100)){
       const a=String(age);
       let pC=null;
       if(hasCnj&&cnjAge!=null&&cnjAge>=16)pC=g[String(Math.min(Math.max(cnjAge,16),100))][c*2+1];
@@ -684,7 +694,7 @@ function calculer(e){
   // TALIS — surcomplémentaire : elle vient en plus d'une complémentaire, pas à la place.
   // La mêler au comparatif fausserait la lecture, son tarif ne couvrant qu'un complément :
   // elle n'apparaît donc que si le conseiller la demande.
-  if(sel.TALIS&&age>=16){
+  if(sel.TALIS&&age>=16&&!cnjHors("TALIS",16,100)){
     const g=D.TALIS;
     const a=String(Math.min(Math.max(age,16),100));
     for(let f=0;f<2;f++){
