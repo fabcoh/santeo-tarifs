@@ -2485,6 +2485,9 @@ function aprilDemande(pa,cle){
 // remise), cocher un produit n'interroge que lui, et en décocher un ne demande rien. Une panne d'APRIL (5xx,
 // délai dépassé) n'est jamais gardée : le produit sera redemandé au prochain calcul.
 let APRIL_CACHE={base:"",res:{},famille:false};
+// Environnement du relais APRIL (« ppr » ou « production », annoncé dans chaque réponse depuis le 09/10/2026) : en production,
+// plus de cercle rouge ni de mention « préproduction » / « essai ». Un relais plus ancien ne dit rien : préproduction.
+let APRIL_PROD=false;
 function aprilBase(pa){ const o=Object.assign({},pa); delete o.produits; return JSON.stringify(o); }
 function aprilGardable(p){ return p&&(p.etat==="ok"||(+p.code>0&&+p.code<500)); }
 function aprilEtat(cle,enCours,extra,message){
@@ -2505,6 +2508,7 @@ async function aprilCharge(profil,cle,base){
     else if(APRIL_CACHE.base===base){
       // Relais du 06/10/2026 : liens de parenté transmis (« insureds »), le tarif famille n'est plus « à confirmer ».
       APRIL_CACHE.famille=!!d.famille&&!d.liensFamille;
+      APRIL_PROD=d.environnement==="production";
       for(const p of d.produits){ if(aprilGardable(p)) APRIL_CACHE.res[p.produit]=p; else extra.push(p); }
     }
   }catch(e){ message="relais APRIL injoignable"; }
@@ -3589,7 +3593,7 @@ function render(rows,warns){
       const chips=sur.concat(r.chips).map(c=>'<span class="chip '+c[0]+'">'+c[1]+"</span>").join("");
       const isR=RECO===rk;
       let h='<tr class="offer'+(isOpen?" open":"")+(isR?" reco":"")+'" data-rk="'+rk+'">'+
-      '<td><span class="caret">▶</span>'+'<input type="checkbox" class="sendchk'+(r.key==="APRIL"?' sendapr':'')+'"'+(SENDSEL.has(rk)?" checked":"")+' data-rk="'+rk+'" title="'+(r.key==="APRIL"?"APRIL : tarif de préproduction, à vérifier dans April-On avant de l\u2019envoyer":"Cocher pour envoyer par mail / WhatsApp")+'">'+'</td>'+
+      '<td><span class="caret">▶</span>'+'<input type="checkbox" class="sendchk'+(r.key==="APRIL"&&!APRIL_PROD?' sendapr':'')+'"'+(SENDSEL.has(rk)?" checked":"")+' data-rk="'+rk+'" title="'+(r.key==="APRIL"&&!APRIL_PROD?"APRIL : tarif de préproduction, à vérifier dans April-On avant de l\u2019envoyer":"Cocher pour envoyer par mail / WhatsApp")+'">'+'</td>'+
       '<td><div class="gamme"><span class="dot '+r.ins+'"></span><span class="gname '+(r.resp?"rp":"nrp")+'">'+r.gamme+'</span></div>'
       +'<div class="fname">'+r.formule+'<button type="button" class="rowvoir" data-voir="'+rk+'" title="Voir le tableau de garantie officiel" aria-label="Voir le document">👁</button>'+('<button class="rowstar'+(isR?" on":"")+'" data-star="'+rk+'" title="Conseiller cette formule">'+(isR?"⭐":"☆")+'</button>')+'</div>'
       +'<div class="chips">'+(isR?'<span class="chip reco">⭐ Je vous conseille</span>':"")+chips+"</div></td>"+
@@ -3614,7 +3618,7 @@ function render(rows,warns){
         // Adresse de production (souscription en ligne, page de dépôt) : MCCI n'a que celle-ci, sans bulletin papier (Fabrice, 05/10/2026).
         (__ADH__&&r.key!=="APRIL"&&lienAdh(r)?'<a class="tgbtn" href="'+lienAdh(r).replace(/"/g,"&quot;")+'" target="_blank" rel="noopener" title="Créer le dossier sur le site de la compagnie (adresse de production)">'+(["MCCINOVA","FLEXIA","SOLENCIA"].includes(r.key)?"📝 Adhésion (site MCCI)":"🌐 Souscrire en ligne")+'</a>':'')+
         (r.key==="APICIL"?'<button class="tgbtn" data-devis="'+i+'" title="Enregistrer ce devis chez APICIL">🧾 Devis</button>':'')+
-        (r.key==="APRIL"?'<button class="tgbtn" data-aprilon="'+i+'" title="Enregistre ce projet chez APRIL et l\u2019ouvre tout rempli dans April-On (rien n\u2019est signé, aucun mail au client). ESSAI : APRIL n\u2019a ouvert que son environnement de test, le projet n\u2019apparaîtra pas dans votre April-On habituel.">↗ April-On (essai)</button>':'')+
+        (r.key==="APRIL"?'<button class="tgbtn" data-aprilon="'+i+'" title="Enregistre ce projet chez APRIL et l\u2019ouvre tout rempli dans April-On (rien n\u2019est signé, aucun mail au client).'+(APRIL_PROD?'':' ESSAI : APRIL n\u2019a ouvert que son environnement de test, le projet n\u2019apparaîtra pas dans votre April-On habituel.')+'">↗ April-On'+(APRIL_PROD?'':' (essai)')+'</button>':'')+
         (r.key==="APRIL"?'<span class="apn">'+(APRIL_DOCS[r.april]?"Garanties vérifiées sur le document APRIL ; « n.c. » = non vérifié.":"Pas de document APRIL public : garanties non affichées.")+'</span>':'<button class="tgbtn" data-tg="'+r.key+'">📄 Tableau de garantie</button>')+'</div>'+
         "</div></td></tr>";
       }

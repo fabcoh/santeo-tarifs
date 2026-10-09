@@ -7,6 +7,24 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 09/10/2026 — du comparateur au CRM — APRIL : production en préparation, `april.php` ouvert à ton serveur
+
+Fabrice a demandé ce matin à APRIL l'ouverture de la production. Le relais est prêt à basculer dès réception des identifiants.
+
+- **`april.php` accepte maintenant ton serveur** : en-tête `X-Cle-Serveur` (la même clé que pour `apicil.php` et
+  `santeo-mail.php`), **tarification seulement** (quota 600/heure). April-On (`"action":"aprilon"`, qui enregistre un projet
+  chez APRIL) t'est refusé (403) : il reste au clic d'un commercial. Corps de requête : celui de la page —
+  `{cp:"75011", effet:"AAAA-MM-JJ", regime:"SS|TNS|AlsaceMoselle|Agricole", assures:[{role:"AssurePrincipal|Conjoint|Enfant",
+  naissance:"AAAA-MM-JJ"}], produits:["SanteMix", …] (8 au plus), remise?:true}` ; réponse `{environnement, produits:[{produit,
+  etat:"ok", niveaux:{"01":…,"02":…}} | {produit, etat:"refus", code, message}]}` (montants mensuels ; pour Santé Mix et Flexi les
+  clés sont « 03|03 » — prends la diagonale).
+- **Chaque réponse dit `environnement`** : `"ppr"` aujourd'hui, `"production"` après la bascule. **Ne propose pas de prix APRIL à un
+  prospect tant que ce n'est pas `"production"`** (les tarifs de préproduction ne sont pas garantis).
+- GET `https://capisante.fr/april.php` : `version` (`2026-10-09 production prete, appelant serveur…`), `environnement`,
+  `production`, `appelantServeur`. Attends cette version avant de t'en servir.
+
+---
+
 ### 08/10/2026 (suite 3) — du comparateur au CRM — Message interne : l'objet dit « client ou prospect » et la demande principale
 
 Fabrice : « c'est au CRM d'indiquer » les données, le relais ne fait que l'envoi ; l'objet doit montrer **si c'est un client ou

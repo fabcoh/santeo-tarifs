@@ -1190,6 +1190,17 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   fond rendu transparent ; `LOGOS.april` dans `tableau.js`, 05/10/2026) ; **limites** : `interet.php` ne connaît pas APRIL (`garanties.json` ne le porte
   pas) — la page « Cette offre m'intéresse » n'aura ni synthèse de garanties ni recalcul. Mode automatique du CRM : APRIL toujours
   écarté. À refermer ou à finir au passage en production. Test : scratchpad `t_aprilenvoi.js`.
+  **Production préparée** (Fabrice, 09/10/2026 : demande de mise en production envoyée à Damien à 8 h 50, « prépare tout ») :
+  `april.php` `2026-10-09 production prete, appelant serveur…` lit **`april-config-production.php`** (à côté de `april-config.php`,
+  qui garde la préproduction) s'il porte `'actif' => true` et un id / secret renseignés (gabarit scratchpad `livrer/`, emplacements
+  `COLLER_ICI_ID` / `COLLER_ICI_SECRET`, adresses `am-gateway.april.fr/apistore/oauth/token` et `api-gateway.april.fr/healthprotection/v1`
+  **à confirmer par APRIL**). Bascule = déposer ce fichier ; retour = `'actif' => false`. Cache du jeton **par environnement**
+  (`april-jeton-ppr|prod-<empreinte>.json`) : un jeton de préproduction ne part jamais vers la production. GET : `environnement`,
+  `production` (active / fichier présent, inactif ou incomplet / pas de fichier), `hoteApi` ; **`GET ?jeton=1`** essaie d'obtenir
+  un jeton (« obtenu » / « REFUSE », 10/h/IP) sans rien montrer d'un secret. Chaque réponse POST porte `environnement` : la page
+  (`APRIL_PROD`) retire alors le cercle rouge, l'infobulle « préproduction » et le « (essai) » d'April-On — sans republier.
+  **Appelant serveur** (clé `apicil-cle.txt`, `X-Cle-Serveur`) : tarification seulement, 600/h ; April-On lui est refusé (403).
+  Testé contre un faux APRIL (scratchpad `tprod/`) et dans la page (`t_aprilprod.js`).
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : restent à obtenir le règlement mutualiste et la notice d'assistance RMA propres à LPS (le descriptif est reçu).
