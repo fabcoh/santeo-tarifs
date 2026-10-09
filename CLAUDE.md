@@ -1202,6 +1202,15 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Appelant serveur** (clé `apicil-cle.txt`, `X-Cle-Serveur`) : tarification seulement, 600/h ; April-On lui est refusé (403).
   Testé contre un faux APRIL (scratchpad `tprod/`) et dans la page (`t_aprilprod.js`). **Déposé et vérifié le 09/10/2026** :
   GET `ppr` / « pas de fichier », tarif réel Zen 65,33 € et Mix 60,49 € (niveau 1, 46 ans, Paris).
+  **APRIL EN PRODUCTION depuis le 09/10/2026** (mail de Damien du 09/10, 9 h 18 : accès ouverts, URL de l'API confirmée, aucune IP
+  à déclarer, codes produits / niveaux / commissions / référentiels identiques à la préproduction). `april-config-production.php`
+  déposé par Fabrice (commande `read -rs` + `sed` sur son Mac, secret jamais dans un fichier du dépôt) ; adresse du jeton
+  `am-gateway.april.fr/apistore/oauth/token` **vérifiée** (jeton obtenu). Contrôle réel : 46 ans, Paris, Zen 65,33 / Mix 60,49 / Vita
+  74,43 € au niveau 1 (mêmes prix qu'en préproduction), famille Lyon Zen 154,11 €, Simply refusé (50 ans) comme prévu.
+  **Le secret de production a été collé dans une conversation le 09/10/2026** ; Fabrice : « ce n'est pas grave, tu ne dois pas le
+  répéter » — ne jamais le recopier. Premier essai raté : le gabarit vierge avait été déposé (secret = « COLLER_ICI_SECRET ») ;
+  diagnostic sans secret : relire le fichier par FTP et remplacer le secret par sa longueur (`perl … length($2)`).
+  Restent ouverts : `interet.php` sans APRIL, mode automatique du CRM qui écarte APRIL, IPID Flexi Complète, kits Simply / Pro Privilège.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : restent à obtenir le règlement mutualiste et la notice d'assistance RMA propres à LPS (le descriptif est reçu).

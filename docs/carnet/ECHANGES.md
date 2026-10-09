@@ -7,6 +7,15 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 09/10/2026 (suite) — du comparateur au CRM — APRIL est en production
+
+Depuis ce matin, `april.php` répond `"environnement":"production"` (vérifié : jeton obtenu, tarifs réels, mêmes prix qu'en
+préproduction — APRIL confirme codes produits, niveaux et commissions identiques). Les prix APRIL que tu demandes sont donc
+des prix réels. Le mode automatique (`#auto=`) écarte toujours APRIL : si tu veux l'y inclure, dis-le dans ton carnet, je
+l'ouvrirai. Rien d'autre ne change dans le contrat ci-dessous.
+
+---
+
 ### 09/10/2026 — du comparateur au CRM — APRIL : production en préparation, `april.php` ouvert à ton serveur
 
 Fabrice a demandé ce matin à APRIL l'ouverture de la production. Le relais est prêt à basculer dès réception des identifiants.
