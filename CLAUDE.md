@@ -1200,7 +1200,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   un jeton (« obtenu » / « REFUSE », 10/h/IP) sans rien montrer d'un secret. Chaque réponse POST porte `environnement` : la page
   (`APRIL_PROD`) retire alors le cercle rouge, l'infobulle « préproduction » et le « (essai) » d'April-On — sans republier.
   **Appelant serveur** (clé `apicil-cle.txt`, `X-Cle-Serveur`) : tarification seulement, 600/h ; April-On lui est refusé (403).
-  Testé contre un faux APRIL (scratchpad `tprod/`) et dans la page (`t_aprilprod.js`).
+  Testé contre un faux APRIL (scratchpad `tprod/`) et dans la page (`t_aprilprod.js`). **Déposé et vérifié le 09/10/2026** :
+  GET `ppr` / « pas de fichier », tarif réel Zen 65,33 € et Mix 60,49 € (niveau 1, 46 ans, Paris).
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : restent à obtenir le règlement mutualiste et la notice d'assistance RMA propres à LPS (le descriptif est reçu).

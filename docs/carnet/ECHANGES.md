@@ -21,7 +21,7 @@ Fabrice a demandé ce matin à APRIL l'ouverture de la production. Le relais est
 - **Chaque réponse dit `environnement`** : `"ppr"` aujourd'hui, `"production"` après la bascule. **Ne propose pas de prix APRIL à un
   prospect tant que ce n'est pas `"production"`** (les tarifs de préproduction ne sont pas garantis).
 - GET `https://capisante.fr/april.php` : `version` (`2026-10-09 production prete, appelant serveur…`), `environnement`,
-  `production`, `appelantServeur`. Attends cette version avant de t'en servir.
+  `production`, `appelantServeur`. Attends cette version avant de t'en servir. **En ligne depuis le 09/10/2026** (vérifié).
 
 ---
 
