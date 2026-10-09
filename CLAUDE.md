@@ -1211,6 +1211,19 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   répéter » — ne jamais le recopier. Premier essai raté : le gabarit vierge avait été déposé (secret = « COLLER_ICI_SECRET ») ;
   diagnostic sans secret : relire le fichier par FTP et remplacer le secret par sa longueur (`perl … length($2)`).
   Restent ouverts : `interet.php` sans APRIL, mode automatique du CRM qui écarte APRIL, IPID Flexi Complète, kits Simply / Pro Privilège.
+  **↗ April-On marche en production** (09/10/2026, projet de Laura Jaouad ouvert dans April-On : Santé Mix Hospit 01 · FDS 01, 59,14 €,
+  30/10, bouton « Adhérer »). Trois corrections du relais pour y arriver : niveau **« 01 » par garantie** même pour Mix / Flexi
+  (« 01|01 » refusé à la création de projet) ; **`professionalCategory` de l'assuré principal obligatoire** (APRIL l'appelle
+  « 'Professional Status' is mandatory » ; `GET /products/{code}/professionalStatuses` rend `[]`) et liée au régime — SS /
+  Alsace-Moselle : Employe ou Retraite (≥ 62 ans à l'effet), TNS : Artisan, Agricole : ExploitantAgricole, `identite.categorie`
+  si la page l'envoie ; **lien reconstruit** `https://www.april-on.fr/market-place/project/<id>` quand la réponse n'en porte pas
+  (`ppr-www.` en préproduction). Relais `2026-10-09 … April-On niveau par garantie, categorie pro, lien reconstruit…`. Le conjoint
+  et les enfants n'ont pas besoin de catégorie. Mises au point faites avec `april-console.php` (préproduction seulement), élargie
+  le 09/10 à `POST /projects` et aux adhésions d'essai — **e-mail @santeo.net obligatoire** pour toute adhésion d'essai ; scripts
+  scratchpad `adh/essai.py`. Notice API (88 p.) : uploads `efe7e26c-Informations_ge_ne_rales___Portail_de_veloppeur.pdf`, texte
+  dans scratchpad `aprildoc/doc.txt` ; adhésion en ligne = `POST /projects?marketingParameters.requestType=SubscriptionOnline`
+  avec un projet complet (état civil, naissance, nationalité, adresse, `bankReferences` IBAN, `termsOfPayment`) : APRIL envoie au
+  client le lien de signature. Non construite (Fabrice avait choisi cette voie avant de voir April-On fonctionner).
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : restent à obtenir le règlement mutualiste et la notice d'assistance RMA propres à LPS (le descriptif est reçu).
