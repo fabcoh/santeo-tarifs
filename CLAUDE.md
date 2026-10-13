@@ -1229,6 +1229,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   dans scratchpad `aprildoc/doc.txt` ; adhésion en ligne = `POST /projects?marketingParameters.requestType=SubscriptionOnline`
   avec un projet complet (état civil, naissance, nationalité, adresse, `bankReferences` IBAN, `termsOfPayment`) : APRIL envoie au
   client le lien de signature. Non construite (Fabrice avait choisi cette voie avant de voir April-On fonctionner).
+  **Adhésion en ligne relancée (option 2, Fabrice 09/10/2026 : « si c'est possible c'est le top »)** — essais en préproduction
+  (n° 1408, 1409, 1451–1455, au nom de TEST, fcohen@santeo.net) : APRIL accepte un projet complet et rend `{"content":"<n°>"}`.
+  Exigés en plus de la tarification : `socialSecurityNumber` (NIR 15 chiffres), `email` **sur la personne**, `nationality` (code
+  du référentiel), `bankReferences` (IBAN) et `termsOfPayment`. **Référentiels lisibles** (13/10/2026, après le mail de Damien ;
+  404 le 09/10) : `GET /nationalities` (196, `{code,title}`, **France = « 64 »**, 1 = Afghane, pas de 34), `GET /countries`
+  (`countryCode` ISO 2, « FR »), `GET /countries/FR/departments` (`departmentCode` « 01 »… ), `GET /countries/FR/cities?cityCode=<CP>`
+  (→ `[{cityCode:"75017", cityTitle:"PARIS"}]`) ; `/banks` en 404. Copies : scratchpad `april/ref/`. Reste : fenêtre dans la page et
+  action du relais (`april.php`), à construire.
 - Autres compagnies : aucune autre n'a encore ouvert d'accès API. Prestataire du tarificateur capisante.com : demande à envoyer.
 - Manus : e-mail de recherche, retour `adresse/cp/ville` depuis Santéo, PIN pour Caroline (refus à diagnostiquer).
 - LPS Hospi : restent à obtenir le règlement mutualiste et la notice d'assistance RMA propres à LPS (le descriptif est reçu).
