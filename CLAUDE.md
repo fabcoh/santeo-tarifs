@@ -828,6 +828,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   pas ; « formule non proposée » si le profil la rend inéligible. API SANTÉ passe par `apicil.php`, qui
   accepte désormais `https://capisante.fr` dans `$ORIGINES_EN_PLUS`. Le prix recalculé part dans le mail
   sous **TARIF RECALCULÉ PAR LA PAGE (à vérifier)** — calculé dans le navigateur, il n'est pas une preuve.
+  **APRIL recalculé aussi** (16/10/2026, Louca CHARDIN : conjoint ajouté sur Santé Mix Niv. 2, le mail disait « formule non
+  proposée ») : le moteur n'a pas les tarifs APRIL, la page interrogeait donc une grille vide. `tarifApril()` appelle désormais
+  `april.php` (qui accepte déjà `https://capisante.fr`) avec tous les assurés et la date d'adhésion choisie ; produit = rang de
+  `fi` dans `APRIL_ORDRE_RANG` (copié dans `scriptTarif`), niveau « 0n|0n » pour Mix / Flexi. Refus d'APRIL → « formule non
+  proposée » ; pas de réponse (5xx, réseau) → « votre conseiller recalculera », rien n'est affirmé. Version `2026-10-16 recalcul
+  APRIL` au GET, **déposée et vérifiée le 16/10/2026** (appel réel : Louca seul 40,98 €, + 2 enfants 112,02 €, + conjoint 135,46 €).
   Le jeton porte `nk`, le **nombre de mineurs du haut de page** : il a fait le tarif même quand leurs dates
   ne sont pas connues ; le recalcul les ajoute aux enfants datés. Un conjoint connu par sa seule **année**
   s'affiche au 1ᵉʳ janvier dans le champ et n'est pas compté comme correction s'il n'est pas touché.
