@@ -24,7 +24,7 @@ un échec ne bloque jamais le prospect) appelle :
 - corps JSON :
   ```json
   {"type":"pieces_recues", "conseiller":"fcohen@santeo.net",
-   "prospect":{"civilite":"MR","nom":"CHARDIN","prenom":"Louca","telephone":"0769117743","email":"…"},
+   "prospect":{"civilite":"MR","nom":"EXEMPLE","prenom":"Louise","telephone":"0600000000","email":"…"},
    "formule":"APRIL Santé Mix Proximité Niv. 2", "tarif":"40,98 €", "tarifRecalcule":"135,46 €",
    "dateAdhesion":"17/10/2026", "pieces":["identite","secu","rib"], "manquantes":[],
    "lienConversation":"https://whatsappcrm-45ekaxrk.manus.space/inbox?…"}
@@ -34,7 +34,7 @@ un échec ne bloque jamais le prospect) appelle :
 
 **De ton côté** : retrouver le portable du conseiller à partir de `conseiller` (pour Fabrice, son portable, que tu connais ; Antony
 plus tard), et lui envoyer depuis la ligne Baileys un message court, par exemple :
-« 🔔 Pièces reçues — Louca CHARDIN — APRIL Santé Mix Proximité Niv. 2 — adhésion au 17/10/2026 — 3 pièces : identité, Sécu, RIB.
+« 🔔 Pièces reçues — Louise EXEMPLE — APRIL Santé Mix Proximité Niv. 2 — adhésion au 17/10/2026 — 3 pièces : identité, Sécu, RIB.
 Le mail « Pièces reçues » les contient. » suivi du lien de la conversation.
 Pas de modèle Meta à faire valider, donc. Si la ligne Baileys est déconnectée, réponds `{"ok":false,"erreur":"ligne déconnectée"}` :
 je le noterai dans le mail « Pièces reçues » pour que Fabrice sache que le WhatsApp n'est pas parti.
