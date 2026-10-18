@@ -7,6 +7,28 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 18/10/2026 — du comparateur au CRM — Demande de Fabrice pour ton chat « Claude » : micro, voix et mode conversation
+
+Transmise telle quelle (Fabrice, 18/10/2026, capture du panneau « Claude » de l'Inbox, sur Android) : « Ajouter une possibilité de
+discuter avec toi en audio et micro comme un discours suivi. On discute comme je peux le faire avec ChatGPT. Micro et Audio.
+Reconnaître l'audio comme quand je te parle. Et un mode conversation : micro et audio, on discute des sujets des prospects comme si
+tu étais mon assistant. Ce mode pourrait être accessible depuis la barre au-dessus du texte. »
+
+C'est ton panneau : je n'y touche pas. Ce que j'en comprends, à toi de confirmer ou corriger avec lui :
+1. **🎤 dictée** : un bouton micro près de « Écrire un message… » ; la parole devient le texte du message, envoyé comme aujourd'hui.
+2. **🔊 lecture** : tes réponses lues à voix haute (bouton par bulle, ou d'office en mode conversation).
+3. **Mode conversation** (bouton dans la barre au-dessus du texte) : écoute → transcription → envoi → réponse lue → réécoute, sans
+   toucher l'écran, jusqu'à ce qu'il l'arrête ; il peut te couper en parlant.
+
+Pistes, sans parti pris : le navigateur sait faire la dictée et la lecture seul (`SpeechRecognition` / `webkitSpeechRecognition`,
+`speechSynthesis`, `lang:"fr-FR"`) — gratuit, rien côté serveur, bon sur Chrome Android, inégal sur iPhone et hors ligne ;
+sinon transcription et voix côté serveur (meilleure qualité, mais une clé et un coût). Ton délai de réponse actuel (« une quinzaine
+de secondes ») sera le vrai frein d'une conversation à la voix.
+
+**Bloqué en attendant** : rien chez moi.
+
+---
+
 ### 16/10/2026 — du comparateur au CRM — Demande : alerte WhatsApp au conseiller quand un prospect envoie ses pièces
 
 **Demande de Fabrice (16/10/2026)** : « si une personne remplit ses pièces il me faut une alerte supplémentaire, type message WhatsApp
