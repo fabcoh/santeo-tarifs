@@ -725,6 +725,7 @@ Les écarts sont relevés sans être tranchés.
 18. **Âges d'adhésion** : la brochure vise « les plus de 55 ans » (SO p.1) ; le comparateur affiche « Souscription 62–99 ans » et tarife de 62 à 99 ans. Aucun âge minimum ni maximum dans la brochure. **Corrigé dans le comparateur le 03/10/2026.**
 19. **Médecine douce « par séance »** : le tableau donne un montant sans unité, « dans la limite de 5 séances » (SO p.4) ; l'exemple de l'ostéopathe le traite comme un montant par séance (SO p.6). Le comparateur affiche « 5×40 € » à « 5×60 € », cohérent avec l'exemple.
 20. **Optique dans le comparateur** : `opt` affiche 90 € / 120 € / 160 € / 175 €, soit **un verre complexe** (SO p.2), et non le forfait 2 verres simples + monture (150 / 200 / 300 / 350 €). **Corrigé dans le comparateur le 03/10/2026.**
+20 bis. **Orthodontie non remboursée dans le comparateur** : `orthN` affichait 150 € / 200 € / 300 € (Équilibre à Absolue), soit le forfait « parodontologie et prothèses non prises en charge par la Sécurité sociale » ; le tableau n'a **aucune ligne** d'orthodontie non remboursée (SO p.4, relu sur l'image). **Corrigé dans le comparateur le 19/10/2026** (« — » à tous les niveaux).
 
 ### Communs
 

@@ -324,10 +324,34 @@ const CU_IMP={
   RF100:["an",cuImpAn("les prothèses non remboursées et la parodontologie")],
   APRIL:["an",v=>"forfait de "+v+" par an, souvent commun à d’autres soins dentaires non remboursés"]
 };
-function cuImp(G,c,v){
-  const d=CU_IMP[c.key]; if(!d||!cuLire(v))return null;
-  return {type:d[0],txt:'<b>'+nomComplet(G,c.key,c.fi).replace(/^TALIS Talis/,"TALIS")+'</b> : '+d[1](String(v).replace(/\/impl$/,""),c.fi)};
+// Orthodontie non remboursée, même logique : « an » = forfait annuel, « sem » = par semestre, « pct » = % de la base.
+// SOLENCIA n'en a pas (tableau de garantie p. 4 : seulement « parodontologie et prothèses non prises en charge »).
+const CU_ORTHN={
+  CAPEVO:["an",v=>"forfait de "+v+" par an et par personne, dans le plafond dentaire annuel"],
+  CAPNR:["sem",v=>v+" par semestre, dans le plafond dentaire annuel"],
+  TALIS:["sem",(v,fi)=>v+" par semestre, dans le plafond dentaire de "+(fi?"900":"600")+" € par an"],
+  FLEXIA:["an",v=>"forfait de "+v+" par an, commun avec la parodontologie et les prothèses fixes non remboursées"],
+  MV:["an",cuImpAn("les implants et la parodontie non remboursés")],
+  REV:["pct",v=>v+" de la base de remboursement (base non précisée dans le tableau pour un acte non remboursé)"],
+  RF50:["pct",v=>v+" de la base de remboursement (base non précisée dans le tableau pour un acte non remboursé)"],
+  RF100:["pct",v=>v+" de la base de remboursement (base non précisée dans le tableau pour un acte non remboursé)"],
+  APRIL:["an",v=>"forfait de "+v+" par an, souvent commun à d’autres soins dentaires non remboursés"]
+};
+function cuDef(T,G,c,v){
+  const d=T[c.key]; if(!d||!cuLire(v))return null;
+  return {type:d[0],v:cuLire(v),txt:'<b>'+nomComplet(G,c.key,c.fi).replace(/^TALIS Talis/,"TALIS")+'</b> : '+d[1](String(v).replace(/\/(impl|sem)$/,""),c.fi)};
 }
+// Postes dont le total porte une * : la note explique, sous la grille, ce que vaut chaque montant.
+const CU_AST={
+  "x:imp":{titre:"Implantologie",T:CU_IMP,fin:(a,b)=>
+    a.type==="acte"&&b.type==="acte"?" Total par implant."
+    :(a.type==="an"||b.type==="an")?" Le total vaut pour un implant ; au-delà, seul le montant par implant s’ajoute.":""},
+  "x:orthN":{titre:"Orthodontie non remboursée",T:CU_ORTHN,fin:(a,b)=>{
+    if(a.type==="sem"&&b.type==="sem")return " Total par semestre.";
+    const an=a.type==="an"?a:b.type==="an"?b:null, se=a.type==="sem"?a:b.type==="sem"?b:null;
+    if(an&&se&&an.v.u==="€"&&se.v.u==="€")return " Sur un an : "+cuNb(an.v.n)+" € + 2 × "+cuNb(se.v.n)+" € = "+cuNb(an.v.n+2*se.v.n)+" €, dans la limite des plafonds.";
+    return "";}}
+};
 const cuPlus=v=>{const p=cuLire(v);return p?"+ "+cuTxt(p):"—";};
 // o = {mut:{key,fi}, sur:{key,fi}, tarifs:{"CLE|fi":n}, prospect, date:"jj/mm/aaaa", base, sansTarifs}
 function cumul(G,o){
@@ -352,11 +376,11 @@ function cumul(G,o){
     h+=ligne(bloc,"","","","cu-sec");
     for(const [,src] of rs){const plus=!!cuLire(v2(src));
       let tt=cumulTotal(v1(src),v2(src));
-      if(src==="x:imp"){const a=cuImp(G,M,v1(src)),b=cuImp(G,S,v2(src)),l=[a,b].filter(Boolean);
-        if(l.length){tt='<span>'+tt+'<sup class="cu-ast">*</sup></span>';
-          notes.push('<sup>*</sup> Implantologie — '+l.map(x=>x.txt).join(" ; ")+"."
-            +(a&&b&&a.type==="acte"&&b.type==="acte"?" Total par implant.":"")
-            +(a&&b&&(a.type==="an"||b.type==="an")?" Le total vaut pour un implant ; au-delà, seul le montant par implant s’ajoute.":""));}}
+      const ast=CU_AST[src];
+      if(ast){const a=cuDef(ast.T,G,M,v1(src)),b=cuDef(ast.T,G,S,v2(src)),l=[a,b].filter(Boolean);
+        if(l.length){const n="*".repeat(notes.length+1);
+          tt='<span>'+tt+'<sup class="cu-ast">'+n+'</sup></span>';
+          notes.push('<sup>'+n+'</sup> '+ast.titre+' — '+l.map(x=>x.txt).join(" ; ")+"."+(a&&b?ast.fin(a,b):""));}}
       h+=ligne(CU_POSTES[src],v1(src),cuPlus(v2(src)),tt,plus?"cu-up":"");}
   }
   h+=ligne("","","","","cu-fin");

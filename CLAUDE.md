@@ -287,6 +287,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   2 au plus, Mutuelle Verte et Révoluo communs avec d'autres actes, APRIL), **% BR** (MCCINOVA, implants remboursés seulement). Note
   sous la grille (`.cu-nb`) : « Total par implant » si les deux sont par implant ; « Le total vaut pour un implant ; au-delà, seul le
   montant par implant s'ajoute » si l'un est annuel.
+  **Orthodontie non remboursée marquée aussi** (Fabrice, 19/10/2026 : « oui ») : `CU_ORTHN` — par an (Cap Évolution, FLEXIA commun
+  avec parodontologie et prothèses fixes, Mutuelle Verte commun avec implants et parodontie, APRIL), par semestre (CAP NR, TALIS),
+  % BR (Révoluo, base non précisée). Annuel + semestriel : « Sur un an : 300 € + 2 × 150 € = 600 €, dans la limite des plafonds ».
+  Les astérisques se suivent (\*, \*\*) dans l'ordre des lignes. **Corrigé au passage** : SOLENCIA `orthN` affichait 150 / 200 / 300 €,
+  qui est le forfait « parodontologie et prothèses non prises en charge » ; le tableau (p. 4, relu sur l'image) n'a aucune ligne
+  d'orthodontie non remboursée → « — » partout (fiche `mcci.md`, écart 20 bis).
 - **Tableau en blocs** (Fabrice, 03/10/2026, « pour une meilleure visite chez le prospect ») : `Tableau.BLOCS` — Hospitalisation
   (Optam, hors Optam, chambre), Honoraires (spécialistes Optam / hors Optam), **Pharmacie** (médicaments remboursés `x:pharR`,
   pharmacie non remboursée `x:pharN`), Dentaire (**Prothèses dentaires**, implantologie, orthodontie), Optique (**verres et
