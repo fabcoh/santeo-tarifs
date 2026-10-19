@@ -281,6 +281,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Capture à 520 px ×2 (`.cu-cap`, `useCORS`) ; barre : WhatsApp (partage mobile, sinon copie / téléchargement), ⬇ Télécharger,
   Envoyer dans le CRM (dépôt des images, **sans mail**). `SURCOS` = {TALIS}. Maquette : https://claude.ai/artifact/3f1H8sXyC93UuSmMTxTzbA.
   Test : scratchpad `t_cumul.js`, `t_cumul2.js`. Modifier `tableau.js` change l'empreinte de `docs/tg/` : l'Action refait les 13 images.
+  **Implantologie marquée d'une \*** (Fabrice, 19/10/2026 : « vérifie l'implantologie… une astérisque puis expliquer les limites en
+  dessous du tableau ») : `CU_IMP` dit ce que vaut le montant de chaque gamme, relu dans les fiches `docs/connaissances/` — **par
+  implant** (Cap Évolution, CAP NR, TALIS dans son plafond 600 / 900 €, APICIL 2 au plus), **forfait annuel** (FLEXIA, SOLENCIA
+  2 au plus, Mutuelle Verte et Révoluo communs avec d'autres actes, APRIL), **% BR** (MCCINOVA, implants remboursés seulement). Note
+  sous la grille (`.cu-nb`) : « Total par implant » si les deux sont par implant ; « Le total vaut pour un implant ; au-delà, seul le
+  montant par implant s'ajoute » si l'un est annuel.
 - **Tableau en blocs** (Fabrice, 03/10/2026, « pour une meilleure visite chez le prospect ») : `Tableau.BLOCS` — Hospitalisation
   (Optam, hors Optam, chambre), Honoraires (spécialistes Optam / hors Optam), **Pharmacie** (médicaments remboursés `x:pharR`,
   pharmacie non remboursée `x:pharN`), Dentaire (**Prothèses dentaires**, implantologie, orthodontie), Optique (**verres et

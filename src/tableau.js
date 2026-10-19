@@ -306,6 +306,28 @@ const CU_POSTES={hospO:"Hospitalisation Optam",hospN:"Hospitalisation hors Optam
 const CU_GAINS=[["hospO","Hospitalisation"],["dent","Prothèses"],["x:imp","Implant"],["opt","Lunettes"],["ch","Chambre"],["x:aud","Audition"]];
 // Ce que la vignette rappelle de la surcomplémentaire : court, le prospect le lit sur un téléphone.
 const CU_NOTE={TALIS:fi=>"délai d’attente de 90 jours en dentaire et en optique ; plafond dentaire "+(fi?"900":"600")+" € par an et par personne ; 1 équipement optique par an"};
+// Implantologie : un montant ne veut pas dire la même chose d'une compagnie à l'autre (relu dans les fiches
+// docs/connaissances, 19/10/2026). « acte » = par implant ; « an » = forfait annuel, souvent commun à d'autres actes ;
+// « pct » = pourcentage de la base Sécurité sociale. La vignette marque le total d'une * et l'explique dessous.
+const cuImpAn=suite=>v=>"forfait de "+v+" par an et par personne"+(suite?", commun avec "+suite:"");
+const CU_IMP={
+  CAPEVO:["acte",v=>v+" par implant, dans le plafond dentaire annuel"],
+  CAPNR:["acte",v=>v+" par implant, dans le plafond dentaire annuel"],
+  TALIS:["acte",(v,fi)=>v+" par implant, dans le plafond dentaire de "+(fi?"900":"600")+" € par an"],
+  APICIL:["acte",v=>v+" par implant, 2 implants au plus par an"],
+  MCCINOVA:["pct",v=>v+" de la base Sécurité sociale, seulement pour les implants que la Sécurité sociale rembourse (rares)"],
+  FLEXIA:["an",v=>"forfait de "+v+" par an"],
+  SOLENCIA:["an",v=>"forfait de "+v+" par an, 2 implants au plus"],
+  MV:["an",cuImpAn("la parodontie et l’orthodontie non remboursées")],
+  REV:["an",cuImpAn("les prothèses non remboursées et la parodontologie")],
+  RF50:["an",cuImpAn("les prothèses non remboursées et la parodontologie")],
+  RF100:["an",cuImpAn("les prothèses non remboursées et la parodontologie")],
+  APRIL:["an",v=>"forfait de "+v+" par an, souvent commun à d’autres soins dentaires non remboursés"]
+};
+function cuImp(G,c,v){
+  const d=CU_IMP[c.key]; if(!d||!cuLire(v))return null;
+  return {type:d[0],txt:'<b>'+nomComplet(G,c.key,c.fi).replace(/^TALIS Talis/,"TALIS")+'</b> : '+d[1](String(v).replace(/\/impl$/,""),c.fi)};
+}
 const cuPlus=v=>{const p=cuLire(v);return p?"+ "+cuTxt(p):"—";};
 // o = {mut:{key,fi}, sur:{key,fi}, tarifs:{"CLE|fi":n}, prospect, date:"jj/mm/aaaa", base, sansTarifs}
 function cumul(G,o){
@@ -323,14 +345,22 @@ function cumul(G,o){
     +cell("cu-a",'<div class="cu-lg">'+logo(G,M.key,o.base)+'</div><b>'+nomComplet(G,M.key,M.fi)+'</b><span class="cu-ro">Mutuelle principale</span>')
     +cell("cu-b",'<div class="cu-lg">'+logo(G,S.key,o.base)+'</div><b>'+nS+'</b><span class="cu-ro">Surcomplé&shy;mentaire</span>')
     +cell("cu-t",'<div class="cu-lg cu-eg">=</div><b>Total cumulé</b><span class="cu-ro">Mutuelle + Surcompl.</span>')+'</div>';
+  const notes=[];
   for(const [bloc,ls] of BLOCS){
     const rs=ls.filter(([,src])=>CU_POSTES[src]&&(v1(src)!=="—"||v2(src)!=="—"));
     if(!rs.length)continue;
     h+=ligne(bloc,"","","","cu-sec");
     for(const [,src] of rs){const plus=!!cuLire(v2(src));
-      h+=ligne(CU_POSTES[src],v1(src),cuPlus(v2(src)),cumulTotal(v1(src),v2(src)),plus?"cu-up":"");}
+      let tt=cumulTotal(v1(src),v2(src));
+      if(src==="x:imp"){const a=cuImp(G,M,v1(src)),b=cuImp(G,S,v2(src)),l=[a,b].filter(Boolean);
+        if(l.length){tt='<span>'+tt+'<sup class="cu-ast">*</sup></span>';
+          notes.push('<sup>*</sup> Implantologie — '+l.map(x=>x.txt).join(" ; ")+"."
+            +(a&&b&&a.type==="acte"&&b.type==="acte"?" Total par implant.":"")
+            +(a&&b&&(a.type==="an"||b.type==="an")?" Le total vaut pour un implant ; au-delà, seul le montant par implant s’ajoute.":""));}}
+      h+=ligne(CU_POSTES[src],v1(src),cuPlus(v2(src)),tt,plus?"cu-up":"");}
   }
   h+=ligne("","","","","cu-fin");
+  if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
   if(prix) h+='<div class="cu-r cu-prix">'+cell("cu-l",'Cotisation<small>par mois</small>')
     +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
     +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')

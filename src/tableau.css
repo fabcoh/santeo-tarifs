@@ -430,6 +430,9 @@ body:has(#cubox) #sendbar{display:none}
 .cumul .cu-fin>div{padding:0;height:8px;border:0}
 .cumul .cu-fin>.cu-l{border:0}
 .cumul .cu-fin .cu-a,.cumul .cu-fin .cu-b,.cumul .cu-fin .cu-t{border-radius:0 0 10px 10px}
+.cumul .cu-ast{font-size:.8em;margin-left:1px;vertical-align:super;line-height:0}
+.cumul .cu-nb{margin-top:8px;font-size:10.5px;line-height:1.45;color:var(--k);background:var(--c1);border-radius:8px;padding:6px 8px}
+.cumul .cu-nb sup{color:var(--t);font-weight:700}
 .cumul .cu-prix{margin-top:10px}
 .cumul .cu-prix>div{border:0;padding:8px 3px;border-radius:10px}
 .cumul .cu-prix>.cu-l{font:700 13px 'Archivo',sans-serif;border:0}
