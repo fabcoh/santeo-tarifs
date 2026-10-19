@@ -273,7 +273,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   « une petite cartouche, comme une capture d'écran… pour envoyer directement sur WhatsApp ») : cocher une mutuelle **et TALIS** →
   bouton **🧮 Cumul** de la barre flottante (`#sbcu`, caché sinon) → `showCumul()`, une vignette par mutuelle cochée (× chaque TALIS
   cochée, 6 au plus), fabriquée par **`Tableau.cumul(G, {mut, sur, tarifs, prospect, date})`** dans `src/tableau.js` (le CRM peut la
-  reprendre). Colonnes « Mutuelle principale » (en gras) · « **Renfort** (noir, au-dessus) Surcomplémentaire » · « Total cumulé — Mutuelle + Surcompl. », bandeau
+  reprendre). Colonnes « Mutuelle principale » (en gras) · « Surcomplémentaire » (avec « RENFORT » en petites capitales noires au-dessus de la pastille, pastilles alignées : `.cu-rf` vide dans les deux autres colonnes) · « Total cumulé — Mutuelle + Surcompl. », bandeau
   vendeur « Pour x € de plus par mois, TALIS renforce… », trois cases de cotisation additionnées, limites de TALIS, logo Santéo.
   **Additions** (`Tableau.cumulTotal`) : % + %, € + € (« 300 € + 300 €/impl » = **600 €**, l'unité gardée si commune : 80 €/j),
   % + € sur une ligne (« 200 % + 100 € ») ; **jamais** quand une valeur porte une précision (« 30 €/an (tabac) », « 3×20 € ») —

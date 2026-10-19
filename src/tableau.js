@@ -366,9 +366,9 @@ function cumul(G,o){
     +(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'')
     +(ch?'<div class="cu-gain">'+(prix?'Pour <b>'+eur(p2)+' de plus par mois</b>, ':'')+nS+' renforce vos remboursements :<div class="cu-chips">'+ch+'</div></div>':'');
   h+='<div class="cu-r cu-h">'+cell("cu-l","")
-    +cell("cu-a",'<div class="cu-lg">'+logo(G,M.key,o.base)+'</div><b>'+nomComplet(G,M.key,M.fi)+'</b><span class="cu-ro">Mutuelle principale</span>')
-    +cell("cu-b",'<div class="cu-lg">'+logo(G,S.key,o.base)+'</div><b>'+nS+'</b><span class="cu-ro"><b class="cu-rf">Renfort</b>Surcomplé&shy;mentaire</span>')
-    +cell("cu-t",'<div class="cu-lg cu-eg">=</div><b>Total cumulé</b><span class="cu-ro">Mutuelle + Surcompl.</span>')+'</div>';
+    +cell("cu-a",'<div class="cu-lg">'+logo(G,M.key,o.base)+'</div><b>'+nomComplet(G,M.key,M.fi)+'</b><i class="cu-rf"></i><span class="cu-ro">Mutuelle principale</span>')
+    +cell("cu-b",'<div class="cu-lg">'+logo(G,S.key,o.base)+'</div><b>'+nS+'</b><i class="cu-rf">Renfort</i><span class="cu-ro">Surcomplé&shy;mentaire</span>')
+    +cell("cu-t",'<div class="cu-lg cu-eg">=</div><b>Total cumulé</b><i class="cu-rf"></i><span class="cu-ro">Mutuelle + Surcompl.</span>')+'</div>';
   const notes=[];
   for(const [bloc,ls] of BLOCS){
     const rs=ls.filter(([,src])=>CU_POSTES[src]&&(v1(src)!=="—"||v2(src)!=="—"));
