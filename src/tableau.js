@@ -270,6 +270,81 @@ function documentHTML(G,o){
     +'</head>\n<body>\n<div id="tgov"><div id="tgbox" class="capwide">'+bloc(G,o)+'</div></div>\n</body>\n</html>\n';
 }
 
+// ---- Cumul mutuelle + surcomplémentaire (Fabrice, 19/10/2026) -------------------------------
+// Une vignette à envoyer sur WhatsApp : la mutuelle principale, la surcomplémentaire (TALIS) et le
+// total, poste par poste, puis les deux cotisations additionnées. En grille de <div> et non en
+// <table> : les règles des tableaux de la page (colonnes collantes, majuscules) ne s'y appliquent pas.
+// Additions : % + % ; € + € (l'unité commune est gardée, « /j » ; sinon « 600 € ») ; % + € sur une
+// ligne (« 200 % + 100 € »). Une valeur qui porte une précision (« 30 €/an (tabac) », « 3×20 € »)
+// n'est jamais additionnée : « 30 € (tabac) + 50 € » ferait croire à 80 € pour tout (vérité des chiffres).
+function cuLire(s){
+  s=String(s==null?"":s).replace(/ /g," ").trim();
+  if(!s||s==="—"||/^n\.c\./i.test(s))return null;
+  s=s.replace(/^\+\s*/,"");
+  s=s.replace(/\s*BR$/,"");
+  if(/[(×]/.test(s))return {raw:s};
+  let m=s.match(/^(\d[\d\s]*)\s*%$/); if(m)return {n:+m[1].replace(/\s/g,""),u:"%"};
+  m=s.match(/^(\d[\d\s]*)\s*€(\/\S+)?$/); if(m)return {n:+m[1].replace(/\s/g,""),u:"€",s:m[2]||""};
+  return {raw:s};
+}
+const cuNb=n=>n.toLocaleString("fr-FR");
+const cuTxt=p=>p.raw||(p.u==="%"?p.n+" %":cuNb(p.n)+" €"+p.s);
+function cumulTotal(a,b){
+  const A=cuLire(a),B=cuLire(b);
+  if(!A&&!B)return "—"; if(!A)return cuTxt(B); if(!B)return cuTxt(A);
+  if(A.raw||B.raw)return cuTxt(A)+'<span class="cu-2">+ '+cuTxt(B)+'</span>';
+  if(A.u==="%"&&B.u==="%")return (A.n+B.n)+" %";
+  if(A.u==="€"&&B.u==="€")return cuNb(A.n+B.n)+" €"+(A.s===B.s?A.s:"");
+  const P=A.u==="%"?A:B,E=A.u==="%"?B:A;
+  return '<span class="cu-mx">'+P.n+" % + "+cuNb(E.n)+" €</span>";
+}
+const CU_POSTES={hospO:"Hospitalisation Optam",hospN:"Hospitalisation hors Optam",ch:"Chambre particulière",
+  honoO:"Spécialistes Optam",honoN:"Spécialistes hors Optam","x:pharR":"Médicaments remboursés","x:pharN":"Pharmacie non remboursée",
+  dent:"Prothèses dentaires","x:imp":"Implantologie","x:orthR":"Orthodontie remboursée","x:orthN":"Orthodontie non remb.",
+  opt:"Verres et monture simples","x:optC":"Verres et monture complexes","x:lentA":"Lentilles acceptées","x:lentR":"Lentilles refusées",
+  "x:aud":"Aides auditives",md:"Médecines douces"};
+const CU_GAINS=[["hospO","Hospitalisation"],["dent","Prothèses"],["x:imp","Implant"],["opt","Lunettes"],["ch","Chambre"],["x:aud","Audition"]];
+// Ce que la vignette rappelle de la surcomplémentaire : court, le prospect le lit sur un téléphone.
+const CU_NOTE={TALIS:fi=>"délai d’attente de 90 jours en dentaire et en optique ; plafond dentaire "+(fi?"900":"600")+" € par an et par personne ; 1 équipement optique par an"};
+const cuPlus=v=>{const p=cuLire(v);return p?"+ "+cuTxt(p):"—";};
+// o = {mut:{key,fi}, sur:{key,fi}, tarifs:{"CLE|fi":n}, prospect, date:"jj/mm/aaaa", base, sansTarifs}
+function cumul(G,o){
+  o=o||{};
+  const M=o.mut,S=o.sur,v1=src=>valeur(G,M.key,M.fi,src),v2=src=>valeur(G,S.key,S.fi,src);
+  const nS=nomComplet(G,S.key,S.fi).replace(/^TALIS Talis/,"TALIS").replace(/^TALIS TALIS/,"TALIS");
+  const p1=(o.tarifs||{})[M.key+"|"+M.fi], p2=(o.tarifs||{})[S.key+"|"+S.fi], prix=!o.sansTarifs&&p1!=null&&p2!=null;
+  const cell=(c,h)=>'<div class="'+c+'">'+h+'</div>';
+  const ligne=(c0,a,b,c,cls)=>'<div class="cu-r'+(cls?" "+cls:"")+'">'+cell("cu-l",c0)+cell("cu-a",a)+cell("cu-b",b)+cell("cu-t",c)+'</div>';
+  const ch=CU_GAINS.filter(([s])=>cuLire(v2(s))).map(([s,l])=>'<span><i>'+l+'</i> '+cuPlus(v2(s))+'</span>').join("");
+  let h='<div class="cu-ti">Votre mutuelle + surcomplémentaire</div>'
+    +(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'')
+    +(ch?'<div class="cu-gain">'+(prix?'Pour <b>'+eur(p2)+' de plus par mois</b>, ':'')+nS+' renforce vos remboursements :<div class="cu-chips">'+ch+'</div></div>':'');
+  h+='<div class="cu-r cu-h">'+cell("cu-l","")
+    +cell("cu-a",'<div class="cu-lg">'+logo(G,M.key,o.base)+'</div><b>'+nomComplet(G,M.key,M.fi)+'</b><span class="cu-ro">Mutuelle principale</span>')
+    +cell("cu-b",'<div class="cu-lg">'+logo(G,S.key,o.base)+'</div><b>'+nS+'</b><span class="cu-ro">Surcomplé&shy;mentaire</span>')
+    +cell("cu-t",'<div class="cu-lg cu-eg">=</div><b>Total cumulé</b><span class="cu-ro">Mutuelle + Surcompl.</span>')+'</div>';
+  for(const [bloc,ls] of BLOCS){
+    const rs=ls.filter(([,src])=>CU_POSTES[src]&&(v1(src)!=="—"||v2(src)!=="—"));
+    if(!rs.length)continue;
+    h+=ligne(bloc,"","","","cu-sec");
+    for(const [,src] of rs){const plus=!!cuLire(v2(src));
+      h+=ligne(CU_POSTES[src],v1(src),cuPlus(v2(src)),cumulTotal(v1(src),v2(src)),plus?"cu-up":"");}
+  }
+  h+=ligne("","","","","cu-fin");
+  if(prix) h+='<div class="cu-r cu-prix">'+cell("cu-l",'Cotisation<small>par mois</small>')
+    +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
+    +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')
+    +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>')+'</div>';
+  const gM=G.gammes[M.key], nr=gM&&(gM.resp===false||/^\s*Contrat NON responsable/i.test(String(limites(G,M.key,M.fi)||"")));
+  const note=CU_NOTE[S.key]?CU_NOTE[S.key](S.fi):"";
+  h+='<div class="cu-ft"><b>'+nS+'</b> s’ajoute à votre mutuelle, sans la remplacer'+(note?" ; "+note:"")+'.'
+    +(nr?' <b>'+nomComplet(G,M.key,M.fi)+'</b> : contrat non responsable.':'')
+    +' Pourcentages Sécurité sociale comprise ; jamais plus que la dépense réelle.'
+    +(o.date?' Tarifs au '+o.date+', valables '+VALIDITE+' jours.':'')+'</div>'
+    +'<div class="cu-mq">'+marque(o.base)+'<span>Courtier comparateur depuis 1992 · Infos légales : www.santeo.net</span></div>';
+  return '<div class="cumul">'+h+'</div>';
+}
+
 exporter.POSTES=POSTES;
 exporter.BLOCS=BLOCS;
 exporter.ATOUTS=ATOUTS;
@@ -295,6 +370,8 @@ exporter.pied=pied;
 exporter.bloc=bloc;
 exporter.document=documentHTML;
 exporter.eur=eur;
+exporter.cumul=cumul;
+exporter.cumulTotal=cumulTotal;
 
 })(typeof module!=="undefined"&&module.exports ? module.exports
    : ((typeof self!=="undefined"?self:this).Tableau={}));

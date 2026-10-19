@@ -386,6 +386,65 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 .bslot{grid-column:1/-1}
 .addb{border:1.5px dashed var(--accent);background:var(--soft);color:var(--accent);border-radius:9px;padding:7px 13px;cursor:pointer;font:800 12.5px 'Archivo',sans-serif}
 .addb:hover{background:var(--accent);color:var(--accent-ink);border-style:solid}
+/* Vignette « mutuelle + surcomplémentaire » (Fabrice, 19/10/2026) : couleurs fixes, c'est une image envoyée au prospect.
+   Tons pastel, pas de bleu foncé ; grille de <div> pour échapper aux règles des tableaux de la page. */
+body:has(#cubox) #sendbar{display:none}
+#cubox{background:var(--panel);color:var(--ink);border-radius:12px;max-width:560px;width:100%;max-height:88vh;overflow:auto;padding:14px;border:1px solid var(--line)}
+#cubox .cu-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
+#cubox .cu-bar button{padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink);font:700 13px 'Archivo',sans-serif;cursor:pointer}
+#cubox .cu-stat{font:600 12.5px 'Archivo',sans-serif;color:var(--accent);flex-basis:100%}
+#cubox .cumul+.cumul{margin-top:14px}
+.cumul{--k:#1F2A37;--m:#6B7686;--l:#EDF0F4;--c1:#F6F8FB;--o:#B25A12;--o2:#FFF3E6;--o3:#FBE3C8;--t:#1D5F8F;--t2:#EAF4FC;--t3:#D3E8F8;--t4:#DDEFFB;
+  background:#fff;color:var(--k);width:100%;max-width:520px;margin:0 auto;padding:16px 14px 12px;border-radius:10px;font:12.5px/1.35 'IBM Plex Sans',"Segoe UI",Roboto,Arial,sans-serif;text-align:left}
+.cumul.cu-cap{width:520px;max-width:none;border-radius:0}
+.cumul .cu-ti{font:800 15px 'Archivo',sans-serif}
+.cumul .cu-pr{font-size:11.5px;color:var(--m);margin:2px 0 10px}
+.cumul .cu-gain{background:linear-gradient(90deg,var(--o2),var(--t2));border-radius:10px;padding:8px 10px;margin-bottom:12px;font-size:11.5px}
+.cumul .cu-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.cumul .cu-chips span{background:#fff;border-radius:12px;padding:2px 8px;font-weight:600;color:var(--o);font-size:11px;white-space:nowrap}
+.cumul .cu-chips i{font-style:normal;color:var(--k);font-weight:400}
+.cumul .cu-r{display:grid;grid-template-columns:29% 1fr 1fr 1fr;align-items:stretch}
+.cumul .cu-r>div{padding:5px 4px;text-align:center;font-size:12px;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid #fff;min-width:0}
+.cumul .cu-r>.cu-l{text-align:left;align-items:flex-start;padding-left:2px;font-size:11.5px;border-bottom-color:var(--l)}
+.cumul .cu-a{background:var(--c1)}
+.cumul .cu-b{background:var(--o2);color:var(--o);font-weight:600;white-space:nowrap;font-size:11.5px!important;letter-spacing:-.01em}
+.cumul .cu-t{background:var(--t2);color:var(--t);font-weight:700}
+.cumul .cu-up .cu-t{background:var(--t4)}
+.cumul .cu-2{display:block;font-size:10.5px;font-weight:600}
+.cumul .cu-mx{white-space:nowrap;font-size:10.5px;letter-spacing:-.02em}
+.cumul .cu-h>div{justify-content:flex-start;padding:8px 4px 7px;border-bottom:0;font-size:11.5px;line-height:1.2;white-space:normal}
+.cumul .cu-h .cu-a{border-radius:10px 10px 0 0}
+.cumul .cu-h .cu-b{background:var(--o3);border-radius:10px 10px 0 0;color:var(--k)}
+.cumul .cu-h .cu-t{background:var(--t3);border-radius:10px 10px 0 0}
+.cumul .cu-h b{display:block;min-height:28px;font-weight:700;color:inherit}
+.cumul .cu-h .cu-t b{color:var(--t)}
+.cumul .cu-lg{height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:5px}
+.cumul .cu-lg img{max-height:34px;max-width:88%;height:auto;width:auto}
+.cumul .cu-lg .tglogo-txt{font:700 11px 'Archivo',sans-serif}
+.cumul .cu-eg{font-size:28px;font-weight:300;color:var(--t)}
+.cumul .cu-ro{display:inline-block;align-self:center;max-width:100%;margin-top:4px;font-size:9.5px;font-weight:600;border-radius:10px;padding:1px 6px;background:#fff}
+.cumul .cu-a .cu-ro{color:var(--k);font-weight:800;font-size:10px}
+.cumul .cu-b .cu-ro{color:var(--o);white-space:normal}
+.cumul .cu-t .cu-ro{color:var(--t)}
+.cumul .cu-sec>div{font:700 9.5px 'Archivo',sans-serif;letter-spacing:.03em;white-space:nowrap;text-transform:uppercase;color:var(--t);padding:9px 2px 3px}
+.cumul .cu-sec>.cu-l{border-bottom-color:var(--t3);position:relative;z-index:1;overflow:visible}
+.cumul .cu-fin>div{padding:0;height:8px;border:0}
+.cumul .cu-fin>.cu-l{border:0}
+.cumul .cu-fin .cu-a,.cumul .cu-fin .cu-b,.cumul .cu-fin .cu-t{border-radius:0 0 10px 10px}
+.cumul .cu-prix{margin-top:10px}
+.cumul .cu-prix>div{border:0;padding:8px 3px;border-radius:10px}
+.cumul .cu-prix>.cu-l{font:700 13px 'Archivo',sans-serif;border:0}
+.cumul .cu-prix small{display:block;font:400 9.5px 'IBM Plex Sans',sans-serif;opacity:.8}
+.cumul .cu-prix>.cu-l small{font-size:10.5px;color:var(--m);opacity:1}
+.cumul .cu-prix .cu-b{background:var(--o2)}
+.cumul .cu-prix .cu-t{background:var(--t3)}
+.cumul .cu-n{display:block;font:800 15px 'Archivo',sans-serif;white-space:nowrap}
+.cumul .cu-prix .cu-t .cu-n{font-size:18px}
+.cumul .cu-ft{margin-top:12px;font-size:10px;color:var(--m);line-height:1.45}
+.cumul .cu-ft b{color:var(--k)}
+.cumul .cu-mq{display:flex;align-items:center;gap:8px;margin-top:8px;border-top:1px solid var(--l);padding-top:8px;font-size:10px;color:var(--m)}
+.cumul .cu-mq img{height:22px;width:auto}
+@media (max-width:440px){.cumul:not(.cu-cap) .cu-n{font-size:13.5px}.cumul:not(.cu-cap) .cu-prix .cu-t .cu-n{font-size:15px}}
 </style>
 <button id="aibtn" title="IA produits : une question sur nos contrats" aria-haspopup="dialog" hidden>💬 IA produits</button>
 <div id="aipanel" hidden role="dialog" aria-labelledby="aititre">
@@ -2008,6 +2067,94 @@ function devisBase(){
   return {date:new Date().toLocaleDateString("fr-FR"),cp:/^\d{5}$/.test(cp)?cp:"",dept:/^\d{5}$/.test(cp)?"":cp,
           regime:regimeActuel(),assures};
 }
+// Légende du prospect, en tête du tableau de garantie et de la vignette du cumul.
+function prospectLigne(){
+  const PR=typeof PRO!=="undefined"?PRO:{};
+  const nm=[(PR.prenom||""),String(PR.nom||"").toUpperCase()].filter(Boolean).join(" ");
+  const civ=String(PR.civ||"").toUpperCase(), ne=/^(MME|MLLE|MADAME|MADEMOISELLE)/.test(civ)?"née":/^(M|MR|MONSIEUR)\.?$/.test(civ)?"né":"né(e)";
+  const bits=[]; if(nm)bits.push(nm);
+  if(PR.ddn)bits.push(ne+" le "+PR.ddn); else{const n=document.getElementById("naiss").value;if(n)bits.push(/^\d{4}$/.test(n)?ne+" en "+n:n+" ans");}
+  bits.push("étude du "+new Date().toLocaleDateString("fr-FR"));
+  return {nm,txt:bits.join("  ·  ")};
+}
+// ---- Cumul mutuelle + surcomplémentaire (Fabrice, 19/10/2026) ----
+// Cocher une mutuelle et TALIS : le bouton 🧮 Cumul de la barre ouvre une vignette par mutuelle cochée
+// (garanties additionnées poste par poste, cotisations additionnées), à envoyer en image sur WhatsApp
+// ou dans la conversation du CRM. La vignette est fabriquée par Tableau.cumul (src/tableau.js).
+const SURCOS=new Set(["TALIS"]);
+function cumulPaires(){
+  const rs=selRows(), sur=rs.filter(r=>SURCOS.has(r.key)), mut=rs.filter(r=>!SURCOS.has(r.key));
+  const out=[]; for(const m of mut)for(const s of sur)out.push({mut:m,sur:s});
+  return out.slice(0,6);
+}
+function showCumul(){
+  const P=cumulPaires(); if(!P.length)return;
+  const tarifs={}; P.forEach(p=>{tarifs[p.mut.key+"|"+p.mut.fi]=p.mut.total; tarifs[p.sur.key+"|"+p.sur.fi]=p.sur.total;});
+  const {nm,txt}=prospectLigne(), date=new Date().toLocaleDateString("fr-FR");
+  const svgWa='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:#25D366;vertical-align:-3px"><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.82 11.82 0 0020.463 3.488 11.815 11.815 0 0012.05 0zm5.422 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>';
+  const ov=document.createElement('div'); ov.id='tgov'; ov.className='tgmain';
+  ov.innerHTML='<div id="cubox"><div class="cu-bar"><button data-a="wa">'+svgWa+' WhatsApp</button><button data-a="dl">⬇ Télécharger</button>'
+    +(window.CRMLINK?'<button data-a="crm" style="background:#059669;color:#fff;border-color:#059669">Envoyer dans le CRM</button>':'')
+    +'<button class="close" style="margin-left:auto">Fermer ✕</button><span class="cu-stat"></span></div>'
+    +P.map(p=>Tableau.cumul(GAR,{mut:{key:p.mut.key,fi:p.mut.fi},sur:{key:p.sur.key,fi:p.sur.fi},tarifs,prospect:txt,date})).join("")+'</div>';
+  ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
+  document.body.appendChild(ov);
+  const box=ov.querySelector('#cubox'), stat=s=>{box.querySelector('.cu-stat').textContent=s;};
+  const nomFic=p=>("cumul_"+Tableau.nomComplet(GAR,p.mut.key,p.mut.fi)+"_"+Tableau.nomComplet(GAR,p.sur.key,p.sur.fi)).replace(/[^\wÀ-ÿ]+/g,"_")+".png";
+  // Une image par vignette, toujours à 520 px de large (la même sur téléphone et sur ordinateur).
+  async function images(){
+    if(typeof html2canvas==="undefined")throw new Error("lib");
+    const out=[];
+    for(const [i,el] of [...box.querySelectorAll('.cumul')].entries()){
+      el.classList.add('cu-cap');
+      try{ const c=await html2canvas(el,{scale:2,backgroundColor:"#ffffff",useCORS:true});
+        out.push({blob:await new Promise(r=>c.toBlob(r,'image/png')),fname:nomFic(P[i])}); }
+      finally{ el.classList.remove('cu-cap'); }
+    }
+    return out;
+  }
+  const telecharge=im=>im.forEach(x=>{const a=document.createElement('a');a.href=URL.createObjectURL(x.blob);a.download=x.fname;document.body.appendChild(a);a.click();a.remove();});
+  box.querySelector('.cu-bar').addEventListener('click',async e=>{
+    const btn=e.target.closest('button[data-a]'); if(!btn)return;
+    const a=btn.dataset.a, old=btn.innerHTML;
+    // Copie d'une image unique lancée dès le clic (le geste de l'utilisateur doit être conservé), l'image suit.
+    let copyP=null,resImg=null;
+    const fic=f=>new File([f.blob],f.fname,{type:'image/png'});
+    const canSh=!!(navigator.canShare&&navigator.canShare({files:[new File([new Blob([""])],"x.png",{type:"image/png"})]}));
+    if(a==="wa"&&!canSh&&P.length===1&&navigator.clipboard&&navigator.clipboard.write&&typeof ClipboardItem!=="undefined"){
+      try{const bp=new Promise(r=>{resImg=r;});copyP=navigator.clipboard.write([new ClipboardItem({"image/png":bp})]).then(()=>true).catch(()=>false);}catch(_){copyP=null;}
+    }
+    btn.disabled=true; btn.textContent="⏳"; stat("");
+    try{
+      const im=await images();
+      if(a==="wa"&&canSh){
+        try{await navigator.share({files:im.map(fic),title:"Mutuelle + surcomplémentaire"});stat("✅ Partagée");}catch(_){stat("Partage annulé");}
+      } else if(a==="wa"){
+        let ok=false; if(copyP){resImg(im[0].blob);ok=await copyP;}
+        if(!ok)telecharge(im);
+        try{window.open("https://wa.me/","_blank","noopener");}catch(_){}
+        stat(ok?"✅ Image copiée — collez-la (Ctrl+V) dans la conversation WhatsApp":"✅ Image"+(im.length>1?"s":"")+" téléchargée"+(im.length>1?"s":"")+" — joignez-la"+(im.length>1?"s":"")+" à la conversation WhatsApp");
+      } else if(a==="dl"){
+        telecharge(im); stat("✅ Image"+(im.length>1?"s":"")+" téléchargée"+(im.length>1?"s":""));
+      } else if(a==="crm"){
+        btn.textContent="⏳ Dépôt…";
+        for(const x of im){
+          const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(x.blob);});
+          await crmDepot({kind:"image",filename:x.fname,mime:"image/png",data:b64,caption:"Mutuelle + surcomplémentaire — "+nm});
+        }
+        const msg="✅ Image"+(im.length>1?"s":"")+" déposée"+(im.length>1?"s":"")+" dans la conversation";
+        stat(msg+" — retour à la conversation…");
+        setTimeout(()=>{fermerTableaux();bandeauOk(msg);crmBack();},1600);
+      }
+    }catch(err){
+      if(a!=="crm") stat("❌ Capture impossible");
+      else if(err&&(err.status===401||err.status===403)) stat("❌ Dépôt refusé : le lien du CRM a expiré (il vaut 2 h). Rouvrez le comparateur depuis la conversation WhatsApp.");
+      else if(err&&err.status===undefined&&err instanceof TypeError) stat("❌ CRM injoignable pour l'instant — réessayez dans une minute.");
+      else stat("❌ Dépôt impossible"+(err&&err.message?" ("+err.message+")":""));
+    }
+    btn.disabled=false; btn.innerHTML=old;
+  });
+}
 function renderTG(cols,title,sub,note,single){
   const multi=cols.some(c=>c.key!==cols[0].key);
   const isReco=c=>RECO===(c.key+"|"+c.fi);
@@ -2065,12 +2212,8 @@ function renderTG(cols,title,sub,note,single){
   const PR=typeof PRO!=="undefined"?PRO:{};
   // Légende : prénom puis NOM, sans civilité (Fabrice, 06/10/2026, relayé par le Claude du CRM : « Pas de titre M. ou
   // Madame, juste prénom et nom ») ; la civilité ne sert plus qu'à accorder « né » / « née ».
-  const nm=[(PR.prenom||""),String(PR.nom||"").toUpperCase()].filter(Boolean).join(" ");
-  const civ=String(PR.civ||"").toUpperCase(), ne=/^(MME|MLLE|MADAME|MADEMOISELLE)/.test(civ)?"née":/^(M|MR|MONSIEUR)\.?$/.test(civ)?"né":"né(e)";
-  const bits=[]; if(nm)bits.push(nm);
-  if(PR.ddn)bits.push(ne+" le "+PR.ddn); else{const n=document.getElementById("naiss").value;if(n)bits.push(/^\d{4}$/.test(n)?ne+" en "+n:n+" ans");}
-  bits.push("étude du "+new Date().toLocaleDateString("fr-FR"));
-  const hdr=document.createElement('div'); hdr.className='tghdr'; hdr.textContent=bits.join("  ·  ");
+  const {nm,txt:legende}=prospectLigne();
+  const hdr=document.createElement('div'); hdr.className='tghdr'; hdr.textContent=legende;
   hdr.style.cssText="font:700 16.5px 'Archivo',sans-serif;color:var(--accent);margin:2px 0 8px";
   box.querySelector('h2').after(hdr);
   // Tarifs sous chaque formule, affichés d'office
@@ -2705,11 +2848,13 @@ function updateSendBar(){
     bar.innerHTML='<span id="sbcount"></span>'
       +'<button id="sbvs" style="border:1px solid var(--soft);border-radius:9px;background:transparent;color:inherit;padding:7px 11px;font:800 13px \'Archivo\',sans-serif;cursor:pointer"></button>'
       +'<button id="sbtg" title="Tableau de garantie des formules cochées (toutes gammes) — puis 📷 pour copier l\'image" style="border:0;border-radius:9px;background:var(--soft);color:var(--ink);padding:8px 11px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">📄 Garanties</button>'
+      +'<button id="sbcu" title="Mutuelle + TALIS : garanties et cotisations additionnées, en image" style="border:0;border-radius:9px;background:#FBE3C8;color:#7A3E0C;padding:8px 11px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">🧮 Cumul</button>'
       +'<button id="sbwa" style="border:0;border-radius:9px;background:#25D366;color:#fff;padding:8px 13px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">🟢 WhatsApp</button>'
       +'<button id="sbml" title="Envoyer le tableau de garantie par mail au prospect" style="border:0;border-radius:9px;background:var(--accent);color:var(--accent-ink);padding:8px 13px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">✉️ Email</button>'
       +'<button id="sbx" style="border:0;background:transparent;color:inherit;font-size:16px;cursor:pointer;padding:2px 4px">✕</button>';
     document.body.appendChild(bar);
     bar.querySelector("#sbtg").addEventListener("click",showTGSel);
+    bar.querySelector("#sbcu").addEventListener("click",showCumul);
     bar.querySelector("#sbwa").addEventListener("click",doWhatsApp);
     // « Email » envoie le courrier au prospect : il passe par le tableau, dont le courrier reprend les colonnes.
     bar.querySelector("#sbml").addEventListener("click",()=>viaTableau("mel"));
@@ -2717,6 +2862,8 @@ function updateSendBar(){
     bar.querySelector("#sbvs").addEventListener("click",()=>{VOIRSEL=!VOIRSEL;updateSendBar();calc();});
   }
   bar.querySelector("#sbcount").textContent=SENDSEL.size+" formule"+(SENDSEL.size>1?"s":"");
+  // 🧮 Cumul : seulement quand une mutuelle et une surcomplémentaire (TALIS) sont cochées ensemble.
+  bar.querySelector("#sbcu").style.display=cumulPaires().length?"":"none";
   const vs=bar.querySelector("#sbvs");
   vs.textContent=VOIRSEL?"☰ Tout afficher":"👁 Afficher la sélection";
   vs.title=VOIRSEL?"Revenir à toutes les formules":"N'afficher que les formules cochées";

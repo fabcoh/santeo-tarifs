@@ -269,6 +269,18 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   le courrier** : `mailTableau` ajoute un 3ᵉ élément à chaque ligne (`[libellé, valeurs, 1|0]`), que
   `santeo-mail.php` rend avec le même fond (`#FFF3C4`) ; la version texte marque ces lignes d'un `*`. Un relais
   plus ancien ignore ce 3ᵉ élément sans erreur.
+- **🧮 Cumul mutuelle + surcomplémentaire** (Fabrice, 19/10/2026 : « une calculette… MCCI plus Talis… le total sur chaque poste »,
+  « une petite cartouche, comme une capture d'écran… pour envoyer directement sur WhatsApp ») : cocher une mutuelle **et TALIS** →
+  bouton **🧮 Cumul** de la barre flottante (`#sbcu`, caché sinon) → `showCumul()`, une vignette par mutuelle cochée (× chaque TALIS
+  cochée, 6 au plus), fabriquée par **`Tableau.cumul(G, {mut, sur, tarifs, prospect, date})`** dans `src/tableau.js` (le CRM peut la
+  reprendre). Colonnes « Mutuelle principale » (en gras) · « Surcomplémentaire » · « Total cumulé — Mutuelle + Surcompl. », bandeau
+  vendeur « Pour x € de plus par mois, TALIS renforce… », trois cases de cotisation additionnées, limites de TALIS, logo Santéo.
+  **Additions** (`Tableau.cumulTotal`) : % + %, € + € (« 300 € + 300 €/impl » = **600 €**, l'unité gardée si commune : 80 €/j),
+  % + € sur une ligne (« 200 % + 100 € ») ; **jamais** quand une valeur porte une précision (« 30 €/an (tabac) », « 3×20 € ») —
+  écrit sur deux lignes. Tons pastel, couleurs fixes ; grille de `<div>` (les règles des tableaux de la page ne s'y appliquent pas).
+  Capture à 520 px ×2 (`.cu-cap`, `useCORS`) ; barre : WhatsApp (partage mobile, sinon copie / téléchargement), ⬇ Télécharger,
+  Envoyer dans le CRM (dépôt des images, **sans mail**). `SURCOS` = {TALIS}. Maquette : https://claude.ai/artifact/3f1H8sXyC93UuSmMTxTzbA.
+  Test : scratchpad `t_cumul.js`, `t_cumul2.js`. Modifier `tableau.js` change l'empreinte de `docs/tg/` : l'Action refait les 13 images.
 - **Tableau en blocs** (Fabrice, 03/10/2026, « pour une meilleure visite chez le prospect ») : `Tableau.BLOCS` — Hospitalisation
   (Optam, hors Optam, chambre), Honoraires (spécialistes Optam / hors Optam), **Pharmacie** (médicaments remboursés `x:pharR`,
   pharmacie non remboursée `x:pharN`), Dentaire (**Prothèses dentaires**, implantologie, orthodontie), Optique (**verres et
