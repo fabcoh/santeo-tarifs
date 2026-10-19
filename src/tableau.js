@@ -367,7 +367,7 @@ function cumul(G,o){
     +(ch?'<div class="cu-gain">'+(prix?'Pour <b>'+eur(p2)+' de plus par mois</b>, ':'')+nS+' renforce vos remboursements :<div class="cu-chips">'+ch+'</div></div>':'');
   h+='<div class="cu-r cu-h">'+cell("cu-l","")
     +cell("cu-a",'<div class="cu-lg">'+logo(G,M.key,o.base)+'</div><b>'+nomComplet(G,M.key,M.fi)+'</b><span class="cu-ro">Mutuelle principale</span>')
-    +cell("cu-b",'<div class="cu-lg">'+logo(G,S.key,o.base)+'</div><b>'+nS+'</b><span class="cu-ro">Surcomplé&shy;mentaire</span>')
+    +cell("cu-b",'<div class="cu-lg">'+logo(G,S.key,o.base)+'</div><b>'+nS+'</b><span class="cu-ro"><b class="cu-rf">Renfort</b>Surcomplé&shy;mentaire</span>')
     +cell("cu-t",'<div class="cu-lg cu-eg">=</div><b>Total cumulé</b><span class="cu-ro">Mutuelle + Surcompl.</span>')+'</div>';
   const notes=[];
   for(const [bloc,ls] of BLOCS){
