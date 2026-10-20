@@ -455,18 +455,32 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-prix .cu-t .cu-n{font-size:18px}
 .cumul .cu-ft{margin-top:12px;font-size:10px;color:var(--m);line-height:1.45}
 .cumul .cu-ft b{color:var(--k)}
-/* Projet de soins (Fabrice, 20/10/2026) : dépense, Sécu, contrats, reste, puis le gain sur un an. */
-.cumul .cu-dp{margin-top:10px;background:var(--c1);border-radius:10px;padding:8px 8px 7px}
-.cumul .cu-dpt{font:800 12.5px 'Archivo',sans-serif;margin-bottom:4px}
-.cumul .cu-dr{display:grid;grid-template-columns:1fr 60px 48px 74px 54px;gap:6px;font-size:11px;padding:3px 0;border-bottom:1px solid var(--l);align-items:center}
-.cumul .cu-dr>div:not(:first-child){text-align:right;white-space:nowrap}
-.cumul .cu-dh{font:700 9px 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:.03em;color:var(--m)}
-.cumul .cu-dc{color:var(--t);font-weight:700}
-.cumul .cu-dtot{font-weight:700;border-bottom:0}
-.cumul .cu-dg{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 10px;margin-top:6px;background:#E3F6EA;border-radius:8px;padding:6px 8px;font-size:11px}
-.cumul .cu-dgn{font:800 15px 'Archivo',sans-serif;color:#13784A;white-space:nowrap}
-.cumul .cu-dg0{background:var(--l)}.cumul .cu-dg0 .cu-dgn{color:var(--k);font-size:13px}
+/* Soins prévus (Fabrice, 20/10/2026) : une carte par soin, puis cotisations, remboursements et gain de l'année. */
+.cumul .cu-dp{margin-top:12px}
+.cumul .cu-dpt{font:800 13px 'Archivo',sans-serif;margin-bottom:6px}
+.cumul .cu-dk{background:var(--c1);border-radius:10px;padding:7px 9px 6px;margin-bottom:6px}
+.cumul .cu-dkt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12px;margin-bottom:4px}
+.cumul .cu-dkt b{font-weight:800}
+.cumul .cu-dkt span{white-space:nowrap}
+.cumul .cu-dl1,.cumul .cu-dl2{display:grid;grid-template-columns:1fr 104px 74px;gap:6px;align-items:center;font-size:11px;padding:3px 7px;border-radius:7px;margin-top:2px}
+.cumul .cu-dl1{background:#fff}
+.cumul .cu-dl2{background:var(--o2);color:var(--o)}
+.cumul .cu-dl1 i,.cumul .cu-dl2 i{font-style:normal;opacity:.75;font-size:10px}
+.cumul .cu-dl1>span:nth-child(2),.cumul .cu-dl2>span:nth-child(2){text-align:right;white-space:nowrap}
+.cumul .cu-dre{text-align:right;white-space:nowrap;color:var(--m);font-size:10.5px}
+.cumul .cu-dl3{display:flex;justify-content:space-between;font-size:11.5px;color:var(--t);padding:4px 7px 0}
+.cumul .cu-dl3 b{font-weight:800}
+.cumul .cu-ds{margin-top:8px;border:1px solid var(--t3);border-radius:10px;overflow:hidden}
+.cumul .cu-ds>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 10px;font-size:11.5px;border-bottom:1px solid var(--l)}
+.cumul .cu-ds>div>b{text-align:right}
+.cumul .cu-ds sup{color:var(--t);font-weight:700}
+.cumul .cu-dsans{font-style:normal;font-weight:400;color:var(--m);font-size:10.5px}
+.cumul .cu-dgain{background:#E3F6EA;border-bottom:0!important}
+.cumul .cu-dgain span{font:700 12.5px 'Archivo',sans-serif;color:#13784A}
+.cumul .cu-dgain b{font:800 19px 'Archivo',sans-serif;color:#13784A;white-space:nowrap}
+.cumul .cu-dg0{background:var(--l)}.cumul .cu-dg0 span,.cumul .cu-dg0 b{color:var(--k)}.cumul .cu-dg0 b{font-size:15px}
 .cumul .cu-dn{margin-top:5px;font-size:9.5px;color:var(--m);line-height:1.4}
+.cumul .cu-dn sup{color:var(--t);font-weight:700}
 .cumul .cu-mq{display:flex;align-items:center;gap:8px;margin-top:8px;border-top:1px solid var(--l);padding-top:8px;font-size:10px;color:var(--m)}
 .cumul .cu-mq img{height:22px;width:auto}
 /* Réglages de la fenêtre du cumul (Fabrice, 20/10/2026) : pour le commercial seulement, jamais dans l'image. */
@@ -567,7 +581,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-20T14:51:19Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T14:51:19Z</div>
+  <div id="buildstamp" data-build="2026-10-20T15:05:36Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T15:05:36Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1304,19 +1318,38 @@ function cumulDepenses(G,M,S,dep){
   return out;
 }
 const cuE=n=>cuNb(Math.round(n))+" €";
-function cuDepHTML(G,M,S,R,cot){
+// Libellés au singulier, pour la carte de chaque soin et le récapitulatif (« 1 000 € (implant) »).
+const CU_DEPLIB={cour:["Prothèse dentaire (couronne)","prothèses"],bri:["Bridge","bridges"],inl:["Inlay-core","inlay-core"],
+  imp:["Implant","implants"],orR:["Orthodontie remboursée","orthodontie"],orN:["Orthodontie non remboursée","orthodontie non remb."],
+  lun:["Lunettes","lunettes"],len:["Lentilles","lentilles"],chb:["Chambre particulière","chambre"]};
+// Présentation pour un néophyte (Fabrice, 20/10/2026) : une carte par soin — coût, mutuelle de base (Sécu comprise) puis
+// surcomplémentaire, chacune avec son remboursement et le reste à payer —, puis « Vous payez sur 12 mois… », « Vous êtes
+// remboursé de… » et le gain = tout ce qui est remboursé (Sécu comprise) − les cotisations de l'année.
+function cuDepHTML(G,M,S,R,p1,p2){
   if(!R||!R.lignes.length) return "";
-  const rem=R.mut+R.sur, gain=cot!=null?rem-cot:null;
-  let h='<div class="cu-dp"><div class="cu-dpt">Votre projet de soins sur un an</div>'
-    +'<div class="cu-dr cu-dh"><div>Soins</div><div>Dépense</div><div>Sécu</div><div>Vos contrats</div><div>Reste</div></div>';
-  for(const l of R.lignes) h+='<div class="cu-dr"><div>'+(l.n>1?l.n+" × ":"")+l.lib+(l.nc?" <sup>†</sup>":"")+'</div><div>'+cuE(l.dep)+'</div><div>'
-    +(l.secu?cuE(l.secu):"—")+'</div><div class="cu-dc">'+cuE(l.mut+l.sur)+'</div><div>'+cuE(l.reste)+'</div></div>';
-  h+='<div class="cu-dr cu-dtot"><div>Total</div><div>'+cuE(R.dep)+'</div><div>'+(R.secu?cuE(R.secu):"—")+'</div><div class="cu-dc">'+cuE(rem)+'</div><div>'+cuE(R.reste)+'</div></div>';
-  if(gain!=null) h+='<div class="cu-dg'+(gain>0?"":" cu-dg0")+'"><span>Remboursé par vos contrats <b>'+cuE(rem)+'</b> − cotisations sur un an <b>'+cuE(cot)+'</b></span>'
-    +(gain>0?'<span class="cu-dgn">Votre gain : '+cuE(gain)+'</span>':'<span class="cu-dgn">Écart : '+cuE(gain)+'</span>')+'</div>';
-  h+='<div class="cu-dn">Estimation sur les soins indiqués. Pourcentages Sécurité sociale comprise, sur les tarifs de convention (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre) ; implants et orthodontie non remboursée au forfait. Dans la limite des plafonds annuels et après les délais d’attente des contrats'
-    +(CU_PLAF[S.key]?' (plafond dentaire '+nomComplet(G,S.key,S.fi).replace(/^TALIS Talis/,"TALIS")+' : '+CU_PLAF[S.key](S.fi)+' € par an, appliqué)':'')+'.'
-    +(R.nc?' † Une garantie en texte n’a pas pu être chiffrée : non comptée.':'')+'</div></div>';
+  const nM=nomComplet(G,M.key,M.fi), nS=nomComplet(G,S.key,S.fi).replace(/^TALIS Talis/,"TALIS").replace(/^TALIS TALIS/,"TALIS");
+  const rem=R.secu+R.mut+R.sur, cot=(p1!=null&&p2!=null)?cuR((p1+p2)*12):null;
+  let h='<div class="cu-dp"><div class="cu-dpt">Vos soins prévus : ce qui vous sera remboursé</div>';
+  for(const l of R.lignes){
+    const L=CU_DEPLIB[l.id]||[l.lib,l.lib], r1=l.secu+l.mut, rest1=l.dep-r1;
+    h+='<div class="cu-dk"><div class="cu-dkt"><b>'+L[0]+(l.nc?' <sup>†</sup>':'')+'</b><span>Coût : '+(l.n>1?l.n+' × '+cuE(l.p)+' = ':'')+'<b>'+cuE(l.dep)+'</b></span></div>'
+      +'<div class="cu-dl1"><span>Mutuelle de base'+(l.secu?' <i>(Sécu comprise)</i>':'')+'</span><span>remboursé <b>'+cuE(r1)+'</b></span><span class="cu-dre">reste '+cuE(rest1)+'</span></div>'
+      +'<div class="cu-dl2"><span>+ '+nS+' <i>(surcomplémentaire)</i></span><span>remboursé <b>'+cuE(l.sur)+'</b></span><span class="cu-dre">reste '+cuE(l.reste)+'</span></div>'
+      +'<div class="cu-dl3"><span>Total remboursé</span><b>'+cuE(r1+l.sur)+' sur '+cuE(l.dep)+'</b></div></div>';
+  }
+  // Récapitulatif de l'année.
+  const parts=R.lignes.map(l=>cuE(l.secu+l.mut+l.sur)+' ('+(CU_DEPLIB[l.id]||[,l.lib])[1]+')');
+  h+='<div class="cu-ds">';
+  if(cot!=null) h+='<div><span>Vous payez sur 12 mois<sup>*</sup></span><b>'+eur(p1)+' + '+eur(p2)+' = '+eur(p1+p2)+' × 12 = '+cuE(cot)+'</b></div>';
+  h+='<div><span>Vous êtes remboursé de</span><b>'+parts.join(' + ')+(parts.length>1?' = '+cuE(rem):'')+'</b></div>';
+  h+='<div><span>Reste à votre charge</span><b>'+cuE(R.reste)+' <i class="cu-dsans">au lieu de '+cuE(R.dep-R.secu)+' sans complémentaire</i></b></div>';
+  if(cot!=null){ const g=rem-cot;
+    h+=g>0?'<div class="cu-dgain"><span>Votre gain sur l’année</span><b>+ '+cuE(g)+'</b></div>'
+           :'<div class="cu-dgain cu-dg0"><span>Différence sur l’année</span><b>'+cuE(g)+'</b></div>'; }
+  h+='</div><div class="cu-dn">'+(cot!=null?'<sup>*</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
+    +'Tableau présenté à titre indicatif — document non contractuel. Calcul sur les tarifs de convention de la Sécurité sociale (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre), implants et orthodontie non remboursée au forfait, dans la limite des plafonds annuels'
+    +(CU_PLAF[S.key]?' (dentaire '+nS+' : '+CU_PLAF[S.key](S.fi)+' € par an)':'')+' et après les délais d’attente.'
+    +(R.nc?' † Garantie non chiffrable : non comptée.':'')+'</div></div>';
   return h;
 }
 // o = {mut:{key,fi}, sur:{key,fi}, tarifs:{"CLE|fi":n}, prospect, date:"jj/mm/aaaa", base, sansTarifs, depenses:{id:{n,p}}}
@@ -1357,7 +1390,7 @@ function cumul(G,o){
     +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
     +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')
     +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>')+'</div>';
-  if(o.depenses) h+=cuDepHTML(G,M,S,cumulDepenses(G,M,S,o.depenses),prix?cuR((p1+p2)*12):null);
+  if(o.depenses) h+=cuDepHTML(G,M,S,cumulDepenses(G,M,S,o.depenses),prix?p1:null,prix?p2:null);
   h+=gain;
   if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
   const gM=G.gammes[M.key], nr=gM&&(gM.resp===false||/^\s*Contrat NON responsable/i.test(String(limites(G,M.key,M.fi)||"")));
@@ -3143,7 +3176,7 @@ function showCumul(){
     const tarifs={}; if(pc!=null) tarifs[c.key+"|"+c.fi]=pc; if(prix(s)!=null) tarifs["TALIS|"+s.fi]=prix(s);
     const depA=Object.keys(CUMUL.dep).length?CUMUL.dep:null;
     box.querySelector('#cuDSum').textContent=depA?(()=>{const R=Tableau.cumulDepenses(GAR,c,s,depA);
-      const g=(pc!=null&&prix(s)!=null)?R.mut+R.sur-(pc+prix(s))*12:null;
+      const g=(pc!=null&&prix(s)!=null)?R.secu+R.mut+R.sur-(pc+prix(s))*12:null;
       return R.lignes.length+" soin"+(R.lignes.length>1?"s":"")+" · "+eur(R.dep)+(g!=null?" · "+(g>0?"gain ":"écart ")+eur(g):"");})():"aucune";
     box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depA});
     P=[{mut:c,sur:s}];
