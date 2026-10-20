@@ -353,7 +353,84 @@ const CU_AST={
     return "";}}
 };
 const cuPlus=v=>{const p=cuLire(v);return p?"+ "+cuTxt(p):"—";};
-// o = {mut:{key,fi}, sur:{key,fi}, tarifs:{"CLE|fi":n}, prospect, date:"jj/mm/aaaa", base, sansTarifs}
+// ---- Projet de soins du prospect (Fabrice, 20/10/2026 : « il a 1000 € en implant et 600 € de prothèse, il paie 100 €/mois…
+// plus on remplit ce tableau et plus la personne gagne ») : nombre + prix par soin, sur un an. Les pourcentages incluent la
+// Sécurité sociale et se calculent sur le tarif de convention (Fabrice : couronne 120 €, bridge 279,50 €, inlay-core 90 €,
+// orthodontie remboursée 193,50 € par semestre ; implants et orthodontie non remboursée au forfait). Chaque contrat paie dans
+// l'ordre — Sécurité sociale, mutuelle, surcomplémentaire — jamais plus que la dépense ; le gain = ce que paient les deux
+// contrats − leurs cotisations sur un an.
+// [id, libellé, poste, base de convention, taux Sécu, unité, forfait sans unité : "u" par unité | "an" par an]
+const CU_DEP=[
+  ["cour","Couronnes","dent",120,.6,"couronne","u"],
+  ["bri","Bridges","dent",279.5,.6,"bridge","u"],
+  ["inl","Inlay-core","dent",90,.6,"inlay-core","u"],
+  ["imp","Implants","x:imp",0,0,"implant","imp"],
+  ["orR","Orthodontie remboursée","x:orthR",193.5,1,"semestre","u"],
+  ["orN","Orthodontie non remboursée","x:orthN",0,0,"semestre","orN"],
+  ["lun","Lunettes (verres simples)","opt",0,0,"équipement","u"],
+  ["len","Lentilles","x:lentA",0,0,"an","an"],
+  ["chb","Chambre particulière","ch",0,0,"jour","u"]
+];
+const CU_DENT=new Set(["cour","bri","inl","imp","orR","orN"]);
+const CU_IMP_MAX={APICIL:2};                                    // « 2 implants au plus par an »
+const CU_PLAF={TALIS:fi=>fi?900:600};                           // plafond dentaire annuel de la surcomplémentaire
+const cuR=x=>Math.round(x*100)/100;
+// Ce que paie un contrat sur les restes à charge `rest` (un par unité). null = non chiffrable (valeur en texte).
+function cuPaie(G,c,L,rest){
+  const v=valeur(G,c.key,c.fi,L[2]), P=cuLire(v), z=rest.map(()=>0);
+  if(!P) return z;
+  if(P.raw) return null;
+  if(P.u==="%"){
+    if(!L[3]){ if(L[0]==="orN") return null; return z; }      // pas de base Sécu : implants, optique, lentilles
+    const cap=Math.max(0,P.n/100*L[3]-(c.sur?0:L[4]*L[3]));    // mutuelle : % Sécu comprise ; surcomplément : en plus
+    return rest.map(r=>Math.min(r,cap));
+  }
+  let mode=L[6];
+  if(P.s==="/an") mode="an"; else if(P.s) mode="u";
+  else if(mode==="imp") mode=((CU_IMP[c.key]||[])[0]==="an")?"an":"u";
+  else if(mode==="orN"){ const t=(CU_ORTHN[c.key]||[])[0]; mode=t==="an"?"an":"u"; }
+  if(mode==="an"){ let e=P.n; return rest.map(r=>{const x=Math.min(r,e);e-=x;return x;}); }
+  const max=L[0]==="imp"&&CU_IMP_MAX[c.key]?CU_IMP_MAX[c.key]:Infinity;
+  return rest.map((r,i)=>i<max?Math.min(r,P.n):0);
+}
+// dep = {id:{n,p}} ; rend {lignes:[{id,lib,n,p,dep,secu,mut,sur,reste,nc}], dep, secu, mut, sur, reste, nc}
+function cumulDepenses(G,M,S,dep){
+  const out={lignes:[],dep:0,secu:0,mut:0,sur:0,reste:0,nc:false};
+  let plaf=CU_PLAF[S.key]?CU_PLAF[S.key](S.fi):Infinity;
+  for(const L of CU_DEP){
+    const d=(dep||{})[L[0]]; if(!d) continue;
+    const p=+d.p||0, n=Math.max(1,Math.min(40,Math.round(+d.n||1))); if(!(p>0)) continue;
+    let rest=Array(n).fill(p);
+    const secu=rest.map(r=>Math.min(r,L[4]*L[3])); rest=rest.map((r,i)=>r-secu[i]);
+    const a=cuPaie(G,M,L,rest); if(a) rest=rest.map((r,i)=>r-a[i]);
+    const b=cuPaie(G,Object.assign({sur:1},S),L,rest);
+    let sb=b?b.reduce((x,y)=>x+y,0):0;
+    if(CU_DENT.has(L[0])){ sb=Math.min(sb,plaf); plaf-=sb; }
+    const l={id:L[0],lib:L[1],u:L[5],n,p,dep:n*p,secu:secu.reduce((x,y)=>x+y,0),mut:a?a.reduce((x,y)=>x+y,0):0,sur:sb,nc:!a||!b};
+    l.reste=cuR(l.dep-l.secu-l.mut-l.sur);
+    out.lignes.push(l);
+    for(const k of ["dep","secu","mut","sur","reste"]) out[k]=cuR(out[k]+l[k]);
+    if(l.nc) out.nc=true;
+  }
+  return out;
+}
+const cuE=n=>cuNb(Math.round(n))+" €";
+function cuDepHTML(G,M,S,R,cot){
+  if(!R||!R.lignes.length) return "";
+  const rem=R.mut+R.sur, gain=cot!=null?rem-cot:null;
+  let h='<div class="cu-dp"><div class="cu-dpt">Votre projet de soins sur un an</div>'
+    +'<div class="cu-dr cu-dh"><div>Soins</div><div>Dépense</div><div>Sécu</div><div>Vos contrats</div><div>Reste</div></div>';
+  for(const l of R.lignes) h+='<div class="cu-dr"><div>'+(l.n>1?l.n+" × ":"")+l.lib+(l.nc?" <sup>†</sup>":"")+'</div><div>'+cuE(l.dep)+'</div><div>'
+    +(l.secu?cuE(l.secu):"—")+'</div><div class="cu-dc">'+cuE(l.mut+l.sur)+'</div><div>'+cuE(l.reste)+'</div></div>';
+  h+='<div class="cu-dr cu-dtot"><div>Total</div><div>'+cuE(R.dep)+'</div><div>'+(R.secu?cuE(R.secu):"—")+'</div><div class="cu-dc">'+cuE(rem)+'</div><div>'+cuE(R.reste)+'</div></div>';
+  if(gain!=null) h+='<div class="cu-dg'+(gain>0?"":" cu-dg0")+'"><span>Remboursé par vos contrats <b>'+cuE(rem)+'</b> − cotisations sur un an <b>'+cuE(cot)+'</b></span>'
+    +(gain>0?'<span class="cu-dgn">Votre gain : '+cuE(gain)+'</span>':'<span class="cu-dgn">Écart : '+cuE(gain)+'</span>')+'</div>';
+  h+='<div class="cu-dn">Estimation sur les soins indiqués. Pourcentages Sécurité sociale comprise, sur les tarifs de convention (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre) ; implants et orthodontie non remboursée au forfait. Dans la limite des plafonds annuels et après les délais d’attente des contrats'
+    +(CU_PLAF[S.key]?' (plafond dentaire '+nomComplet(G,S.key,S.fi).replace(/^TALIS Talis/,"TALIS")+' : '+CU_PLAF[S.key](S.fi)+' € par an, appliqué)':'')+'.'
+    +(R.nc?' † Une garantie en texte n’a pas pu être chiffrée : non comptée.':'')+'</div></div>';
+  return h;
+}
+// o = {mut:{key,fi}, sur:{key,fi}, tarifs:{"CLE|fi":n}, prospect, date:"jj/mm/aaaa", base, sansTarifs, depenses:{id:{n,p}}}
 function cumul(G,o){
   o=o||{};
   const M=o.mut,S=o.sur,v1=src=>valeur(G,M.key,M.fi,src),v2=src=>valeur(G,S.key,S.fi,src);
@@ -391,6 +468,7 @@ function cumul(G,o){
     +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
     +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')
     +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>')+'</div>';
+  if(o.depenses) h+=cuDepHTML(G,M,S,cumulDepenses(G,M,S,o.depenses),prix?cuR((p1+p2)*12):null);
   h+=gain;
   if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
   const gM=G.gammes[M.key], nr=gM&&(gM.resp===false||/^\s*Contrat NON responsable/i.test(String(limites(G,M.key,M.fi)||"")));
@@ -430,6 +508,8 @@ exporter.document=documentHTML;
 exporter.eur=eur;
 exporter.cumul=cumul;
 exporter.cumulTotal=cumulTotal;
+exporter.cumulDepenses=cumulDepenses;
+exporter.CU_DEP=CU_DEP;
 
 })(typeof module!=="undefined"&&module.exports ? module.exports
    : ((typeof self!=="undefined"?self:this).Tableau={}));

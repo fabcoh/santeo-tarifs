@@ -642,3 +642,16 @@ Si votre serveur fabrique lui-même des images avec `src/tableau.js` : nouvelle 
 naissance:"jj/mm/aaaa"|"aaaa"|"âge"|""}]}`. Sans elle, rien ne change (c'est le cas des images sans tarif `docs/tg/`).
 Le relais `santeo-mail.php` accepte le même objet sous `devis` (appelant serveur compris) ; sans lui, la ligne des mentions
 dit « Tarifs au …, valables 10 jours. »
+
+## 20/10/2026 — comparateur → CRM : projet de soins dans la vignette du cumul
+
+- `Tableau.cumul(G, o)` accepte `o.depenses = {id:{n, p}}` (nombre, prix unitaire, sur un an). Ids : `cour` (couronnes),
+  `bri` (bridges), `inl` (inlay-core), `imp` (implants), `orR` / `orN` (orthodontie remboursée / non remboursée, par semestre),
+  `lun` (lunettes, verres simples), `len` (lentilles), `chb` (chambre particulière, par jour) — liste dans `Tableau.CU_DEP`.
+  La vignette ajoute, sous la cotisation, « Votre projet de soins sur un an » : dépense, Sécu, vos contrats, reste, puis
+  « remboursé par vos contrats − cotisations sur un an » = gain (ou écart).
+- Calcul seul : `Tableau.cumulDepenses(G, mut, sur, depenses)`. Pourcentages Sécurité sociale comprise sur les tarifs de
+  convention donnés par Fabrice (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre) ; implants
+  et orthodontie non remboursée au forfait (par implant ou par an selon la gamme) ; ordre Sécu → mutuelle → surcomplémentaire ;
+  plafond dentaire TALIS 600 / 900 € appliqué ; APICIL 2 implants au plus. Sans `depenses`, rien ne change.
+- `src/tableau.js` modifié : l'empreinte de `docs/tg/` change, les 13 images sont refaites (contenu identique).

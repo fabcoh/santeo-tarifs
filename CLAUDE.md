@@ -307,6 +307,20 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **APRIL = les produits cochés au ☰ du panneau ⚖** (Fabrice, 20/10/2026, capture du panneau, 3 / 24 cochés : « ceux qui sont
   cochés pour APRIL ») : la liste Compagnie et « Toutes les compagnies » ne prennent plus tous les produits ouverts mais `APRIL_SEL`
   (ouverts et au régime) ; plus d'appel au relais en plus de celui du tableau. Ligne d'aide : « APRIL : n produits cochés… ».
+  **Pas de relance en boucle** : un appel APRIL du cumul sans réponse utile n'est pas refait avant 60 s (`CUMUL_APRIL_ECHEC`) —
+  avant, chaque échec redessinait la fenêtre qui redemandait aussitôt (613 appels en 5 s avec un relais en 503, 20/10/2026).
+  **Projet de soins — volet « Dépenses »** (Fabrice, 20/10/2026 : « il a 1000 € en implant et 600 € de prothèse, il paie 100 €/mois…
+  plus on remplit ce tableau et plus la personne gagne » ; « nombre + prix » ; tarifs de convention : couronne 120 €, bridge 279,50 €,
+  inlay-core 90 €, orthodontie remboursée 193,50 €/semestre, implants et orthodontie non remboursée au forfait, « les montants
+  indiqués incluent la Sécurité sociale ») : à côté de « Besoins », volet **Dépenses** (nombre + prix unitaire, sur un an) pour
+  couronnes, bridges, inlay-core, implants, orthodontie remboursée / non remboursée, lunettes, lentilles, chambre. Calcul
+  `Tableau.cumulDepenses` (`src/tableau.js`, `CU_DEP`) : Sécu (60 % du tarif de convention en prothèse, 100 % en orthodontie)
+  → mutuelle (% Sécu comprise, ou forfait par unité / par an selon `CU_IMP` / `CU_ORTHN`) → surcomplémentaire (en plus), jamais
+  plus que la dépense ; plafond dentaire TALIS 600 / 900 € appliqué, APICIL 2 implants au plus ; une valeur en texte n'est pas
+  chiffrée (†). Dans la vignette, sous la cotisation : tableau Dépense · Sécu · Vos contrats · Reste, puis « Remboursé par vos
+  contrats X € − cotisations sur un an Y € » → **Votre gain** (vert) ou **Écart** (gris) si négatif. **Gain = ce que paient
+  les deux contrats, hors Sécu**, moins 12 mois de cotisation : la Sécu paie de toute façon. Les plafonds annuels des autres
+  gammes ne sont pas appliqués (mention « dans la limite des plafonds annuels »). Saisie non retenue. Test : scratchpad `t_cumul6.js`.
   **Implantologie marquée d'une \*** (Fabrice, 19/10/2026 : « vérifie l'implantologie… une astérisque puis expliquer les limites en
   dessous du tableau ») : `CU_IMP` dit ce que vaut le montant de chaque gamme, relu dans les fiches `docs/connaissances/` — **par
   implant** (Cap Évolution, CAP NR, TALIS dans son plafond 600 / 900 €, APICIL 2 au plus), **forfait annuel** (FLEXIA, SOLENCIA
