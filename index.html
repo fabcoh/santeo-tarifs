@@ -455,11 +455,15 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-ft b{color:var(--k)}
 /* Soins prévus : un bloc par soin, puis le bilan de l'année. */
 .cumul .cu-dp{margin-top:14px}
-.cumul .cu-top{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:2px solid var(--v);border-bottom:2px solid var(--v);padding:7px 2px;margin:0 0 10px}
-.cumul .cu-top b{display:block;font:800 13.5px 'Archivo',sans-serif;color:var(--v)}
+.cumul .cu-top{display:flex;gap:0;border-top:2px solid var(--k);border-bottom:1px solid var(--l);margin:0 0 10px}
+.cumul .cu-top>div{flex:1;padding:7px 4px 7px}
+.cumul .cu-top b{display:block;font:700 11.5px 'Archivo',sans-serif}
+.cumul .cu-top em{display:block;font:800 22px/1.1 'Archivo',sans-serif;font-style:normal;white-space:nowrap;margin-top:1px}
 .cumul .cu-top span{display:block;font-size:10.5px;color:var(--m);margin-top:1px}
-.cumul .cu-top em{font:800 24px 'Archivo',sans-serif;color:var(--v);font-style:normal;white-space:nowrap}
-.cumul .cu-top0{border-color:var(--l)}.cumul .cu-top0 b,.cumul .cu-top0 em{color:var(--k)}
+.cumul .cu-tr b,.cumul .cu-tr em{color:var(--r)}
+.cumul .cu-tr span i{font-style:normal;color:var(--k);font-weight:800;font-size:12px}
+.cumul .cu-tg{border-left:1px solid var(--l);text-align:right}
+.cumul .cu-tg b,.cumul .cu-tg em{color:var(--v)}
 .cumul .cu-dpt{font:800 13px 'Archivo',sans-serif;padding-bottom:4px;border-bottom:2px solid var(--k)}
 .cumul .cu-dk{padding:6px 0 5px;border-bottom:1px solid var(--l)}
 .cumul .cu-dkt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12px;margin-bottom:2px}
@@ -590,7 +594,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-20T15:44:36Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T15:44:36Z</div>
+  <div id="buildstamp" data-build="2026-10-20T15:56:12Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T15:56:12Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1426,13 +1430,15 @@ function cumul(G,o){
   const ch=CU_GAINS.filter(([s])=>cuLire(v2(s))).map(([s,l])=>'<span><i>'+l+'</i> '+cuPlus(v2(s))+'</span>').join("");
   let h='<div class="cu-ti">Votre mutuelle + surcomplémentaire</div>'
     +(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'');
-  // Le gain en première ligne (Fabrice, 20/10/2026 : « afficher les gains de la solution en première ligne ») : même calcul
-  // que le bilan du bas — remboursements de l'année (Sécu comprise) − cotisations × 12.
+  // Première ligne (Fabrice, 20/10/2026 : « afficher les gains de la solution en première ligne », puis « une composition des
+  // deux ») : toujours le reste à charge comparé à « sans complémentaire », et le gain de l'année à côté s'il est positif —
+  // une différence négative n'est pas mise en tête (elle reste dans le bilan du bas). Même calcul que le bilan.
   const RD=o.depenses?cumulDepenses(G,M,S,o.depenses):null;
-  if(RD&&RD.lignes.length&&prix){ const rem=RD.secu+RD.mut+RD.sur, cot=cuR((p1+p2)*12), g=rem-cot;
-    h+='<div class="cu-top'+(g>0?'':' cu-top0')+'"><div><b>'+(g>0?'Votre gain sur l’année':'Différence sur l’année')+'</b>'
-      +'<span>remboursé '+cuE(rem)+' − cotisations '+cuE(cot)+' · reste à charge '+cuE(RD.reste)+' au lieu de '+cuE(RD.dep-RD.secu)+'</span></div>'
-      +'<em>'+(g>0?'+ ':'')+cuE(g)+'</em></div>'; }
+  if(RD&&RD.lignes.length){ const rem=RD.secu+RD.mut+RD.sur, cot=prix?cuR((p1+p2)*12):null, g=cot!=null?rem-cot:null;
+    h+='<div class="cu-top"><div class="cu-tr"><b>Reste à votre charge</b><em>'+cuE(RD.reste)+'</em>'
+      +'<span>au lieu de <i>'+cuE(RD.dep-RD.secu)+'</i> sans complémentaire</span></div>'
+      +(g!=null&&g>0?'<div class="cu-tg"><b>Votre gain sur l’année</b><em>+ '+cuE(g)+'</em><span>remboursé '+cuE(rem)+' − cotisations '+cuE(cot)+'</span></div>':'')
+      +'</div>'; }
   // Le bandeau « Pour x € de plus par mois… » ferme le tableau, juste au-dessus de la cotisation (Fabrice, 20/10/2026).
   const gain=ch?'<div class="cu-gain">'+(prix?'Pour <b>'+eur(p2)+' de plus par mois</b>, ':'')+nS+' renforce vos remboursements :<div class="cu-chips">'+ch+'</div></div>':'';
   h+='<div class="cu-r cu-h">'+cell("cu-l","")
