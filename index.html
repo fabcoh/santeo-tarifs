@@ -585,7 +585,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-20T15:38:45Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T15:38:45Z</div>
+  <div id="buildstamp" data-build="2026-10-20T15:42:27Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T15:42:27Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1358,6 +1358,10 @@ function cumulDepenses(G,M,S,dep){
     if(b){ const q=plafonne(b,PS,L[0],RS,rest.map(()=>0)); b=q.pay; atS=q.atteint; }
     const sm=x=>x?x.reduce((u,v)=>u+v,0):0;
     const l={id:L[0],lib:L[1],u:L[5],n,p,dep:n*p,secu:sm(secu),mut:sm(a),sur:sm(b),nc:!a||!b,atM,atS};
+    // Règle absolue (Fabrice, 20/10/2026 : « on ne peut pas rembourser plus que ce qui est dû ») : Sécu + mutuelle +
+    // surcomplémentaire ne dépassent jamais la dépense ; un excédent, s'il apparaissait, serait retiré au dernier payeur.
+    let trop=cuR(l.secu+l.mut+l.sur-l.dep);
+    if(trop>0){ const x=Math.min(trop,l.sur); l.sur-=x; trop-=x; l.mut=Math.max(0,l.mut-trop); }
     l.reste=cuR(l.dep-l.secu-l.mut-l.sur);
     out.lignes.push(l);
     for(const k of ["dep","secu","mut","sur","reste"]) out[k]=cuR(out[k]+l[k]);
