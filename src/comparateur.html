@@ -2122,7 +2122,8 @@ function profilPage(){
 function cumulCompagnies(){
   const out=[];
   for(const k of Object.keys(F)){ if(k==="TALIS"||k==="APRIL")continue; out.push({v:k,comp:COMP[k]||"",lab:F[k].label.replace(/^M\. VERTE /,"")}); }
-  for(const code of APRIL_ORDRE_RANG){ if(APRIL_FERMES[code]||!APRIL_GAR[code])continue; out.push({v:"APRIL:"+code,comp:"APRIL",lab:APRIL_NOM[code]||code}); }
+  const reg=regimeActuel();
+  for(const code of APRIL_ORDRE_RANG){ if(APRIL_FERMES[code]||!APRIL_GAR[code]||!aprilRegimeOk(code,reg))continue; out.push({v:"APRIL:"+code,comp:"APRIL",lab:APRIL_NOM[code]||code}); }
   return out;
 }
 // Formules d'une compagnie de la fenêtre : [{key, fi}], de la moins chère à la plus chère dans l'ordre de la gamme.
@@ -2144,7 +2145,7 @@ function cumulTarifs(){
   const {rows}=Moteur.calculer({D,F,sel:tout,age:p.age,cnjAge:p.cnjAge,hasCnj:p.hasCnj,kids:p.kids,reg:p.reg,dept:p.dept,
                                zone:p.dept?ZMAP[p.dept]:null,apicil,april:{etat:""}});
   for(const r of rows) T[r.key+"|"+r.fi]=r.total;
-  for(const r of LASTROWS) if(r.key==="APRIL") T["APRIL|"+r.fi]=r.total;   // APRIL déjà tarifé dans le tableau
+  for(const r of LASTROWS) if(r.key==="APRIL"&&aprilRegimeOk(APRIL_ORDRE_RANG[Math.floor(r.fi/100)],p.reg)) T["APRIL|"+r.fi]=r.total;   // APRIL déjà tarifé dans le tableau
   return T;
 }
 // Produits APRIL qui ne sont pas dans le tableau : demandés au relais en un seul appel, gardés dans le même cache.
@@ -2264,7 +2265,8 @@ function showCumul(){
       :' · <span class="w">non tarifée pour ce profil</span>';
     box.querySelector('#cuH').innerHTML=(manque.length?"⚠ ":"→ ")+"<b>"+Tableau.nomComplet(GAR,c.key,c.fi)+"</b>"+tarTxt+" — "+msg+"."
       +(manque.length?'<br><span class="w">Non rempli : '+manque.map(([k,x])=>LIBP[k]+" "+st(x)+" ("+(fvaleur({key:c.key,fi:c.fi},k)||"—")+")").join(" · ")+"</span>":"")
-      +(enCours?'<br><span class="w">Tarifs APRIL ou API SANTÉ encore en cours : le choix peut changer à leur arrivée.</span>':"");
+      +(enCours?'<br><span class="w">Tarifs APRIL ou API SANTÉ encore en cours : le choix peut changer à leur arrivée.</span>':"")
+      +(tous&&!/TNS/.test(regimeActuel())?'<br>Régime salarié : produits APRIL réservés aux TNS (Santé Pro…) écartés.':"");
     const tarifs={}; if(pc!=null) tarifs[c.key+"|"+c.fi]=pc; if(prix(s)!=null) tarifs["TALIS|"+s.fi]=prix(s);
     box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date});
     P=[{mut:c,sur:s}];
@@ -2610,6 +2612,11 @@ const APRIL_A_BRANCHER={};
 // Fermés à CAPI FINANCE en préproduction (« Produit non disponible », 02/10/2026) ; Hospi + ne se vend qu'en complément.
 const APRIL_FERMES={SanteBrio:"non ouvert à notre compte",SantePrimo:"non ouvert à notre compte",SanteGlobale:"non ouvert à notre compte",
   SanteMoove:"non ouvert à notre compte",SanteGenerali:"plus commercialisé (APRIL, 05/10/2026)",SanteApril:"non ouvert à notre compte",SanteSolution:"non ouvert à notre compte",SantePremium:"non ouvert à notre compte",HospiPlus:"vendu seulement en complément d'un autre produit"};
+// Produits TNS (Santé Pro, Pro Start, Pro Privilège…) : jamais tarifés ni proposés à un salarié (Fabrice, 20/10/2026 : « fait
+// attention aux régimes sal ou tns » — le cumul avait retenu Santé Pro Niv. 3 pour un salarié, APRIL le tarifant sans rien dire).
+const APRIL_TNS=new Set(APRIL_PRODUITS.find(g=>g[0]==="TNS")[1].map(x=>x[0]));
+function aprilRegimeOk(code,reg){ return !APRIL_TNS.has(code)||reg==="TNS"||reg==="TNSRL"; }
+const APRIL_TNS_SEUL="réservé aux TNS (régime du haut de page : salarié)";
 let APRIL_SEL=["SanteMix","SimplySante"];
 try{ const s=JSON.parse(localStorage.getItem("santeo_april")||"null"); if(Array.isArray(s)) APRIL_SEL=s; }catch(e){}
 window.APRIL_SEL=APRIL_SEL;
@@ -2762,7 +2769,7 @@ function aprilCP(brut,dept){
 }
 function aprilProfil(age,cnjAge,hasCnj,kids,reg,cpBrut,dept){
   const brut=(cpBrut||"").trim();
-  const ouverts=APRIL_SEL.filter(c=>!APRIL_FERMES[c]&&!APRIL_A_BRANCHER[c]);
+  const ouverts=APRIL_SEL.filter(c=>!APRIL_FERMES[c]&&!APRIL_A_BRANCHER[c]&&aprilRegimeOk(c,reg));
   const cp=aprilCP(brut,dept);
   if(!cp||!ouverts.length) return null;
   const a=[{role:"AssurePrincipal",naissance:apicilNaiss(age,apicilDDNAssure())}];
@@ -2859,7 +2866,7 @@ function aprilRendu(){
   else{
     // Les niveaux sont dans le tableau des formules ; ici, seulement ce qui n'a pas pu être tarifé.
     const vus=new Set(st.res.map(p=>p.produit).concat(st.enCours||[]));
-    const ko=st.res.filter(p=>p.etat!=="ok").concat(APRIL_SEL.filter(c=>!vus.has(c)).map(c=>({produit:c,message:APRIL_FERMES[c]||(APRIL_A_BRANCHER[c]?"tarif pas encore branché (API APRIL à relever)":"non proposé par le relais")})));
+    const ko=st.res.filter(p=>p.etat!=="ok").concat(APRIL_SEL.filter(c=>!vus.has(c)).map(c=>({produit:c,message:APRIL_FERMES[c]||(!aprilRegimeOk(c,regimeActuel())?APRIL_TNS_SEUL:"")||(APRIL_A_BRANCHER[c]?"tarif pas encore branché (API APRIL à relever)":"non proposé par le relais")})));
     const nok=st.res.filter(p=>p.etat==="ok").length;
     // Panne d'APRIL (Fabrice, 05/10/2026) : quand aucun produit n'est tarifé et que tous les refus viennent de leur
     // serveur (5xx, délai dépassé), une seule ligne claire au lieu d'un « réponse vide (HTTP 502) » par produit.

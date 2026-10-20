@@ -298,6 +298,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (Fabrice, 20/10/2026 : « remonte les tarifs au dessous du tableau avant les explications ») : **cotisation** juste sous la grille,
   puis le bandeau « Pour x € de plus… », puis les notes \* / \*\*, puis les limites de TALIS et le logo. Maquette : https://claude.ai/artifact/EHZgZs18CphZurdwpbz9V7.
   Test : scratchpad `t_cumul3.js` (relais APRIL et APICIL simulés).
+  **Régime respecté** (Fabrice, 20/10/2026, capture : « APRIL Santé Pro Niv. 3 » retenu pour un salarié — « fait attention aux régimes
+  sal ou tns ») : les produits du groupe TNS d'`APRIL_PRODUITS` (Santé Pro, Pro Start, Pro Privilège) ne sont tarifés et proposés
+  qu'en régime TNS / TNSRL (`aprilRegimeOk`) — dans le cumul (liste Compagnie, « Toutes les compagnies ») **et dans le tableau
+  principal** (`aprilProfil` ne les envoie plus ; le bloc APRIL dit « réservé aux TNS »). APRIL les tarifait sans rien dire pour un
+  salarié. Les produits Particuliers restent ouverts aux TNS. Les gammes locales suivent déjà le régime dans `moteur.js` ; APICIL
+  en décide lui-même. Test : scratchpad `t_cumul5.js`.
   **Implantologie marquée d'une \*** (Fabrice, 19/10/2026 : « vérifie l'implantologie… une astérisque puis expliquer les limites en
   dessous du tableau ») : `CU_IMP` dit ce que vaut le montant de chaque gamme, relu dans les fiches `docs/connaissances/` — **par
   implant** (Cap Évolution, CAP NR, TALIS dans son plafond 600 / 900 €, APICIL 2 au plus), **forfait annuel** (FLEXIA, SOLENCIA
