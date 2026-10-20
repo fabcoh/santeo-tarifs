@@ -347,6 +347,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   la surcomplémentaire reprend ce que la mutuelle n'a plus payé, dans son propre plafond. « plafond atteint » en rouge sur la
   ligne ; mention « Plafonds dentaires (1re année d'adhésion, appliqués) — <mutuelle> : x € ; TALIS + : 900 € ». Test : scratchpad
   `t_cumul10.js` (Cap Évolution Sérénité + Talis + : 3 couronnes à 800 €, 2 implants à 1 500 € → 1 100 € + 900 €).
+  **Toutes les règles du cumul sont dans le skill `.claude/skills/calculette-cumul/SKILL.md`** (Fabrice, 20/10/2026 : « fais un
+  skill avec toutes les règles et les suivantes ») — chaque nouvelle règle s'y ajoute. Règle absolue : **jamais plus remboursé
+  que ce qui est dû** (garde-fou dans `cumulDepenses`). `node tools/verif_cumul.js` contrôle ces règles (2 762 cas) ; l'Action le
+  lance avant de publier, un écart arrête la publication.
   **« Toutes les compagnies » suit le périmètre du panneau ⚖** (Fabrice, 20/10/2026 : « oui ») : `on(k)` (aucune coche = toutes),
   APRIL seulement si sa case est cochée ; la liste « Compagnie » reste complète pour un choix à la main. Ligne d'aide « Périmètre
   du panneau ⚖ : n compagnies ; APRIL : … ». Périmètre vide (seule TALIS cochée) → toutes les compagnies, et la ligne le dit.

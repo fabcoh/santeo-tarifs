@@ -41,6 +41,10 @@ jobs:
         with:
           node-version: '20'
 
+      # Règles du cumul (jamais plus remboursé que la dépense, plafonds) : un écart arrête la publication.
+      - name: Regles du cumul
+        run: node tools/verif_cumul.js
+
       - name: Images des selections sans tarif
         run: |
           if node tools/images_tg.js --verifier; then exit 0; fi
