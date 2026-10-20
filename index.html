@@ -455,6 +455,18 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-prix .cu-t .cu-n{font-size:18px}
 .cumul .cu-ft{margin-top:12px;font-size:10px;color:var(--m);line-height:1.45}
 .cumul .cu-ft b{color:var(--k)}
+/* Projet de soins (Fabrice, 20/10/2026) : dépense, Sécu, contrats, reste, puis le gain sur un an. */
+.cumul .cu-dp{margin-top:10px;background:var(--c1);border-radius:10px;padding:8px 8px 7px}
+.cumul .cu-dpt{font:800 12.5px 'Archivo',sans-serif;margin-bottom:4px}
+.cumul .cu-dr{display:grid;grid-template-columns:1fr 60px 48px 74px 54px;gap:6px;font-size:11px;padding:3px 0;border-bottom:1px solid var(--l);align-items:center}
+.cumul .cu-dr>div:not(:first-child){text-align:right;white-space:nowrap}
+.cumul .cu-dh{font:700 9px 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:.03em;color:var(--m)}
+.cumul .cu-dc{color:var(--t);font-weight:700}
+.cumul .cu-dtot{font-weight:700;border-bottom:0}
+.cumul .cu-dg{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 10px;margin-top:6px;background:#E3F6EA;border-radius:8px;padding:6px 8px;font-size:11px}
+.cumul .cu-dgn{font:800 15px 'Archivo',sans-serif;color:#13784A;white-space:nowrap}
+.cumul .cu-dg0{background:var(--l)}.cumul .cu-dg0 .cu-dgn{color:var(--k);font-size:13px}
+.cumul .cu-dn{margin-top:5px;font-size:9.5px;color:var(--m);line-height:1.4}
 .cumul .cu-mq{display:flex;align-items:center;gap:8px;margin-top:8px;border-top:1px solid var(--l);padding-top:8px;font-size:10px;color:var(--m)}
 .cumul .cu-mq img{height:22px;width:auto}
 /* Réglages de la fenêtre du cumul (Fabrice, 20/10/2026) : pour le commercial seulement, jamais dans l'image. */
@@ -472,11 +484,19 @@ body:has(#cubox) #sendbar{display:none!important}
 #cubox .cu-lig{display:grid;grid-template-columns:1fr 96px;gap:4px;align-items:center;margin-bottom:3px;font-size:12px}
 #cubox .cu-lig select{font-size:12px;padding:3px 4px}
 #cubox .cu-lig select.on{border-color:var(--accent);outline:1px solid var(--accent)}
-#cubox #cuRaz{margin-top:6px;font:600 11.5px 'Archivo',sans-serif;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:3px 9px;cursor:pointer}
+#cubox .cu-dd{display:flex;flex-wrap:wrap;gap:0 22px;margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
+#cubox .cu-dd>details{margin:0;border:0;padding:0}
+#cubox .cu-dd>details[open]{flex-basis:100%;order:2}
+#cubox .cu-dep{display:grid;grid-template-columns:1fr 1fr;gap:3px 14px;margin-top:6px}
+#cubox .cu-dl{display:grid;grid-template-columns:1fr 44px 82px;gap:4px;align-items:center;font-size:12px}
+#cubox .cu-dl input{font:600 12px 'IBM Plex Sans',sans-serif;padding:3px 4px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);width:100%;min-width:0;box-sizing:border-box}
+#cubox .cu-dl input.on{border-color:var(--accent);outline:1px solid var(--accent)}
+#cubox .cu-dlh{font:700 9.5px 'Archivo',sans-serif;color:var(--muted);text-transform:uppercase}
+#cubox #cuRaz,#cubox #cuRazD{margin-top:6px;font:600 11.5px 'Archivo',sans-serif;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:3px 9px;cursor:pointer}
 #cubox .cu-hint{font-size:12px;color:var(--ink);margin-top:7px}
 #cubox .cu-hint b{color:var(--accent)}
 #cubox .cu-hint .w{color:#B25A12}
-@media (max-width:560px){#cubox .cu-fb{grid-template-columns:1fr}}
+@media (max-width:560px){#cubox .cu-fb,#cubox .cu-dep{grid-template-columns:1fr}#cubox .cu-dep .cu-dlh+.cu-dlh{display:none}}
 @media (max-width:440px){.cumul:not(.cu-cap) .cu-n{font-size:13.5px}.cumul:not(.cu-cap) .cu-prix .cu-t .cu-n{font-size:15px}}
 </style>
 <button id="aibtn" title="IA produits : une question sur nos contrats" aria-haspopup="dialog" hidden>💬 IA produits</button>
@@ -547,7 +567,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-20T14:00:05Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T14:00:05Z</div>
+  <div id="buildstamp" data-build="2026-10-20T14:42:37Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T14:42:37Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1212,7 +1232,84 @@ const CU_AST={
     return "";}}
 };
 const cuPlus=v=>{const p=cuLire(v);return p?"+ "+cuTxt(p):"—";};
-// o = {mut:{key,fi}, sur:{key,fi}, tarifs:{"CLE|fi":n}, prospect, date:"jj/mm/aaaa", base, sansTarifs}
+// ---- Projet de soins du prospect (Fabrice, 20/10/2026 : « il a 1000 € en implant et 600 € de prothèse, il paie 100 €/mois…
+// plus on remplit ce tableau et plus la personne gagne ») : nombre + prix par soin, sur un an. Les pourcentages incluent la
+// Sécurité sociale et se calculent sur le tarif de convention (Fabrice : couronne 120 €, bridge 279,50 €, inlay-core 90 €,
+// orthodontie remboursée 193,50 € par semestre ; implants et orthodontie non remboursée au forfait). Chaque contrat paie dans
+// l'ordre — Sécurité sociale, mutuelle, surcomplémentaire — jamais plus que la dépense ; le gain = ce que paient les deux
+// contrats − leurs cotisations sur un an.
+// [id, libellé, poste, base de convention, taux Sécu, unité, forfait sans unité : "u" par unité | "an" par an]
+const CU_DEP=[
+  ["cour","Couronnes","dent",120,.6,"couronne","u"],
+  ["bri","Bridges","dent",279.5,.6,"bridge","u"],
+  ["inl","Inlay-core","dent",90,.6,"inlay-core","u"],
+  ["imp","Implants","x:imp",0,0,"implant","imp"],
+  ["orR","Orthodontie remboursée","x:orthR",193.5,1,"semestre","u"],
+  ["orN","Orthodontie non remboursée","x:orthN",0,0,"semestre","orN"],
+  ["lun","Lunettes (verres simples)","opt",0,0,"équipement","u"],
+  ["len","Lentilles","x:lentA",0,0,"an","an"],
+  ["chb","Chambre particulière","ch",0,0,"jour","u"]
+];
+const CU_DENT=new Set(["cour","bri","inl","imp","orR","orN"]);
+const CU_IMP_MAX={APICIL:2};                                    // « 2 implants au plus par an »
+const CU_PLAF={TALIS:fi=>fi?900:600};                           // plafond dentaire annuel de la surcomplémentaire
+const cuR=x=>Math.round(x*100)/100;
+// Ce que paie un contrat sur les restes à charge `rest` (un par unité). null = non chiffrable (valeur en texte).
+function cuPaie(G,c,L,rest){
+  const v=valeur(G,c.key,c.fi,L[2]), P=cuLire(v), z=rest.map(()=>0);
+  if(!P) return z;
+  if(P.raw) return null;
+  if(P.u==="%"){
+    if(!L[3]){ if(L[0]==="orN") return null; return z; }      // pas de base Sécu : implants, optique, lentilles
+    const cap=Math.max(0,P.n/100*L[3]-(c.sur?0:L[4]*L[3]));    // mutuelle : % Sécu comprise ; surcomplément : en plus
+    return rest.map(r=>Math.min(r,cap));
+  }
+  let mode=L[6];
+  if(P.s==="/an") mode="an"; else if(P.s) mode="u";
+  else if(mode==="imp") mode=((CU_IMP[c.key]||[])[0]==="an")?"an":"u";
+  else if(mode==="orN"){ const t=(CU_ORTHN[c.key]||[])[0]; mode=t==="an"?"an":"u"; }
+  if(mode==="an"){ let e=P.n; return rest.map(r=>{const x=Math.min(r,e);e-=x;return x;}); }
+  const max=L[0]==="imp"&&CU_IMP_MAX[c.key]?CU_IMP_MAX[c.key]:Infinity;
+  return rest.map((r,i)=>i<max?Math.min(r,P.n):0);
+}
+// dep = {id:{n,p}} ; rend {lignes:[{id,lib,n,p,dep,secu,mut,sur,reste,nc}], dep, secu, mut, sur, reste, nc}
+function cumulDepenses(G,M,S,dep){
+  const out={lignes:[],dep:0,secu:0,mut:0,sur:0,reste:0,nc:false};
+  let plaf=CU_PLAF[S.key]?CU_PLAF[S.key](S.fi):Infinity;
+  for(const L of CU_DEP){
+    const d=(dep||{})[L[0]]; if(!d) continue;
+    const p=+d.p||0, n=Math.max(1,Math.min(40,Math.round(+d.n||1))); if(!(p>0)) continue;
+    let rest=Array(n).fill(p);
+    const secu=rest.map(r=>Math.min(r,L[4]*L[3])); rest=rest.map((r,i)=>r-secu[i]);
+    const a=cuPaie(G,M,L,rest); if(a) rest=rest.map((r,i)=>r-a[i]);
+    const b=cuPaie(G,Object.assign({sur:1},S),L,rest);
+    let sb=b?b.reduce((x,y)=>x+y,0):0;
+    if(CU_DENT.has(L[0])){ sb=Math.min(sb,plaf); plaf-=sb; }
+    const l={id:L[0],lib:L[1],u:L[5],n,p,dep:n*p,secu:secu.reduce((x,y)=>x+y,0),mut:a?a.reduce((x,y)=>x+y,0):0,sur:sb,nc:!a||!b};
+    l.reste=cuR(l.dep-l.secu-l.mut-l.sur);
+    out.lignes.push(l);
+    for(const k of ["dep","secu","mut","sur","reste"]) out[k]=cuR(out[k]+l[k]);
+    if(l.nc) out.nc=true;
+  }
+  return out;
+}
+const cuE=n=>cuNb(Math.round(n))+" €";
+function cuDepHTML(G,M,S,R,cot){
+  if(!R||!R.lignes.length) return "";
+  const rem=R.mut+R.sur, gain=cot!=null?rem-cot:null;
+  let h='<div class="cu-dp"><div class="cu-dpt">Votre projet de soins sur un an</div>'
+    +'<div class="cu-dr cu-dh"><div>Soins</div><div>Dépense</div><div>Sécu</div><div>Vos contrats</div><div>Reste</div></div>';
+  for(const l of R.lignes) h+='<div class="cu-dr"><div>'+(l.n>1?l.n+" × ":"")+l.lib+(l.nc?" <sup>†</sup>":"")+'</div><div>'+cuE(l.dep)+'</div><div>'
+    +(l.secu?cuE(l.secu):"—")+'</div><div class="cu-dc">'+cuE(l.mut+l.sur)+'</div><div>'+cuE(l.reste)+'</div></div>';
+  h+='<div class="cu-dr cu-dtot"><div>Total</div><div>'+cuE(R.dep)+'</div><div>'+(R.secu?cuE(R.secu):"—")+'</div><div class="cu-dc">'+cuE(rem)+'</div><div>'+cuE(R.reste)+'</div></div>';
+  if(gain!=null) h+='<div class="cu-dg'+(gain>0?"":" cu-dg0")+'"><span>Remboursé par vos contrats <b>'+cuE(rem)+'</b> − cotisations sur un an <b>'+cuE(cot)+'</b></span>'
+    +(gain>0?'<span class="cu-dgn">Votre gain : '+cuE(gain)+'</span>':'<span class="cu-dgn">Écart : '+cuE(gain)+'</span>')+'</div>';
+  h+='<div class="cu-dn">Estimation sur les soins indiqués. Pourcentages Sécurité sociale comprise, sur les tarifs de convention (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre) ; implants et orthodontie non remboursée au forfait. Dans la limite des plafonds annuels et après les délais d’attente des contrats'
+    +(CU_PLAF[S.key]?' (plafond dentaire '+nomComplet(G,S.key,S.fi).replace(/^TALIS Talis/,"TALIS")+' : '+CU_PLAF[S.key](S.fi)+' € par an, appliqué)':'')+'.'
+    +(R.nc?' † Une garantie en texte n’a pas pu être chiffrée : non comptée.':'')+'</div></div>';
+  return h;
+}
+// o = {mut:{key,fi}, sur:{key,fi}, tarifs:{"CLE|fi":n}, prospect, date:"jj/mm/aaaa", base, sansTarifs, depenses:{id:{n,p}}}
 function cumul(G,o){
   o=o||{};
   const M=o.mut,S=o.sur,v1=src=>valeur(G,M.key,M.fi,src),v2=src=>valeur(G,S.key,S.fi,src);
@@ -1250,6 +1347,7 @@ function cumul(G,o){
     +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
     +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')
     +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>')+'</div>';
+  if(o.depenses) h+=cuDepHTML(G,M,S,cumulDepenses(G,M,S,o.depenses),prix?cuR((p1+p2)*12):null);
   h+=gain;
   if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
   const gM=G.gammes[M.key], nr=gM&&(gM.resp===false||/^\s*Contrat NON responsable/i.test(String(limites(G,M.key,M.fi)||"")));
@@ -1289,6 +1387,8 @@ exporter.document=documentHTML;
 exporter.eur=eur;
 exporter.cumul=cumul;
 exporter.cumulTotal=cumulTotal;
+exporter.cumulDepenses=cumulDepenses;
+exporter.CU_DEP=CU_DEP;
 
 })(typeof module!=="undefined"&&module.exports ? module.exports
    : ((typeof self!=="undefined"?self:this).Tableau={}));
@@ -2896,6 +2996,9 @@ function cumulTarifs(){
 }
 // Produits APRIL qui ne sont pas dans le tableau : demandés au relais en un seul appel, gardés dans le même cache.
 const CUMUL_APRIL_EN_COURS={};
+// Un appel sans réponse utile (panne, refus du relais) n'est pas relancé avant une minute : sinon chaque échec redessinait la
+// fenêtre, qui redemandait aussitôt — 600 appels en 5 s constatés le 20/10/2026 avec un relais en 503.
+const CUMUL_APRIL_ECHEC={};
 function cumulAprilDemande(codes){
   const p=profilPage(); if(p.age==null) return "profil";
   const garde=APRIL_SEL; let pa;
@@ -2906,6 +3009,7 @@ function cumulAprilDemande(codes){
   if(!manque.length) return "ok";
   const cle=manque.join(",")+base;
   if(CUMUL_APRIL_EN_COURS[cle]) return "attente";
+  if(Date.now()-(CUMUL_APRIL_ECHEC[cle]||0)<60000) return "panne";
   CUMUL_APRIL_EN_COURS[cle]=1;
   (async()=>{
     try{
@@ -2914,8 +3018,9 @@ function cumulAprilDemande(codes){
       if(rp.ok&&d&&Array.isArray(d.produits)){
         if(APRIL_CACHE.base!==base) APRIL_CACHE={base,res:{},famille:false};
         for(const x of d.produits) APRIL_CACHE.res[x.produit]=x;
-      }
-    }catch(e){}
+        if(manque.some(c=>!APRIL_CACHE.res[c])) CUMUL_APRIL_ECHEC[cle]=Date.now();
+      } else CUMUL_APRIL_ECHEC[cle]=Date.now();
+    }catch(e){ CUMUL_APRIL_ECHEC[cle]=Date.now(); }
     delete CUMUL_APRIL_EN_COURS[cle];
     if(CUMUL&&CUMUL.maj) CUMUL.maj();
   })();
@@ -2936,7 +3041,7 @@ function showCumul(){
   // « Toutes les compagnies » d'office (Fabrice, 20/10/2026 : « je dois pouvoir mettre toutes les compagnies et ne choisir que
   // les filtres ») : sans besoin, la formule cochée ; avec des besoins, la moins chère de toutes qui les remplit.
   CUMUL={v:"*",
-         cochees:muts.map(r=>({key:r.key,fi:r.fi})),si:sur?sur.fi:1,fil:{}};
+         cochees:muts.map(r=>({key:r.key,fi:r.fi})),si:sur?sur.fi:1,fil:{},dep:{}};
   for(const k in FILTRES) if(k!=="budget"&&/^\d+(\.\d+)?(%|€)$/.test(FILTRES[k])) CUMUL.fil[k]=FILTRES[k];   // besoins du panneau ⚖
   const {nm,txt}=prospectLigne(), date=new Date().toLocaleDateString("fr-FR");
   const svgWa='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:#25D366;vertical-align:-3px"><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.82 11.82 0 0020.463 3.488 11.815 11.815 0 0012.05 0zm5.422 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>';
@@ -2952,6 +3057,10 @@ function showCumul(){
     grille+='<div class="cu-grp"><b>'+gr+'</b>'+ps.map(([cle,lab])=>'<div class="cu-lig"><span>'+lab+'</span><select data-cle="'+cle+'"><option value="">—</option>'
       +fseuils(cle).map(([v,l])=>'<option value="'+v+'">≥ '+l+'</option>').join("")+'</select></div>').join("")+'</div>';
   }
+  // Dépenses du prospect sur un an : nombre + prix unitaire (Fabrice, 20/10/2026) — Tableau.CU_DEP.
+  const dlh='<div class="cu-dl cu-dlh"><span>Soin</span><span>Nb</span><span>Prix unit.</span></div>';
+  const depGrille=dlh+dlh+Tableau.CU_DEP.map(L=>'<div class="cu-dl"><span>'+L[1]+'</span><input type="number" min="1" max="40" inputmode="numeric" data-dn="'+L[0]+'" placeholder="1">'
+    +'<input type="number" min="0" step="any" inputmode="decimal" data-dp="'+L[0]+'" placeholder="€" title="Prix par '+L[5]+'"></div>').join("");
   const ov=document.createElement('div'); ov.id='tgov'; ov.className='tgmain';
   ov.innerHTML='<div id="cubox"><div class="cu-bar"><button data-a="wa">'+svgWa+' WhatsApp</button><button data-a="dl">⬇ Télécharger</button>'
     +(window.CRMLINK?'<button data-a="crm" style="background:#059669;color:#fff;border-color:#059669">Envoyer dans le CRM</button>':'')
@@ -2959,7 +3068,8 @@ function showCumul(){
     +'<div class="cu-reg"><div class="cu-regt">Réglages <span>non envoyés</span></div>'
     +'<div class="cu-regg"><label>Compagnie<select id="cuC">'+opts+'</select></label><label>Surcompl.<select id="cuS">'
     +F.TALIS.names.map((n,i)=>'<option value="'+i+'">'+n+'</option>').join("")+'</select></label></div>'
-    +'<details id="cuB"><summary>Besoins <span id="cuSum"></span></summary><div class="cu-fb">'+grille+'</div><button type="button" id="cuRaz">Tout effacer</button></details>'
+    +'<div class="cu-dd"><details id="cuB"><summary>Besoins <span id="cuSum"></span></summary><div class="cu-fb">'+grille+'</div><button type="button" id="cuRaz">Tout effacer</button></details>'
+    +'<details id="cuD"><summary>Dépenses <span id="cuDSum"></span></summary><div class="cu-dep">'+depGrille+'</div><button type="button" id="cuRazD">Tout effacer</button></details></div>'
     +'<div class="cu-hint" id="cuH"></div></div><div id="cuV"></div></div>';
   ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close')){ov.remove();CUMUL=null;}});
   document.body.appendChild(ov);
@@ -3005,7 +3115,7 @@ function showCumul(){
     const s={key:"TALIS",fi:CUMUL.si}, pc=prix(c);
     const enCours=tous&&act.length&&(aprilEtat==="attente"||APICIL.etat==="attente");
     const tarTxt=pc!=null?" · "+eurs(pc)
-      :aprilEtat==="attente"?" · tarif APRIL en cours…":aprilEtat==="cp"?" · APRIL : code postal ou département requis":aprilEtat.startsWith("refus:")?' · <span class="w">APRIL : '+aprilEtat.slice(6)+'</span>'
+      :aprilEtat==="attente"?" · tarif APRIL en cours…":aprilEtat==="panne"?' · <span class="w">APRIL ne répond pas pour le moment (nouvel essai dans une minute)</span>':aprilEtat==="cp"?" · APRIL : code postal ou département requis":aprilEtat.startsWith("refus:")?' · <span class="w">APRIL : '+aprilEtat.slice(6)+'</span>'
       :(v==="APICIL"&&APICIL.etat==="attente")?" · tarif API SANTÉ en cours…"
       :(v==="APICIL"&&APICIL.etat==="erreur")?' · <span class="w">API SANTÉ : '+(APICIL.message||"pas de réponse")+'</span>'
       :' · <span class="w">non tarifée pour ce profil</span>';
@@ -3015,7 +3125,11 @@ function showCumul(){
       +(tous?'<br>APRIL : '+(()=>{const n=cumulCompagnies().filter(x=>x.comp==="APRIL").length;return n?n+" produit"+(n>1?"s":"")+" coché"+(n>1?"s":""):"aucun produit coché";})()+' au ☰ du panneau ⚖.':"")
       +(tous&&!/TNS/.test(regimeActuel())&&APRIL_SEL.some(c=>APRIL_TNS.has(c))?' Régime salarié : produits TNS (Santé Pro…) écartés.':"");
     const tarifs={}; if(pc!=null) tarifs[c.key+"|"+c.fi]=pc; if(prix(s)!=null) tarifs["TALIS|"+s.fi]=prix(s);
-    box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date});
+    const depA=Object.keys(CUMUL.dep).length?CUMUL.dep:null;
+    box.querySelector('#cuDSum').textContent=depA?(()=>{const R=Tableau.cumulDepenses(GAR,c,s,depA);
+      const g=(pc!=null&&prix(s)!=null)?R.mut+R.sur-(pc+prix(s))*12:null;
+      return R.lignes.length+" soin"+(R.lignes.length>1?"s":"")+" · "+eur(R.dep)+(g!=null?" · "+(g>0?"gain ":"écart ")+eur(g):"");})():"aucune";
+    box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depA});
     P=[{mut:c,sur:s}];
   }
   CUMUL.maj=rendre;
@@ -3023,6 +3137,12 @@ function showCumul(){
   selS.addEventListener('change',()=>{CUMUL.si=+selS.value;rendre();});
   box.querySelectorAll('.cu-fb select').forEach(s=>s.addEventListener('change',()=>{
     if(s.value) CUMUL.fil[s.dataset.cle]=s.value; else delete CUMUL.fil[s.dataset.cle]; s.classList.toggle('on',!!s.value); rendre();}));
+  const lireDep=()=>{ CUMUL.dep={};
+    box.querySelectorAll('.cu-dep input[data-dp]').forEach(i=>{ const id=i.dataset.dp, n=box.querySelector('input[data-dn="'+id+'"]');
+      const p=parseFloat(String(i.value).replace(",",".")); i.classList.toggle('on',p>0); n.classList.toggle('on',p>0);
+      if(p>0) CUMUL.dep[id]={n:+n.value||1,p}; }); rendre(); };
+  box.querySelectorAll('.cu-dep input').forEach(i=>i.addEventListener('input',lireDep));
+  box.querySelector('#cuRazD').addEventListener('click',()=>{box.querySelectorAll('.cu-dep input').forEach(i=>{i.value="";});lireDep();});
   box.querySelector('#cuRaz').addEventListener('click',()=>{CUMUL.fil={};box.querySelectorAll('.cu-fb select').forEach(s=>{s.value="";s.classList.remove('on');});rendre();});
   rendre();
   const nomFic=p=>("cumul_"+Tableau.nomComplet(GAR,p.mut.key,p.mut.fi)+"_"+Tableau.nomComplet(GAR,p.sur.key,p.sur.fi)).replace(/[^\wÀ-ÿ]+/g,"_")+".png";
