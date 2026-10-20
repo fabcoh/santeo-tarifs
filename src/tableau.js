@@ -641,8 +641,8 @@ function comparatifSoins(G,o){
     if(prix) h+=row('Cotisation annuelle<sup>1</sup>',px.map(x=>'<b>'+cuE(x*12)+'</b><small>'+eur(x)+' × 12</small>'));
     // Trois lignes (Fabrice, 20/10/2026 : « Cotisation annuelle, Remboursements, Solde ») ; solde = remboursements − cotisation,
     // en vert s'il est en faveur du prospect, en rouge sinon.
-    h+=row('Remboursements<small>par la mutuelle, hors Sécu</small>',RS.map(R=>'<b class="cu-bv">'+cuE(R.mut)+'</b>'));
-    if(prix) h+=row('<b>Solde</b><small>remboursements − cotisation</small>',net.map(v=>v<=0?'<b class="cu-bv">+ '+cuE(-v)+'</b>':'<b class="cu-brr">− '+cuE(v)+'</b>'),'cu-ctot');
+    h+=row('Remboursements',RS.map(R=>'<b class="cu-bv">'+cuE(R.mut)+'</b>'));
+    if(prix) h+=row('<b>Solde</b>',net.map(v=>v<=0?'<b class="cu-bv">+ '+cuE(-v)+'</b>':'<b class="cu-brr">− '+cuE(v)+'</b>'),'cu-ctot');
   }
   const plaf=cols.map((c,i)=>{const P=RS[i].plafM; return nom(c)+' : '+(!P?'pas de plafond dentaire':P.m==null?'plafond '+P.nc:cuNb(P.m)+' € par an');});
   h+='<div class="cu-dn">'+(prix?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')

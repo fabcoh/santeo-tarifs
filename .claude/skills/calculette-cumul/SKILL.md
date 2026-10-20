@@ -157,6 +157,7 @@ pour chaque compagnie ». Réponses : colonnes = **formules cochées** (4 au plu
 - **Bilan en trois lignes** (Fabrice, 20/10/2026 : « Cotisation annuelle, Remboursements, Solde ») : cotisation annuelle¹
   (x € × 12) · remboursements (par la mutuelle, hors Sécu, total des soins prévus) · **solde = remboursements − cotisation**,
   « + x € » en vert s'il est en faveur du prospect, « − x € » en rouge sinon. Le classement se fait sur ce solde.
+  Libellés seuls, sans sous-titre : « Remboursements », « Solde » (Fabrice, 20/10/2026).
 - En tête (`.cu-top`) : « La plus avantageuse pour ces soins : <formule> — solde de l'année ± X € · Y € de mieux que la suivante » ; sa colonne sur fond vert très pâle (`.cu-cbest`), le seul fond permis.
 - Image `comparatif_….png`, même barre (WhatsApp, Télécharger, CRM).
 
