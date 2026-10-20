@@ -146,13 +146,19 @@ pour chaque compagnie ». Réponses : colonnes = **formules cochées** (4 au plu
   gras (`cmpMeilleur`) seulement si toutes les valeurs ont la même unité (« — » vaut zéro, « n.c. » ou un texte : rien en vert).
   **Paro et endo** demandés mais absents des données : pas de ligne tant qu'ils ne sont pas relevés dans les tableaux de garantie.
 - La bannière « La plus avantageuse pour ces soins » n'apparaît qu'avec des soins prévus.
-- Mêmes dépenses (volet « Dépenses ») pour toutes les colonnes ; `cumulDepenses(G, c, null, dep)` par colonne, mêmes plafonds,
-  même règle « jamais plus que la dépense ». Un forfait « auto » (médecines douces, pharmacie) prend **le plus haut forfait des
-  formules comparées** comme dépense commune (« forfait le plus haut comparé ») — sinon chaque colonne aurait une dépense différente.
-- Une ligne par soin : remboursé (Sécu comprise) en noir, « reste » en rouge. Bilan : cotisations¹, remboursements, reste à payer
-  (rappel « sans complémentaire »), **coût réel = cotisations + reste**.
-- En tête (`.cu-top`) : « La plus avantageuse pour ces soins : <formule> — coût réel X € · Y € de moins que la suivante » ; sa
-  colonne sur fond vert très pâle (`.cu-cbest`), le seul fond permis.
+- **En-tête aligné** (Fabrice, 20/10/2026 : « mettre en avant le tarif du dessus et tout bien aligner les logos et textes ») :
+  logo dans une case de 40 px, nom, puis la cotisation en gros (17 px, verte pour la mieux placée), « / mois » et « x € / an »,
+  calée en bas de chaque colonne quelle que soit la longueur du nom.
+- Soins prévus : **remboursé par la mutuelle, hors Sécu** (la Sécu est la même pour toutes), « reste » en rouge, centrés ;
+  « non remboursé » en gris quand la formule ne paie rien.
+- **Un forfait non remboursé n'est pas déduit** (Fabrice, 20/10/2026) : médecines douces et pharmacie « auto » valent le forfait
+  **de chaque formule**, consommé en entier ; une formule qui n'en a pas n'a ni dépense ni reste sur ce poste. Les autres soins
+  sont la même dépense pour toutes les formules (mêmes plafonds, jamais plus que la dépense).
+- **Bilan** : cotisation annuelle¹ (x € × 12) · remboursé par la mutuelle (− total des soins prévus, hors Sécu) · reste à payer
+  sur vos soins (seulement s'il y a des soins hors forfaits auto) · **coût net de la mutuelle = cotisation − remboursements**,
+  « + x € pour vous » s'il est négatif. Le classement se fait sur ce coût net.
+- En tête (`.cu-top`) : « La plus avantageuse pour ces soins : <formule> — coût net de l'année X € (ou « remboursement
+  excédentaire de X € ») · Y € de mieux que la suivante » ; sa colonne sur fond vert très pâle (`.cu-cbest`), le seul fond permis.
 - Image `comparatif_….png`, même barre (WhatsApp, Télécharger, CRM).
 
 ## Tests

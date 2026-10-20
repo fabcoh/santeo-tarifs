@@ -65,14 +65,17 @@ for(const k of Object.keys(G.gammes)){ if(k==="TALIS")continue;
   if(!m2||m2.mut!==60) ko.push("Mutuelle Verte GCI 150 : 3 seances a 20 € = 60 € attendus : "+JSON.stringify(m2));
   if(!p2||p2.mut!==0) ko.push("Mutuelle Verte : l'antitabac ne compte pas en pharmacie : "+JSON.stringify(p2)); }
 
-// 7. Le comparatif des mutuelles se dessine, et désigne bien la formule au coût réel le plus bas.
-for(const dep of [null,{cour:{n:1,p:680},imp:{n:1,p:1000},md:{auto:1},phn:{auto:1}}]){ n++;
+// 7. Le comparatif se dessine et désigne la formule au coût net le plus bas (cotisation annuelle − remboursé par la mutuelle).
+//    Un forfait non remboursé n'est pas déduit : chaque formule compte son propre forfait (Fabrice, 20/10/2026).
+for(const dep of [null,{cour:{n:1,p:680},imp:{n:1,p:1000},md:{auto:1},phn:{auto:1}},{md:{auto:1},phn:{auto:1}}]){ n++;
   try{ const cols=[{key:"FLEXIA",fi:1},{key:"CAPEVO",fi:2},{key:"MV",fi:2},{key:"REV",fi:4}], t={"FLEXIA|1":60,"CAPEVO|2":70,"MV|2":65,"REV|4":55};
     const h=T.comparatifSoins(G,{cols,tarifs:t,depenses:dep}); if(!/cu-cmp/.test(h)) ko.push("comparatif vide");
-    if(dep){ const tot=cols.map(c=>t[c.key+"|"+c.fi]*12+T.cumulDepenses(G,c,null,{cour:dep.cour,imp:dep.imp,md:{n:1,p:250},phn:{n:1,p:45}}).reste);
-      const nom=T.nomComplet(G,cols[tot.indexOf(Math.min(...tot))].key,cols[tot.indexOf(Math.min(...tot))].fi);
+    if(dep){ const net=cols.map(c=>t[c.key+"|"+c.fi]*12-T.cumulDepenses(G,c,null,dep).mut), b=net.indexOf(Math.min(...net));
+      const nom=T.nomComplet(G,cols[b].key,cols[b].fi);
       if(h.indexOf('<em>'+nom+'</em>')<0) ko.push("comparatif : la moins chère devrait être "+nom); } }
   catch(e){ ko.push("comparatif en erreur — "+e.message); } }
+{ n++; const R=T.cumulDepenses(G,{key:"FLEXIA",fi:0},null,{md:{auto:1}});
+  if(R.lignes.some(l=>l.id==="md"&&l.reste>0)) ko.push("FLEXIA Start : medecines douces non remboursees comptees en reste"); }
 
 // 8. Le plafond dentaire ne touche que les soins dentaires (constaté le 20/10/2026 : lunettes et médecines douces de la
 // Mutuelle Verte « plafond atteint » après une couronne et un implant).
