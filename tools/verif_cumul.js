@@ -48,5 +48,12 @@ for(const [M,S,dep,att] of cas){ const R=T.cumulDepenses(G,M,S,dep); n++;
   if(Math.abs((seule-cumul)-g)>0.01) ko.push("gain TALIS incoherent : "+(seule-cumul)+" / "+g);
   if(Math.abs(R.sur-560)>0.005) ko.push("FLEXIA Start + Talis + : TALIS paie "+R.sur+" au lieu de 560"); }
 
+// 5. La vignette se dessine (avec et sans tarifs, avec et sans dépenses) sur toutes les formules.
+for(const k of Object.keys(G.gammes)){ if(k==="TALIS")continue;
+  for(let fi=0;fi<G.gammes[k].names.length;fi++) for(const dep of [null,{cour:{n:1,p:600},imp:{n:1,p:1000},lun:{n:1,p:250}}]) for(const t of [{},{[k+"|"+fi]:50,"TALIS|1":40}]){
+    n++; try{ const h=T.cumul(G,{mut:{key:k,fi},sur:{key:"TALIS",fi:1},tarifs:t,depenses:dep,date:"20/10/2026"});
+      if(!/class="cumul"/.test(h)) ko.push("vignette vide : "+k+" "+fi); }
+    catch(e){ ko.push("vignette en erreur : "+k+" "+fi+" — "+e.message); } }}
+
 if(ko.length){ console.error(ko.length+" ecart(s) sur "+n+" cas :\n"+ko.slice(0,20).join("\n")); process.exit(1); }
 console.log("Regles du cumul : "+n+" cas, aucun ecart.");

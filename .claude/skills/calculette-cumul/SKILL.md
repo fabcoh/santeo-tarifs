@@ -101,12 +101,13 @@ surcomplémentaire**, la Sécu payant la même chose dans les deux cas — plus 
 - Légende sous l'en-tête de la grille : « % = pourcentage de la base de remboursement de la Sécurité sociale, Sécu comprise · € = forfait ».
 - **« Vos soins prévus : estimation des remboursements »** (jamais « ce qui vous sera remboursé »), puis en rouge le **délai
   d'attente de la surcomplémentaire** (`CU_CARENCE` : TALIS 90 jours en dentaire et en optique).
-- **Une carte par soin** : « Coût : n × prix = total » (« non remboursé par la Sécu » pour les soins sans base) ;
-  « Mutuelle de base (Sécu comprise) — remboursé X · reste » ; « + TALIS (surcomplémentaire) — remboursé Y · reste » ;
-  « Total remboursé Z sur coût ».
-- **Bilan sur l'année, pour ces soins** (`cuBilan`) : deux colonnes, « <mutuelle> seule » et « <mutuelle> + <surco> » — cotisations¹,
-  remboursements (Sécu comprise), reste à payer (avec « sans complémentaire : … » en rappel), **coût réel = cotisations + reste**.
-  Pas de colonne « sans complémentaire » : sur ces seuls soins elle paraîtrait moins chère en oubliant l'hospitalisation.
+- **Soins et bilan dans les colonnes de la grille** (Fabrice, 20/10/2026 : « aligner dans les colonnes les remboursements…
+  l'explication verticalement ») : en-tête <mutuelle> · <surco> · Total ; une ligne par soin — libellé + « coût … » (et « non
+  remboursé par la Sécu »), mutuelle (« Sécu comprise », « plafond atteint »), « + » surcomplémentaire, total remboursé et « reste »
+  en rouge. Puis **« Votre bilan sur l'année, pour ces soins »**, mêmes colonnes : « <mutuelle> seule » · « Apport <surco> » ·
+  « Les deux » — cotisations¹, remboursements (Sécu comprise), reste à payer (rappel « sans complémentaire : … »), **coût réel
+  = cotisations + reste**. Pas de colonne « sans complémentaire » : sur ces seuls soins elle paraîtrait moins chère en oubliant
+  l'hospitalisation.
 - **Ligne finale** : « Avec TALIS + : R € remboursés en plus pour C € de cotisation — + Z € pour vous » (vert) ; si négatif,
   « Sur ces seuls soins, TALIS coûte plus qu'il ne rembourse » (gris). Z = R − C = coût réel mutuelle seule − coût réel cumul.
 - Mentions : « ¹ Les cotisations évoluent chaque année à la date anniversaire du contrat. Tableau présenté à titre indicatif —
