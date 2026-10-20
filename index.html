@@ -561,6 +561,9 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-ch>.cu-l{border-top-color:transparent}
 .cumul .cu-ch b{display:block;min-height:28px}
 .cumul .cu-cbest{background:#EEF8F1}
+.cumul .cu-csec{font:700 12px Archivo,sans-serif;text-transform:uppercase;letter-spacing:.04em;color:var(--k);padding:9px 3px 3px;border-bottom:2px solid var(--k)}
+.cumul .cu-cr .cu-cv{font-size:11.5px}.cumul .cu-cr .cu-cvm{color:var(--v);font-weight:700}
+.cumul .cu-cfort .cu-cv{font-weight:700}
 .cumul .cu-ch .cu-cbest{border-top-color:var(--v)}
 .cumul .cu-ctot{border-bottom:2px solid var(--k)}.cumul .cu-ctot>div{font-size:12.5px}
 .cumul .cu-ctot .cu-cbest b{color:var(--v)}
@@ -641,7 +644,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-20T18:26:27Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T18:26:27Z</div>
+  <div id="buildstamp" data-build="2026-10-20T19:03:12Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T19:03:12Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1523,6 +1526,25 @@ function cuDepHTML(G,M,S,R,p1,p2){
 // la formule au coût réel le plus bas est mise en avant. Un poste « au forfait » (médecines douces, pharmacie) vaut, pour toutes
 // les colonnes, le plus haut des forfaits comparés : chaque mutuelle rembourse dans son propre forfait.
 // o = {cols:[{key,fi}], tarifs:{"CLE|fi":n}, prospect, date, base, depenses:{id:{n,p}|{auto:1}}}
+// Postes du comparatif, dans l'ordre dicté par Fabrice (20/10/2026 : « Hospitalisation, Chambre particulière, Honoraires optam,
+// Prothèses dentaire, Implants, Paro et endo, Orthodontie, Lunettes verre simple, Verre complexes, Lentilles, Médecine douce,
+// Autres »). Paro et endo : aucun poste relevé dans les données — pas de ligne tant qu'il n'est pas relu dans les tableaux.
+const CMP_BLOCS=[
+  ["Hospitalisation",[["Hospitalisation (honoraires Optam)","hospO",1],["Chambre particulière","ch"],["Consultations spécialistes Optam","honoO"]]],
+  ["Dentaire",[["Prothèses dentaires","dent",1],["Implants","x:imp"],["Orthodontie remboursée","x:orthR"],["Orthodontie non remboursée","x:orthN"]]],
+  ["Optique",[["Lunettes, verres simples","opt",1],["Lunettes, verres complexes","x:optC"],["Lentilles","x:lentA"]]],
+  ["Autres",[["Médecines douces","md"],["Aides auditives","x:aud"],["Pharmacie non remboursée","x:pharN"]]]
+];
+// Indice de la meilleure valeur d'une ligne, quand toutes se lisent dans la même unité ; -1 sinon (ou si toutes sont égales).
+function cmpMeilleur(vals){
+  // « — » (pas de garantie) compte pour zéro face aux autres ; « n.c. » ou un texte rendent la ligne incomparable.
+  const Q=vals.map(v=>String(v).trim()==="—"?"—":cuLire(v)), R=Q.filter(x=>x!=="—");
+  if(!R.length||R.some(x=>!x||x.raw)) return -1;
+  const P=Q.map(x=>x==="—"?{n:0,u:R[0].u,s:R[0].s}:x);
+  if(P.some(x=>x.u!==P[0].u||(x.s||"")!==(P[0].s||""))) return -1;
+  const m=Math.max(...P.map(x=>x.n)); if(P.every(x=>x.n===m)) return -1;
+  return P.findIndex(x=>x.n===m);
+}
 function comparatifSoins(G,o){
   o=o||{}; const cols=(o.cols||[]).slice(0,4), tar=o.tarifs||{};
   if(!cols.length) return "";
@@ -1535,7 +1557,7 @@ function comparatifSoins(G,o){
   const nom=c=>nomComplet(G,c.key,c.fi);
   const C=(cls,x)=>'<div class="'+cls+'"><span>'+x+'</span></div>';
   const tot=RS.map((R,i)=>prix?cuR(px[i]*12+R.reste):null);
-  const best=prix?tot.indexOf(Math.min(...tot)):-1;
+  const best=prix&&RS[0].lignes.length?tot.indexOf(Math.min(...tot)):-1;
   const row=(lab,cells,cls)=>'<div class="cu-cr'+(cls?' '+cls:'')+'" style="grid-template-columns:30% repeat('+cols.length+',1fr)">'+C("cu-l",lab)
     +cells.map((x,i)=>C("cu-cc"+(i===best?" cu-cbest":""),x)).join("")+'</div>';
   let h='<div class="cu-ti">Comparatif de vos remboursements</div>'+(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'');
@@ -1543,6 +1565,16 @@ function comparatifSoins(G,o){
     h+='<div class="cu-top"><div class="cu-tg" style="text-align:left;border:0"><b>La plus avantageuse pour ces soins</b><em>'+nom(cols[best])+'</em>'
       +'<span>coût réel de l’année '+cuE(tot[best])+(d>0?' · '+cuE(d)+' de moins que la suivante':'')+'</span></div></div>'; }
   h+=row('',cols.map((c,i)=>'<div class="cu-lg">'+logoEgal(G,c.key,o.base,40,36)+'</div><b>'+nom(c)+'</b>'+(px[i]!=null?'<small>'+eur(px[i])+' / mois</small>':'')),'cu-ch');
+  // Garanties poste par poste (Fabrice, 20/10/2026 : « pourquoi tu n'indiques que 2 postes ? fais un comparatif… ») ; la meilleure
+  // valeur de la ligne en vert, seulement quand les valeurs se comparent (même unité).
+  h+='<div class="cu-leg">% = pourcentage de la base de remboursement de la Sécurité sociale, Sécu comprise · € = forfait · en vert : le mieux disant</div>';
+  for(const [bloc,ls] of CMP_BLOCS){
+    const rs=ls.map(([lab,src,f])=>[lab,src,f,cols.map(c=>valeur(G,c.key,c.fi,src))]).filter(r=>r[3].some(v=>v!=="—"));
+    if(!rs.length) continue;
+    h+='<div class="cu-csec">'+bloc+'</div>';
+    for(const [lab,src,f,vals] of rs){ const m=cmpMeilleur(vals);
+      h+=row(f?'<b>'+lab+'</b>':lab,vals.map((v,i)=>'<span class="cu-cv'+(i===m?' cu-cvm':'')+'">'+v+'</span>'),f?'cu-cfort':''); }
+  }
   if(!RS[0].lignes.length) h+='<div class="cu-dn">Indiquez les soins prévus (volet « Dépenses ») pour comparer les remboursements.</div>';
   else{
     h+='<div class="cu-dpt" style="margin-top:8px">Vos soins prévus : estimation des remboursements</div>';
