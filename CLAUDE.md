@@ -335,6 +335,18 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (`--v` #157A47) = total cumulé, remboursements, gain**, **rouge (`--r` #C0392B) = reste à charge**, dans la grille, la cotisation, le
   bandeau TALIS et les soins prévus. **« Reste à votre charge 260 € — au lieu de 2 528 € sans complémentaire »** mis en avant
   (montants en 18 / 15 px). Renvoi des cotisations en « ¹ » (les * restent aux notes implantologie / orthodontie).
+  **Plafonds dentaires appliqués dans les dépenses** (Fabrice, 20/10/2026 : « faire attention aux plafonds… TALIS 900 €… vérifier
+  les plafonds dentaires dans chacun des cas ») : `CU_PLAFD` (`src/tableau.js`), **1re année d'adhésion**, par bénéficiaire, sur ce
+  que paie le contrat hors Sécu, relus dans les fiches `docs/connaissances/` — Cap Évolution 600 / 1 000 / 1 100 € (prothèses,
+  orthodontie, implants), CAP NR 600 → 1 000 € (160 NR et plus), TALIS 600 / Talis + 900 € (tout, hors soins), FLEXIA 2 500 €
+  (prothèses, pas au Start), SOLENCIA 2 000 € (prothèses), Mutuelle Verte 750 / 750 / 1 000 / 1 200 € (rien en GCI 100), Révoluo
+  Rev 7 1 400 €, Rev 8 2 000 € (RF50 idem), APICIL Équilibre 3–6 500 → 1 000 €, Sérénité 500 → 1 000 € (prothèses) ; APRIL = `plaf`
+  d'`APRIL_GAR` (1er montant, prothèses ; Pro / Pro Start + orthodontie, GAN tout) posé à l'exécution dans `EX.APRIL.plaf`.
+  MCCINOVA et Renfort 100 : « plafond non précisé dans les documents » (`CU_PLAF_NC`), écrit dans la vignette. Calcul unité par
+  unité ; au-delà, un contrat responsable paie encore le **ticket modérateur** des soins remboursés, un forfait n'est plus payé ;
+  la surcomplémentaire reprend ce que la mutuelle n'a plus payé, dans son propre plafond. « plafond atteint » en rouge sur la
+  ligne ; mention « Plafonds dentaires (1re année d'adhésion, appliqués) — <mutuelle> : x € ; TALIS + : 900 € ». Test : scratchpad
+  `t_cumul10.js` (Cap Évolution Sérénité + Talis + : 3 couronnes à 800 €, 2 implants à 1 500 € → 1 100 € + 900 €).
   **« Toutes les compagnies » suit le périmètre du panneau ⚖** (Fabrice, 20/10/2026 : « oui ») : `on(k)` (aucune coche = toutes),
   APRIL seulement si sa case est cochée ; la liste « Compagnie » reste complète pour un choix à la main. Ligne d'aide « Périmètre
   du panneau ⚖ : n compagnies ; APRIL : … ». Périmètre vide (seule TALIS cochée) → toutes les compagnies, et la ligne le dit.

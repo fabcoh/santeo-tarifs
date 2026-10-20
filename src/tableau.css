@@ -456,6 +456,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-dl2{color:var(--b)}
 .cumul .cu-dl1 i,.cumul .cu-dl2 i{font-style:normal;color:var(--m);font-size:10px}
 .cumul .cu-dl1>span:nth-child(2),.cumul .cu-dl2>span:nth-child(2){text-align:right;white-space:nowrap}
+.cumul .cu-dl1 .cu-dpa,.cumul .cu-dl2 .cu-dpa{color:var(--r);opacity:1;font-weight:700}
 .cumul .cu-dre{text-align:right;white-space:nowrap;color:var(--r);font-size:10.5px}
 .cumul .cu-dl3{display:flex;justify-content:space-between;font-size:11.5px;color:var(--v);padding-top:2px}
 .cumul .cu-dl3 b{font-weight:800}

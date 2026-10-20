@@ -457,6 +457,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-dl2{color:var(--b)}
 .cumul .cu-dl1 i,.cumul .cu-dl2 i{font-style:normal;color:var(--m);font-size:10px}
 .cumul .cu-dl1>span:nth-child(2),.cumul .cu-dl2>span:nth-child(2){text-align:right;white-space:nowrap}
+.cumul .cu-dl1 .cu-dpa,.cumul .cu-dl2 .cu-dpa{color:var(--r);opacity:1;font-weight:700}
 .cumul .cu-dre{text-align:right;white-space:nowrap;color:var(--r);font-size:10.5px}
 .cumul .cu-dl3{display:flex;justify-content:space-between;font-size:11.5px;color:var(--v);padding-top:2px}
 .cumul .cu-dl3 b{font-weight:800}
@@ -2814,6 +2815,7 @@ for(const [code,g] of Object.entries(APRIL_GAR)){
     // Nom et mention « non responsable » pour le tableau de garantie, l'image et le courrier (envoi ouvert le 05/10/2026).
     F.APRIL.names[fi]=nomP+" Niv. "+n; LIMITES.APRIL[fi]=g.resp===false?"Contrat NON responsable.":"";
     for(const k of ["hospO","hospN","honoO","honoN","dent","opt","aud","ch","md"]) F.APRIL[k][fi]=g[k][i];
+    EX.APRIL.plaf=EX.APRIL.plaf||[]; EX.APRIL.plaf[fi]=g.plaf?g.plaf[i]:"n.c."; EX.APRIL.cumCode=EX.APRIL.cumCode||[]; EX.APRIL.cumCode[fi]=code;
     EX.APRIL.imp[fi]=g.imp[i]; EX.APRIL.orthR[fi]=g.orthR[i]; EX.APRIL.orthN[fi]=g.imp[i]==="n.c."?"n.c.":(APRIL_ORTHN_DANS_IMP[code]?g.imp[i]:"—");
     EX.APRIL.lentA[fi]=g.lentA[i]; EX.APRIL.lentR[fi]=g.lentR[i]; EX.APRIL.aud[fi]=g.aud[i];
     for(const k of ["optC","pharR","pharN"]) EX.APRIL[k][fi]=g[k]?g[k][i]:"n.c.";

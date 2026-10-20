@@ -383,7 +383,38 @@ const CU_DEP=[
 ];
 const CU_DENT=new Set(["cour","bri","inl","imp","orR","orN"]);
 const CU_IMP_MAX={APICIL:2};                                    // « 2 implants au plus par an »
-const CU_PLAF={TALIS:fi=>fi?900:600};                           // plafond dentaire annuel de la surcomplémentaire
+// Plafonds dentaires annuels, 1re année d'adhésion, par bénéficiaire, sur ce que paie le contrat (Sécu non comprise) —
+// relus dans les fiches docs/connaissances (Fabrice, 20/10/2026 : « faire attention aux plafonds… vérifier les plafonds
+// dentaires dans chacun des cas »). [montants par formule (null = aucun), soins concernés, source]. P = prothèses (couronne,
+// bridge, inlay-core), O = orthodontie, I = implants. Au-delà, un contrat responsable paie encore le ticket modérateur des
+// soins remboursés par la Sécurité sociale (« au-delà 100 % BR ») ; un forfait n'est plus payé.
+const CU_PLAFD={
+  CAPEVO:[[null,600,1000,1100],"POI"],
+  CAPNR:[[null,null,null,600,700,800,1000],"POI"],
+  TALIS:[[600,900],"POI"],
+  FLEXIA:[[null,2500,2500,2500],"P"],
+  SOLENCIA:[[2000,2000,2000,2000],"P"],
+  MV:[[null,750,750,1000,1200],"POI"],
+  REV:[[null,null,null,null,null,null,1400,2000],"POI"],
+  RF50:[[null,null,null,null,null,1400,2000],"POI"],
+  APICIL:[[null,null,500,700,800,1000,500,700,800,800,1000],"P"]
+};
+// Gammes dont le plafond n'est pas écrit dans les documents : la vignette le dit plutôt que de calculer sans.
+const CU_PLAF_NC={MCCINOVA:"non précisé dans les documents",RF100:"plafond du Renfort 100 non précisé dans les documents"};
+const CU_APRIL_PLAF_SOINS={SantePro:"PO",SanteProStart:"PO",SanteGan:"POI"};
+const cuSoin=id=>id==="imp"?"I":(id==="orR"||id==="orN")?"O":"P";
+// Plafond d'une formule : {m: montant | null, soins, txt} ; null si la gamme n'en a pas.
+function cuPlafond(G,c){
+  if(c.key==="APRIL"){
+    const v=String(valeur(G,"APRIL",c.fi,"x:plaf")), m=v.match(/^(\d[\d\s]*)\s*€/);
+    if(!m) return /^n\.c/i.test(v)?{m:null,nc:"non vérifié"}:null;
+    const code=((G.extras||{}).APRIL||{}).cumCode, cd=code&&code[c.fi];
+    return {m:+m[1].replace(/\s/g,""),soins:CU_APRIL_PLAF_SOINS[cd]||"P"};
+  }
+  if(CU_PLAF_NC[c.key]) return {m:null,nc:CU_PLAF_NC[c.key]};
+  const d=CU_PLAFD[c.key]; if(!d) return null;
+  const m=d[0][c.fi]; return m==null?null:{m,soins:d[1]};
+}
 const cuR=x=>Math.round(x*100)/100;
 // Ce que paie un contrat sur les restes à charge `rest` (un par unité). null = non chiffrable (valeur en texte).
 function cuPaie(G,c,L,rest){
@@ -406,17 +437,30 @@ function cuPaie(G,c,L,rest){
 // dep = {id:{n,p}} ; rend {lignes:[{id,lib,n,p,dep,secu,mut,sur,reste,nc}], dep, secu, mut, sur, reste, nc}
 function cumulDepenses(G,M,S,dep){
   const out={lignes:[],dep:0,secu:0,mut:0,sur:0,reste:0,nc:false};
-  let plaf=CU_PLAF[S.key]?CU_PLAF[S.key](S.fi):Infinity;
+  const PM=cuPlafond(G,M), PS=cuPlafond(G,S), respM=((G.gammes||{})[M.key]||{}).resp!==false;
+  let restM=PM&&PM.m!=null?PM.m:Infinity, restS=PS&&PS.m!=null?PS.m:Infinity;
+  out.plafM=PM; out.plafS=PS;
+  // Applique un plafond unité par unité : `pay` = ce que paierait le contrat, `tm` = ticket modérateur dû au-delà.
+  const plafonne=(pay,P,id,reste,tm)=>{
+    if(!P||P.m==null||P.soins.indexOf(cuSoin(id))<0) return {pay,reste,atteint:false};
+    let atteint=false; const o=pay.map((x,i)=>{
+      if(x<=reste.v){reste.v-=x;return x;}
+      atteint=true; const y=Math.max(reste.v,Math.min(x,tm[i]||0)); reste.v=0; return y;});
+    return {pay:o,atteint};
+  };
+  const RM={v:restM}, RS={v:restS};
   for(const L of CU_DEP){
     const d=(dep||{})[L[0]]; if(!d) continue;
     const p=+d.p||0, n=Math.max(1,Math.min(40,Math.round(+d.n||1))); if(!(p>0)) continue;
     let rest=Array(n).fill(p);
     const secu=rest.map(r=>Math.min(r,L[4]*L[3])); rest=rest.map((r,i)=>r-secu[i]);
-    const a=cuPaie(G,M,L,rest); if(a) rest=rest.map((r,i)=>r-a[i]);
-    const b=cuPaie(G,Object.assign({sur:1},S),L,rest);
-    let sb=b?b.reduce((x,y)=>x+y,0):0;
-    if(CU_DENT.has(L[0])){ sb=Math.min(sb,plaf); plaf-=sb; }
-    const l={id:L[0],lib:L[1],u:L[5],n,p,dep:n*p,secu:secu.reduce((x,y)=>x+y,0),mut:a?a.reduce((x,y)=>x+y,0):0,sur:sb,nc:!a||!b};
+    let a=cuPaie(G,M,L,rest), atM=false, atS=false;
+    if(a){ const tm=rest.map(r=>respM&&L[3]?Math.min(r,L[3]*(1-L[4])):0);
+      const q=plafonne(a,PM,L[0],RM,tm); a=q.pay; atM=q.atteint; rest=rest.map((r,i)=>r-a[i]); }
+    let b=cuPaie(G,Object.assign({sur:1},S),L,rest);
+    if(b){ const q=plafonne(b,PS,L[0],RS,rest.map(()=>0)); b=q.pay; atS=q.atteint; }
+    const sm=x=>x?x.reduce((u,v)=>u+v,0):0;
+    const l={id:L[0],lib:L[1],u:L[5],n,p,dep:n*p,secu:sm(secu),mut:sm(a),sur:sm(b),nc:!a||!b,atM,atS};
     l.reste=cuR(l.dep-l.secu-l.mut-l.sur);
     out.lignes.push(l);
     for(const k of ["dep","secu","mut","sur","reste"]) out[k]=cuR(out[k]+l[k]);
@@ -432,6 +476,13 @@ const CU_DEPLIB={cour:["Prothèse dentaire (couronne)","prothèses"],bri:["Bridg
 // Présentation pour un néophyte (Fabrice, 20/10/2026) : une carte par soin — coût, mutuelle de base (Sécu comprise) puis
 // surcomplémentaire, chacune avec son remboursement et le reste à payer —, puis « Vous payez sur 12 mois… », « Vous êtes
 // remboursé de… » et le gain = tout ce qui est remboursé (Sécu comprise) − les cotisations de l'année.
+// Plafonds dentaires appliqués, en clair (1re année d'adhésion).
+function cuPlafTxt(G,M,S,R){
+  const nom=c=>nomComplet(G,c.key,c.fi).replace(/^TALIS Talis/,"TALIS").replace(/^TALIS TALIS/,"TALIS");
+  const dent=R.lignes.some(l=>"cour bri inl imp orR orN".indexOf(l.id)>=0); if(!dent) return "";
+  const t=(c,P)=>!P?nom(c)+' : pas de plafond dentaire':P.m==null?nom(c)+' : plafond '+P.nc:nom(c)+' : '+cuNb(P.m)+' € par an';
+  return 'Plafonds dentaires (1re année d’adhésion, appliqués) — '+t(M,R.plafM)+' ; '+t(S,R.plafS)+'.';
+}
 function cuDepHTML(G,M,S,R,p1,p2){
   if(!R||!R.lignes.length) return "";
   const nM=nomComplet(G,M.key,M.fi), nS=nomComplet(G,S.key,S.fi).replace(/^TALIS Talis/,"TALIS").replace(/^TALIS TALIS/,"TALIS");
@@ -440,8 +491,8 @@ function cuDepHTML(G,M,S,R,p1,p2){
   for(const l of R.lignes){
     const L=CU_DEPLIB[l.id]||[l.lib,l.lib], r1=l.secu+l.mut, rest1=l.dep-r1;
     h+='<div class="cu-dk"><div class="cu-dkt"><b>'+L[0]+(l.nc?' <sup>†</sup>':'')+'</b><span>Coût : '+(l.n>1?l.n+' × '+cuE(l.p)+' = ':'')+'<b>'+cuE(l.dep)+'</b></span></div>'
-      +'<div class="cu-dl1"><span>Mutuelle de base'+(l.secu?' <i>(Sécu comprise)</i>':'')+'</span><span>remboursé <b>'+cuE(r1)+'</b></span><span class="cu-dre">reste '+cuE(rest1)+'</span></div>'
-      +'<div class="cu-dl2"><span>+ '+nS+' <i>(surcomplémentaire)</i></span><span>remboursé <b>'+cuE(l.sur)+'</b></span><span class="cu-dre">reste '+cuE(l.reste)+'</span></div>'
+      +'<div class="cu-dl1"><span>Mutuelle de base'+(l.secu?' <i>(Sécu comprise)</i>':'')+(l.atM?' <i class="cu-dpa">plafond atteint</i>':'')+'</span><span>remboursé <b>'+cuE(r1)+'</b></span><span class="cu-dre">reste '+cuE(rest1)+'</span></div>'
+      +'<div class="cu-dl2"><span>+ '+nS+' <i>(surcomplémentaire)</i>'+(l.atS?' <i class="cu-dpa">plafond atteint</i>':'')+'</span><span>remboursé <b>'+cuE(l.sur)+'</b></span><span class="cu-dre">reste '+cuE(l.reste)+'</span></div>'
       +'<div class="cu-dl3"><span>Total remboursé</span><b>'+cuE(r1+l.sur)+' sur '+cuE(l.dep)+'</b></div></div>';
   }
   // Récapitulatif de l'année.
@@ -454,8 +505,7 @@ function cuDepHTML(G,M,S,R,p1,p2){
     h+=g>0?'<div class="cu-dgain"><span>Votre gain sur l’année</span><b>+ '+cuE(g)+'</b></div>'
            :'<div class="cu-dgain cu-dg0"><span>Différence sur l’année</span><b>'+cuE(g)+'</b></div>'; }
   h+='</div><div class="cu-dn">'+(cot!=null?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
-    +'Tableau présenté à titre indicatif — document non contractuel. Calcul sur les tarifs de convention de la Sécurité sociale (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre), implants et orthodontie non remboursée au forfait, dans la limite des plafonds annuels'
-    +(CU_PLAF[S.key]?' (dentaire '+nS+' : '+CU_PLAF[S.key](S.fi)+' € par an)':'')+' et après les délais d’attente.'
+    +'Tableau présenté à titre indicatif — document non contractuel. Calcul sur les tarifs de convention de la Sécurité sociale (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre), implants et orthodontie non remboursée au forfait, après les délais d’attente. '+cuPlafTxt(G,M,S,R)
     +(R.nc?' † Garantie non chiffrable : non comptée.':'')+'</div></div>';
   return h;
 }
