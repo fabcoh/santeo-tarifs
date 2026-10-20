@@ -524,6 +524,13 @@ function cumul(G,o){
   const ch=CU_GAINS.filter(([s])=>cuLire(v2(s))).map(([s,l])=>'<span><i>'+l+'</i> '+cuPlus(v2(s))+'</span>').join("");
   let h='<div class="cu-ti">Votre mutuelle + surcomplémentaire</div>'
     +(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'');
+  // Le gain en première ligne (Fabrice, 20/10/2026 : « afficher les gains de la solution en première ligne ») : même calcul
+  // que le bilan du bas — remboursements de l'année (Sécu comprise) − cotisations × 12.
+  const RD=o.depenses?cumulDepenses(G,M,S,o.depenses):null;
+  if(RD&&RD.lignes.length&&prix){ const rem=RD.secu+RD.mut+RD.sur, cot=cuR((p1+p2)*12), g=rem-cot;
+    h+='<div class="cu-top'+(g>0?'':' cu-top0')+'"><div><b>'+(g>0?'Votre gain sur l’année':'Différence sur l’année')+'</b>'
+      +'<span>remboursé '+cuE(rem)+' − cotisations '+cuE(cot)+' · reste à charge '+cuE(RD.reste)+' au lieu de '+cuE(RD.dep-RD.secu)+'</span></div>'
+      +'<em>'+(g>0?'+ ':'')+cuE(g)+'</em></div>'; }
   // Le bandeau « Pour x € de plus par mois… » ferme le tableau, juste au-dessus de la cotisation (Fabrice, 20/10/2026).
   const gain=ch?'<div class="cu-gain">'+(prix?'Pour <b>'+eur(p2)+' de plus par mois</b>, ':'')+nS+' renforce vos remboursements :<div class="cu-chips">'+ch+'</div></div>':'';
   h+='<div class="cu-r cu-h">'+cell("cu-l","")
@@ -551,7 +558,7 @@ function cumul(G,o){
     +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
     +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')
     +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>')+'</div>';
-  if(o.depenses) h+=cuDepHTML(G,M,S,cumulDepenses(G,M,S,o.depenses),prix?p1:null,prix?p2:null);
+  if(RD) h+=cuDepHTML(G,M,S,RD,prix?p1:null,prix?p2:null);
   h+=gain;
   if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
   const gM=G.gammes[M.key], nr=gM&&(gM.resp===false||/^\s*Contrat NON responsable/i.test(String(limites(G,M.key,M.fi)||"")));
