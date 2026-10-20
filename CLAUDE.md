@@ -304,6 +304,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   principal** (`aprilProfil` ne les envoie plus ; le bloc APRIL dit « réservé aux TNS »). APRIL les tarifait sans rien dire pour un
   salarié. Les produits Particuliers restent ouverts aux TNS. Les gammes locales suivent déjà le régime dans `moteur.js` ; APICIL
   en décide lui-même. Test : scratchpad `t_cumul5.js`.
+  **APRIL = les produits cochés au ☰ du panneau ⚖** (Fabrice, 20/10/2026, capture du panneau, 3 / 24 cochés : « ceux qui sont
+  cochés pour APRIL ») : la liste Compagnie et « Toutes les compagnies » ne prennent plus tous les produits ouverts mais `APRIL_SEL`
+  (ouverts et au régime) ; plus d'appel au relais en plus de celui du tableau. Ligne d'aide : « APRIL : n produits cochés… ».
   **Implantologie marquée d'une \*** (Fabrice, 19/10/2026 : « vérifie l'implantologie… une astérisque puis expliquer les limites en
   dessous du tableau ») : `CU_IMP` dit ce que vaut le montant de chaque gamme, relu dans les fiches `docs/connaissances/` — **par
   implant** (Cap Évolution, CAP NR, TALIS dans son plafond 600 / 900 €, APICIL 2 au plus), **forfait annuel** (FLEXIA, SOLENCIA
