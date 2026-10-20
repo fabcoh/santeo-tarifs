@@ -442,7 +442,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-fin>.cu-l{border:0}
 .cumul .cu-fin .cu-a,.cumul .cu-fin .cu-b,.cumul .cu-fin .cu-t{border-radius:0 0 10px 10px}
 .cumul .cu-ast{font-size:.8em;margin-left:1px;vertical-align:super;line-height:0}
-.cumul .cu-nb{margin-top:8px;font-size:10.5px;line-height:1.45;color:var(--k);background:var(--c1);border-radius:8px;padding:6px 8px}
+.cumul .cu-nb{margin-top:10px;font-size:10.5px;line-height:1.45;color:var(--k);background:var(--c1);border-radius:8px;padding:6px 8px}
 .cumul .cu-nb sup{color:var(--t);font-weight:700}
 .cumul .cu-prix{margin-top:10px}
 .cumul .cu-prix>div{border:0;padding:8px 3px;border-radius:10px}
@@ -547,7 +547,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-20T12:24:08Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T12:24:08Z</div>
+  <div id="buildstamp" data-build="2026-10-20T12:57:07Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T12:57:07Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1244,12 +1244,14 @@ function cumul(G,o){
       h+=ligne(CU_POSTES[src],v1(src),cuPlus(v2(src)),tt,plus?"cu-up":"");}
   }
   h+=ligne("","","","","cu-fin");
-  if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
-  h+=gain;
+  // Cotisation juste sous le tableau, puis le bandeau TALIS, puis les explications (Fabrice, 20/10/2026 : « remonte les
+  // tarifs au dessous du tableau avant les explications »).
   if(prix) h+='<div class="cu-r cu-prix">'+cell("cu-l",'Cotisation<small>par mois</small>')
     +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
     +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')
     +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>')+'</div>';
+  h+=gain;
+  if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
   const gM=G.gammes[M.key], nr=gM&&(gM.resp===false||/^\s*Contrat NON responsable/i.test(String(limites(G,M.key,M.fi)||"")));
   const note=CU_NOTE[S.key]?CU_NOTE[S.key](S.fi):"";
   h+='<div class="cu-ft"><b>'+nS+'</b> s’ajoute à votre mutuelle, sans la remplacer'+(note?" ; "+note:"")+'.'
