@@ -487,11 +487,24 @@ function cuPlafTxt(G,M,S,R){
   const t=(c,P)=>!P?nom(c)+' : pas de plafond dentaire':P.m==null?nom(c)+' : plafond '+P.nc:nom(c)+' : '+cuNb(P.m)+' € par an';
   return 'Plafonds dentaires (1re année d’adhésion, appliqués) — '+t(M,R.plafM)+' ; '+t(S,R.plafS)+'.';
 }
+// Délai d'attente de la surcomplémentaire, écrit près des soins (TALIS : 90 jours en dentaire et en optique, TG p.2-3).
+const CU_CARENCE={TALIS:"délai d’attente de 90 jours en dentaire et en optique : un soin fait pendant ces 90 jours n’est pas remboursé par TALIS"};
+// Bilan de l'année, trois situations (critique relue avec Fabrice, 20/10/2026 : « ok ») — la Sécurité sociale paie la même
+// chose dans les trois, elle s'annule. Coût réel = cotisations de l'année + reste à payer sur les soins indiqués.
+function cuBilan(R,p1,p2){
+  const c1=p1!=null?cuR(p1*12):null, c2=p2!=null?cuR(p2*12):null;
+  const sans={cot:0,rem:R.secu,reste:cuR(R.dep-R.secu)}, mut={cot:c1,rem:cuR(R.secu+R.mut),reste:cuR(R.dep-R.secu-R.mut)},
+        tout={cot:c1!=null&&c2!=null?cuR(c1+c2):null,rem:cuR(R.secu+R.mut+R.sur),reste:R.reste};
+  for(const x of [sans,mut,tout]) x.total=x.cot!=null?cuR(x.cot+x.reste):null;
+  const plusS=tout.total!=null&&mut.total!=null?cuR(mut.total-tout.total):null;   // ce que TALIS fait gagner
+  return {sans,mut,tout,plusS,remS:R.sur,cotS:c2};
+}
 function cuDepHTML(G,M,S,R,p1,p2){
   if(!R||!R.lignes.length) return "";
   const nM=nomComplet(G,M.key,M.fi), nS=nomComplet(G,S.key,S.fi).replace(/^TALIS Talis/,"TALIS").replace(/^TALIS TALIS/,"TALIS");
   const rem=R.secu+R.mut+R.sur, cot=(p1!=null&&p2!=null)?cuR((p1+p2)*12):null;
-  let h='<div class="cu-dp"><div class="cu-dpt">Vos soins prévus : ce qui vous sera remboursé</div>';
+  let h='<div class="cu-dp"><div class="cu-dpt">Vos soins prévus : estimation des remboursements</div>'
+    +(CU_CARENCE[S.key]?'<div class="cu-dca">⚠ '+nS+' : '+CU_CARENCE[S.key]+'.</div>':'');
   for(const l of R.lignes){
     const L=CU_DEPLIB[l.id]||[l.lib,l.lib], r1=l.secu+l.mut, rest1=l.dep-r1;
     // Soin sans base Sécu (lunettes, lentilles, implants, orthodontie non remboursée, chambre) : la Sécurité sociale ne paie
@@ -502,17 +515,23 @@ function cuDepHTML(G,M,S,R,p1,p2){
       +'<div class="cu-dl2"><span>+ '+nS+' <i>(surcomplémentaire)</i>'+(l.atS?' <i class="cu-dpa">plafond atteint</i>':'')+'</span><span>remboursé <b>'+cuE(l.sur)+'</b></span><span class="cu-dre">reste '+cuE(l.reste)+'</span></div>'
       +'<div class="cu-dl3"><span>Total remboursé</span><b>'+cuE(r1+l.sur)+' sur '+cuE(l.dep)+'</b></div></div>';
   }
-  // Récapitulatif de l'année.
-  const parts=R.lignes.map(l=>cuE(l.secu+l.mut+l.sur)+' ('+(CU_DEPLIB[l.id]||[,l.lib])[1]+')');
-  h+='<div class="cu-ds">';
-  if(cot!=null) h+='<div><span>Vous payez sur 12 mois<sup>1</sup></span><b>'+eur(p1)+' + '+eur(p2)+' = '+eur(p1+p2)+' × 12 = '+cuE(cot)+'</b></div>';
-  h+='<div class="cu-drm"><span>Vous êtes remboursé de</span><b>'+parts.join(' + ')+(parts.length>1?' = '+cuE(rem):'')+'</b></div>';
-  h+='<div class="cu-drc"><span>Reste à votre charge</span><b><em>'+cuE(R.reste)+'</em><small>au lieu de '+cuE(R.dep-R.secu)+' <i>sans complémentaire</i></small></b></div>';
-  if(cot!=null){ const g=rem-cot;
-    h+=g>0?'<div class="cu-dgain"><span>Votre gain sur l’année</span><b>+ '+cuE(g)+'</b></div>'
-           :'<div class="cu-dgain cu-dg0"><span>Différence sur l’année</span><b>'+cuE(g)+'</b></div>'; }
+  // Bilan de l'année : sans complémentaire · mutuelle seule · mutuelle + surcomplémentaire.
+  const B=cuBilan(R,p1,p2), nMc=nM.length>22?G.gammes[M.key].label.replace(/^M\. VERTE /,""):nM;
+  // Deux colonnes : la mutuelle seule et la mutuelle + surcomplémentaire (« sans complémentaire » reste dans la ligne du reste à
+  // payer : sur ces seuls soins elle paraîtrait moins chère, en oubliant l'hospitalisation que la mutuelle couvre).
+  const cel=(x,k,cls)=>'<div'+(cls?' class="'+cls+'"':'')+'>'+(x[k]==null?'—':cuE(x[k]))+'</div>';
+  h+='<div class="cu-bl"><div class="cu-blt">Votre bilan sur l’année, pour ces soins</div>'
+    +'<div class="cu-br cu-bh"><div></div><div>'+nMc+' seule</div><div class="cu-bt">'+nMc+' + '+nS+'</div></div>'
+    +'<div class="cu-br"><div>Cotisations<sup>1</sup></div>'+cel(B.mut,"cot")+cel(B.tout,"cot","cu-bt")+'</div>'
+    +'<div class="cu-br"><div>Remboursements <i>(Sécu comprise)</i></div>'+cel(B.mut,"rem")+cel(B.tout,"rem","cu-bt cu-bv")+'</div>'
+    +'<div class="cu-br"><div>Reste à payer sur ces soins <i>(sans complémentaire : '+cuE(B.sans.reste)+')</i></div>'+cel(B.mut,"reste","cu-brr")+cel(B.tout,"reste","cu-bt cu-brr")+'</div>'
+    +(B.tout.total!=null?'<div class="cu-br cu-btot"><div>Coût réel de l’année <i>(cotisations + reste)</i></div>'+cel(B.mut,"total")+cel(B.tout,"total","cu-bt")+'</div>':'')
+    +'</div>';
+  if(B.plusS!=null) h+=B.plusS>0
+    ?'<div class="cu-dgain"><span>Avec '+nS+' : '+cuE(B.remS)+' remboursés en plus pour '+cuE(B.cotS)+' de cotisation</span><b>+ '+cuE(B.plusS)+' pour vous</b></div>'
+    :'<div class="cu-dgain cu-dg0"><span>Sur ces seuls soins, '+nS+' coûte plus qu’il ne rembourse ('+cuE(B.remS)+' pour '+cuE(B.cotS)+')</span><b>'+cuE(B.plusS)+'</b></div>';
   h+='</div><div class="cu-dn">'+(cot!=null?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
-    +'Tableau présenté à titre indicatif — document non contractuel. Calcul sur les tarifs de convention de la Sécurité sociale (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre), implants et orthodontie non remboursée au forfait, après les délais d’attente. '+cuPlafTxt(G,M,S,R)
+    +'Tableau présenté à titre indicatif — document non contractuel. Prothèses hors panier 100 % Santé (dans le panier 100 % Santé, le reste à charge est nul avec un contrat responsable). Calcul sur les tarifs de convention de la Sécurité sociale (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre), implants et orthodontie non remboursée au forfait, après les délais d’attente. '+cuPlafTxt(G,M,S,R)
     +(R.nc?' † Garantie non chiffrable : non comptée.':'')+'</div></div>';
   return h;
 }
@@ -527,14 +546,14 @@ function cumul(G,o){
   const ch=CU_GAINS.filter(([s])=>cuLire(v2(s))).map(([s,l])=>'<span><i>'+l+'</i> '+cuPlus(v2(s))+'</span>').join("");
   let h='<div class="cu-ti">Votre mutuelle + surcomplémentaire</div>'
     +(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'');
-  // Première ligne (Fabrice, 20/10/2026 : « afficher les gains de la solution en première ligne », puis « une composition des
-  // deux ») : toujours le reste à charge comparé à « sans complémentaire », et le gain de l'année à côté s'il est positif —
-  // une différence négative n'est pas mise en tête (elle reste dans le bilan du bas). Même calcul que le bilan.
+  // Première ligne (Fabrice, 20/10/2026 : « afficher les gains de la solution en première ligne », « une composition des deux »,
+  // puis la critique relue ensemble) : le reste à payer sur les soins, hors cotisations, comparé à « sans complémentaire » ; à côté,
+  // seulement s'il est positif, ce que la surcomplémentaire fait gagner (remboursé en plus − sa cotisation) — même calcul que le bilan.
   const RD=o.depenses?cumulDepenses(G,M,S,o.depenses):null;
-  if(RD&&RD.lignes.length){ const rem=RD.secu+RD.mut+RD.sur, cot=prix?cuR((p1+p2)*12):null, g=cot!=null?rem-cot:null;
-    h+='<div class="cu-top"><div class="cu-tr"><b>Reste à votre charge</b><em>'+cuE(RD.reste)+'</em>'
-      +'<span>au lieu de <i>'+cuE(RD.dep-RD.secu)+'</i> sans complémentaire</span></div>'
-      +(g!=null&&g>0?'<div class="cu-tg"><b>Votre gain sur l’année</b><em>+ '+cuE(g)+'</em><span>remboursé '+cuE(rem)+' − cotisations '+cuE(cot)+'</span></div>':'')
+  if(RD&&RD.lignes.length){ const B=cuBilan(RD,prix?p1:null,prix?p2:null);
+    h+='<div class="cu-top"><div class="cu-tr"><b>Reste à payer sur vos soins</b><em>'+cuE(RD.reste)+'</em>'
+      +'<span>au lieu de <i>'+cuE(RD.dep-RD.secu)+'</i> sans complémentaire · hors cotisations</span></div>'
+      +(B.plusS!=null&&B.plusS>0?'<div class="cu-tg"><b>Avec '+nS+'</b><em>+ '+cuE(B.plusS)+'</em><span>'+cuE(B.remS)+' remboursés en plus pour '+cuE(B.cotS)+' de cotisation</span></div>':'')
       +'</div>'; }
   // Le bandeau « Pour x € de plus par mois… » ferme le tableau, juste au-dessus de la cotisation (Fabrice, 20/10/2026).
   const gain=ch?'<div class="cu-gain">'+(prix?'Pour <b>'+eur(p2)+' de plus par mois</b>, ':'')+nS+' renforce vos remboursements :<div class="cu-chips">'+ch+'</div></div>':'';
@@ -542,6 +561,7 @@ function cumul(G,o){
     +cell("cu-a",'<div class="cu-lg">'+logoEgal(G,M.key,o.base,40,36)+'</div><b>'+nomComplet(G,M.key,M.fi)+'</b><i class="cu-rf"></i><span class="cu-ro">Mutuelle principale</span>')
     +cell("cu-b",'<div class="cu-lg">'+logoEgal(G,S.key,o.base,40,36)+'</div><b>'+nS+'</b><i class="cu-rf">Renfort</i><span class="cu-ro">Surcomplé&shy;mentaire</span>')
     +cell("cu-t",'<div class="cu-lg cu-eg">=</div><b>Total cumulé</b><i class="cu-rf"></i><span class="cu-ro">Mutuelle + Surcompl.</span>')+'</div>';
+  h+='<div class="cu-leg">% = pourcentage de la base de remboursement de la Sécurité sociale, Sécu comprise · € = forfait</div>';
   const notes=[];
   for(const [bloc,ls] of BLOCS){
     const rs=ls.filter(([,src])=>CU_POSTES[src]&&(v1(src)!=="—"||v2(src)!=="—"));

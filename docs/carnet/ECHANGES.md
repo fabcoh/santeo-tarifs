@@ -658,3 +658,6 @@ dit « Tarifs au …, valables 10 jours. »
 - (suite, 20/10/2026) `Tableau.cumulDepenses` applique désormais les **plafonds dentaires annuels** de chaque formule (1re année
   d'adhésion, hors Sécu ; `CU_PLAFD` dans `src/tableau.js`, TALIS 600 / 900 €) ; le résultat porte `plafM` / `plafS` et, par
   ligne, `atM` / `atS` (plafond atteint). MCCINOVA et Renfort 100 : plafond non précisé dans les documents.
+- (suite, 20/10/2026, soir) Vignette du cumul revue : le « gain » n'est plus « remboursements Sécu comprise − cotisations » mais
+  ce que la surcomplémentaire rembourse en plus moins sa cotisation (mutuelle seule contre mutuelle + TALIS). Bilan à deux
+  colonnes, délai d'attente TALIS (90 jours dentaire / optique) affiché près des soins. `cumulDepenses` ne change pas.

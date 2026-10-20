@@ -93,21 +93,25 @@ Relevés dans `docs/connaissances/`. P = prothèses (couronne, bridge, inlay-cor
 
 ## Présentation (néophyte, vendeur, sobre)
 
-- **Première ligne** (Fabrice, 20/10/2026 : « afficher les gains de la solution en première ligne », puis « une composition des
-  deux ») : bandeau `.cu-top` sous le nom du prospect — à gauche, **toujours**, « Reste à votre charge X € (rouge) — au lieu de
-  Y € sans complémentaire » ; à droite, **seulement si le gain est positif**, « Votre gain sur l'année + Z € » (vert) avec
-  « remboursé … − cotisations … ». Une différence négative n'est jamais mise en tête ; elle reste dans le bilan du bas
-  (« Différence sur l'année », gris). Même calcul que le bilan.
-- **Calcul du gain** : (Sécu + mutuelle + surcomplémentaire, sur les soins saisis) − (cotisation mutuelle + cotisation
-  surcomplémentaire) × 12. Exemple relu (20/10/2026, né en 1998, Cap Évolution Sérénité + Talis +, 1 couronne 600 €,
-  1 implant 1 000 €) : remboursé 72 + 868 + 400 = 1 340 € ; cotisations 133,95 × 12 = 1 607 € ; différence − 267 €.
-- **Une carte par soin** : « Coût : n × prix = total » ; « Mutuelle de base (Sécu comprise) — remboursé X · reste » ;
-  « + TALIS (surcomplémentaire) — remboursé Y · reste » ; « Total remboursé Z sur coût ».
-- Bilan : « Vous payez sur 12 mois¹ : a + b = c × 12 = total » ; « Vous êtes remboursé de : … (prothèses) + … (implants) » ;
-  **« Reste à votre charge X — au lieu de Y sans complémentaire »** mis en avant (Y = dépense − Sécu) ; **« Votre gain sur
-  l'année »** en vert, « Différence sur l'année » en gris s'il est négatif.
+Revue du 20/10/2026 (critique ChatGPT relue avec Fabrice, « ok ») : le gain se mesure **entre la mutuelle seule et la mutuelle +
+surcomplémentaire**, la Sécu payant la même chose dans les deux cas — plus de « gain » Sécu comprise ni de « différence sur l'année ».
+
+- **Première ligne** (`.cu-top`) : « Reste à payer sur vos soins X € — au lieu de Y € sans complémentaire · hors cotisations » ;
+  à côté, **seulement si positif**, « Avec TALIS + : + Z € » et en petit « R € remboursés en plus pour C € de cotisation ».
+- Légende sous l'en-tête de la grille : « % = pourcentage de la base de remboursement de la Sécurité sociale, Sécu comprise · € = forfait ».
+- **« Vos soins prévus : estimation des remboursements »** (jamais « ce qui vous sera remboursé »), puis en rouge le **délai
+  d'attente de la surcomplémentaire** (`CU_CARENCE` : TALIS 90 jours en dentaire et en optique).
+- **Une carte par soin** : « Coût : n × prix = total » (« non remboursé par la Sécu » pour les soins sans base) ;
+  « Mutuelle de base (Sécu comprise) — remboursé X · reste » ; « + TALIS (surcomplémentaire) — remboursé Y · reste » ;
+  « Total remboursé Z sur coût ».
+- **Bilan sur l'année, pour ces soins** (`cuBilan`) : deux colonnes, « <mutuelle> seule » et « <mutuelle> + <surco> » — cotisations¹,
+  remboursements (Sécu comprise), reste à payer (avec « sans complémentaire : … » en rappel), **coût réel = cotisations + reste**.
+  Pas de colonne « sans complémentaire » : sur ces seuls soins elle paraîtrait moins chère en oubliant l'hospitalisation.
+- **Ligne finale** : « Avec TALIS + : R € remboursés en plus pour C € de cotisation — + Z € pour vous » (vert) ; si négatif,
+  « Sur ces seuls soins, TALIS coûte plus qu'il ne rembourse » (gris). Z = R − C = coût réel mutuelle seule − coût réel cumul.
 - Mentions : « ¹ Les cotisations évoluent chaque année à la date anniversaire du contrat. Tableau présenté à titre indicatif —
-  document non contractuel. » + tarifs de convention + plafonds appliqués.
+  document non contractuel. Prothèses hors panier 100 % Santé (dans le panier 100 % Santé, le reste à charge est nul avec un
+  contrat responsable) » + tarifs de convention + plafonds appliqués.
 - **Couleurs** (« noir, bleu, rouge, vert selon mutuelle, surco, reste à charge ») : noir = mutuelle, bleu `#1F5FA8` =
   surcomplémentaire, vert `#157A47` = total, remboursements, gain, rouge `#C0392B` = reste à charge. Fond blanc, filets fins,
   aucun fond pastel. Logos à **surface égale** (`logoEgal`), noms à la même taille.

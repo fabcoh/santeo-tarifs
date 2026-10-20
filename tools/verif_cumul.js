@@ -42,5 +42,11 @@ const cas=[
 for(const [M,S,dep,att] of cas){ const R=T.cumulDepenses(G,M,S,dep); n++;
   for(const k in att) if(Math.abs(R[k]-att[k])>0.005) ko.push("cas "+M.key+" "+M.fi+" : "+k+" = "+R[k]+" au lieu de "+att[k]); }
 
+// 4. Le gain de la surcomplémentaire = ce qu'elle rembourse − sa cotisation = coût réel mutuelle seule − coût réel cumul.
+{ const R=T.cumulDepenses(G,{key:"FLEXIA",fi:0},{key:"TALIS",fi:1},{cour:{n:1,p:600},imp:{n:1,p:1000},lun:{n:1,p:250}}); n++;
+  const p1=42.60,p2=45.33, seule=p1*12+(R.dep-R.secu-R.mut), cumul=(p1+p2)*12+R.reste, g=R.sur-p2*12;
+  if(Math.abs((seule-cumul)-g)>0.01) ko.push("gain TALIS incoherent : "+(seule-cumul)+" / "+g);
+  if(Math.abs(R.sur-560)>0.005) ko.push("FLEXIA Start + Talis + : TALIS paie "+R.sur+" au lieu de 560"); }
+
 if(ko.length){ console.error(ko.length+" ecart(s) sur "+n+" cas :\n"+ko.slice(0,20).join("\n")); process.exit(1); }
 console.log("Regles du cumul : "+n+" cas, aucun ecart.");

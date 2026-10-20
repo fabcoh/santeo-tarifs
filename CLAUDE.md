@@ -351,8 +351,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   skill avec toutes les règles et les suivantes ») — chaque nouvelle règle s'y ajoute. Règle absolue : **jamais plus remboursé
   que ce qui est dû** (garde-fou dans `cumulDepenses`). `node tools/verif_cumul.js` contrôle ces règles (2 762 cas) ; l'Action le
   lance avant de publier, un écart arrête la publication.
-  **Première ligne** (Fabrice, 20/10/2026 : « une composition des deux ») : bandeau `.cu-top` — reste à charge « au lieu de … sans
-  complémentaire » toujours, gain de l'année à côté seulement s'il est positif ; le négatif reste dans le bilan du bas.
+  **Revue du 20/10/2026** (critique ChatGPT relue, Fabrice : « ok ») : le gain se mesure **entre mutuelle seule et mutuelle + TALIS**
+  (la Sécu s'annule) — première ligne « Reste à payer sur vos soins … au lieu de … · hors cotisations » + « Avec TALIS : + x € »
+  s'il est positif ; bilan à deux colonnes (cotisations, remboursements, reste, coût réel) ; délai d'attente TALIS de 90 jours en
+  rouge près des soins ; légende des % ; « estimation des remboursements » ; mention « hors panier 100 % Santé ». Détail dans le skill.
   **« Toutes les compagnies » suit le périmètre du panneau ⚖** (Fabrice, 20/10/2026 : « oui ») : `on(k)` (aucune coche = toutes),
   APRIL seulement si sa case est cochée ; la liste « Compagnie » reste complète pour un choix à la main. Ligne d'aide « Périmètre
   du panneau ⚖ : n compagnies ; APRIL : … ». Périmètre vide (seule TALIS cochée) → toutes les compagnies, et la ligne le dit.
