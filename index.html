@@ -494,6 +494,17 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-dgain span{font:700 12.5px 'Archivo',sans-serif;color:var(--v)}
 .cumul .cu-dgain b{font:800 19px 'Archivo',sans-serif;color:var(--v);white-space:nowrap}
 .cumul .cu-dg0{border-color:var(--l)!important}.cumul .cu-dg0 span,.cumul .cu-dg0 b{color:var(--k)}.cumul .cu-dg0 b{font-size:15px}
+.cumul .cu-dg>div{font-size:11.5px;padding:5px 3px}
+.cumul .cu-dg small{display:block;font:400 9.5px 'IBM Plex Sans',sans-serif;color:var(--m);white-space:normal;letter-spacing:0}
+.cumul .cu-dg .cu-l b{font-weight:700}
+.cumul .cu-dg small.cu-dre{color:var(--r);text-align:center}
+.cumul .cu-dg .cu-a small,.cumul .cu-dg .cu-b small,.cumul .cu-dg .cu-t small{text-align:center}
+.cumul .cu-dg small.cu-dpa{color:var(--r);font-weight:700}
+.cumul .cu-dgh>div{font-size:10px!important;padding:6px 3px 4px;border-bottom:1.5px solid var(--k)!important;line-height:1.15}
+.cumul .cu-dgh .cu-b{border-bottom-color:var(--b)!important}.cumul .cu-dgh .cu-t{border-bottom-color:var(--v)!important}
+.cumul .cu-dgh b{font-weight:700}
+.cumul .cu-dgt>div{border-bottom:2px solid var(--k)!important;font-size:12.5px}
+.cumul .cu-dp .cu-blt{margin-top:12px;border-top:2px solid var(--k)}
 .cumul .cu-leg{font-size:9.5px;color:var(--m);padding:3px 2px 0;text-align:right}
 .cumul .cu-dca{font-size:10.5px;color:var(--r);font-weight:600;margin:5px 0 2px}
 .cumul .cu-bl{margin-top:10px;border-top:2px solid var(--k)}
@@ -612,7 +623,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-20T16:24:48Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T16:24:48Z</div>
+  <div id="buildstamp" data-build="2026-10-20T16:33:09Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T16:33:09Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1426,35 +1437,36 @@ function cuBilan(R,p1,p2){
 function cuDepHTML(G,M,S,R,p1,p2){
   if(!R||!R.lignes.length) return "";
   const nM=nomComplet(G,M.key,M.fi), nS=nomComplet(G,S.key,S.fi).replace(/^TALIS Talis/,"TALIS").replace(/^TALIS TALIS/,"TALIS");
-  const rem=R.secu+R.mut+R.sur, cot=(p1!=null&&p2!=null)?cuR((p1+p2)*12):null;
+  const nMc=nM.length>22?G.gammes[M.key].label.replace(/^M\. VERTE /,""):nM;
   let h='<div class="cu-dp"><div class="cu-dpt">Vos soins prévus : estimation des remboursements</div>'
     +(CU_CARENCE[S.key]?'<div class="cu-dca">⚠ '+nS+' : '+CU_CARENCE[S.key]+'.</div>':'');
+  // Mêmes colonnes que la grille des garanties (Fabrice, 20/10/2026 : « aligner dans les colonnes les remboursements… l'explication
+  // verticalement ») : soin · mutuelle · surcomplémentaire · total, une ligne par soin, puis le bilan de l'année dans les mêmes colonnes.
+  const C=(c,x)=>'<div class="'+c+'">'+x+'</div>';
+  const L4=(a,b,c,d,cls)=>'<div class="cu-r cu-dg'+(cls?' '+cls:'')+'">'+C("cu-l",'<span>'+a+'</span>')+C("cu-a",'<span>'+b+'</span>')+C("cu-b",'<span>'+c+'</span>')+C("cu-t",'<span>'+d+'</span>')+'</div>';
+  h+=L4('', '<b>'+nMc+'</b>', '<b>'+nS+'</b>', '<b>Total</b>','cu-dgh');
   for(const l of R.lignes){
-    const L=CU_DEPLIB[l.id]||[l.lib,l.lib], r1=l.secu+l.mut, rest1=l.dep-r1;
+    const L=CU_DEPLIB[l.id]||[l.lib,l.lib], r1=l.secu+l.mut;
     // Soin sans base Sécu (lunettes, lentilles, implants, orthodontie non remboursée, chambre) : la Sécurité sociale ne paie
     // rien, tout ce que paient les contrats vient en plus (Fabrice, 20/10/2026 : « ils viennent directement en positif »).
     const sansSecu=!CU_DEP.find(D=>D[0]===l.id)[3];
-    h+='<div class="cu-dk"><div class="cu-dkt"><b>'+L[0]+(l.nc?' <sup>†</sup>':'')+(sansSecu?' <i class="cu-dss">non remboursé par la Sécu</i>':'')+'</b><span>Coût : '+(l.n>1?l.n+' × '+cuE(l.p)+' = ':'')+'<b>'+cuE(l.dep)+'</b></span></div>'
-      +'<div class="cu-dl1"><span>Mutuelle de base'+(l.secu?' <i>(Sécu comprise)</i>':'')+(l.atM?' <i class="cu-dpa">plafond atteint</i>':'')+'</span><span>remboursé <b>'+cuE(r1)+'</b></span><span class="cu-dre">reste '+cuE(rest1)+'</span></div>'
-      +'<div class="cu-dl2"><span>+ '+nS+' <i>(surcomplémentaire)</i>'+(l.atS?' <i class="cu-dpa">plafond atteint</i>':'')+'</span><span>remboursé <b>'+cuE(l.sur)+'</b></span><span class="cu-dre">reste '+cuE(l.reste)+'</span></div>'
-      +'<div class="cu-dl3"><span>Total remboursé</span><b>'+cuE(r1+l.sur)+' sur '+cuE(l.dep)+'</b></div></div>';
+    h+=L4('<b>'+L[0]+(l.nc?' <sup>†</sup>':'')+'</b><small>coût '+(l.n>1?l.n+' × '+cuE(l.p)+' = ':'')+cuE(l.dep)+(sansSecu?' · non remboursé par la Sécu':'')+'</small>',
+      cuE(r1)+(l.secu?'<small>Sécu comprise</small>':'')+(l.atM?'<small class="cu-dpa">plafond atteint</small>':''),
+      '+ '+cuE(l.sur)+(l.atS?'<small class="cu-dpa">plafond atteint</small>':''),
+      cuE(r1+l.sur)+'<small class="cu-dre">reste '+cuE(l.reste)+'</small>');
   }
-  // Bilan de l'année : sans complémentaire · mutuelle seule · mutuelle + surcomplémentaire.
-  const B=cuBilan(R,p1,p2), nMc=nM.length>22?G.gammes[M.key].label.replace(/^M\. VERTE /,""):nM;
-  // Deux colonnes : la mutuelle seule et la mutuelle + surcomplémentaire (« sans complémentaire » reste dans la ligne du reste à
-  // payer : sur ces seuls soins elle paraîtrait moins chère, en oubliant l'hospitalisation que la mutuelle couvre).
-  const cel=(x,k,cls)=>'<div'+(cls?' class="'+cls+'"':'')+'>'+(x[k]==null?'—':cuE(x[k]))+'</div>';
-  h+='<div class="cu-bl"><div class="cu-blt">Votre bilan sur l’année, pour ces soins</div>'
-    +'<div class="cu-br cu-bh"><div></div><div>'+nMc+' seule</div><div class="cu-bt">'+nMc+' + '+nS+'</div></div>'
-    +'<div class="cu-br"><div>Cotisations<sup>1</sup></div>'+cel(B.mut,"cot")+cel(B.tout,"cot","cu-bt")+'</div>'
-    +'<div class="cu-br"><div>Remboursements <i>(Sécu comprise)</i></div>'+cel(B.mut,"rem")+cel(B.tout,"rem","cu-bt cu-bv")+'</div>'
-    +'<div class="cu-br"><div>Reste à payer sur ces soins <i>(sans complémentaire : '+cuE(B.sans.reste)+')</i></div>'+cel(B.mut,"reste","cu-brr")+cel(B.tout,"reste","cu-bt cu-brr")+'</div>'
-    +(B.tout.total!=null?'<div class="cu-br cu-btot"><div>Coût réel de l’année <i>(cotisations + reste)</i></div>'+cel(B.mut,"total")+cel(B.tout,"total","cu-bt")+'</div>':'')
-    +'</div>';
+  // Bilan de l'année, dans les mêmes colonnes : mutuelle seule · ce qu'ajoute la surcomplémentaire · les deux ensemble.
+  const B=cuBilan(R,p1,p2), sg=x=>x==null?'—':(x>0?'+ ':x<0?'− ':'')+cuE(Math.abs(x));
+  h+='<div class="cu-blt">Votre bilan sur l’année, pour ces soins</div>';
+  h+=L4('', '<b>'+nMc+' seule</b>', '<b>Apport '+nS+'</b>', '<b>Les deux</b>','cu-dgh');
+  if(B.tout.cot!=null) h+=L4('Cotisations<sup>1</sup>', cuE(B.mut.cot), sg(B.cotS), cuE(B.tout.cot));
+  h+=L4('Remboursements <small>Sécu comprise</small>', cuE(B.mut.rem), sg(B.remS), cuE(B.tout.rem));
+  h+=L4('Reste à payer sur ces soins <small>sans complémentaire : '+cuE(B.sans.reste)+'</small>', '<span class="cu-brr">'+cuE(B.mut.reste)+'</span>', sg(-B.remS), '<span class="cu-brr">'+cuE(B.tout.reste)+'</span>');
+  if(B.tout.total!=null) h+=L4('<b>Coût réel de l’année</b><small>cotisations + reste</small>', '<b>'+cuE(B.mut.total)+'</b>', '<b>'+sg(-B.plusS)+'</b>', '<b>'+cuE(B.tout.total)+'</b>','cu-dgt');
   if(B.plusS!=null) h+=B.plusS>0
     ?'<div class="cu-dgain"><span>Avec '+nS+' : '+cuE(B.remS)+' remboursés en plus pour '+cuE(B.cotS)+' de cotisation</span><b>+ '+cuE(B.plusS)+' pour vous</b></div>'
     :'<div class="cu-dgain cu-dg0"><span>Sur ces seuls soins, '+nS+' coûte plus qu’il ne rembourse ('+cuE(B.remS)+' pour '+cuE(B.cotS)+')</span><b>'+cuE(B.plusS)+'</b></div>';
-  h+='</div><div class="cu-dn">'+(cot!=null?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
+  h+='</div><div class="cu-dn">'+(B.tout.cot!=null?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
     +'Tableau présenté à titre indicatif — document non contractuel. Prothèses hors panier 100 % Santé (dans le panier 100 % Santé, le reste à charge est nul avec un contrat responsable). Calcul sur les tarifs de convention de la Sécurité sociale (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre), implants et orthodontie non remboursée au forfait, après les délais d’attente. '+cuPlafTxt(G,M,S,R)
     +(R.nc?' † Garantie non chiffrable : non comptée.':'')+'</div></div>';
   return h;
