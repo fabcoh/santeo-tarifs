@@ -549,6 +549,21 @@ body:has(#cubox) #sendbar{display:none!important}
 #cubox .cu-dl{display:grid;grid-template-columns:1fr 44px 82px;gap:4px;align-items:center;font-size:12px}
 #cubox .cu-dl input{font:600 12px 'IBM Plex Sans',sans-serif;padding:3px 4px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);width:100%;min-width:0;box-sizing:border-box}
 #cubox .cu-dl input.on{border-color:var(--accent);outline:1px solid var(--accent)}
+#cubox .cu-vue{display:flex;gap:6px;margin-bottom:8px}
+#cubox .cu-vue button{flex:1;font:600 12px 'Archivo',sans-serif;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:7px;padding:6px 4px;cursor:pointer}
+#cubox .cu-vue button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.cumul .cu-cr{display:grid;gap:0;align-items:stretch;border-bottom:1px solid var(--l)}
+.cumul .cu-cr>div{padding:5px 3px;font-size:11.5px;display:flex;flex-direction:column;justify-content:center;text-align:center;min-width:0}
+.cumul .cu-cr>.cu-l{text-align:left;align-items:flex-start}
+.cumul .cu-cr small{display:block;font:400 9.5px 'IBM Plex Sans',sans-serif;color:var(--m)}
+.cumul .cu-cr small.cu-dre{color:var(--r)}.cumul .cu-cr small.cu-dpa{color:var(--r);font-weight:700}
+.cumul .cu-ch>div{border-top:3px solid var(--k);font-size:11px;justify-content:flex-start;padding-top:6px}
+.cumul .cu-ch>.cu-l{border-top-color:transparent}
+.cumul .cu-ch b{display:block;min-height:28px}
+.cumul .cu-cbest{background:#EEF8F1}
+.cumul .cu-ch .cu-cbest{border-top-color:var(--v)}
+.cumul .cu-ctot{border-bottom:2px solid var(--k)}.cumul .cu-ctot>div{font-size:12.5px}
+.cumul .cu-ctot .cu-cbest b{color:var(--v)}
 #cubox .cu-dauto{font:600 10.5px 'Archivo',sans-serif;color:var(--muted);text-align:center}
 #cubox .cu-dlh{font:700 9.5px 'Archivo',sans-serif;color:var(--muted);text-transform:uppercase}
 #cubox #cuRaz,#cubox #cuRazD{margin-top:6px;font:600 11.5px 'Archivo',sans-serif;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:3px 9px;cursor:pointer}
@@ -626,7 +641,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-20T17:20:04Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T17:20:04Z</div>
+  <div id="buildstamp" data-build="2026-10-20T18:26:27Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T18:26:27Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1344,7 +1359,8 @@ const CU_PLAFD={
 // Gammes dont le plafond n'est pas écrit dans les documents : la vignette le dit plutôt que de calculer sans.
 const CU_PLAF_NC={MCCINOVA:"non précisé dans les documents",RF100:"plafond du Renfort 100 non précisé dans les documents"};
 const CU_APRIL_PLAF_SOINS={SantePro:"PO",SanteProStart:"PO",SanteGan:"POI"};
-const cuSoin=id=>id==="imp"?"I":(id==="orR"||id==="orN")?"O":"P";
+// Seuls les soins dentaires entrent dans le plafond dentaire : lunettes, lentilles, chambre, médecines douces, pharmacie n'y sont pas.
+const cuSoin=id=>id==="imp"?"I":(id==="orR"||id==="orN")?"O":(id==="cour"||id==="bri"||id==="inl")?"P":"-";
 // Plafond d'une formule : {m: montant | null, soins, txt} ; null si la gamme n'en a pas.
 function cuPlafond(G,c){
   if(c.key==="APRIL"){
@@ -1393,7 +1409,7 @@ function cuPaie(G,c,L,rest){
 // dep = {id:{n,p}} ; rend {lignes:[{id,lib,n,p,dep,secu,mut,sur,reste,nc}], dep, secu, mut, sur, reste, nc}
 function cumulDepenses(G,M,S,dep){
   const out={lignes:[],dep:0,secu:0,mut:0,sur:0,reste:0,nc:false};
-  const PM=cuPlafond(G,M), PS=cuPlafond(G,S), respM=((G.gammes||{})[M.key]||{}).resp!==false;
+  const PM=cuPlafond(G,M), PS=S?cuPlafond(G,S):null, respM=((G.gammes||{})[M.key]||{}).resp!==false;
   let restM=PM&&PM.m!=null?PM.m:Infinity, restS=PS&&PS.m!=null?PS.m:Infinity;
   out.plafM=PM; out.plafS=PS;
   // Applique un plafond unité par unité : `pay` = ce que paierait le contrat, `tm` = ticket modérateur dû au-delà.
@@ -1409,13 +1425,13 @@ function cumulDepenses(G,M,S,dep){
     const d=(dep||{})[L[0]]; if(!d) continue;
     // « auto » : la dépense de l'année vaut les deux forfaits réunis — le prospect les consomme, ils sont remboursés en entier.
     const auto=!!d.auto&&L[6]==="fan";
-    const p=auto?cuForfaitAn(G,M,L[2])+cuForfaitAn(G,S,L[2]):(+d.p||0), n=auto?1:Math.max(1,Math.min(40,Math.round(+d.n||1))); if(!(p>0)) continue;
+    const p=auto?cuForfaitAn(G,M,L[2])+(S?cuForfaitAn(G,S,L[2]):0):(+d.p||0), n=auto?1:Math.max(1,Math.min(40,Math.round(+d.n||1))); if(!(p>0)) continue;
     let rest=Array(n).fill(p);
     const secu=rest.map(r=>Math.min(r,L[4]*L[3])); rest=rest.map((r,i)=>r-secu[i]);
     let a=cuPaie(G,M,L,rest), atM=false, atS=false;
     if(a){ const tm=rest.map(r=>respM&&L[3]?Math.min(r,L[3]*(1-L[4])):0);
       const q=plafonne(a,PM,L[0],RM,tm); a=q.pay; atM=q.atteint; rest=rest.map((r,i)=>r-a[i]); }
-    let b=cuPaie(G,Object.assign({sur:1},S),L,rest);
+    let b=S?cuPaie(G,Object.assign({sur:1},S),L,rest):rest.map(()=>0);
     if(b){ const q=plafonne(b,PS,L[0],RS,rest.map(()=>0)); b=q.pay; atS=q.atteint; }
     const sm=x=>x?x.reduce((u,v)=>u+v,0):0;
     const l={id:L[0],lib:L[1],u:L[5],n,p,auto,dep:n*p,secu:sm(secu),mut:sm(a),sur:sm(b),nc:!a||!b,atM,atS};
@@ -1500,6 +1516,54 @@ function cuDepHTML(G,M,S,R,p1,p2){
     +'Tableau présenté à titre indicatif — document non contractuel. Prothèses hors panier 100 % Santé (dans le panier 100 % Santé, le reste à charge est nul avec un contrat responsable). Calcul sur les tarifs de convention de la Sécurité sociale (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre), implants et orthodontie non remboursée au forfait, après les délais d’attente. '+cuPlafTxt(G,M,S,R)
     +(R.nc?' † Garantie non chiffrable : non comptée.':'')+'</div></div>';
   return h;
+}
+// ---- Comparatif des remboursements entre mutuelles (Fabrice, 20/10/2026 : « la même chose, mais sans TALIS, juste avec 3-4
+// mutuelles… ce ne serait pas une addition, juste chaque poste remboursé et le résultat pour chaque compagnie ») : les mêmes soins
+// prévus en lignes, une colonne par formule cochée (4 au plus), puis cotisations, remboursements, reste et coût réel de l'année ;
+// la formule au coût réel le plus bas est mise en avant. Un poste « au forfait » (médecines douces, pharmacie) vaut, pour toutes
+// les colonnes, le plus haut des forfaits comparés : chaque mutuelle rembourse dans son propre forfait.
+// o = {cols:[{key,fi}], tarifs:{"CLE|fi":n}, prospect, date, base, depenses:{id:{n,p}|{auto:1}}}
+function comparatifSoins(G,o){
+  o=o||{}; const cols=(o.cols||[]).slice(0,4), tar=o.tarifs||{};
+  if(!cols.length) return "";
+  const dep={};
+  for(const L of CU_DEP){ const d=(o.depenses||{})[L[0]]; if(!d) continue;
+    if(d.auto&&L[6]==="fan"){ const p=Math.max(0,...cols.map(c=>cuForfaitAn(G,c,L[2]))); if(p>0) dep[L[0]]={n:1,p,fh:1}; }
+    else dep[L[0]]=d; }
+  const RS=cols.map(c=>cumulDepenses(G,c,null,dep));
+  const px=cols.map(c=>tar[c.key+"|"+c.fi]), prix=px.every(x=>x!=null);
+  const nom=c=>nomComplet(G,c.key,c.fi);
+  const C=(cls,x)=>'<div class="'+cls+'"><span>'+x+'</span></div>';
+  const tot=RS.map((R,i)=>prix?cuR(px[i]*12+R.reste):null);
+  const best=prix?tot.indexOf(Math.min(...tot)):-1;
+  const row=(lab,cells,cls)=>'<div class="cu-cr'+(cls?' '+cls:'')+'" style="grid-template-columns:30% repeat('+cols.length+',1fr)">'+C("cu-l",lab)
+    +cells.map((x,i)=>C("cu-cc"+(i===best?" cu-cbest":""),x)).join("")+'</div>';
+  let h='<div class="cu-ti">Comparatif de vos remboursements</div>'+(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'');
+  if(best>=0&&cols.length>1){ const o2=tot.filter((_,i)=>i!==best), d=Math.min(...o2)-tot[best];
+    h+='<div class="cu-top"><div class="cu-tg" style="text-align:left;border:0"><b>La plus avantageuse pour ces soins</b><em>'+nom(cols[best])+'</em>'
+      +'<span>coût réel de l’année '+cuE(tot[best])+(d>0?' · '+cuE(d)+' de moins que la suivante':'')+'</span></div></div>'; }
+  h+=row('',cols.map((c,i)=>'<div class="cu-lg">'+logoEgal(G,c.key,o.base,40,36)+'</div><b>'+nom(c)+'</b>'+(px[i]!=null?'<small>'+eur(px[i])+' / mois</small>':'')),'cu-ch');
+  if(!RS[0].lignes.length) h+='<div class="cu-dn">Indiquez les soins prévus (volet « Dépenses ») pour comparer les remboursements.</div>';
+  else{
+    h+='<div class="cu-dpt" style="margin-top:8px">Vos soins prévus : estimation des remboursements</div>';
+    RS[0].lignes.forEach((l0,j)=>{
+      const L=CU_DEPLIB[l0.id]||[l0.lib,l0.lib], sansSecu=!CU_DEP.find(D=>D[0]===l0.id)[3];
+      h+=row('<b>'+L[0]+'</b><small>'+(dep[l0.id]&&dep[l0.id].fh?'forfait le plus haut comparé · ':'')+'coût '+(l0.n>1?l0.n+' × '+cuE(l0.p)+' = ':'')+cuE(l0.dep)
+        +(sansSecu?' · non remboursé par la Sécu':l0.secu?' · dont Sécu '+cuE(l0.secu):'')+'</small>',
+        RS.map(R=>{const l=R.lignes.find(x=>x.id===l0.id); return '<b>'+cuE(l.secu+l.mut)+'</b><small class="cu-dre">reste '+cuE(l.reste)+'</small>'+(l.atM?'<small class="cu-dpa">plafond atteint</small>':'')+(l.nc?'<small>† non chiffrable</small>':'');}));
+    });
+    h+='<div class="cu-dpt" style="margin-top:10px">Votre bilan sur l’année, pour ces soins</div>';
+    if(prix) h+=row('Cotisations<sup>1</sup>',px.map(x=>cuE(x*12)));
+    h+=row('Remboursements <small>Sécu comprise</small>',RS.map(R=>'<span class="cu-bv">'+cuE(R.secu+R.mut)+'</span>'));
+    h+=row('Reste à payer sur ces soins <small>sans complémentaire : '+cuE(RS[0].dep-RS[0].secu)+'</small>',RS.map(R=>'<span class="cu-brr">'+cuE(R.reste)+'</span>'));
+    if(prix) h+=row('<b>Coût réel de l’année</b><small>cotisations + reste</small>',tot.map(t=>'<b>'+cuE(t)+'</b>'),'cu-ctot');
+  }
+  const plaf=cols.map((c,i)=>{const P=RS[i].plafM; return nom(c)+' : '+(!P?'pas de plafond dentaire':P.m==null?'plafond '+P.nc:cuNb(P.m)+' € par an');});
+  h+='<div class="cu-dn">'+(prix?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
+    +'Tableau présenté à titre indicatif — document non contractuel. Pourcentages Sécurité sociale comprise, sur les tarifs de convention (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre) ; prothèses hors panier 100 % Santé ; implants et orthodontie non remboursée au forfait, après les délais d’attente. Plafonds dentaires (1re année d’adhésion, appliqués) — '+plaf.join(' ; ')+'.'
+    +(o.date?' Tarifs au '+o.date+', valables '+VALIDITE+' jours.':'')+'</div>'
+    +'<div class="cu-mq">'+marque(o.base)+'<span>Courtier comparateur depuis 1992 · Infos légales : www.santeo.net</span></div>';
+  return '<div class="cumul cu-cmp">'+h+'</div>';
 }
 // o = {mut:{key,fi}, sur:{key,fi}, tarifs:{"CLE|fi":n}, prospect, date:"jj/mm/aaaa", base, sansTarifs, depenses:{id:{n,p}}}
 function cumul(G,o){
@@ -1590,6 +1654,7 @@ exporter.eur=eur;
 exporter.cumul=cumul;
 exporter.cumulTotal=cumulTotal;
 exporter.cumulDepenses=cumulDepenses;
+exporter.comparatifSoins=comparatifSoins;
 exporter.CU_DEP=CU_DEP;
 
 })(typeof module!=="undefined"&&module.exports ? module.exports
@@ -3243,7 +3308,9 @@ function showCumul(){
   // « Toutes les compagnies » d'office (Fabrice, 20/10/2026 : « je dois pouvoir mettre toutes les compagnies et ne choisir que
   // les filtres ») : sans besoin, la formule cochée ; avec des besoins, la moins chère de toutes qui les remplit.
   CUMUL={v:"*",
-         cochees:muts.map(r=>({key:r.key,fi:r.fi})),si:sur?sur.fi:1,fil:{},dep:{md:{auto:1},phn:{auto:1}}};   // médecines douces et pharmacie au forfait d'office
+         cochees:muts.map(r=>({key:r.key,fi:r.fi})),si:sur?sur.fi:1,
+         // Vue « Comparatif des mutuelles » (Fabrice, 20/10/2026) : d'office quand 2 mutuelles ou plus sont cochées sans TALIS.
+         vue:(!sur&&muts.length>=2)?"cmp":"cumul",fil:{},dep:{md:{auto:1},phn:{auto:1}}};   // médecines douces et pharmacie au forfait d'office
   for(const k in FILTRES) if(k!=="budget"&&/^\d+(\.\d+)?(%|€)$/.test(FILTRES[k])) CUMUL.fil[k]=FILTRES[k];   // besoins du panneau ⚖
   const {nm,txt}=prospectLigne(), date=new Date().toLocaleDateString("fr-FR");
   const svgWa='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:#25D366;vertical-align:-3px"><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.82 11.82 0 0020.463 3.488 11.815 11.815 0 0012.05 0zm5.422 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>';
@@ -3270,6 +3337,7 @@ function showCumul(){
     +(window.CRMLINK?'<button data-a="crm" style="background:#059669;color:#fff;border-color:#059669">Envoyer dans le CRM</button>':'')
     +'<button class="close" style="margin-left:auto">Fermer ✕</button><span class="cu-stat"></span></div>'
     +'<div class="cu-reg"><div class="cu-regt">Réglages <span>non envoyés</span></div>'
+    +'<div class="cu-vue"><button type="button" data-vue="cumul">Mutuelle + TALIS</button><button type="button" data-vue="cmp">Comparatif des mutuelles cochées</button></div>'
     +'<div class="cu-regg"><label>Compagnie<select id="cuC">'+opts+'</select></label><label>Surcompl.<select id="cuS">'
     +F.TALIS.names.map((n,i)=>'<option value="'+i+'">'+n+'</option>').join("")+'</select></label></div>'
     +'<div class="cu-dd"><details id="cuB"><summary>Besoins <span id="cuSum"></span></summary><div class="cu-fb">'+grille+'</div><button type="button" id="cuRaz">Tout effacer</button></details>'
@@ -3287,6 +3355,22 @@ function showCumul(){
   let P=[];   // la vignette affichée, pour la capture : [{mut, sur}]
   function rendre(){
     if(!document.body.contains(box)){ CUMUL=null; return; }
+    const cmp=CUMUL.vue==="cmp";
+    box.querySelectorAll('.cu-vue button').forEach(b=>b.classList.toggle('on',b.dataset.vue===CUMUL.vue));
+    for(const el of [box.querySelector('.cu-regg'),box.querySelector('#cuB')]) el.style.display=cmp?"none":"";
+    if(cmp){
+      // Comparatif : les formules cochées (TALIS exclu), 4 au plus, avec leur tarif du tableau ; mêmes soins prévus.
+      const cols=CUMUL.cochees.slice(0,4), tarifs={};
+      for(const r of LASTROWS) if(cols.some(c=>c.key===r.key&&c.fi===r.fi)) tarifs[r.key+"|"+r.fi]=r.total;
+      const depA=Object.keys(CUMUL.dep).length?CUMUL.dep:null;
+      box.querySelector('#cuDSum').textContent=depA?Object.keys(depA).length+" soin"+(Object.keys(depA).length>1?"s":""):"aucune";
+      box.querySelector('#cuH').innerHTML=cols.length<2
+        ?'<span class="w">Cochez au moins 2 mutuelles dans le comparateur (4 au plus) pour les comparer.</span>'
+        :'→ '+cols.length+' formules comparées'+(CUMUL.cochees.length>4?' (les 4 premières cochées)':'')+' ; les dépenses du volet « Dépenses » valent pour toutes.';
+      box.querySelector('#cuV').innerHTML=cols.length?Tableau.comparatifSoins(GAR,{cols,tarifs,prospect:txt,date,depenses:depA}):"";
+      P=[{cmp:cols}];
+      return;
+    }
     const v=CUMUL.v, tous=v==="*", act=Object.entries(CUMUL.fil);
     let tar=cumulTarifs(), aprilEtat="", fs;
     if(tous){
@@ -3356,9 +3440,10 @@ function showCumul(){
     }); rendre(); };
   box.querySelectorAll('.cu-dep input').forEach(i=>i.addEventListener('input',lireDep));
   box.querySelector('#cuRazD').addEventListener('click',()=>{box.querySelectorAll('.cu-dep input').forEach(i=>{i.value="";});lireDep();});
+  box.querySelectorAll('.cu-vue button').forEach(b=>b.addEventListener('click',()=>{CUMUL.vue=b.dataset.vue;rendre();}));
   box.querySelector('#cuRaz').addEventListener('click',()=>{CUMUL.fil={};box.querySelectorAll('.cu-fb select').forEach(s=>{s.value="";s.classList.remove('on');});rendre();});
   rendre();
-  const nomFic=p=>("cumul_"+Tableau.nomComplet(GAR,p.mut.key,p.mut.fi)+"_"+Tableau.nomComplet(GAR,p.sur.key,p.sur.fi)).replace(/[^\wÀ-ÿ]+/g,"_")+".png";
+  const nomFic=p=>p.cmp?("comparatif_"+p.cmp.map(c=>Tableau.nomComplet(GAR,c.key,c.fi)).join("_")).replace(/[^\wÀ-ÿ]+/g,"_")+".png":("cumul_"+Tableau.nomComplet(GAR,p.mut.key,p.mut.fi)+"_"+Tableau.nomComplet(GAR,p.sur.key,p.sur.fi)).replace(/[^\wÀ-ÿ]+/g,"_")+".png";
   // Une image par vignette, toujours à 520 px de large (la même sur téléphone et sur ordinateur).
   async function images(){
     if(typeof html2canvas==="undefined")throw new Error("lib");
