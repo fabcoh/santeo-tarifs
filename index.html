@@ -623,7 +623,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-20T16:33:09Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T16:33:09Z</div>
+  <div id="buildstamp" data-build="2026-10-20T16:58:08Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T16:58:08Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1423,7 +1423,7 @@ function cuPlafTxt(G,M,S,R){
   return 'Plafonds dentaires (1re année d’adhésion, appliqués) — '+t(M,R.plafM)+' ; '+t(S,R.plafS)+'.';
 }
 // Délai d'attente de la surcomplémentaire, écrit près des soins (TALIS : 90 jours en dentaire et en optique, TG p.2-3).
-const CU_CARENCE={TALIS:"délai d’attente de 90 jours en dentaire et en optique : un soin fait pendant ces 90 jours n’est pas remboursé par TALIS"};
+const CU_CARENCE={TALIS:"délai d’attente de 90 jours en dentaire et en optique"};
 // Bilan de l'année, trois situations (critique relue avec Fabrice, 20/10/2026 : « ok ») — la Sécurité sociale paie la même
 // chose dans les trois, elle s'annule. Coût réel = cotisations de l'année + reste à payer sur les soins indiqués.
 function cuBilan(R,p1,p2){
