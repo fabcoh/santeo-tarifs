@@ -379,7 +379,11 @@ const CU_DEP=[
   ["orN","Orthodontie non remboursée","x:orthN",0,0,"semestre","orN"],
   ["lun","Lunettes (verres simples)","opt",0,0,"équipement","u"],
   ["len","Lentilles","x:lentA",0,0,"an","an"],
-  ["chb","Chambre particulière","ch",0,0,"jour","u"]
+  ["chb","Chambre particulière","ch",0,0,"jour","u"],
+  // Comptés d'office au forfait de l'année (Fabrice, 20/10/2026 : « les médecines douces… tu mets leur forfait directement, ça
+  // permet de déduire un peu la cotisation… même pour la pharmacie non remboursée ») : dépense = forfait mutuelle + surco.
+  ["md","Médecines douces (ostéo, chiro…)","md",0,0,"an","fan"],
+  ["phn","Pharmacie non remboursée","x:pharN",0,0,"an","fan"]
 ];
 const CU_DENT=new Set(["cour","bri","inl","imp","orR","orN"]);
 const CU_IMP_MAX={APICIL:2};                                    // « 2 implants au plus par an »
@@ -417,7 +421,21 @@ function cuPlafond(G,c){
 }
 const cuR=x=>Math.round(x*100)/100;
 // Ce que paie un contrat sur les restes à charge `rest` (un par unité). null = non chiffrable (valeur en texte).
+// Forfait de l'année d'un poste « au forfait » (médecines douces, pharmacie non remboursée) : « 5×40 € » = 5 séances à 40 € ;
+// « 30 €/s » = par séance, 3 séances au plus (Mutuelle Verte, TG p.3) ; « 120 €/an » ou « 30 € » = forfait annuel. Une précision
+// entre parenthèses (« (tabac) » : l'antitabac de la Mutuelle Verte, pas la pharmacie) ne compte pas.
+const CU_SEANCES={MV:3};
+function cuForfaitAn(G,c,src){
+  const v=String(valeur(G,c.key,c.fi,src)).replace(/ /g," ").replace(/^\+\s*/,"").trim();
+  if(/\(/.test(v)) return 0;
+  let m=v.match(/^(\d+)\s*×\s*(\d+)\s*€/); if(m) return +m[1]*+m[2];
+  m=v.match(/^(\d+)\s*€\/s$/); if(m) return (CU_SEANCES[c.key]||1)*+m[1];
+  m=v.match(/^(\d[\d\s]*)\s*€(\/an)?$/); if(m) return +m[1].replace(/\s/g,"");
+  return 0;
+}
+const CU_AUTO=new Set(["md","phn"]);
 function cuPaie(G,c,L,rest){
+  if(L[6]==="fan"){ let e=cuForfaitAn(G,c,L[2]); return rest.map(r=>{const x=Math.min(r,e);e-=x;return x;}); }
   const v=valeur(G,c.key,c.fi,L[2]), P=cuLire(v), z=rest.map(()=>0);
   if(!P) return z;
   if(P.raw) return null;
@@ -451,7 +469,9 @@ function cumulDepenses(G,M,S,dep){
   const RM={v:restM}, RS={v:restS};
   for(const L of CU_DEP){
     const d=(dep||{})[L[0]]; if(!d) continue;
-    const p=+d.p||0, n=Math.max(1,Math.min(40,Math.round(+d.n||1))); if(!(p>0)) continue;
+    // « auto » : la dépense de l'année vaut les deux forfaits réunis — le prospect les consomme, ils sont remboursés en entier.
+    const auto=!!d.auto&&L[6]==="fan";
+    const p=auto?cuForfaitAn(G,M,L[2])+cuForfaitAn(G,S,L[2]):(+d.p||0), n=auto?1:Math.max(1,Math.min(40,Math.round(+d.n||1))); if(!(p>0)) continue;
     let rest=Array(n).fill(p);
     const secu=rest.map(r=>Math.min(r,L[4]*L[3])); rest=rest.map((r,i)=>r-secu[i]);
     let a=cuPaie(G,M,L,rest), atM=false, atS=false;
@@ -460,7 +480,7 @@ function cumulDepenses(G,M,S,dep){
     let b=cuPaie(G,Object.assign({sur:1},S),L,rest);
     if(b){ const q=plafonne(b,PS,L[0],RS,rest.map(()=>0)); b=q.pay; atS=q.atteint; }
     const sm=x=>x?x.reduce((u,v)=>u+v,0):0;
-    const l={id:L[0],lib:L[1],u:L[5],n,p,dep:n*p,secu:sm(secu),mut:sm(a),sur:sm(b),nc:!a||!b,atM,atS};
+    const l={id:L[0],lib:L[1],u:L[5],n,p,auto,dep:n*p,secu:sm(secu),mut:sm(a),sur:sm(b),nc:!a||!b,atM,atS};
     // Règle absolue (Fabrice, 20/10/2026 : « on ne peut pas rembourser plus que ce qui est dû ») : Sécu + mutuelle +
     // surcomplémentaire ne dépassent jamais la dépense ; un excédent, s'il apparaissait, serait retiré au dernier payeur.
     let trop=cuR(l.secu+l.mut+l.sur-l.dep);
@@ -476,7 +496,8 @@ const cuE=n=>cuNb(Math.round(n))+" €";
 // Libellés au singulier, pour la carte de chaque soin et le récapitulatif (« 1 000 € (implant) »).
 const CU_DEPLIB={cour:["Prothèse dentaire (couronne)","prothèses"],bri:["Bridge","bridges"],inl:["Inlay-core","inlay-core"],
   imp:["Implant","implants"],orR:["Orthodontie remboursée","orthodontie"],orN:["Orthodontie non remboursée","orthodontie non remb."],
-  lun:["Lunettes","lunettes"],len:["Lentilles","lentilles"],chb:["Chambre particulière","chambre"]};
+  lun:["Lunettes","lunettes"],len:["Lentilles","lentilles"],chb:["Chambre particulière","chambre"],
+  md:["Médecines douces (ostéo, chiro…)","médecines douces"],phn:["Pharmacie non remboursée","pharmacie"]};
 // Présentation pour un néophyte (Fabrice, 20/10/2026) : une carte par soin — coût, mutuelle de base (Sécu comprise) puis
 // surcomplémentaire, chacune avec son remboursement et le reste à payer —, puis « Vous payez sur 12 mois… », « Vous êtes
 // remboursé de… » et le gain = tout ce qui est remboursé (Sécu comprise) − les cotisations de l'année.
@@ -515,7 +536,7 @@ function cuDepHTML(G,M,S,R,p1,p2){
     // Soin sans base Sécu (lunettes, lentilles, implants, orthodontie non remboursée, chambre) : la Sécurité sociale ne paie
     // rien, tout ce que paient les contrats vient en plus (Fabrice, 20/10/2026 : « ils viennent directement en positif »).
     const sansSecu=!CU_DEP.find(D=>D[0]===l.id)[3];
-    h+=L4('<b>'+L[0]+(l.nc?' <sup>†</sup>':'')+'</b><small>coût '+(l.n>1?l.n+' × '+cuE(l.p)+' = ':'')+cuE(l.dep)+(sansSecu?' · non remboursé par la Sécu':'')+'</small>',
+    h+=L4('<b>'+L[0]+(l.nc?' <sup>†</sup>':'')+'</b><small>'+(l.auto?'forfaits de l’année · ':'')+'coût '+(l.n>1?l.n+' × '+cuE(l.p)+' = ':'')+cuE(l.dep)+(sansSecu?' · non remboursé par la Sécu':'')+'</small>',
       cuE(r1)+(l.secu?'<small>Sécu comprise</small>':'')+(l.atM?'<small class="cu-dpa">plafond atteint</small>':''),
       '+ '+cuE(l.sur)+(l.atS?'<small class="cu-dpa">plafond atteint</small>':''),
       cuE(r1+l.sur)+'<small class="cu-dre">reste '+cuE(l.reste)+'</small>');

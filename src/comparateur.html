@@ -541,6 +541,7 @@ body:has(#cubox) #sendbar{display:none!important}
 #cubox .cu-dl{display:grid;grid-template-columns:1fr 44px 82px;gap:4px;align-items:center;font-size:12px}
 #cubox .cu-dl input{font:600 12px 'IBM Plex Sans',sans-serif;padding:3px 4px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);width:100%;min-width:0;box-sizing:border-box}
 #cubox .cu-dl input.on{border-color:var(--accent);outline:1px solid var(--accent)}
+#cubox .cu-dauto{font:600 10.5px 'Archivo',sans-serif;color:var(--muted);text-align:center}
 #cubox .cu-dlh{font:700 9.5px 'Archivo',sans-serif;color:var(--muted);text-transform:uppercase}
 #cubox #cuRaz,#cubox #cuRazD{margin-top:6px;font:600 11.5px 'Archivo',sans-serif;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:3px 9px;cursor:pointer}
 #cubox .cu-hint{font-size:12px;color:var(--ink);margin-top:7px}
@@ -2274,7 +2275,7 @@ function showCumul(){
   // « Toutes les compagnies » d'office (Fabrice, 20/10/2026 : « je dois pouvoir mettre toutes les compagnies et ne choisir que
   // les filtres ») : sans besoin, la formule cochée ; avec des besoins, la moins chère de toutes qui les remplit.
   CUMUL={v:"*",
-         cochees:muts.map(r=>({key:r.key,fi:r.fi})),si:sur?sur.fi:1,fil:{},dep:{}};
+         cochees:muts.map(r=>({key:r.key,fi:r.fi})),si:sur?sur.fi:1,fil:{},dep:{md:{auto:1},phn:{auto:1}}};   // médecines douces et pharmacie au forfait d'office
   for(const k in FILTRES) if(k!=="budget"&&/^\d+(\.\d+)?(%|€)$/.test(FILTRES[k])) CUMUL.fil[k]=FILTRES[k];   // besoins du panneau ⚖
   const {nm,txt}=prospectLigne(), date=new Date().toLocaleDateString("fr-FR");
   const svgWa='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:#25D366;vertical-align:-3px"><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.82 11.82 0 0020.463 3.488 11.815 11.815 0 0012.05 0zm5.422 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>';
@@ -2292,8 +2293,10 @@ function showCumul(){
   }
   // Dépenses du prospect sur un an : nombre + prix unitaire (Fabrice, 20/10/2026) — Tableau.CU_DEP.
   const dlh='<div class="cu-dl cu-dlh"><span>Soin</span><span>Nb</span><span>Prix unit.</span></div>';
-  const depGrille=dlh+dlh+Tableau.CU_DEP.map(L=>'<div class="cu-dl"><span>'+L[1]+'</span><input type="number" min="1" max="40" inputmode="numeric" data-dn="'+L[0]+'" placeholder="1">'
-    +'<input type="number" min="0" step="any" inputmode="decimal" data-dp="'+L[0]+'" placeholder="€" title="Prix par '+L[5]+'"></div>').join("");
+  // Médecines douces et pharmacie non remboursée : comptées d'office au forfait de l'année (champ vide = forfait, « 0 » = rien).
+  const depGrille=dlh+dlh+Tableau.CU_DEP.map(L=>{ const au=L[6]==="fan";
+    return '<div class="cu-dl"><span>'+L[1]+'</span>'+(au?'<span class="cu-dauto">forfait</span>':'<input type="number" min="1" max="40" inputmode="numeric" data-dn="'+L[0]+'" placeholder="1">')
+    +'<input type="'+(au?'text':'number')+'" min="0" step="any" inputmode="decimal" data-dp="'+L[0]+'"'+(au?' data-auto="1" class="on" placeholder="auto" title="Vide : forfait de l’année des deux contrats ; 0 : pas de dépense ; ou un montant"':' placeholder="€" title="Prix par '+L[5]+'"')+'></div>'; }).join("");
   const ov=document.createElement('div'); ov.id='tgov'; ov.className='tgmain';
   ov.innerHTML='<div id="cubox"><div class="cu-bar"><button data-a="wa">'+svgWa+' WhatsApp</button><button data-a="dl">⬇ Télécharger</button>'
     +(window.CRMLINK?'<button data-a="crm" style="background:#059669;color:#fff;border-color:#059669">Envoyer dans le CRM</button>':'')
@@ -2378,8 +2381,11 @@ function showCumul(){
     if(s.value) CUMUL.fil[s.dataset.cle]=s.value; else delete CUMUL.fil[s.dataset.cle]; s.classList.toggle('on',!!s.value); rendre();}));
   const lireDep=()=>{ CUMUL.dep={};
     box.querySelectorAll('.cu-dep input[data-dp]').forEach(i=>{ const id=i.dataset.dp, n=box.querySelector('input[data-dn="'+id+'"]');
-      const p=parseFloat(String(i.value).replace(",",".")); i.classList.toggle('on',p>0); n.classList.toggle('on',p>0);
-      if(p>0) CUMUL.dep[id]={n:+n.value||1,p}; }); rendre(); };
+      const p=parseFloat(String(i.value).replace(",",".")), auto=i.dataset.auto&&!(p>0)&&String(i.value).trim()!=="0";
+      i.classList.toggle('on',p>0||!!auto); if(n) n.classList.toggle('on',p>0);
+      if(p>0) CUMUL.dep[id]={n:n?(+n.value||1):1,p};
+      else if(i.dataset.auto&&String(i.value).trim()!=="0") CUMUL.dep[id]={auto:1};   // vide = forfait ; « 0 » = pas de dépense
+    }); rendre(); };
   box.querySelectorAll('.cu-dep input').forEach(i=>i.addEventListener('input',lireDep));
   box.querySelector('#cuRazD').addEventListener('click',()=>{box.querySelectorAll('.cu-dep input').forEach(i=>{i.value="";});lireDep();});
   box.querySelector('#cuRaz').addEventListener('click',()=>{CUMUL.fil={};box.querySelectorAll('.cu-fb select').forEach(s=>{s.value="";s.classList.remove('on');});rendre();});

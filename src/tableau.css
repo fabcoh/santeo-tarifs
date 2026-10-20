@@ -540,6 +540,7 @@ body:has(#cubox) #sendbar{display:none!important}
 #cubox .cu-dl{display:grid;grid-template-columns:1fr 44px 82px;gap:4px;align-items:center;font-size:12px}
 #cubox .cu-dl input{font:600 12px 'IBM Plex Sans',sans-serif;padding:3px 4px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);width:100%;min-width:0;box-sizing:border-box}
 #cubox .cu-dl input.on{border-color:var(--accent);outline:1px solid var(--accent)}
+#cubox .cu-dauto{font:600 10.5px 'Archivo',sans-serif;color:var(--muted);text-align:center}
 #cubox .cu-dlh{font:700 9.5px 'Archivo',sans-serif;color:var(--muted);text-transform:uppercase}
 #cubox #cuRaz,#cubox #cuRazD{margin-top:6px;font:600 11.5px 'Archivo',sans-serif;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:3px 9px;cursor:pointer}
 #cubox .cu-hint{font-size:12px;color:var(--ink);margin-top:7px}

@@ -64,6 +64,12 @@ avant de publier ; un écart arrête la publication).
 - **Ordre des payeurs** : Sécu → mutuelle (% Sécu comprise, ou forfait par unité / par an selon la gamme) →
   surcomplémentaire (en plus, sur ce qui reste) → reste à charge.
 - APICIL : 2 implants au plus par an.
+- **Médecines douces et pharmacie non remboursée comptées d'office au forfait** (Fabrice, 20/10/2026 : « tu mets leur forfait
+  directement, ça permet de déduire un peu la cotisation… ils sont consommateurs de ça ») : lignes `md` / `phn` de `CU_DEP`, mode
+  `fan`, `dep[id]={auto:1}` par défaut — dépense = forfait de la mutuelle + forfait de la surco (`cuForfaitAn` : « 5×40 € » = 200 €,
+  « 30 €/s » = 3 séances (Mutuelle Verte, TG p.3), « 120 €/an » ou « 30 € » = forfait annuel ; « (tabac) » = antitabac de la
+  Mutuelle Verte, ne compte pas) ; champ « auto » vide = forfait, « 0 » = pas de dépense, un montant le remplace. Carte « forfaits
+  de l'année · coût … ». La kinésithérapie n'y est pas : remboursée par la Sécu (ticket modérateur), pas un forfait.
 - **Soins sans base Sécu** (lunettes, lentilles, implants, orthodontie non remboursée, chambre — Fabrice, 20/10/2026 : « ne sont
   pas remboursés par la Sécu donc ils viennent directement en positif ») : Sécu = 0, tout ce que paient les contrats vient en
   plus ; la carte porte « non remboursé par la Sécu ». « Sans complémentaire », le prospect en paierait la totalité.

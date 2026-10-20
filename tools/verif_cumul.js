@@ -50,10 +50,20 @@ for(const [M,S,dep,att] of cas){ const R=T.cumulDepenses(G,M,S,dep); n++;
 
 // 5. La vignette se dessine (avec et sans tarifs, avec et sans dépenses) sur toutes les formules.
 for(const k of Object.keys(G.gammes)){ if(k==="TALIS")continue;
-  for(let fi=0;fi<G.gammes[k].names.length;fi++) for(const dep of [null,{cour:{n:1,p:600},imp:{n:1,p:1000},lun:{n:1,p:250}}]) for(const t of [{},{[k+"|"+fi]:50,"TALIS|1":40}]){
+  for(let fi=0;fi<G.gammes[k].names.length;fi++) for(const dep of [null,{cour:{n:1,p:600},imp:{n:1,p:1000},lun:{n:1,p:250}},{md:{auto:1},phn:{auto:1}}]) for(const t of [{},{[k+"|"+fi]:50,"TALIS|1":40}]){
     n++; try{ const h=T.cumul(G,{mut:{key:k,fi},sur:{key:"TALIS",fi:1},tarifs:t,depenses:dep,date:"20/10/2026"});
       if(!/class="cumul"/.test(h)) ko.push("vignette vide : "+k+" "+fi); }
     catch(e){ ko.push("vignette en erreur : "+k+" "+fi+" — "+e.message); } }}
+
+// 6. Médecines douces et pharmacie au forfait d'office : remboursées en entier, à hauteur des deux forfaits réunis.
+{ const R=T.cumulDepenses(G,{key:"SOLENCIA",fi:1},{key:"TALIS",fi:1},{md:{auto:1},phn:{auto:1}}); n++;
+  const md=R.lignes.find(l=>l.id==="md"), ph=R.lignes.find(l=>l.id==="phn");
+  if(!md||md.dep!==310||md.mut!==250||md.sur!==60||md.reste!==0) ko.push("forfait medecines douces SOLENCIA 5x50 + TALIS 3x20 : "+JSON.stringify(md));
+  if(!ph||ph.dep!==95||ph.reste!==0) ko.push("forfait pharmacie SOLENCIA 45 + TALIS 50 : "+JSON.stringify(ph));
+  const R2=T.cumulDepenses(G,{key:"MV",fi:1},{key:"TALIS",fi:0},{md:{auto:1},phn:{auto:1}}); n++;
+  const m2=R2.lignes.find(l=>l.id==="md"), p2=R2.lignes.find(l=>l.id==="phn");
+  if(!m2||m2.mut!==60) ko.push("Mutuelle Verte GCI 150 : 3 seances a 20 € = 60 € attendus : "+JSON.stringify(m2));
+  if(!p2||p2.mut!==0) ko.push("Mutuelle Verte : l'antitabac ne compte pas en pharmacie : "+JSON.stringify(p2)); }
 
 if(ko.length){ console.error(ko.length+" ecart(s) sur "+n+" cas :\n"+ko.slice(0,20).join("\n")); process.exit(1); }
 console.log("Regles du cumul : "+n+" cas, aucun ecart.");
