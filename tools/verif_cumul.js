@@ -84,6 +84,8 @@ for(const dep of [null,{cour:{n:1,p:680},imp:{n:1,p:1000},md:{auto:1},phn:{auto:
 { n++; const h=T.comparatifSoins(G,{cols:[{key:"FLEXIA",fi:0},{key:"MV",fi:0},{key:"CAPEVO",fi:1}]});
   for(const t of ["Hospitalisation","Chambre particulière","Prothèses dentaires","Implants","Lunettes, verres simples","Lentilles","Médecines douces"])
     if(h.indexOf(t)<0) ko.push("comparatif : poste absent — "+t); }
+// 10. La ligne des implants reste là même quand aucune formule comparée n'en a (FLEXIA Start + GCI 100).
+{ n++; const h=T.comparatifSoins(G,{cols:[{key:"FLEXIA",fi:0},{key:"MV",fi:0}]}); if(h.indexOf(">Implants<")<0) ko.push("comparatif : ligne Implants absente sans garantie"); }
 
 if(ko.length){ console.error(ko.length+" ecart(s) sur "+n+" cas :\n"+ko.slice(0,20).join("\n")); process.exit(1); }
 console.log("Regles du cumul : "+n+" cas, aucun ecart.");

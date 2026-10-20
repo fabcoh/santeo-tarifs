@@ -572,7 +572,7 @@ function cuDepHTML(G,M,S,R,p1,p2){
 // o = {cols:[{key,fi}], tarifs:{"CLE|fi":n}, prospect, date, base, depenses:{id:{n,p}|{auto:1}}}
 // Postes du comparatif, dans l'ordre dicté par Fabrice (20/10/2026 : « Hospitalisation, Chambre particulière, Honoraires optam,
 // Prothèses dentaire, Implants, Paro et endo, Orthodontie, Lunettes verre simple, Verre complexes, Lentilles, Médecine douce,
-// Autres »). Paro et endo : aucun poste relevé dans les données — pas de ligne tant qu'il n'est pas relu dans les tableaux.
+// Autres »). Toutes les lignes s'affichent, même sans garantie. Paro et endo : aucun poste relevé dans les données — pas de ligne tant qu'il n'est pas relu dans les tableaux.
 const CMP_BLOCS=[
   ["Hospitalisation",[["Hospitalisation (honoraires Optam)","hospO",1],["Chambre particulière","ch"],["Consultations spécialistes Optam","honoO"]]],
   ["Dentaire",[["Prothèses dentaires","dent",1],["Implants","x:imp"],["Orthodontie remboursée","x:orthR"],["Orthodontie non remboursée","x:orthN"]]],
@@ -613,8 +613,8 @@ function comparatifSoins(G,o){
   // valeur de la ligne en vert, seulement quand les valeurs se comparent (même unité).
   h+='<div class="cu-leg">% = pourcentage de la base de remboursement de la Sécurité sociale, Sécu comprise · € = forfait · en vert : le mieux disant</div>';
   for(const [bloc,ls] of CMP_BLOCS){
-    const rs=ls.map(([lab,src,f])=>[lab,src,f,cols.map(c=>valeur(G,c.key,c.fi,src))]).filter(r=>r[3].some(v=>v!=="—"));
-    if(!rs.length) continue;
+    const rs=ls.map(([lab,src,f])=>[lab,src,f,cols.map(c=>valeur(G,c.key,c.fi,src))]);   // toutes les lignes, même sans garantie (Fabrice, 20/10/2026 : « ajoute les implants dentaires » —
+    // FLEXIA Start et GCI 100 n'en ont pas, la ligne disparaissait) : « — » dit au prospect que le poste n'est pas couvert.
     h+='<div class="cu-csec">'+bloc+'</div>';
     for(const [lab,src,f,vals] of rs){ const m=cmpMeilleur(vals);
       h+=row(f?'<b>'+lab+'</b>':lab,vals.map((v,i)=>'<span class="cu-cv'+(i===m?' cu-cvm':'')+'">'+v+'</span>'),f?'cu-cfort':''); }
