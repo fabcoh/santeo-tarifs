@@ -494,7 +494,10 @@ function cuDepHTML(G,M,S,R,p1,p2){
   let h='<div class="cu-dp"><div class="cu-dpt">Vos soins prévus : ce qui vous sera remboursé</div>';
   for(const l of R.lignes){
     const L=CU_DEPLIB[l.id]||[l.lib,l.lib], r1=l.secu+l.mut, rest1=l.dep-r1;
-    h+='<div class="cu-dk"><div class="cu-dkt"><b>'+L[0]+(l.nc?' <sup>†</sup>':'')+'</b><span>Coût : '+(l.n>1?l.n+' × '+cuE(l.p)+' = ':'')+'<b>'+cuE(l.dep)+'</b></span></div>'
+    // Soin sans base Sécu (lunettes, lentilles, implants, orthodontie non remboursée, chambre) : la Sécurité sociale ne paie
+    // rien, tout ce que paient les contrats vient en plus (Fabrice, 20/10/2026 : « ils viennent directement en positif »).
+    const sansSecu=!CU_DEP.find(D=>D[0]===l.id)[3];
+    h+='<div class="cu-dk"><div class="cu-dkt"><b>'+L[0]+(l.nc?' <sup>†</sup>':'')+(sansSecu?' <i class="cu-dss">non remboursé par la Sécu</i>':'')+'</b><span>Coût : '+(l.n>1?l.n+' × '+cuE(l.p)+' = ':'')+'<b>'+cuE(l.dep)+'</b></span></div>'
       +'<div class="cu-dl1"><span>Mutuelle de base'+(l.secu?' <i>(Sécu comprise)</i>':'')+(l.atM?' <i class="cu-dpa">plafond atteint</i>':'')+'</span><span>remboursé <b>'+cuE(r1)+'</b></span><span class="cu-dre">reste '+cuE(rest1)+'</span></div>'
       +'<div class="cu-dl2"><span>+ '+nS+' <i>(surcomplémentaire)</i>'+(l.atS?' <i class="cu-dpa">plafond atteint</i>':'')+'</span><span>remboursé <b>'+cuE(l.sur)+'</b></span><span class="cu-dre">reste '+cuE(l.reste)+'</span></div>'
       +'<div class="cu-dl3"><span>Total remboursé</span><b>'+cuE(r1+l.sur)+' sur '+cuE(l.dep)+'</b></div></div>';

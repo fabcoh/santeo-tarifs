@@ -459,6 +459,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-dk{padding:6px 0 5px;border-bottom:1px solid var(--l)}
 .cumul .cu-dkt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12px;margin-bottom:2px}
 .cumul .cu-dkt b{font-weight:800}
+.cumul .cu-dkt .cu-dss{font:400 10px 'IBM Plex Sans',sans-serif;font-style:normal;color:var(--m);margin-left:4px}
 .cumul .cu-dkt span{white-space:nowrap;color:var(--m)}
 .cumul .cu-dkt span b{color:var(--k)}
 .cumul .cu-dl1,.cumul .cu-dl2{display:grid;grid-template-columns:1fr 110px 80px;gap:6px;align-items:center;font-size:11px;padding:1px 0}

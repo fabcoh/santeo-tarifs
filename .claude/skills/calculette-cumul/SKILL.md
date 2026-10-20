@@ -64,6 +64,9 @@ avant de publier ; un écart arrête la publication).
 - **Ordre des payeurs** : Sécu → mutuelle (% Sécu comprise, ou forfait par unité / par an selon la gamme) →
   surcomplémentaire (en plus, sur ce qui reste) → reste à charge.
 - APICIL : 2 implants au plus par an.
+- **Soins sans base Sécu** (lunettes, lentilles, implants, orthodontie non remboursée, chambre — Fabrice, 20/10/2026 : « ne sont
+  pas remboursés par la Sécu donc ils viennent directement en positif ») : Sécu = 0, tout ce que paient les contrats vient en
+  plus ; la carte porte « non remboursé par la Sécu ». « Sans complémentaire », le prospect en paierait la totalité.
 
 ## Plafonds dentaires (1re année d'adhésion, par bénéficiaire, hors Sécu) — `CU_PLAFD`
 
