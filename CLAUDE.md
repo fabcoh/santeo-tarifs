@@ -321,6 +321,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   contrats X € − cotisations sur un an Y € » → **Votre gain** (vert) ou **Écart** (gris) si négatif. **Gain = ce que paient
   les deux contrats, hors Sécu**, moins 12 mois de cotisation : la Sécu paie de toute façon. Les plafonds annuels des autres
   gammes ne sont pas appliqués (mention « dans la limite des plafonds annuels »). Saisie non retenue. Test : scratchpad `t_cumul6.js`.
+  Fabrice (20/10/2026) confirme la règle : « ce qui sera vraiment remboursé, moins ce qu'il a cotisé » — pas la dépense.
+  **« Toutes les compagnies » suit le périmètre du panneau ⚖** (Fabrice, 20/10/2026 : « oui ») : `on(k)` (aucune coche = toutes),
+  APRIL seulement si sa case est cochée ; la liste « Compagnie » reste complète pour un choix à la main. Ligne d'aide « Périmètre
+  du panneau ⚖ : n compagnies ; APRIL : … ». Périmètre vide (seule TALIS cochée) → toutes les compagnies, et la ligne le dit.
+  **Logos à surface égale dans la vignette** (Fabrice, 20/10/2026 : « les logos doivent être de la même dimension », capture MCCI
+  bien plus gros qu'Avenir) : `Tableau.logoEgal` (`LOGODIM`), √(l × h) = 40 px, 36 px de haut au plus — MCCI 74 × 22, Avenir
+  46 × 35 ; même règle que le courrier. Test : scratchpad `t_cumul7.js`.
   **Implantologie marquée d'une \*** (Fabrice, 19/10/2026 : « vérifie l'implantologie… une astérisque puis expliquer les limites en
   dessous du tableau ») : `CU_IMP` dit ce que vaut le montant de chaque gamme, relu dans les fiches `docs/connaissances/` — **par
   implant** (Cap Évolution, CAP NR, TALIS dans son plafond 600 / 900 €, APICIL 2 au plus), **forfait annuel** (FLEXIA, SOLENCIA

@@ -85,6 +85,16 @@ function valeur(G,key,fi,src){
 }
 
 // Tant qu'un logo manque, le nom de la compagnie s'affiche à sa place : rien ne casse.
+// Dimensions des fichiers (px) : la vignette du cumul égalise la surface des logos, pas leur hauteur — un bandeau (MCCI,
+// 545 × 160) à la même hauteur qu'un logo presque carré (Avenir, 211 × 160) paraissait deux fois plus gros (Fabrice, 20/10/2026).
+const LOGODIM={mcci:[545,160],avenir:[211,160],mverte:[363,160],apicil:[558,155],revoluo:[325,160],april:[681,160]};
+function logoEgal(G,key,base,cote,hmax){
+  const g=G.gammes[key], k=g&&(g.logo||g.ins), d=LOGODIM[k];
+  if(!d) return logo(G,key,base);
+  let h=cote*Math.sqrt(d[1]/d[0]); if(h>hmax) h=hmax;
+  const w=Math.round(h*d[0]/d[1]); h=Math.round(h);
+  return logo(G,key,base).replace('<img class="tglogo" ','<img class="tglogo" width="'+w+'" height="'+h+'" style="width:'+w+'px;height:'+h+'px;max-width:none;max-height:none" ');
+}
 function logo(G,key,base){
   const g=G.gammes[key], f=g&&LOGOS[g.logo||g.ins], nom=(G.compagnies||{})[key]||"";
   if(!f) return '<span class="tglogo-txt">'+nom+'</span>';
@@ -444,8 +454,8 @@ function cumul(G,o){
   // Le bandeau « Pour x € de plus par mois… » ferme le tableau, juste au-dessus de la cotisation (Fabrice, 20/10/2026).
   const gain=ch?'<div class="cu-gain">'+(prix?'Pour <b>'+eur(p2)+' de plus par mois</b>, ':'')+nS+' renforce vos remboursements :<div class="cu-chips">'+ch+'</div></div>':'';
   h+='<div class="cu-r cu-h">'+cell("cu-l","")
-    +cell("cu-a",'<div class="cu-lg">'+logo(G,M.key,o.base)+'</div><b>'+nomComplet(G,M.key,M.fi)+'</b><i class="cu-rf"></i><span class="cu-ro">Mutuelle principale</span>')
-    +cell("cu-b",'<div class="cu-lg">'+logo(G,S.key,o.base)+'</div><b>'+nS+'</b><i class="cu-rf">Renfort</i><span class="cu-ro">Surcomplé&shy;mentaire</span>')
+    +cell("cu-a",'<div class="cu-lg">'+logoEgal(G,M.key,o.base,40,36)+'</div><b>'+nomComplet(G,M.key,M.fi)+'</b><i class="cu-rf"></i><span class="cu-ro">Mutuelle principale</span>')
+    +cell("cu-b",'<div class="cu-lg">'+logoEgal(G,S.key,o.base,40,36)+'</div><b>'+nS+'</b><i class="cu-rf">Renfort</i><span class="cu-ro">Surcomplé&shy;mentaire</span>')
     +cell("cu-t",'<div class="cu-lg cu-eg">=</div><b>Total cumulé</b><i class="cu-rf"></i><span class="cu-ro">Mutuelle + Surcompl.</span>')+'</div>';
   const notes=[];
   for(const [bloc,ls] of BLOCS){

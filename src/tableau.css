@@ -417,7 +417,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-h .cu-t{background:var(--t3);border-radius:10px 10px 0 0}
 .cumul .cu-h b{display:block;min-height:28px;font-weight:700;color:inherit}
 .cumul .cu-h .cu-t b{color:var(--t)}
-.cumul .cu-lg{height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:5px}
+.cumul .cu-lg{height:38px;display:flex;align-items:center;justify-content:center;margin-bottom:5px}
 .cumul .cu-lg img{max-height:34px;max-width:88%;height:auto;width:auto}
 .cumul .cu-lg .tglogo-txt{font:700 11px 'Archivo',sans-serif}
 .cumul .cu-eg{font-size:28px;font-weight:300;color:var(--t)}
