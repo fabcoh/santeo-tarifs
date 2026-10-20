@@ -426,7 +426,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-h .cu-t{background:var(--t3);border-radius:10px 10px 0 0}
 .cumul .cu-h b{display:block;min-height:28px;font-weight:700;color:inherit}
 .cumul .cu-h .cu-t b{color:var(--t)}
-.cumul .cu-lg{height:36px;display:flex;align-items:center;justify-content:center;margin-bottom:5px}
+.cumul .cu-lg{height:38px;display:flex;align-items:center;justify-content:center;margin-bottom:5px}
 .cumul .cu-lg img{max-height:34px;max-width:88%;height:auto;width:auto}
 .cumul .cu-lg .tglogo-txt{font:700 11px 'Archivo',sans-serif}
 .cumul .cu-eg{font-size:28px;font-weight:300;color:var(--t)}
@@ -567,7 +567,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-20T14:42:37Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T14:42:37Z</div>
+  <div id="buildstamp" data-build="2026-10-20T14:51:19Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T14:51:19Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -964,6 +964,16 @@ function valeur(G,key,fi,src){
 }
 
 // Tant qu'un logo manque, le nom de la compagnie s'affiche à sa place : rien ne casse.
+// Dimensions des fichiers (px) : la vignette du cumul égalise la surface des logos, pas leur hauteur — un bandeau (MCCI,
+// 545 × 160) à la même hauteur qu'un logo presque carré (Avenir, 211 × 160) paraissait deux fois plus gros (Fabrice, 20/10/2026).
+const LOGODIM={mcci:[545,160],avenir:[211,160],mverte:[363,160],apicil:[558,155],revoluo:[325,160],april:[681,160]};
+function logoEgal(G,key,base,cote,hmax){
+  const g=G.gammes[key], k=g&&(g.logo||g.ins), d=LOGODIM[k];
+  if(!d) return logo(G,key,base);
+  let h=cote*Math.sqrt(d[1]/d[0]); if(h>hmax) h=hmax;
+  const w=Math.round(h*d[0]/d[1]); h=Math.round(h);
+  return logo(G,key,base).replace('<img class="tglogo" ','<img class="tglogo" width="'+w+'" height="'+h+'" style="width:'+w+'px;height:'+h+'px;max-width:none;max-height:none" ');
+}
 function logo(G,key,base){
   const g=G.gammes[key], f=g&&LOGOS[g.logo||g.ins], nom=(G.compagnies||{})[key]||"";
   if(!f) return '<span class="tglogo-txt">'+nom+'</span>';
@@ -1323,8 +1333,8 @@ function cumul(G,o){
   // Le bandeau « Pour x € de plus par mois… » ferme le tableau, juste au-dessus de la cotisation (Fabrice, 20/10/2026).
   const gain=ch?'<div class="cu-gain">'+(prix?'Pour <b>'+eur(p2)+' de plus par mois</b>, ':'')+nS+' renforce vos remboursements :<div class="cu-chips">'+ch+'</div></div>':'';
   h+='<div class="cu-r cu-h">'+cell("cu-l","")
-    +cell("cu-a",'<div class="cu-lg">'+logo(G,M.key,o.base)+'</div><b>'+nomComplet(G,M.key,M.fi)+'</b><i class="cu-rf"></i><span class="cu-ro">Mutuelle principale</span>')
-    +cell("cu-b",'<div class="cu-lg">'+logo(G,S.key,o.base)+'</div><b>'+nS+'</b><i class="cu-rf">Renfort</i><span class="cu-ro">Surcomplé&shy;mentaire</span>')
+    +cell("cu-a",'<div class="cu-lg">'+logoEgal(G,M.key,o.base,40,36)+'</div><b>'+nomComplet(G,M.key,M.fi)+'</b><i class="cu-rf"></i><span class="cu-ro">Mutuelle principale</span>')
+    +cell("cu-b",'<div class="cu-lg">'+logoEgal(G,S.key,o.base,40,36)+'</div><b>'+nS+'</b><i class="cu-rf">Renfort</i><span class="cu-ro">Surcomplé&shy;mentaire</span>')
     +cell("cu-t",'<div class="cu-lg cu-eg">=</div><b>Total cumulé</b><i class="cu-rf"></i><span class="cu-ro">Mutuelle + Surcompl.</span>')+'</div>';
   const notes=[];
   for(const [bloc,ls] of BLOCS){
@@ -3087,10 +3097,14 @@ function showCumul(){
     let tar=cumulTarifs(), aprilEtat="", fs;
     if(tous){
       // Toutes les compagnies : chaque formule tarifée de chaque gamme, APRIL compris (produits ouverts, un seul appel).
-      const codes=cumulCompagnies().filter(x=>x.v.startsWith("APRIL:")).map(x=>x.v.slice(6));
+      // … dans le périmètre du panneau ⚖ (Fabrice, 20/10/2026 : « oui ») : aucune coche = toutes ; APRIL seulement cochée.
+      let peri=cumulCompagnies().filter(x=>x.v.startsWith("APRIL:")?sel.APRIL:on(x.v)), hors=false;
+      if(!peri.length&&!CUMUL.cochees.length){ peri=cumulCompagnies(); hors=true; }
+      CUMUL.peri=hors?"hors":new Set(peri.map(x=>x.comp)).size;
+      const codes=peri.filter(x=>x.v.startsWith("APRIL:")).map(x=>x.v.slice(6));
       aprilEtat=cumulAprilDemande(codes);
       for(const code of codes){ const e=cumulAprilPrix(code); if(e.etat==="ok") Object.assign(tar,e.prix); }
-      fs=[].concat(...cumulCompagnies().map(x=>cumulFormules(x.v))).filter(c=>tar[c.key+"|"+c.fi]!=null);
+      fs=[].concat(...peri.map(x=>cumulFormules(x.v))).filter(c=>tar[c.key+"|"+c.fi]!=null);
       for(const z of CUMUL.cochees) if(!fs.some(f=>f.key===z.key&&f.fi===z.fi)) fs.push(z);
     } else {
       fs=cumulFormules(v);
@@ -3098,6 +3112,7 @@ function showCumul(){
         if(e.etat==="ok") Object.assign(tar,e.prix); else if(e.etat==="refus") aprilEtat="refus:"+(e.message||"non proposé pour ce profil");
         else aprilEtat=cumulAprilDemande([code]); }
     }
+    if(!fs.length){ box.querySelector('#cuH').innerHTML='<span class="w">Aucune formule tarifée dans ce choix'+(aprilEtat==="attente"?" (tarifs APRIL en cours…)":"")+'.</span>'; box.querySelector('#cuV').innerHTML=""; P=[]; return; }
     const prix=c=>tar[c.key+"|"+c.fi], cleP=(c,i)=>prix(c)!=null?prix(c):1e6+i;
     box.querySelector('#cuSum').textContent=act.length?act.map(([c,s])=>LIBP[c]+" "+st(s)).join(" · "):"aucun";
     let c,msg,manque=[];
@@ -3122,7 +3137,8 @@ function showCumul(){
     box.querySelector('#cuH').innerHTML=(manque.length?"⚠ ":"→ ")+"<b>"+Tableau.nomComplet(GAR,c.key,c.fi)+"</b>"+tarTxt+" — "+msg+"."
       +(manque.length?'<br><span class="w">Non rempli : '+manque.map(([k,x])=>LIBP[k]+" "+st(x)+" ("+(fvaleur({key:c.key,fi:c.fi},k)||"—")+")").join(" · ")+"</span>":"")
       +(enCours?'<br><span class="w">Tarifs APRIL ou API SANTÉ encore en cours : le choix peut changer à leur arrivée.</span>':"")
-      +(tous?'<br>APRIL : '+(()=>{const n=cumulCompagnies().filter(x=>x.comp==="APRIL").length;return n?n+" produit"+(n>1?"s":"")+" coché"+(n>1?"s":""):"aucun produit coché";})()+' au ☰ du panneau ⚖.':"")
+      +(tous?'<br>Périmètre du panneau ⚖ : '+(CUMUL.peri==="hors"?'aucune gamme utilisable, toutes les compagnies comparées':Object.values(sel).some(Boolean)?CUMUL.peri+" compagnie"+(CUMUL.peri>1?"s":""):"toutes les compagnies")
+        +' ; APRIL : '+(!sel.APRIL?"non cochée":(()=>{const n=cumulCompagnies().filter(x=>x.comp==="APRIL").length;return n?n+" produit"+(n>1?"s":"")+" coché"+(n>1?"s":""):"aucun produit coché";})())+'.':"")
       +(tous&&!/TNS/.test(regimeActuel())&&APRIL_SEL.some(c=>APRIL_TNS.has(c))?' Régime salarié : produits TNS (Santé Pro…) écartés.':"");
     const tarifs={}; if(pc!=null) tarifs[c.key+"|"+c.fi]=pc; if(prix(s)!=null) tarifs["TALIS|"+s.fi]=prix(s);
     const depA=Object.keys(CUMUL.dep).length?CUMUL.dep:null;
