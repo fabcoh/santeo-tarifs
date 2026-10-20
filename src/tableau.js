@@ -425,19 +425,38 @@ function cumulDepenses(G,M,S,dep){
   return out;
 }
 const cuE=n=>cuNb(Math.round(n))+" €";
-function cuDepHTML(G,M,S,R,cot){
+// Libellés au singulier, pour la carte de chaque soin et le récapitulatif (« 1 000 € (implant) »).
+const CU_DEPLIB={cour:["Prothèse dentaire (couronne)","prothèses"],bri:["Bridge","bridges"],inl:["Inlay-core","inlay-core"],
+  imp:["Implant","implants"],orR:["Orthodontie remboursée","orthodontie"],orN:["Orthodontie non remboursée","orthodontie non remb."],
+  lun:["Lunettes","lunettes"],len:["Lentilles","lentilles"],chb:["Chambre particulière","chambre"]};
+// Présentation pour un néophyte (Fabrice, 20/10/2026) : une carte par soin — coût, mutuelle de base (Sécu comprise) puis
+// surcomplémentaire, chacune avec son remboursement et le reste à payer —, puis « Vous payez sur 12 mois… », « Vous êtes
+// remboursé de… » et le gain = tout ce qui est remboursé (Sécu comprise) − les cotisations de l'année.
+function cuDepHTML(G,M,S,R,p1,p2){
   if(!R||!R.lignes.length) return "";
-  const rem=R.mut+R.sur, gain=cot!=null?rem-cot:null;
-  let h='<div class="cu-dp"><div class="cu-dpt">Votre projet de soins sur un an</div>'
-    +'<div class="cu-dr cu-dh"><div>Soins</div><div>Dépense</div><div>Sécu</div><div>Vos contrats</div><div>Reste</div></div>';
-  for(const l of R.lignes) h+='<div class="cu-dr"><div>'+(l.n>1?l.n+" × ":"")+l.lib+(l.nc?" <sup>†</sup>":"")+'</div><div>'+cuE(l.dep)+'</div><div>'
-    +(l.secu?cuE(l.secu):"—")+'</div><div class="cu-dc">'+cuE(l.mut+l.sur)+'</div><div>'+cuE(l.reste)+'</div></div>';
-  h+='<div class="cu-dr cu-dtot"><div>Total</div><div>'+cuE(R.dep)+'</div><div>'+(R.secu?cuE(R.secu):"—")+'</div><div class="cu-dc">'+cuE(rem)+'</div><div>'+cuE(R.reste)+'</div></div>';
-  if(gain!=null) h+='<div class="cu-dg'+(gain>0?"":" cu-dg0")+'"><span>Remboursé par vos contrats <b>'+cuE(rem)+'</b> − cotisations sur un an <b>'+cuE(cot)+'</b></span>'
-    +(gain>0?'<span class="cu-dgn">Votre gain : '+cuE(gain)+'</span>':'<span class="cu-dgn">Écart : '+cuE(gain)+'</span>')+'</div>';
-  h+='<div class="cu-dn">Estimation sur les soins indiqués. Pourcentages Sécurité sociale comprise, sur les tarifs de convention (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre) ; implants et orthodontie non remboursée au forfait. Dans la limite des plafonds annuels et après les délais d’attente des contrats'
-    +(CU_PLAF[S.key]?' (plafond dentaire '+nomComplet(G,S.key,S.fi).replace(/^TALIS Talis/,"TALIS")+' : '+CU_PLAF[S.key](S.fi)+' € par an, appliqué)':'')+'.'
-    +(R.nc?' † Une garantie en texte n’a pas pu être chiffrée : non comptée.':'')+'</div></div>';
+  const nM=nomComplet(G,M.key,M.fi), nS=nomComplet(G,S.key,S.fi).replace(/^TALIS Talis/,"TALIS").replace(/^TALIS TALIS/,"TALIS");
+  const rem=R.secu+R.mut+R.sur, cot=(p1!=null&&p2!=null)?cuR((p1+p2)*12):null;
+  let h='<div class="cu-dp"><div class="cu-dpt">Vos soins prévus : ce qui vous sera remboursé</div>';
+  for(const l of R.lignes){
+    const L=CU_DEPLIB[l.id]||[l.lib,l.lib], r1=l.secu+l.mut, rest1=l.dep-r1;
+    h+='<div class="cu-dk"><div class="cu-dkt"><b>'+L[0]+(l.nc?' <sup>†</sup>':'')+'</b><span>Coût : '+(l.n>1?l.n+' × '+cuE(l.p)+' = ':'')+'<b>'+cuE(l.dep)+'</b></span></div>'
+      +'<div class="cu-dl1"><span>Mutuelle de base'+(l.secu?' <i>(Sécu comprise)</i>':'')+'</span><span>remboursé <b>'+cuE(r1)+'</b></span><span class="cu-dre">reste '+cuE(rest1)+'</span></div>'
+      +'<div class="cu-dl2"><span>+ '+nS+' <i>(surcomplémentaire)</i></span><span>remboursé <b>'+cuE(l.sur)+'</b></span><span class="cu-dre">reste '+cuE(l.reste)+'</span></div>'
+      +'<div class="cu-dl3"><span>Total remboursé</span><b>'+cuE(r1+l.sur)+' sur '+cuE(l.dep)+'</b></div></div>';
+  }
+  // Récapitulatif de l'année.
+  const parts=R.lignes.map(l=>cuE(l.secu+l.mut+l.sur)+' ('+(CU_DEPLIB[l.id]||[,l.lib])[1]+')');
+  h+='<div class="cu-ds">';
+  if(cot!=null) h+='<div><span>Vous payez sur 12 mois<sup>*</sup></span><b>'+eur(p1)+' + '+eur(p2)+' = '+eur(p1+p2)+' × 12 = '+cuE(cot)+'</b></div>';
+  h+='<div><span>Vous êtes remboursé de</span><b>'+parts.join(' + ')+(parts.length>1?' = '+cuE(rem):'')+'</b></div>';
+  h+='<div><span>Reste à votre charge</span><b>'+cuE(R.reste)+' <i class="cu-dsans">au lieu de '+cuE(R.dep-R.secu)+' sans complémentaire</i></b></div>';
+  if(cot!=null){ const g=rem-cot;
+    h+=g>0?'<div class="cu-dgain"><span>Votre gain sur l’année</span><b>+ '+cuE(g)+'</b></div>'
+           :'<div class="cu-dgain cu-dg0"><span>Différence sur l’année</span><b>'+cuE(g)+'</b></div>'; }
+  h+='</div><div class="cu-dn">'+(cot!=null?'<sup>*</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
+    +'Tableau présenté à titre indicatif — document non contractuel. Calcul sur les tarifs de convention de la Sécurité sociale (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre), implants et orthodontie non remboursée au forfait, dans la limite des plafonds annuels'
+    +(CU_PLAF[S.key]?' (dentaire '+nS+' : '+CU_PLAF[S.key](S.fi)+' € par an)':'')+' et après les délais d’attente.'
+    +(R.nc?' † Garantie non chiffrable : non comptée.':'')+'</div></div>';
   return h;
 }
 // o = {mut:{key,fi}, sur:{key,fi}, tarifs:{"CLE|fi":n}, prospect, date:"jj/mm/aaaa", base, sansTarifs, depenses:{id:{n,p}}}
@@ -478,7 +497,7 @@ function cumul(G,o){
     +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
     +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')
     +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>')+'</div>';
-  if(o.depenses) h+=cuDepHTML(G,M,S,cumulDepenses(G,M,S,o.depenses),prix?cuR((p1+p2)*12):null);
+  if(o.depenses) h+=cuDepHTML(G,M,S,cumulDepenses(G,M,S,o.depenses),prix?p1:null,prix?p2:null);
   h+=gain;
   if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
   const gM=G.gammes[M.key], nr=gM&&(gM.resp===false||/^\s*Contrat NON responsable/i.test(String(limites(G,M.key,M.fi)||"")));

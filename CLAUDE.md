@@ -317,11 +317,18 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `Tableau.cumulDepenses` (`src/tableau.js`, `CU_DEP`) : Sécu (60 % du tarif de convention en prothèse, 100 % en orthodontie)
   → mutuelle (% Sécu comprise, ou forfait par unité / par an selon `CU_IMP` / `CU_ORTHN`) → surcomplémentaire (en plus), jamais
   plus que la dépense ; plafond dentaire TALIS 600 / 900 € appliqué, APICIL 2 implants au plus ; une valeur en texte n'est pas
-  chiffrée (†). Dans la vignette, sous la cotisation : tableau Dépense · Sécu · Vos contrats · Reste, puis « Remboursé par vos
-  contrats X € − cotisations sur un an Y € » → **Votre gain** (vert) ou **Écart** (gris) si négatif. **Gain = ce que paient
-  les deux contrats, hors Sécu**, moins 12 mois de cotisation : la Sécu paie de toute façon. Les plafonds annuels des autres
+  chiffrée (†). Dans la vignette, sous la cotisation (présentation ci-dessous). Les plafonds annuels des autres
   gammes ne sont pas appliqués (mention « dans la limite des plafonds annuels »). Saisie non retenue. Test : scratchpad `t_cumul6.js`.
   Fabrice (20/10/2026) confirme la règle : « ce qui sera vraiment remboursé, moins ce qu'il a cotisé » — pas la dépense.
+  **Présentation pour néophyte** (Fabrice, 20/10/2026, modèle dicté : « Implant : coût 1000 € remboursé (sécu et mutuelle) 700 € …
+  surcomplémentaire 300 € … Vous avez payé sur 12 mois* 43 € + 43 € = 86 × 12 = 1032 €, vous êtes remboursé de 1000 € implants et
+  390 € pour les prothèses ») : **une carte par soin** — coût (n × prix), « Mutuelle de base (Sécu comprise) remboursé X · reste »,
+  « + TALIS (surcomplémentaire) remboursé Y · reste », « Total remboursé Z sur coût » — puis un encadré : « Vous payez sur 12 mois* »
+  (a + b = c × 12), « Vous êtes remboursé de » (par soin), « Reste à votre charge … au lieu de … sans complémentaire » (dépense − Sécu),
+  **« Votre gain sur l'année »** en vert, « Différence » en gris s'il est négatif. **Le gain compte la Sécu** (remboursé total −
+  cotisations), comme dans le modèle de Fabrice — l'affichage précédent l'excluait. Mentions : « * Les cotisations évoluent chaque
+  année à la date anniversaire du contrat. Tableau présenté à titre indicatif — document non contractuel. » Test : scratchpad
+  `t_cumul8.js`, `t_cumul9.js`.
   **« Toutes les compagnies » suit le périmètre du panneau ⚖** (Fabrice, 20/10/2026 : « oui ») : `on(k)` (aucune coche = toutes),
   APRIL seulement si sa case est cochée ; la liste « Compagnie » reste complète pour un choix à la main. Ligne d'aide « Périmètre
   du panneau ⚖ : n compagnies ; APRIL : … ». Périmètre vide (seule TALIS cochée) → toutes les compagnies, et la ligne le dit.

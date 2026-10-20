@@ -447,18 +447,32 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-prix .cu-t .cu-n{font-size:18px}
 .cumul .cu-ft{margin-top:12px;font-size:10px;color:var(--m);line-height:1.45}
 .cumul .cu-ft b{color:var(--k)}
-/* Projet de soins (Fabrice, 20/10/2026) : dépense, Sécu, contrats, reste, puis le gain sur un an. */
-.cumul .cu-dp{margin-top:10px;background:var(--c1);border-radius:10px;padding:8px 8px 7px}
-.cumul .cu-dpt{font:800 12.5px 'Archivo',sans-serif;margin-bottom:4px}
-.cumul .cu-dr{display:grid;grid-template-columns:1fr 60px 48px 74px 54px;gap:6px;font-size:11px;padding:3px 0;border-bottom:1px solid var(--l);align-items:center}
-.cumul .cu-dr>div:not(:first-child){text-align:right;white-space:nowrap}
-.cumul .cu-dh{font:700 9px 'Archivo',sans-serif;text-transform:uppercase;letter-spacing:.03em;color:var(--m)}
-.cumul .cu-dc{color:var(--t);font-weight:700}
-.cumul .cu-dtot{font-weight:700;border-bottom:0}
-.cumul .cu-dg{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 10px;margin-top:6px;background:#E3F6EA;border-radius:8px;padding:6px 8px;font-size:11px}
-.cumul .cu-dgn{font:800 15px 'Archivo',sans-serif;color:#13784A;white-space:nowrap}
-.cumul .cu-dg0{background:var(--l)}.cumul .cu-dg0 .cu-dgn{color:var(--k);font-size:13px}
+/* Soins prévus (Fabrice, 20/10/2026) : une carte par soin, puis cotisations, remboursements et gain de l'année. */
+.cumul .cu-dp{margin-top:12px}
+.cumul .cu-dpt{font:800 13px 'Archivo',sans-serif;margin-bottom:6px}
+.cumul .cu-dk{background:var(--c1);border-radius:10px;padding:7px 9px 6px;margin-bottom:6px}
+.cumul .cu-dkt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12px;margin-bottom:4px}
+.cumul .cu-dkt b{font-weight:800}
+.cumul .cu-dkt span{white-space:nowrap}
+.cumul .cu-dl1,.cumul .cu-dl2{display:grid;grid-template-columns:1fr 104px 74px;gap:6px;align-items:center;font-size:11px;padding:3px 7px;border-radius:7px;margin-top:2px}
+.cumul .cu-dl1{background:#fff}
+.cumul .cu-dl2{background:var(--o2);color:var(--o)}
+.cumul .cu-dl1 i,.cumul .cu-dl2 i{font-style:normal;opacity:.75;font-size:10px}
+.cumul .cu-dl1>span:nth-child(2),.cumul .cu-dl2>span:nth-child(2){text-align:right;white-space:nowrap}
+.cumul .cu-dre{text-align:right;white-space:nowrap;color:var(--m);font-size:10.5px}
+.cumul .cu-dl3{display:flex;justify-content:space-between;font-size:11.5px;color:var(--t);padding:4px 7px 0}
+.cumul .cu-dl3 b{font-weight:800}
+.cumul .cu-ds{margin-top:8px;border:1px solid var(--t3);border-radius:10px;overflow:hidden}
+.cumul .cu-ds>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 10px;font-size:11.5px;border-bottom:1px solid var(--l)}
+.cumul .cu-ds>div>b{text-align:right}
+.cumul .cu-ds sup{color:var(--t);font-weight:700}
+.cumul .cu-dsans{font-style:normal;font-weight:400;color:var(--m);font-size:10.5px}
+.cumul .cu-dgain{background:#E3F6EA;border-bottom:0!important}
+.cumul .cu-dgain span{font:700 12.5px 'Archivo',sans-serif;color:#13784A}
+.cumul .cu-dgain b{font:800 19px 'Archivo',sans-serif;color:#13784A;white-space:nowrap}
+.cumul .cu-dg0{background:var(--l)}.cumul .cu-dg0 span,.cumul .cu-dg0 b{color:var(--k)}.cumul .cu-dg0 b{font-size:15px}
 .cumul .cu-dn{margin-top:5px;font-size:9.5px;color:var(--m);line-height:1.4}
+.cumul .cu-dn sup{color:var(--t);font-weight:700}
 .cumul .cu-mq{display:flex;align-items:center;gap:8px;margin-top:8px;border-top:1px solid var(--l);padding-top:8px;font-size:10px;color:var(--m)}
 .cumul .cu-mq img{height:22px;width:auto}
 /* Réglages de la fenêtre du cumul (Fabrice, 20/10/2026) : pour le commercial seulement, jamais dans l'image. */
@@ -2308,7 +2322,7 @@ function showCumul(){
     const tarifs={}; if(pc!=null) tarifs[c.key+"|"+c.fi]=pc; if(prix(s)!=null) tarifs["TALIS|"+s.fi]=prix(s);
     const depA=Object.keys(CUMUL.dep).length?CUMUL.dep:null;
     box.querySelector('#cuDSum').textContent=depA?(()=>{const R=Tableau.cumulDepenses(GAR,c,s,depA);
-      const g=(pc!=null&&prix(s)!=null)?R.mut+R.sur-(pc+prix(s))*12:null;
+      const g=(pc!=null&&prix(s)!=null)?R.secu+R.mut+R.sur-(pc+prix(s))*12:null;
       return R.lignes.length+" soin"+(R.lignes.length>1?"s":"")+" · "+eur(R.dep)+(g!=null?" · "+(g>0?"gain ":"écart ")+eur(g):"");})():"aucune";
     box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depA});
     P=[{mut:c,sur:s}];
