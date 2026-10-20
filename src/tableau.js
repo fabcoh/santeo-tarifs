@@ -385,12 +385,14 @@ function cumul(G,o){
       h+=ligne(CU_POSTES[src],v1(src),cuPlus(v2(src)),tt,plus?"cu-up":"");}
   }
   h+=ligne("","","","","cu-fin");
-  if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
-  h+=gain;
+  // Cotisation juste sous le tableau, puis le bandeau TALIS, puis les explications (Fabrice, 20/10/2026 : « remonte les
+  // tarifs au dessous du tableau avant les explications »).
   if(prix) h+='<div class="cu-r cu-prix">'+cell("cu-l",'Cotisation<small>par mois</small>')
     +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
     +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')
     +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>')+'</div>';
+  h+=gain;
+  if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
   const gM=G.gammes[M.key], nr=gM&&(gM.resp===false||/^\s*Contrat NON responsable/i.test(String(limites(G,M.key,M.fi)||"")));
   const note=CU_NOTE[S.key]?CU_NOTE[S.key](S.fi):"";
   h+='<div class="cu-ft"><b>'+nS+'</b> s’ajoute à votre mutuelle, sans la remplacer'+(note?" ; "+note:"")+'.'

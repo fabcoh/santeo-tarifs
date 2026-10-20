@@ -291,8 +291,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   besoin, la formule cochée de la compagnie, sinon sa moins chère. Une seule vignette. **Tarifs** (`cumulTarifs`) : `Moteur.calculer`
   sur toutes les gammes (`sel` tout à vrai) avec le profil du haut de page ; API SANTÉ = la réponse d'APICIL si elle porte sur ce profil,
   sinon `apicilDemande` et la fenêtre se redessine au retour (`calc()` appelle `CUMUL.maj`) ; APRIL = `APRIL_CACHE`, sinon
-  `cumulAprilDemande(code)` (relais, produit seul, même cache). Le bouton 🧮 Cumul s'affiche dès qu'une formule est cochée. Le bandeau
-  « Pour x € de plus… » est passé **en bas**, au-dessus de la cotisation. Maquette : https://claude.ai/artifact/EHZgZs18CphZurdwpbz9V7.
+  `cumulAprilDemande(code)` (relais, produit seul, même cache). Le bouton 🧮 Cumul s'affiche dès qu'une formule est cochée. Ordre du bas
+  (Fabrice, 20/10/2026 : « remonte les tarifs au dessous du tableau avant les explications ») : **cotisation** juste sous la grille,
+  puis le bandeau « Pour x € de plus… », puis les notes \* / \*\*, puis les limites de TALIS et le logo. Maquette : https://claude.ai/artifact/EHZgZs18CphZurdwpbz9V7.
   Test : scratchpad `t_cumul3.js` (relais APRIL et APICIL simulés).
   **Implantologie marquée d'une \*** (Fabrice, 19/10/2026 : « vérifie l'implantologie… une astérisque puis expliquer les limites en
   dessous du tableau ») : `CU_IMP` dit ce que vaut le montant de chaque gamme, relu dans les fiches `docs/connaissances/` — **par
