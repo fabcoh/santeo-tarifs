@@ -281,6 +281,19 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Capture à 520 px ×2 (`.cu-cap`, `useCORS`) ; barre : WhatsApp (partage mobile, sinon copie / téléchargement), ⬇ Télécharger,
   Envoyer dans le CRM (dépôt des images, **sans mail**). `SURCOS` = {TALIS}. Maquette : https://claude.ai/artifact/3f1H8sXyC93UuSmMTxTzbA.
   Test : scratchpad `t_cumul.js`, `t_cumul2.js`. Modifier `tableau.js` change l'empreinte de `docs/tg/` : l'Action refait les 13 images.
+  **Fenêtre à filtres** (Fabrice, 20/10/2026 : « filtres invisibles côté client… Filtre Compagnie, Filtre besoin », « on doit pouvoir
+  choisir toutes compagnies et n'utilise que les filtres », « tous les filtres disponibles dans le comparateur et pourquoi pas…
+  april » ; règle validée) : cadre **« Réglages — non envoyés »** au-dessus de la vignette, hors de `.cumul` donc jamais capturé —
+  **Compagnie** (toutes les gammes de `F` hors TALIS, groupées par compagnie, + chaque produit APRIL ouvert `APRIL:<code>` ; ALPTIS
+  grisé « pas encore dans le comparateur »), **Surcompl.** (Talis / Talis +), **Besoins** = les 13 postes de `FPOSTES` avec `fseuils`,
+  **repris de `FILTRES`** à l'ouverture (budget exclu). Formule déduite : la moins chère de la compagnie qui remplit tous les besoins
+  (`cumulTient`, mêmes `fparse`/`fvaleur` que le panneau ⚖) ; à défaut celle qui en remplit le plus, ce qui manque en orange ; sans
+  besoin, la formule cochée de la compagnie, sinon sa moins chère. Une seule vignette. **Tarifs** (`cumulTarifs`) : `Moteur.calculer`
+  sur toutes les gammes (`sel` tout à vrai) avec le profil du haut de page ; API SANTÉ = la réponse d'APICIL si elle porte sur ce profil,
+  sinon `apicilDemande` et la fenêtre se redessine au retour (`calc()` appelle `CUMUL.maj`) ; APRIL = `APRIL_CACHE`, sinon
+  `cumulAprilDemande(code)` (relais, produit seul, même cache). Le bouton 🧮 Cumul s'affiche dès qu'une formule est cochée. Le bandeau
+  « Pour x € de plus… » est passé **en bas**, au-dessus de la cotisation. Maquette : https://claude.ai/artifact/EHZgZs18CphZurdwpbz9V7.
+  Test : scratchpad `t_cumul3.js` (relais APRIL et APICIL simulés).
   **Implantologie marquée d'une \*** (Fabrice, 19/10/2026 : « vérifie l'implantologie… une astérisque puis expliquer les limites en
   dessous du tableau ») : `CU_IMP` dit ce que vaut le montant de chaque gamme, relu dans les fiches `docs/connaissances/` — **par
   implant** (Cap Évolution, CAP NR, TALIS dans son plafond 600 / 900 €, APICIL 2 au plus), **forfait annuel** (FLEXIA, SOLENCIA

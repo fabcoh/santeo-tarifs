@@ -363,8 +363,9 @@ function cumul(G,o){
   const ligne=(c0,a,b,c,cls)=>'<div class="cu-r'+(cls?" "+cls:"")+'">'+cell("cu-l",c0)+cell("cu-a",a)+cell("cu-b",b)+cell("cu-t",c)+'</div>';
   const ch=CU_GAINS.filter(([s])=>cuLire(v2(s))).map(([s,l])=>'<span><i>'+l+'</i> '+cuPlus(v2(s))+'</span>').join("");
   let h='<div class="cu-ti">Votre mutuelle + surcomplémentaire</div>'
-    +(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'')
-    +(ch?'<div class="cu-gain">'+(prix?'Pour <b>'+eur(p2)+' de plus par mois</b>, ':'')+nS+' renforce vos remboursements :<div class="cu-chips">'+ch+'</div></div>':'');
+    +(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'');
+  // Le bandeau « Pour x € de plus par mois… » ferme le tableau, juste au-dessus de la cotisation (Fabrice, 20/10/2026).
+  const gain=ch?'<div class="cu-gain">'+(prix?'Pour <b>'+eur(p2)+' de plus par mois</b>, ':'')+nS+' renforce vos remboursements :<div class="cu-chips">'+ch+'</div></div>':'';
   h+='<div class="cu-r cu-h">'+cell("cu-l","")
     +cell("cu-a",'<div class="cu-lg">'+logo(G,M.key,o.base)+'</div><b>'+nomComplet(G,M.key,M.fi)+'</b><i class="cu-rf"></i><span class="cu-ro">Mutuelle principale</span>')
     +cell("cu-b",'<div class="cu-lg">'+logo(G,S.key,o.base)+'</div><b>'+nS+'</b><i class="cu-rf">Renfort</i><span class="cu-ro">Surcomplé&shy;mentaire</span>')
@@ -385,6 +386,7 @@ function cumul(G,o){
   }
   h+=ligne("","","","","cu-fin");
   if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
+  h+=gain;
   if(prix) h+='<div class="cu-r cu-prix">'+cell("cu-l",'Cotisation<small>par mois</small>')
     +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
     +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')

@@ -399,7 +399,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul.cu-cap{width:520px;max-width:none;border-radius:0}
 .cumul .cu-ti{font:800 15px 'Archivo',sans-serif}
 .cumul .cu-pr{font-size:11.5px;color:var(--m);margin:2px 0 10px}
-.cumul .cu-gain{background:linear-gradient(90deg,var(--o2),var(--t2));border-radius:10px;padding:8px 10px;margin-bottom:12px;font-size:11.5px}
+.cumul .cu-gain{background:linear-gradient(90deg,var(--o2),var(--t2));border-radius:10px;padding:8px 10px;margin:10px 0 0;font-size:11.5px}
 .cumul .cu-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .cumul .cu-chips span{background:#fff;border-radius:12px;padding:2px 8px;font-weight:600;color:var(--o);font-size:11px;white-space:nowrap}
 .cumul .cu-chips i{font-style:normal;color:var(--k);font-weight:400}
@@ -449,6 +449,26 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-ft b{color:var(--k)}
 .cumul .cu-mq{display:flex;align-items:center;gap:8px;margin-top:8px;border-top:1px solid var(--l);padding-top:8px;font-size:10px;color:var(--m)}
 .cumul .cu-mq img{height:22px;width:auto}
+/* Réglages de la fenêtre du cumul (Fabrice, 20/10/2026) : pour le commercial seulement, jamais dans l'image. */
+#cubox .cu-reg{border:1px dashed var(--line);background:var(--soft);border-radius:10px;padding:9px 10px 8px;margin:0 0 12px;font:13px 'IBM Plex Sans',sans-serif}
+#cubox .cu-regt{font:700 10.5px 'Archivo',sans-serif;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between}
+#cubox .cu-regt span{font-weight:500;text-transform:none;letter-spacing:0}
+#cubox .cu-regg{display:grid;grid-template-columns:3fr 1fr;gap:6px}
+#cubox .cu-reg label{display:flex;flex-direction:column;gap:2px;font:600 10.5px 'Archivo',sans-serif;color:var(--muted);min-width:0}
+#cubox .cu-reg select{font:600 13px 'IBM Plex Sans',sans-serif;padding:6px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--ink);width:100%;min-width:0}
+#cubox .cu-reg details{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}
+#cubox .cu-reg summary{cursor:pointer;font:700 12px 'Archivo',sans-serif;color:var(--ink)}
+#cubox .cu-reg summary span{font-weight:500;color:var(--accent);margin-left:4px}
+#cubox .cu-fb{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:6px}
+#cubox .cu-grp b{display:block;font:700 10px 'Archivo',sans-serif;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:2px 0 3px}
+#cubox .cu-lig{display:grid;grid-template-columns:1fr 96px;gap:4px;align-items:center;margin-bottom:3px;font-size:12px}
+#cubox .cu-lig select{font-size:12px;padding:3px 4px}
+#cubox .cu-lig select.on{border-color:var(--accent);outline:1px solid var(--accent)}
+#cubox #cuRaz{margin-top:6px;font:600 11.5px 'Archivo',sans-serif;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:3px 9px;cursor:pointer}
+#cubox .cu-hint{font-size:12px;color:var(--ink);margin-top:7px}
+#cubox .cu-hint b{color:var(--accent)}
+#cubox .cu-hint .w{color:#B25A12}
+@media (max-width:560px){#cubox .cu-fb{grid-template-columns:1fr}}
 @media (max-width:440px){.cumul:not(.cu-cap) .cu-n{font-size:13.5px}.cumul:not(.cu-cap) .cu-prix .cu-t .cu-n{font-size:15px}}
 </style>
 <button id="aibtn" title="IA produits : une question sur nos contrats" aria-haspopup="dialog" hidden>💬 IA produits</button>
@@ -2083,28 +2103,161 @@ function prospectLigne(){
   return {nm,txt:bits.join("  ·  ")};
 }
 // ---- Cumul mutuelle + surcomplémentaire (Fabrice, 19/10/2026) ----
-// Cocher une mutuelle et TALIS : le bouton 🧮 Cumul de la barre ouvre une vignette par mutuelle cochée
-// (garanties additionnées poste par poste, cotisations additionnées), à envoyer en image sur WhatsApp
-// ou dans la conversation du CRM. La vignette est fabriquée par Tableau.cumul (src/tableau.js).
+// Le bouton 🧮 Cumul de la barre ouvre une vignette : une mutuelle + TALIS, garanties additionnées poste par poste,
+// cotisations additionnées, à envoyer en image sur WhatsApp ou dans la conversation du CRM (Tableau.cumul, src/tableau.js).
+// Fenêtre à filtres (Fabrice, 20/10/2026 : « on doit pouvoir choisir toutes compagnies et n'utilise que les filtres ») :
+// un cadre « Réglages », jamais dans l'image — Compagnie (toutes, APRIL comprise), niveau de TALIS, et les besoins du
+// panneau ⚖ (mêmes postes, mêmes seuils, repris à l'ouverture). La formule s'en déduit : la moins chère de la compagnie
+// qui remplit tous les besoins ; à défaut, celle qui en remplit le plus, ce qui manque écrit en orange. Sans besoin :
+// la formule cochée de la compagnie, sinon sa moins chère.
 const SURCOS=new Set(["TALIS"]);
-function cumulPaires(){
-  const rs=selRows(), sur=rs.filter(r=>SURCOS.has(r.key)), mut=rs.filter(r=>!SURCOS.has(r.key));
-  const out=[]; for(const m of mut)for(const s of sur)out.push({mut:m,sur:s});
-  return out.slice(0,6);
+let CUMUL=null;          // état de la fenêtre ouverte
+// Profil du haut de page, tel que calc() le lit.
+function profilPage(){
+  const cpSaisi=document.getElementById("cp").value, dept=deptOf(cpSaisi);
+  return {cpSaisi,dept,age:parseAge(document.getElementById("naiss").value),cnjAge:parseAge(document.getElementById("cnj").value),
+          hasCnj:document.getElementById("cnj").value.trim()!=="",kids:+document.getElementById("kids").value,reg:document.getElementById("regime").value};
+}
+// Les compagnies de la fenêtre : toutes les gammes (TALIS à part), et chaque produit APRIL ouvert (« APRIL:code »).
+function cumulCompagnies(){
+  const out=[];
+  for(const k of Object.keys(F)){ if(k==="TALIS"||k==="APRIL")continue; out.push({v:k,comp:COMP[k]||"",lab:F[k].label.replace(/^M\. VERTE /,"")}); }
+  for(const code of APRIL_ORDRE_RANG){ if(APRIL_FERMES[code]||!APRIL_GAR[code])continue; out.push({v:"APRIL:"+code,comp:"APRIL",lab:APRIL_NOM[code]||code}); }
+  return out;
+}
+// Formules d'une compagnie de la fenêtre : [{key, fi}], de la moins chère à la plus chère dans l'ordre de la gamme.
+function cumulFormules(v){
+  if(v.startsWith("APRIL:")){ const c=v.slice(6), r=APRIL_RANG[c]; return (APRIL_GAR[c].niv||[]).map(n=>({key:"APRIL",fi:r*100+n,niv:n})); }
+  return F[v].names.map((_,fi)=>({key:v,fi}));
+}
+// Tarifs pour la fenêtre, toutes gammes : le moteur pour les gammes locales et API SANTÉ (si sa réponse porte sur ce
+// profil, sinon la demande part et la fenêtre se redessine à son retour), le relais APRIL produit par produit.
+function cumulTarifs(){
+  const p=profilPage(), T={}; if(p.age==null) return T;
+  const tout={}; for(const k of Object.keys(F)) tout[k]=true; tout.APRIL=false;
+  let apicil={};
+  const prof=apicilProfil(p.age,p.cnjAge,p.hasCnj,p.kids,p.reg,p.cpSaisi,p.dept);
+  if(prof){ const cle=JSON.stringify(prof);
+    if(CUMUL&&CUMUL.v==="APICIL"&&APICIL.cle!==cle) apicilDemande(prof,cle);
+    const a=(APICIL.cle===cle)?APICIL:{etat:""};
+    apicil={profil:prof,etat:a.etat,tarifs:a.tarifs,message:a.message,approche:apicilApproche,cpExact:/^\d{5}$/.test(p.cpSaisi.trim())}; }
+  const {rows}=Moteur.calculer({D,F,sel:tout,age:p.age,cnjAge:p.cnjAge,hasCnj:p.hasCnj,kids:p.kids,reg:p.reg,dept:p.dept,
+                               zone:p.dept?ZMAP[p.dept]:null,apicil,april:{etat:""}});
+  for(const r of rows) T[r.key+"|"+r.fi]=r.total;
+  for(const r of LASTROWS) if(r.key==="APRIL") T["APRIL|"+r.fi]=r.total;   // APRIL déjà tarifé dans le tableau
+  return T;
+}
+// Un produit APRIL qui n'est pas dans le tableau : demandé seul au relais, gardé dans le même cache que le tableau.
+const CUMUL_APRIL_EN_COURS={};
+function cumulAprilDemande(code){
+  const p=profilPage(); if(p.age==null) return "profil";
+  const garde=APRIL_SEL; let pa;
+  try{ APRIL_SEL=[code]; pa=aprilProfil(p.age,p.cnjAge,p.hasCnj,p.kids,p.reg,p.cpSaisi,p.dept); } finally{ APRIL_SEL=garde; }
+  if(!pa) return "cp";
+  const base=aprilBase(pa);
+  if(APRIL_CACHE.base===base&&APRIL_CACHE.res[code]) return "ok";
+  if(CUMUL_APRIL_EN_COURS[code+base]) return "attente";
+  CUMUL_APRIL_EN_COURS[code+base]=1;
+  (async()=>{
+    try{
+      const rp=await fetch(APRIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(pa)});
+      const d=await rp.json().catch(()=>null);
+      if(rp.ok&&d&&Array.isArray(d.produits)){
+        if(APRIL_CACHE.base!==base) APRIL_CACHE={base,res:{},famille:false};
+        for(const x of d.produits) if(aprilGardable(x)) APRIL_CACHE.res[x.produit]=x; else APRIL_CACHE.res[x.produit]=x;
+      }
+    }catch(e){}
+    delete CUMUL_APRIL_EN_COURS[code+base];
+    if(CUMUL&&CUMUL.maj) CUMUL.maj();
+  })();
+  return "attente";
+}
+function cumulAprilPrix(code){
+  const x=APRIL_CACHE.res[code]; if(!x||x.etat!=="ok") return {etat:x?"refus":"",message:x&&x.message};
+  const r=APRIL_RANG[code], o={}; for(const n of aprilNiveaux(x.niveaux)) o["APRIL|"+(r*100+n.niv)]=n.prix;
+  return {etat:"ok",prix:o};
+}
+function cumulTient(c,cle,seuil){
+  const m=/^(\d+(?:\.\d+)?)(%|€)$/.exec(seuil), v=fparse(fvaleur({key:c.key,fi:c.fi},cle)); if(!m||!v) return false;
+  return m[2]==="%"?(v.pct!=null&&v.pct>=+m[1]):(v.eur!=null&&v.eur>=+m[1]);
 }
 function showCumul(){
-  const P=cumulPaires(); if(!P.length)return;
-  const tarifs={}; P.forEach(p=>{tarifs[p.mut.key+"|"+p.mut.fi]=p.mut.total; tarifs[p.sur.key+"|"+p.sur.fi]=p.sur.total;});
+  const rs=selRows(), sur=rs.find(r=>SURCOS.has(r.key)), muts=rs.filter(r=>!SURCOS.has(r.key));
+  const m0=muts[0];
+  CUMUL={v:m0?(m0.key==="APRIL"?"APRIL:"+APRIL_ORDRE_RANG[Math.floor(m0.fi/100)]:m0.key):"CAPEVO",
+         cochees:muts.map(r=>({key:r.key,fi:r.fi})),si:sur?sur.fi:1,fil:{}};
+  for(const k in FILTRES) if(k!=="budget"&&/^\d+(\.\d+)?(%|€)$/.test(FILTRES[k])) CUMUL.fil[k]=FILTRES[k];   // besoins du panneau ⚖
   const {nm,txt}=prospectLigne(), date=new Date().toLocaleDateString("fr-FR");
   const svgWa='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:#25D366;vertical-align:-3px"><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.82 11.82 0 0020.463 3.488 11.815 11.815 0 0012.05 0zm5.422 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>';
+  const comps=cumulCompagnies(), ordre=["AVENIR M.","APICIL","APRIL","MCCI","M. VERTE","REMA"];
+  let opts="";
+  for(const c of ordre.concat([...new Set(comps.map(x=>x.comp))].filter(c=>!ordre.includes(c)))){
+    const l=comps.filter(x=>x.comp===c).sort((x,y)=>x.lab.localeCompare(y.lab,"fr")); if(!l.length)continue;
+    opts+='<optgroup label="'+(c==="AVENIR M."?"AVENIR":c)+'">'+l.map(x=>'<option value="'+x.v+'">'+x.lab+'</option>').join("")+'</optgroup>';
+  }
+  opts+='<optgroup label="ALPTIS"><option disabled>pas encore dans le comparateur</option></optgroup>';
+  let grille="";
+  for(const [gr,ps] of FPOSTES){
+    grille+='<div class="cu-grp"><b>'+gr+'</b>'+ps.map(([cle,lab])=>'<div class="cu-lig"><span>'+lab+'</span><select data-cle="'+cle+'"><option value="">—</option>'
+      +fseuils(cle).map(([v,l])=>'<option value="'+v+'">≥ '+l+'</option>').join("")+'</select></div>').join("")+'</div>';
+  }
   const ov=document.createElement('div'); ov.id='tgov'; ov.className='tgmain';
   ov.innerHTML='<div id="cubox"><div class="cu-bar"><button data-a="wa">'+svgWa+' WhatsApp</button><button data-a="dl">⬇ Télécharger</button>'
     +(window.CRMLINK?'<button data-a="crm" style="background:#059669;color:#fff;border-color:#059669">Envoyer dans le CRM</button>':'')
     +'<button class="close" style="margin-left:auto">Fermer ✕</button><span class="cu-stat"></span></div>'
-    +P.map(p=>Tableau.cumul(GAR,{mut:{key:p.mut.key,fi:p.mut.fi},sur:{key:p.sur.key,fi:p.sur.fi},tarifs,prospect:txt,date})).join("")+'</div>';
-  ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close'))ov.remove();});
+    +'<div class="cu-reg"><div class="cu-regt">Réglages <span>non envoyés</span></div>'
+    +'<div class="cu-regg"><label>Compagnie<select id="cuC">'+opts+'</select></label><label>Surcompl.<select id="cuS">'
+    +F.TALIS.names.map((n,i)=>'<option value="'+i+'">'+n+'</option>').join("")+'</select></label></div>'
+    +'<details id="cuB"><summary>Besoins <span id="cuSum"></span></summary><div class="cu-fb">'+grille+'</div><button type="button" id="cuRaz">Tout effacer</button></details>'
+    +'<div class="cu-hint" id="cuH"></div></div><div id="cuV"></div></div>';
+  ov.addEventListener('click',ev=>{if(ev.target===ov||ev.target.classList.contains('close')){ov.remove();CUMUL=null;}});
   document.body.appendChild(ov);
   const box=ov.querySelector('#cubox'), stat=s=>{box.querySelector('.cu-stat').textContent=s;};
+  const selC=box.querySelector('#cuC'), selS=box.querySelector('#cuS');
+  selC.value=CUMUL.v; selS.value=String(CUMUL.si);
+  box.querySelectorAll('.cu-fb select').forEach(s=>{ if(CUMUL.fil[s.dataset.cle]) s.value=CUMUL.fil[s.dataset.cle]; s.classList.toggle('on',!!s.value); });
+  if(Object.keys(CUMUL.fil).length) box.querySelector('#cuB').open=true;
+  const LIBP={}; for(const [gr,ps] of FPOSTES) for(const [cle,lab] of ps) LIBP[cle]=lab+((gr==="Hospitalisation"&&/^hosp/.test(cle))?" (hospi)":(gr==="Soins courants"&&/^hono/.test(cle))?" (soins)":"");
+  const st=x=>x.replace("%"," %").replace("€"," €"), eurs=x=>eur(x)+"/mois";
+  let P=[];   // la vignette affichée, pour la capture : [{mut, sur}]
+  function rendre(){
+    if(!document.body.contains(box)){ CUMUL=null; return; }
+    const v=CUMUL.v, fs=cumulFormules(v), act=Object.entries(CUMUL.fil);
+    let tar=cumulTarifs(), aprilEtat="";
+    if(v.startsWith("APRIL:")){ const code=v.slice(6), e=cumulAprilPrix(code);
+      if(e.etat==="ok") Object.assign(tar,e.prix); else if(e.etat==="refus") aprilEtat="refus:"+(e.message||"non proposé pour ce profil");
+      else aprilEtat=cumulAprilDemande(code); }
+    const prix=c=>tar[c.key+"|"+c.fi], cleP=(c,i)=>prix(c)!=null?prix(c):1e6+i;
+    box.querySelector('#cuSum').textContent=act.length?act.map(([c,s])=>LIBP[c]+" "+st(s)).join(" · "):"aucun";
+    let c,msg,manque=[];
+    const tri=fs.map((x,i)=>({x,i})).sort((a,b)=>cleP(a.x,a.i)-cleP(b.x,b.i));
+    if(!act.length){
+      const ch=CUMUL.cochees.find(z=>fs.some(f=>f.key===z.key&&f.fi===z.fi));
+      if(ch){ c=ch; msg="formule cochée dans le comparateur"; } else { c=tri[0].x; msg="aucun besoin : la moins chère de la gamme"; }
+    } else {
+      const sc=tri.map(({x})=>({x,n:act.filter(([k,s])=>cumulTient(x,k,s)).length})).sort((a,b)=>b.n-a.n);
+      c=sc[0].x; manque=act.filter(([k,s])=>!cumulTient(c,k,s));
+      msg=manque.length?"aucune formule ne remplit tout ; retenue : celle qui en remplit le plus":"la moins chère qui remplit "+(act.length>1?"tous les besoins":"le besoin");
+    }
+    const s={key:"TALIS",fi:CUMUL.si}, pc=prix(c);
+    const tarTxt=pc!=null?" · "+eurs(pc)
+      :aprilEtat==="attente"?" · tarif APRIL en cours…":aprilEtat==="cp"?" · APRIL : code postal ou département requis":aprilEtat.startsWith("refus:")?' · <span class="w">APRIL : '+aprilEtat.slice(6)+'</span>'
+      :(v==="APICIL"&&APICIL.etat==="attente")?" · tarif API SANTÉ en cours…"
+      :(v==="APICIL"&&APICIL.etat==="erreur")?' · <span class="w">API SANTÉ : '+(APICIL.message||"pas de réponse")+'</span>'
+      :' · <span class="w">non tarifée pour ce profil</span>';
+    box.querySelector('#cuH').innerHTML=(manque.length?"⚠ ":"→ ")+"<b>"+Tableau.nomComplet(GAR,c.key,c.fi)+"</b>"+tarTxt+" — "+msg+"."
+      +(manque.length?'<br><span class="w">Non rempli : '+manque.map(([k,x])=>LIBP[k]+" "+st(x)+" ("+(fvaleur({key:c.key,fi:c.fi},k)||"—")+")").join(" · ")+"</span>":"");
+    const tarifs={}; if(pc!=null) tarifs[c.key+"|"+c.fi]=pc; if(prix(s)!=null) tarifs["TALIS|"+s.fi]=prix(s);
+    box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date});
+    P=[{mut:c,sur:s}];
+  }
+  CUMUL.maj=rendre;
+  selC.addEventListener('change',()=>{CUMUL.v=selC.value;rendre();});
+  selS.addEventListener('change',()=>{CUMUL.si=+selS.value;rendre();});
+  box.querySelectorAll('.cu-fb select').forEach(s=>s.addEventListener('change',()=>{
+    if(s.value) CUMUL.fil[s.dataset.cle]=s.value; else delete CUMUL.fil[s.dataset.cle]; s.classList.toggle('on',!!s.value); rendre();}));
+  box.querySelector('#cuRaz').addEventListener('click',()=>{CUMUL.fil={};box.querySelectorAll('.cu-fb select').forEach(s=>{s.value="";s.classList.remove('on');});rendre();});
+  rendre();
   const nomFic=p=>("cumul_"+Tableau.nomComplet(GAR,p.mut.key,p.mut.fi)+"_"+Tableau.nomComplet(GAR,p.sur.key,p.sur.fi)).replace(/[^\wÀ-ÿ]+/g,"_")+".png";
   // Une image par vignette, toujours à 520 px de large (la même sur téléphone et sur ordinateur).
   async function images(){
@@ -2744,7 +2897,8 @@ function calc(){
   const {rows,warns}=Moteur.calculer({D,F,sel,age,cnjAge,hasCnj,kids,reg,dept,
                                       zone:dept?ZMAP[dept]:null,apicil,april:aprilPourMoteur()});
   render(rows,warns);
-  try{ modelesSum(); }catch(e){}            // libellé du bouton « Modèles » : le modèle qui correspond à la sélection
+  try{ modelesSum(); }catch(e){}
+  if(CUMUL&&CUMUL.maj) CUMUL.maj();          // fenêtre du cumul ouverte : ses tarifs suivent (retour d'API SANTÉ)            // libellé du bouton « Modèles » : le modèle qui correspond à la sélection
 }
 
 let LASTROWS=[];
@@ -2853,7 +3007,7 @@ function updateSendBar(){
     bar.innerHTML='<span id="sbcount"></span>'
       +'<button id="sbvs" style="border:1px solid var(--soft);border-radius:9px;background:transparent;color:inherit;padding:7px 11px;font:800 13px \'Archivo\',sans-serif;cursor:pointer"></button>'
       +'<button id="sbtg" title="Tableau de garantie des formules cochées (toutes gammes) — puis 📷 pour copier l\'image" style="border:0;border-radius:9px;background:var(--soft);color:var(--ink);padding:8px 11px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">📄 Garanties</button>'
-      +'<button id="sbcu" title="Mutuelle + TALIS : garanties et cotisations additionnées, en image" style="border:0;border-radius:9px;background:#FBE3C8;color:#7A3E0C;padding:8px 11px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">🧮 Cumul</button>'
+      +'<button id="sbcu" title="Mutuelle + TALIS : garanties et cotisations additionnées, en image ; compagnie et besoins se règlent dans la fenêtre" style="border:0;border-radius:9px;background:#FBE3C8;color:#7A3E0C;padding:8px 11px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">🧮 Cumul</button>'
       +'<button id="sbwa" style="border:0;border-radius:9px;background:#25D366;color:#fff;padding:8px 13px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">🟢 WhatsApp</button>'
       +'<button id="sbml" title="Envoyer le tableau de garantie par mail au prospect" style="border:0;border-radius:9px;background:var(--accent);color:var(--accent-ink);padding:8px 13px;font:800 13px \'Archivo\',sans-serif;cursor:pointer">✉️ Email</button>'
       +'<button id="sbx" style="border:0;background:transparent;color:inherit;font-size:16px;cursor:pointer;padding:2px 4px">✕</button>';
@@ -2867,8 +3021,8 @@ function updateSendBar(){
     bar.querySelector("#sbvs").addEventListener("click",()=>{VOIRSEL=!VOIRSEL;updateSendBar();calc();});
   }
   bar.querySelector("#sbcount").textContent=SENDSEL.size+" formule"+(SENDSEL.size>1?"s":"");
-  // 🧮 Cumul : seulement quand une mutuelle et une surcomplémentaire (TALIS) sont cochées ensemble.
-  bar.querySelector("#sbcu").style.display=cumulPaires().length?"":"none";
+  // 🧮 Cumul : dès qu'une formule est cochée ; la compagnie et les besoins se règlent dans la fenêtre.
+  bar.querySelector("#sbcu").style.display="";
   const vs=bar.querySelector("#sbvs");
   vs.textContent=VOIRSEL?"☰ Tout afficher":"👁 Afficher la sélection";
   vs.title=VOIRSEL?"Revenir à toutes les formules":"N'afficher que les formules cochées";
