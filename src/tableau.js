@@ -406,7 +406,8 @@ const CU_PLAFD={
 // Gammes dont le plafond n'est pas écrit dans les documents : la vignette le dit plutôt que de calculer sans.
 const CU_PLAF_NC={MCCINOVA:"non précisé dans les documents",RF100:"plafond du Renfort 100 non précisé dans les documents"};
 const CU_APRIL_PLAF_SOINS={SantePro:"PO",SanteProStart:"PO",SanteGan:"POI"};
-const cuSoin=id=>id==="imp"?"I":(id==="orR"||id==="orN")?"O":"P";
+// Seuls les soins dentaires entrent dans le plafond dentaire : lunettes, lentilles, chambre, médecines douces, pharmacie n'y sont pas.
+const cuSoin=id=>id==="imp"?"I":(id==="orR"||id==="orN")?"O":(id==="cour"||id==="bri"||id==="inl")?"P":"-";
 // Plafond d'une formule : {m: montant | null, soins, txt} ; null si la gamme n'en a pas.
 function cuPlafond(G,c){
   if(c.key==="APRIL"){
@@ -455,7 +456,7 @@ function cuPaie(G,c,L,rest){
 // dep = {id:{n,p}} ; rend {lignes:[{id,lib,n,p,dep,secu,mut,sur,reste,nc}], dep, secu, mut, sur, reste, nc}
 function cumulDepenses(G,M,S,dep){
   const out={lignes:[],dep:0,secu:0,mut:0,sur:0,reste:0,nc:false};
-  const PM=cuPlafond(G,M), PS=cuPlafond(G,S), respM=((G.gammes||{})[M.key]||{}).resp!==false;
+  const PM=cuPlafond(G,M), PS=S?cuPlafond(G,S):null, respM=((G.gammes||{})[M.key]||{}).resp!==false;
   let restM=PM&&PM.m!=null?PM.m:Infinity, restS=PS&&PS.m!=null?PS.m:Infinity;
   out.plafM=PM; out.plafS=PS;
   // Applique un plafond unité par unité : `pay` = ce que paierait le contrat, `tm` = ticket modérateur dû au-delà.
@@ -471,13 +472,13 @@ function cumulDepenses(G,M,S,dep){
     const d=(dep||{})[L[0]]; if(!d) continue;
     // « auto » : la dépense de l'année vaut les deux forfaits réunis — le prospect les consomme, ils sont remboursés en entier.
     const auto=!!d.auto&&L[6]==="fan";
-    const p=auto?cuForfaitAn(G,M,L[2])+cuForfaitAn(G,S,L[2]):(+d.p||0), n=auto?1:Math.max(1,Math.min(40,Math.round(+d.n||1))); if(!(p>0)) continue;
+    const p=auto?cuForfaitAn(G,M,L[2])+(S?cuForfaitAn(G,S,L[2]):0):(+d.p||0), n=auto?1:Math.max(1,Math.min(40,Math.round(+d.n||1))); if(!(p>0)) continue;
     let rest=Array(n).fill(p);
     const secu=rest.map(r=>Math.min(r,L[4]*L[3])); rest=rest.map((r,i)=>r-secu[i]);
     let a=cuPaie(G,M,L,rest), atM=false, atS=false;
     if(a){ const tm=rest.map(r=>respM&&L[3]?Math.min(r,L[3]*(1-L[4])):0);
       const q=plafonne(a,PM,L[0],RM,tm); a=q.pay; atM=q.atteint; rest=rest.map((r,i)=>r-a[i]); }
-    let b=cuPaie(G,Object.assign({sur:1},S),L,rest);
+    let b=S?cuPaie(G,Object.assign({sur:1},S),L,rest):rest.map(()=>0);
     if(b){ const q=plafonne(b,PS,L[0],RS,rest.map(()=>0)); b=q.pay; atS=q.atteint; }
     const sm=x=>x?x.reduce((u,v)=>u+v,0):0;
     const l={id:L[0],lib:L[1],u:L[5],n,p,auto,dep:n*p,secu:sm(secu),mut:sm(a),sur:sm(b),nc:!a||!b,atM,atS};
@@ -562,6 +563,54 @@ function cuDepHTML(G,M,S,R,p1,p2){
     +'Tableau présenté à titre indicatif — document non contractuel. Prothèses hors panier 100 % Santé (dans le panier 100 % Santé, le reste à charge est nul avec un contrat responsable). Calcul sur les tarifs de convention de la Sécurité sociale (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre), implants et orthodontie non remboursée au forfait, après les délais d’attente. '+cuPlafTxt(G,M,S,R)
     +(R.nc?' † Garantie non chiffrable : non comptée.':'')+'</div></div>';
   return h;
+}
+// ---- Comparatif des remboursements entre mutuelles (Fabrice, 20/10/2026 : « la même chose, mais sans TALIS, juste avec 3-4
+// mutuelles… ce ne serait pas une addition, juste chaque poste remboursé et le résultat pour chaque compagnie ») : les mêmes soins
+// prévus en lignes, une colonne par formule cochée (4 au plus), puis cotisations, remboursements, reste et coût réel de l'année ;
+// la formule au coût réel le plus bas est mise en avant. Un poste « au forfait » (médecines douces, pharmacie) vaut, pour toutes
+// les colonnes, le plus haut des forfaits comparés : chaque mutuelle rembourse dans son propre forfait.
+// o = {cols:[{key,fi}], tarifs:{"CLE|fi":n}, prospect, date, base, depenses:{id:{n,p}|{auto:1}}}
+function comparatifSoins(G,o){
+  o=o||{}; const cols=(o.cols||[]).slice(0,4), tar=o.tarifs||{};
+  if(!cols.length) return "";
+  const dep={};
+  for(const L of CU_DEP){ const d=(o.depenses||{})[L[0]]; if(!d) continue;
+    if(d.auto&&L[6]==="fan"){ const p=Math.max(0,...cols.map(c=>cuForfaitAn(G,c,L[2]))); if(p>0) dep[L[0]]={n:1,p,fh:1}; }
+    else dep[L[0]]=d; }
+  const RS=cols.map(c=>cumulDepenses(G,c,null,dep));
+  const px=cols.map(c=>tar[c.key+"|"+c.fi]), prix=px.every(x=>x!=null);
+  const nom=c=>nomComplet(G,c.key,c.fi);
+  const C=(cls,x)=>'<div class="'+cls+'"><span>'+x+'</span></div>';
+  const tot=RS.map((R,i)=>prix?cuR(px[i]*12+R.reste):null);
+  const best=prix?tot.indexOf(Math.min(...tot)):-1;
+  const row=(lab,cells,cls)=>'<div class="cu-cr'+(cls?' '+cls:'')+'" style="grid-template-columns:30% repeat('+cols.length+',1fr)">'+C("cu-l",lab)
+    +cells.map((x,i)=>C("cu-cc"+(i===best?" cu-cbest":""),x)).join("")+'</div>';
+  let h='<div class="cu-ti">Comparatif de vos remboursements</div>'+(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'');
+  if(best>=0&&cols.length>1){ const o2=tot.filter((_,i)=>i!==best), d=Math.min(...o2)-tot[best];
+    h+='<div class="cu-top"><div class="cu-tg" style="text-align:left;border:0"><b>La plus avantageuse pour ces soins</b><em>'+nom(cols[best])+'</em>'
+      +'<span>coût réel de l’année '+cuE(tot[best])+(d>0?' · '+cuE(d)+' de moins que la suivante':'')+'</span></div></div>'; }
+  h+=row('',cols.map((c,i)=>'<div class="cu-lg">'+logoEgal(G,c.key,o.base,40,36)+'</div><b>'+nom(c)+'</b>'+(px[i]!=null?'<small>'+eur(px[i])+' / mois</small>':'')),'cu-ch');
+  if(!RS[0].lignes.length) h+='<div class="cu-dn">Indiquez les soins prévus (volet « Dépenses ») pour comparer les remboursements.</div>';
+  else{
+    h+='<div class="cu-dpt" style="margin-top:8px">Vos soins prévus : estimation des remboursements</div>';
+    RS[0].lignes.forEach((l0,j)=>{
+      const L=CU_DEPLIB[l0.id]||[l0.lib,l0.lib], sansSecu=!CU_DEP.find(D=>D[0]===l0.id)[3];
+      h+=row('<b>'+L[0]+'</b><small>'+(dep[l0.id]&&dep[l0.id].fh?'forfait le plus haut comparé · ':'')+'coût '+(l0.n>1?l0.n+' × '+cuE(l0.p)+' = ':'')+cuE(l0.dep)
+        +(sansSecu?' · non remboursé par la Sécu':l0.secu?' · dont Sécu '+cuE(l0.secu):'')+'</small>',
+        RS.map(R=>{const l=R.lignes.find(x=>x.id===l0.id); return '<b>'+cuE(l.secu+l.mut)+'</b><small class="cu-dre">reste '+cuE(l.reste)+'</small>'+(l.atM?'<small class="cu-dpa">plafond atteint</small>':'')+(l.nc?'<small>† non chiffrable</small>':'');}));
+    });
+    h+='<div class="cu-dpt" style="margin-top:10px">Votre bilan sur l’année, pour ces soins</div>';
+    if(prix) h+=row('Cotisations<sup>1</sup>',px.map(x=>cuE(x*12)));
+    h+=row('Remboursements <small>Sécu comprise</small>',RS.map(R=>'<span class="cu-bv">'+cuE(R.secu+R.mut)+'</span>'));
+    h+=row('Reste à payer sur ces soins <small>sans complémentaire : '+cuE(RS[0].dep-RS[0].secu)+'</small>',RS.map(R=>'<span class="cu-brr">'+cuE(R.reste)+'</span>'));
+    if(prix) h+=row('<b>Coût réel de l’année</b><small>cotisations + reste</small>',tot.map(t=>'<b>'+cuE(t)+'</b>'),'cu-ctot');
+  }
+  const plaf=cols.map((c,i)=>{const P=RS[i].plafM; return nom(c)+' : '+(!P?'pas de plafond dentaire':P.m==null?'plafond '+P.nc:cuNb(P.m)+' € par an');});
+  h+='<div class="cu-dn">'+(prix?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
+    +'Tableau présenté à titre indicatif — document non contractuel. Pourcentages Sécurité sociale comprise, sur les tarifs de convention (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre) ; prothèses hors panier 100 % Santé ; implants et orthodontie non remboursée au forfait, après les délais d’attente. Plafonds dentaires (1re année d’adhésion, appliqués) — '+plaf.join(' ; ')+'.'
+    +(o.date?' Tarifs au '+o.date+', valables '+VALIDITE+' jours.':'')+'</div>'
+    +'<div class="cu-mq">'+marque(o.base)+'<span>Courtier comparateur depuis 1992 · Infos légales : www.santeo.net</span></div>';
+  return '<div class="cumul cu-cmp">'+h+'</div>';
 }
 // o = {mut:{key,fi}, sur:{key,fi}, tarifs:{"CLE|fi":n}, prospect, date:"jj/mm/aaaa", base, sansTarifs, depenses:{id:{n,p}}}
 function cumul(G,o){
@@ -652,6 +701,7 @@ exporter.eur=eur;
 exporter.cumul=cumul;
 exporter.cumulTotal=cumulTotal;
 exporter.cumulDepenses=cumulDepenses;
+exporter.comparatifSoins=comparatifSoins;
 exporter.CU_DEP=CU_DEP;
 
 })(typeof module!=="undefined"&&module.exports ? module.exports

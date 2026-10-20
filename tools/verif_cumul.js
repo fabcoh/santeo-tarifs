@@ -65,5 +65,20 @@ for(const k of Object.keys(G.gammes)){ if(k==="TALIS")continue;
   if(!m2||m2.mut!==60) ko.push("Mutuelle Verte GCI 150 : 3 seances a 20 € = 60 € attendus : "+JSON.stringify(m2));
   if(!p2||p2.mut!==0) ko.push("Mutuelle Verte : l'antitabac ne compte pas en pharmacie : "+JSON.stringify(p2)); }
 
+// 7. Le comparatif des mutuelles se dessine, et désigne bien la formule au coût réel le plus bas.
+for(const dep of [null,{cour:{n:1,p:680},imp:{n:1,p:1000},md:{auto:1},phn:{auto:1}}]){ n++;
+  try{ const cols=[{key:"FLEXIA",fi:1},{key:"CAPEVO",fi:2},{key:"MV",fi:2},{key:"REV",fi:4}], t={"FLEXIA|1":60,"CAPEVO|2":70,"MV|2":65,"REV|4":55};
+    const h=T.comparatifSoins(G,{cols,tarifs:t,depenses:dep}); if(!/cu-cmp/.test(h)) ko.push("comparatif vide");
+    if(dep){ const tot=cols.map(c=>t[c.key+"|"+c.fi]*12+T.cumulDepenses(G,c,null,{cour:dep.cour,imp:dep.imp,md:{n:1,p:250},phn:{n:1,p:45}}).reste);
+      const nom=T.nomComplet(G,cols[tot.indexOf(Math.min(...tot))].key,cols[tot.indexOf(Math.min(...tot))].fi);
+      if(h.indexOf('<em>'+nom+'</em>')<0) ko.push("comparatif : la moins chère devrait être "+nom); } }
+  catch(e){ ko.push("comparatif en erreur — "+e.message); } }
+
+// 8. Le plafond dentaire ne touche que les soins dentaires (constaté le 20/10/2026 : lunettes et médecines douces de la
+// Mutuelle Verte « plafond atteint » après une couronne et un implant).
+{ const R=T.cumulDepenses(G,{key:"MV",fi:2},null,{cour:{n:1,p:680},imp:{n:1,p:1000},lun:{n:1,p:300},md:{n:1,p:160},phn:{n:1,p:30}}); n++;
+  for(const l of R.lignes) if(["lun","md","phn"].includes(l.id)&&l.atM) ko.push("plafond dentaire applique a "+l.id);
+  const md=R.lignes.find(l=>l.id==="md"); if(!md||md.mut!==90) ko.push("MV GCI 200 medecines douces : 90 € attendus : "+JSON.stringify(md)); }
+
 if(ko.length){ console.error(ko.length+" ecart(s) sur "+n+" cas :\n"+ko.slice(0,20).join("\n")); process.exit(1); }
 console.log("Regles du cumul : "+n+" cas, aucun ecart.");

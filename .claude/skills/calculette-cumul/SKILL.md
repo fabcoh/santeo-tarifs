@@ -95,6 +95,9 @@ Relevés dans `docs/connaissances/`. P = prothèses (couronne, bridge, inlay-cor
   remboursés (« au-delà 100 % BR ») ; un forfait n'est plus payé ; la surcomplémentaire n'a pas de ticket modérateur.
 - La surcomplémentaire reprend ce que la mutuelle ne paie plus, dans son propre plafond.
 - « plafond atteint » en rouge sur la ligne ; mention des plafonds appliqués sous le bloc.
+- **Seuls les soins dentaires** (couronne, bridge, inlay-core, implants, orthodontie) entrent dans le plafond (`cuSoin`) : lunettes,
+  lentilles, chambre, médecines douces et pharmacie jamais (erreur corrigée le 20/10/2026 : la Mutuelle Verte affichait
+  « plafond atteint » sur ses médecines douces après une couronne et un implant).
 - **À trancher par Fabrice** : 1re année (choix actuel) ou 2e année ; implants dans le plafond API SANTÉ (non écrit, exclus).
 
 ## Présentation (néophyte, vendeur, sobre)
@@ -126,6 +129,23 @@ surcomplémentaire**, la Sécu payant la même chose dans les deux cas — plus 
   surcomplémentaire, vert `#157A47` = total, remboursements, gain, rouge `#C0392B` = reste à charge. Fond blanc, filets fins,
   aucun fond pastel. Logos à **surface égale** (`logoEgal`), noms à la même taille.
 - Image : 520 px × 2 (`.cu-cap`) ; barre WhatsApp · ⬇ Télécharger · Envoyer dans le CRM (image seule, sans mail).
+
+## Vue « Comparatif des mutuelles cochées » — `Tableau.comparatifSoins`
+
+Fabrice, 20/10/2026 : « sans TALIS, juste avec 3-4 mutuelles… ce ne serait pas une addition, chaque poste remboursé et le résultat
+pour chaque compagnie ». Réponses : colonnes = **formules cochées** (4 au plus) ; **pas de grille de garanties, soins seulement** ;
+**la moins chère mise en avant**.
+
+- Bascule en tête des réglages : « Mutuelle + TALIS » · « Comparatif des mutuelles cochées » (`CUMUL.vue`) ; d'office le
+  comparatif quand aucune TALIS n'est cochée et qu'au moins 2 mutuelles le sont. Moins de 2 : une ligne le demande.
+- Mêmes dépenses (volet « Dépenses ») pour toutes les colonnes ; `cumulDepenses(G, c, null, dep)` par colonne, mêmes plafonds,
+  même règle « jamais plus que la dépense ». Un forfait « auto » (médecines douces, pharmacie) prend **le plus haut forfait des
+  formules comparées** comme dépense commune (« forfait le plus haut comparé ») — sinon chaque colonne aurait une dépense différente.
+- Une ligne par soin : remboursé (Sécu comprise) en noir, « reste » en rouge. Bilan : cotisations¹, remboursements, reste à payer
+  (rappel « sans complémentaire »), **coût réel = cotisations + reste**.
+- En tête (`.cu-top`) : « La plus avantageuse pour ces soins : <formule> — coût réel X € · Y € de moins que la suivante » ; sa
+  colonne sur fond vert très pâle (`.cu-cbest`), le seul fond permis.
+- Image `comparatif_….png`, même barre (WhatsApp, Télécharger, CRM).
 
 ## Tests
 
