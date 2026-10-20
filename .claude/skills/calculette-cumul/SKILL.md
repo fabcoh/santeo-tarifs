@@ -138,6 +138,13 @@ pour chaque compagnie ». Réponses : colonnes = **formules cochées** (4 au plu
 
 - Bascule en tête des réglages : « Mutuelle + TALIS » · « Comparatif des mutuelles cochées » (`CUMUL.vue`) ; d'office le
   comparatif quand aucune TALIS n'est cochée et qu'au moins 2 mutuelles le sont. Moins de 2 : une ligne le demande.
+- **Garanties poste par poste d'abord** (Fabrice, 20/10/2026 : « pourquoi tu n'indiques que 2 postes ? … fais un comparatif ») —
+  `CMP_BLOCS` : Hospitalisation (honoraires Optam, chambre particulière, consultations spécialistes Optam), Dentaire (prothèses,
+  implants, orthodontie remboursée / non remboursée), Optique (verres simples, verres complexes, lentilles), Autres (médecines douces,
+  aides auditives, pharmacie non remboursée). Ligne omise si aucune formule n'a la garantie. Le mieux disant de la ligne en vert
+  gras (`cmpMeilleur`) seulement si toutes les valeurs ont la même unité (« — » vaut zéro, « n.c. » ou un texte : rien en vert).
+  **Paro et endo** demandés mais absents des données : pas de ligne tant qu'ils ne sont pas relevés dans les tableaux de garantie.
+- La bannière « La plus avantageuse pour ces soins » n'apparaît qu'avec des soins prévus.
 - Mêmes dépenses (volet « Dépenses ») pour toutes les colonnes ; `cumulDepenses(G, c, null, dep)` par colonne, mêmes plafonds,
   même règle « jamais plus que la dépense ». Un forfait « auto » (médecines douces, pharmacie) prend **le plus haut forfait des
   formules comparées** comme dépense commune (« forfait le plus haut comparé ») — sinon chaque colonne aurait une dépense différente.

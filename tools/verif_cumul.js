@@ -80,5 +80,10 @@ for(const dep of [null,{cour:{n:1,p:680},imp:{n:1,p:1000},md:{auto:1},phn:{auto:
   for(const l of R.lignes) if(["lun","md","phn"].includes(l.id)&&l.atM) ko.push("plafond dentaire applique a "+l.id);
   const md=R.lignes.find(l=>l.id==="md"); if(!md||md.mut!==90) ko.push("MV GCI 200 medecines douces : 90 € attendus : "+JSON.stringify(md)); }
 
+// 9. Le comparatif porte les garanties poste par poste (Fabrice, 20/10/2026 : « pourquoi tu n'indiques que 2 postes ? »).
+{ n++; const h=T.comparatifSoins(G,{cols:[{key:"FLEXIA",fi:0},{key:"MV",fi:0},{key:"CAPEVO",fi:1}]});
+  for(const t of ["Hospitalisation","Chambre particulière","Prothèses dentaires","Implants","Lunettes, verres simples","Lentilles","Médecines douces"])
+    if(h.indexOf(t)<0) ko.push("comparatif : poste absent — "+t); }
+
 if(ko.length){ console.error(ko.length+" ecart(s) sur "+n+" cas :\n"+ko.slice(0,20).join("\n")); process.exit(1); }
 console.log("Regles du cumul : "+n+" cas, aucun ecart.");
