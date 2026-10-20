@@ -288,7 +288,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   grisé « pas encore dans le comparateur »), **Surcompl.** (Talis / Talis +), **Besoins** = les 13 postes de `FPOSTES` avec `fseuils`,
   **repris de `FILTRES`** à l'ouverture (budget exclu). Formule déduite : la moins chère de la compagnie qui remplit tous les besoins
   (`cumulTient`, mêmes `fparse`/`fvaleur` que le panneau ⚖) ; à défaut celle qui en remplit le plus, ce qui manque en orange ; sans
-  besoin, la formule cochée de la compagnie, sinon sa moins chère. Une seule vignette. **Tarifs** (`cumulTarifs`) : `Moteur.calculer`
+  besoin, la formule cochée de la compagnie, sinon sa moins chère. Une seule vignette. **« ★ Toutes les compagnies »**, choisie d'office (Fabrice, 20/10/2026 : « je dois
+  pouvoir mettre toutes les compagnies et ne choisir que les filtres ») : toutes les formules tarifées de toutes les gammes, APRIL
+  compris (produits ouverts demandés en un appel) et API SANTÉ ; sans besoin, la formule cochée ; avec, la moins chère de toutes qui
+  les remplit (« n formules comparées ») ; tant qu'APRIL ou APICIL n'ont pas répondu, une ligne dit que le choix peut changer. **Tarifs** (`cumulTarifs`) : `Moteur.calculer`
   sur toutes les gammes (`sel` tout à vrai) avec le profil du haut de page ; API SANTÉ = la réponse d'APICIL si elle porte sur ce profil,
   sinon `apicilDemande` et la fenêtre se redessine au retour (`calc()` appelle `CUMUL.maj`) ; APRIL = `APRIL_CACHE`, sinon
   `cumulAprilDemande(code)` (relais, produit seul, même cache). Le bouton 🧮 Cumul s'affiche dès qu'une formule est cochée. Ordre du bas
