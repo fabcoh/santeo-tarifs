@@ -447,13 +447,13 @@ function cuDepHTML(G,M,S,R,p1,p2){
   // Récapitulatif de l'année.
   const parts=R.lignes.map(l=>cuE(l.secu+l.mut+l.sur)+' ('+(CU_DEPLIB[l.id]||[,l.lib])[1]+')');
   h+='<div class="cu-ds">';
-  if(cot!=null) h+='<div><span>Vous payez sur 12 mois<sup>*</sup></span><b>'+eur(p1)+' + '+eur(p2)+' = '+eur(p1+p2)+' × 12 = '+cuE(cot)+'</b></div>';
-  h+='<div><span>Vous êtes remboursé de</span><b>'+parts.join(' + ')+(parts.length>1?' = '+cuE(rem):'')+'</b></div>';
-  h+='<div><span>Reste à votre charge</span><b>'+cuE(R.reste)+' <i class="cu-dsans">au lieu de '+cuE(R.dep-R.secu)+' sans complémentaire</i></b></div>';
+  if(cot!=null) h+='<div><span>Vous payez sur 12 mois<sup>1</sup></span><b>'+eur(p1)+' + '+eur(p2)+' = '+eur(p1+p2)+' × 12 = '+cuE(cot)+'</b></div>';
+  h+='<div class="cu-drm"><span>Vous êtes remboursé de</span><b>'+parts.join(' + ')+(parts.length>1?' = '+cuE(rem):'')+'</b></div>';
+  h+='<div class="cu-drc"><span>Reste à votre charge</span><b><em>'+cuE(R.reste)+'</em><small>au lieu de '+cuE(R.dep-R.secu)+' <i>sans complémentaire</i></small></b></div>';
   if(cot!=null){ const g=rem-cot;
     h+=g>0?'<div class="cu-dgain"><span>Votre gain sur l’année</span><b>+ '+cuE(g)+'</b></div>'
            :'<div class="cu-dgain cu-dg0"><span>Différence sur l’année</span><b>'+cuE(g)+'</b></div>'; }
-  h+='</div><div class="cu-dn">'+(cot!=null?'<sup>*</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
+  h+='</div><div class="cu-dn">'+(cot!=null?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
     +'Tableau présenté à titre indicatif — document non contractuel. Calcul sur les tarifs de convention de la Sécurité sociale (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre), implants et orthodontie non remboursée au forfait, dans la limite des plafonds annuels'
     +(CU_PLAF[S.key]?' (dentaire '+nS+' : '+CU_PLAF[S.key](S.fi)+' € par an)':'')+' et après les délais d’attente.'
     +(R.nc?' † Garantie non chiffrable : non comptée.':'')+'</div></div>';

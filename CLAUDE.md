@@ -329,6 +329,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   cotisations), comme dans le modèle de Fabrice — l'affichage précédent l'excluait. Mentions : « * Les cotisations évoluent chaque
   année à la date anniversaire du contrat. Tableau présenté à titre indicatif — document non contractuel. » Test : scratchpad
   `t_cumul8.js`, `t_cumul9.js`.
+  **Vignette sobre, une couleur par rôle** (Fabrice, 20/10/2026 : « plus sobre… les couleurs ne se voient pas… plus pro et moins de
+  fond… noir, bleu, rouge, vert selon mutuelle, surco, reste à charge… cohérence colorimétrique ») : plus aucun fond pastel — fond
+  blanc, filets fins, filet de 3 px en tête de colonne. **Noir = mutuelle**, **bleu (`--b` #1F5FA8) = surcomplémentaire**, **vert
+  (`--v` #157A47) = total cumulé, remboursements, gain**, **rouge (`--r` #C0392B) = reste à charge**, dans la grille, la cotisation, le
+  bandeau TALIS et les soins prévus. **« Reste à votre charge 260 € — au lieu de 2 528 € sans complémentaire »** mis en avant
+  (montants en 18 / 15 px). Renvoi des cotisations en « ¹ » (les * restent aux notes implantologie / orthodontie).
   **« Toutes les compagnies » suit le périmètre du panneau ⚖** (Fabrice, 20/10/2026 : « oui ») : `on(k)` (aucune coche = toutes),
   APRIL seulement si sa case est cochée ; la liste « Compagnie » reste complète pour un choix à la main. Ligne d'aide « Périmètre
   du panneau ⚖ : n compagnies ; APRIL : … ». Périmètre vide (seule TALIS cochée) → toutes les compagnies, et la ligne le dit.
