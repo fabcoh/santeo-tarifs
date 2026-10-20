@@ -99,7 +99,7 @@ surcomplémentaire**, la Sécu payant la même chose dans les deux cas — plus 
 - **Première ligne** (`.cu-top`) : « Reste à payer sur vos soins X € — au lieu de Y € sans complémentaire · hors cotisations » ;
   à côté, **seulement si positif**, « Avec TALIS + : + Z € » et en petit « R € remboursés en plus pour C € de cotisation ».
 - Légende sous l'en-tête de la grille : « % = pourcentage de la base de remboursement de la Sécurité sociale, Sécu comprise · € = forfait ».
-- **« Vos soins prévus : estimation des remboursements »** (jamais « ce qui vous sera remboursé »), puis en rouge le **délai
+- **« Vos soins prévus : estimation des remboursements »** (jamais « ce qui vous sera remboursé »), puis en gris foncé (#4A5463, Fabrice 20/10/2026) le **délai
   d'attente de la surcomplémentaire** (`CU_CARENCE` : « délai d’attente de 90 jours en dentaire et en optique » ; la phrase « un soin fait pendant ces 90 jours n’est pas remboursé » retirée à la demande de Fabrice, 20/10/2026).
 - **Soins et bilan dans les colonnes de la grille** (Fabrice, 20/10/2026 : « aligner dans les colonnes les remboursements…
   l'explication verticalement ») : en-tête <mutuelle> · <surco> · Total ; une ligne par soin — libellé + « coût … » (et « non
