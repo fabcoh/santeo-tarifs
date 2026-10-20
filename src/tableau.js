@@ -488,7 +488,7 @@ function cuPlafTxt(G,M,S,R){
   return 'Plafonds dentaires (1re année d’adhésion, appliqués) — '+t(M,R.plafM)+' ; '+t(S,R.plafS)+'.';
 }
 // Délai d'attente de la surcomplémentaire, écrit près des soins (TALIS : 90 jours en dentaire et en optique, TG p.2-3).
-const CU_CARENCE={TALIS:"délai d’attente de 90 jours en dentaire et en optique : un soin fait pendant ces 90 jours n’est pas remboursé par TALIS"};
+const CU_CARENCE={TALIS:"délai d’attente de 90 jours en dentaire et en optique"};
 // Bilan de l'année, trois situations (critique relue avec Fabrice, 20/10/2026 : « ok ») — la Sécurité sociale paie la même
 // chose dans les trois, elle s'annule. Coût réel = cotisations de l'année + reste à payer sur les soins indiqués.
 function cuBilan(R,p1,p2){
