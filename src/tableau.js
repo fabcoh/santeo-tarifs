@@ -606,11 +606,10 @@ function comparatifSoins(G,o){
   const best=prix&&ids.length?net.indexOf(Math.min(...net)):-1;
   const row=(lab,cells,cls)=>'<div class="cu-cr'+(cls?' '+cls:'')+'" style="grid-template-columns:30% repeat('+cols.length+',1fr)">'+C("cu-l",lab)
     +cells.map((x,i)=>C("cu-cc"+(i===best?" cu-cbest":""),x)).join("")+'</div>';
-  const netTxt=v=>v<0?'+ '+cuE(-v)+' <small>pour vous</small>':cuE(v);
   let h='<div class="cu-ti">Comparatif de vos remboursements</div>'+(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'');
   if(best>=0&&cols.length>1){ const o2=net.filter((_,i)=>i!==best), d=Math.min(...o2)-net[best];
     h+='<div class="cu-top"><div class="cu-tg" style="text-align:left;border:0"><b>La plus avantageuse pour ces soins</b><em>'+nom(cols[best])+'</em>'
-      +'<span>'+(net[best]<0?'remboursement excédentaire de '+cuE(-net[best]):'coût net de l’année '+cuE(net[best]))+(d>0?' · '+cuE(d)+' de mieux que la suivante':'')+'</span></div></div>'; }
+      +'<span>'+'solde de l’année '+(net[best]<=0?'+ '+cuE(-net[best]):'− '+cuE(net[best]))+(d>0?' · '+cuE(d)+' de mieux que la suivante':'')+'</span></div></div>'; }
   // En-tête : logo dans une case de hauteur fixe, nom, puis la cotisation mise en avant, alignée en bas de toutes les colonnes
   // (Fabrice, 20/10/2026 : « mettre en avant le tarif du dessus et tout bien aligner les logos et textes »).
   h+=row('',cols.map((c,i)=>'<div class="cu-lg">'+logoEgal(G,c.key,o.base,40,36)+'</div><b>'+nom(c)+'</b>'
@@ -640,10 +639,10 @@ function comparatifSoins(G,o){
     }
     h+='<div class="cu-dpt" style="margin-top:10px">Votre bilan sur l’année</div>';
     if(prix) h+=row('Cotisation annuelle<sup>1</sup>',px.map(x=>'<b>'+cuE(x*12)+'</b><small>'+eur(x)+' × 12</small>'));
-    h+=row('Remboursé par la mutuelle<small>total des soins prévus, hors Sécu</small>',RS.map(R=>'<b class="cu-bv">− '+cuE(R.mut)+'</b>'));
-    const reel=ids.some(id=>!estAuto(id));
-    if(reel) h+=row('Reste à payer sur vos soins<small>après Sécu et mutuelle</small>',RS.map(R=>'<span class="cu-brr">'+cuE(R.reste)+'</span>'));
-    if(prix) h+=row('<b>Coût net de la mutuelle</b><small>cotisation − remboursements</small>',net.map(v=>'<b>'+netTxt(v)+'</b>'),'cu-ctot');
+    // Trois lignes (Fabrice, 20/10/2026 : « Cotisation annuelle, Remboursements, Solde ») ; solde = remboursements − cotisation,
+    // en vert s'il est en faveur du prospect, en rouge sinon.
+    h+=row('Remboursements<small>par la mutuelle, hors Sécu</small>',RS.map(R=>'<b class="cu-bv">'+cuE(R.mut)+'</b>'));
+    if(prix) h+=row('<b>Solde</b><small>remboursements − cotisation</small>',net.map(v=>v<=0?'<b class="cu-bv">+ '+cuE(-v)+'</b>':'<b class="cu-brr">− '+cuE(v)+'</b>'),'cu-ctot');
   }
   const plaf=cols.map((c,i)=>{const P=RS[i].plafM; return nom(c)+' : '+(!P?'pas de plafond dentaire':P.m==null?'plafond '+P.nc:cuNb(P.m)+' € par an');});
   h+='<div class="cu-dn">'+(prix?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')

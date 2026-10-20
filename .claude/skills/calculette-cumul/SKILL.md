@@ -154,11 +154,10 @@ pour chaque compagnie ». Réponses : colonnes = **formules cochées** (4 au plu
 - **Un forfait non remboursé n'est pas déduit** (Fabrice, 20/10/2026) : médecines douces et pharmacie « auto » valent le forfait
   **de chaque formule**, consommé en entier ; une formule qui n'en a pas n'a ni dépense ni reste sur ce poste. Les autres soins
   sont la même dépense pour toutes les formules (mêmes plafonds, jamais plus que la dépense).
-- **Bilan** : cotisation annuelle¹ (x € × 12) · remboursé par la mutuelle (− total des soins prévus, hors Sécu) · reste à payer
-  sur vos soins (seulement s'il y a des soins hors forfaits auto) · **coût net de la mutuelle = cotisation − remboursements**,
-  « + x € pour vous » s'il est négatif. Le classement se fait sur ce coût net.
-- En tête (`.cu-top`) : « La plus avantageuse pour ces soins : <formule> — coût net de l'année X € (ou « remboursement
-  excédentaire de X € ») · Y € de mieux que la suivante » ; sa colonne sur fond vert très pâle (`.cu-cbest`), le seul fond permis.
+- **Bilan en trois lignes** (Fabrice, 20/10/2026 : « Cotisation annuelle, Remboursements, Solde ») : cotisation annuelle¹
+  (x € × 12) · remboursements (par la mutuelle, hors Sécu, total des soins prévus) · **solde = remboursements − cotisation**,
+  « + x € » en vert s'il est en faveur du prospect, « − x € » en rouge sinon. Le classement se fait sur ce solde.
+- En tête (`.cu-top`) : « La plus avantageuse pour ces soins : <formule> — solde de l'année ± X € · Y € de mieux que la suivante » ; sa colonne sur fond vert très pâle (`.cu-cbest`), le seul fond permis.
 - Image `comparatif_….png`, même barre (WhatsApp, Télécharger, CRM).
 
 ## Tests
