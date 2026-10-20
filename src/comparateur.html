@@ -447,11 +447,15 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-ft b{color:var(--k)}
 /* Soins prévus : un bloc par soin, puis le bilan de l'année. */
 .cumul .cu-dp{margin-top:14px}
-.cumul .cu-top{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:2px solid var(--v);border-bottom:2px solid var(--v);padding:7px 2px;margin:0 0 10px}
-.cumul .cu-top b{display:block;font:800 13.5px 'Archivo',sans-serif;color:var(--v)}
+.cumul .cu-top{display:flex;gap:0;border-top:2px solid var(--k);border-bottom:1px solid var(--l);margin:0 0 10px}
+.cumul .cu-top>div{flex:1;padding:7px 4px 7px}
+.cumul .cu-top b{display:block;font:700 11.5px 'Archivo',sans-serif}
+.cumul .cu-top em{display:block;font:800 22px/1.1 'Archivo',sans-serif;font-style:normal;white-space:nowrap;margin-top:1px}
 .cumul .cu-top span{display:block;font-size:10.5px;color:var(--m);margin-top:1px}
-.cumul .cu-top em{font:800 24px 'Archivo',sans-serif;color:var(--v);font-style:normal;white-space:nowrap}
-.cumul .cu-top0{border-color:var(--l)}.cumul .cu-top0 b,.cumul .cu-top0 em{color:var(--k)}
+.cumul .cu-tr b,.cumul .cu-tr em{color:var(--r)}
+.cumul .cu-tr span i{font-style:normal;color:var(--k);font-weight:800;font-size:12px}
+.cumul .cu-tg{border-left:1px solid var(--l);text-align:right}
+.cumul .cu-tg b,.cumul .cu-tg em{color:var(--v)}
 .cumul .cu-dpt{font:800 13px 'Archivo',sans-serif;padding-bottom:4px;border-bottom:2px solid var(--k)}
 .cumul .cu-dk{padding:6px 0 5px;border-bottom:1px solid var(--l)}
 .cumul .cu-dkt{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12px;margin-bottom:2px}

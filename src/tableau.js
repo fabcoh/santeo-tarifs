@@ -524,13 +524,15 @@ function cumul(G,o){
   const ch=CU_GAINS.filter(([s])=>cuLire(v2(s))).map(([s,l])=>'<span><i>'+l+'</i> '+cuPlus(v2(s))+'</span>').join("");
   let h='<div class="cu-ti">Votre mutuelle + surcomplémentaire</div>'
     +(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'');
-  // Le gain en première ligne (Fabrice, 20/10/2026 : « afficher les gains de la solution en première ligne ») : même calcul
-  // que le bilan du bas — remboursements de l'année (Sécu comprise) − cotisations × 12.
+  // Première ligne (Fabrice, 20/10/2026 : « afficher les gains de la solution en première ligne », puis « une composition des
+  // deux ») : toujours le reste à charge comparé à « sans complémentaire », et le gain de l'année à côté s'il est positif —
+  // une différence négative n'est pas mise en tête (elle reste dans le bilan du bas). Même calcul que le bilan.
   const RD=o.depenses?cumulDepenses(G,M,S,o.depenses):null;
-  if(RD&&RD.lignes.length&&prix){ const rem=RD.secu+RD.mut+RD.sur, cot=cuR((p1+p2)*12), g=rem-cot;
-    h+='<div class="cu-top'+(g>0?'':' cu-top0')+'"><div><b>'+(g>0?'Votre gain sur l’année':'Différence sur l’année')+'</b>'
-      +'<span>remboursé '+cuE(rem)+' − cotisations '+cuE(cot)+' · reste à charge '+cuE(RD.reste)+' au lieu de '+cuE(RD.dep-RD.secu)+'</span></div>'
-      +'<em>'+(g>0?'+ ':'')+cuE(g)+'</em></div>'; }
+  if(RD&&RD.lignes.length){ const rem=RD.secu+RD.mut+RD.sur, cot=prix?cuR((p1+p2)*12):null, g=cot!=null?rem-cot:null;
+    h+='<div class="cu-top"><div class="cu-tr"><b>Reste à votre charge</b><em>'+cuE(RD.reste)+'</em>'
+      +'<span>au lieu de <i>'+cuE(RD.dep-RD.secu)+'</i> sans complémentaire</span></div>'
+      +(g!=null&&g>0?'<div class="cu-tg"><b>Votre gain sur l’année</b><em>+ '+cuE(g)+'</em><span>remboursé '+cuE(rem)+' − cotisations '+cuE(cot)+'</span></div>':'')
+      +'</div>'; }
   // Le bandeau « Pour x € de plus par mois… » ferme le tableau, juste au-dessus de la cotisation (Fabrice, 20/10/2026).
   const gain=ch?'<div class="cu-gain">'+(prix?'Pour <b>'+eur(p2)+' de plus par mois</b>, ':'')+nS+' renforce vos remboursements :<div class="cu-chips">'+ch+'</div></div>':'';
   h+='<div class="cu-r cu-h">'+cell("cu-l","")

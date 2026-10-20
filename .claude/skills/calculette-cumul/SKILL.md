@@ -90,9 +90,11 @@ Relevés dans `docs/connaissances/`. P = prothèses (couronne, bridge, inlay-cor
 
 ## Présentation (néophyte, vendeur, sobre)
 
-- **Le gain en première ligne** (Fabrice, 20/10/2026 : « afficher les gains de la solution en première ligne ») : bandeau
-  `.cu-top` sous le nom du prospect — « Votre gain sur l'année + X € » (vert) ou « Différence sur l'année » (gris), avec en
-  petit « remboursé … − cotisations … · reste à charge … au lieu de … ». Même calcul que le bilan du bas.
+- **Première ligne** (Fabrice, 20/10/2026 : « afficher les gains de la solution en première ligne », puis « une composition des
+  deux ») : bandeau `.cu-top` sous le nom du prospect — à gauche, **toujours**, « Reste à votre charge X € (rouge) — au lieu de
+  Y € sans complémentaire » ; à droite, **seulement si le gain est positif**, « Votre gain sur l'année + Z € » (vert) avec
+  « remboursé … − cotisations … ». Une différence négative n'est jamais mise en tête ; elle reste dans le bilan du bas
+  (« Différence sur l'année », gris). Même calcul que le bilan.
 - **Calcul du gain** : (Sécu + mutuelle + surcomplémentaire, sur les soins saisis) − (cotisation mutuelle + cotisation
   surcomplémentaire) × 12. Exemple relu (20/10/2026, né en 1998, Cap Évolution Sérénité + Talis +, 1 couronne 600 €,
   1 implant 1 000 €) : remboursé 72 + 868 + 400 = 1 340 € ; cotisations 133,95 × 12 = 1 607 € ; différence − 267 €.
