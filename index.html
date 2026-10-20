@@ -547,7 +547,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-20T12:57:07Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T12:57:07Z</div>
+  <div id="buildstamp" data-build="2026-10-20T13:03:40Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T13:03:40Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2883,7 +2883,7 @@ function cumulTarifs(){
   let apicil={};
   const prof=apicilProfil(p.age,p.cnjAge,p.hasCnj,p.kids,p.reg,p.cpSaisi,p.dept);
   if(prof){ const cle=JSON.stringify(prof);
-    if(CUMUL&&CUMUL.v==="APICIL"&&APICIL.cle!==cle) apicilDemande(prof,cle);
+    if(CUMUL&&(CUMUL.v==="APICIL"||CUMUL.v==="*")&&APICIL.cle!==cle&&APICIL.etat!=="attente") apicilDemande(prof,cle);
     const a=(APICIL.cle===cle)?APICIL:{etat:""};
     apicil={profil:prof,etat:a.etat,tarifs:a.tarifs,message:a.message,approche:apicilApproche,cpExact:/^\d{5}$/.test(p.cpSaisi.trim())}; }
   const {rows}=Moteur.calculer({D,F,sel:tout,age:p.age,cnjAge:p.cnjAge,hasCnj:p.hasCnj,kids:p.kids,reg:p.reg,dept:p.dept,
@@ -2892,27 +2892,29 @@ function cumulTarifs(){
   for(const r of LASTROWS) if(r.key==="APRIL") T["APRIL|"+r.fi]=r.total;   // APRIL déjà tarifé dans le tableau
   return T;
 }
-// Un produit APRIL qui n'est pas dans le tableau : demandé seul au relais, gardé dans le même cache que le tableau.
+// Produits APRIL qui ne sont pas dans le tableau : demandés au relais en un seul appel, gardés dans le même cache.
 const CUMUL_APRIL_EN_COURS={};
-function cumulAprilDemande(code){
+function cumulAprilDemande(codes){
   const p=profilPage(); if(p.age==null) return "profil";
   const garde=APRIL_SEL; let pa;
-  try{ APRIL_SEL=[code]; pa=aprilProfil(p.age,p.cnjAge,p.hasCnj,p.kids,p.reg,p.cpSaisi,p.dept); } finally{ APRIL_SEL=garde; }
+  try{ APRIL_SEL=codes; pa=aprilProfil(p.age,p.cnjAge,p.hasCnj,p.kids,p.reg,p.cpSaisi,p.dept); } finally{ APRIL_SEL=garde; }
   if(!pa) return "cp";
   const base=aprilBase(pa);
-  if(APRIL_CACHE.base===base&&APRIL_CACHE.res[code]) return "ok";
-  if(CUMUL_APRIL_EN_COURS[code+base]) return "attente";
-  CUMUL_APRIL_EN_COURS[code+base]=1;
+  const manque=codes.filter(c=>!(APRIL_CACHE.base===base&&APRIL_CACHE.res[c]));
+  if(!manque.length) return "ok";
+  const cle=manque.join(",")+base;
+  if(CUMUL_APRIL_EN_COURS[cle]) return "attente";
+  CUMUL_APRIL_EN_COURS[cle]=1;
   (async()=>{
     try{
-      const rp=await fetch(APRIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(pa)});
+      const rp=await fetch(APRIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({},pa,{produits:manque}))});
       const d=await rp.json().catch(()=>null);
       if(rp.ok&&d&&Array.isArray(d.produits)){
         if(APRIL_CACHE.base!==base) APRIL_CACHE={base,res:{},famille:false};
-        for(const x of d.produits) if(aprilGardable(x)) APRIL_CACHE.res[x.produit]=x; else APRIL_CACHE.res[x.produit]=x;
+        for(const x of d.produits) APRIL_CACHE.res[x.produit]=x;
       }
     }catch(e){}
-    delete CUMUL_APRIL_EN_COURS[code+base];
+    delete CUMUL_APRIL_EN_COURS[cle];
     if(CUMUL&&CUMUL.maj) CUMUL.maj();
   })();
   return "attente";
@@ -2929,13 +2931,15 @@ function cumulTient(c,cle,seuil){
 function showCumul(){
   const rs=selRows(), sur=rs.find(r=>SURCOS.has(r.key)), muts=rs.filter(r=>!SURCOS.has(r.key));
   const m0=muts[0];
-  CUMUL={v:m0?(m0.key==="APRIL"?"APRIL:"+APRIL_ORDRE_RANG[Math.floor(m0.fi/100)]:m0.key):"CAPEVO",
+  // « Toutes les compagnies » d'office (Fabrice, 20/10/2026 : « je dois pouvoir mettre toutes les compagnies et ne choisir que
+  // les filtres ») : sans besoin, la formule cochée ; avec des besoins, la moins chère de toutes qui les remplit.
+  CUMUL={v:"*",
          cochees:muts.map(r=>({key:r.key,fi:r.fi})),si:sur?sur.fi:1,fil:{}};
   for(const k in FILTRES) if(k!=="budget"&&/^\d+(\.\d+)?(%|€)$/.test(FILTRES[k])) CUMUL.fil[k]=FILTRES[k];   // besoins du panneau ⚖
   const {nm,txt}=prospectLigne(), date=new Date().toLocaleDateString("fr-FR");
   const svgWa='<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="fill:#25D366;vertical-align:-3px"><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.82 11.82 0 0020.463 3.488 11.815 11.815 0 0012.05 0zm5.422 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>';
   const comps=cumulCompagnies(), ordre=["AVENIR M.","APICIL","APRIL","MCCI","M. VERTE","REMA"];
-  let opts="";
+  let opts='<option value="*">★ Toutes les compagnies</option>';
   for(const c of ordre.concat([...new Set(comps.map(x=>x.comp))].filter(c=>!ordre.includes(c)))){
     const l=comps.filter(x=>x.comp===c).sort((x,y)=>x.lab.localeCompare(y.lab,"fr")); if(!l.length)continue;
     opts+='<optgroup label="'+(c==="AVENIR M."?"AVENIR":c)+'">'+l.map(x=>'<option value="'+x.v+'">'+x.lab+'</option>').join("")+'</optgroup>';
@@ -2967,11 +2971,21 @@ function showCumul(){
   let P=[];   // la vignette affichée, pour la capture : [{mut, sur}]
   function rendre(){
     if(!document.body.contains(box)){ CUMUL=null; return; }
-    const v=CUMUL.v, fs=cumulFormules(v), act=Object.entries(CUMUL.fil);
-    let tar=cumulTarifs(), aprilEtat="";
-    if(v.startsWith("APRIL:")){ const code=v.slice(6), e=cumulAprilPrix(code);
-      if(e.etat==="ok") Object.assign(tar,e.prix); else if(e.etat==="refus") aprilEtat="refus:"+(e.message||"non proposé pour ce profil");
-      else aprilEtat=cumulAprilDemande(code); }
+    const v=CUMUL.v, tous=v==="*", act=Object.entries(CUMUL.fil);
+    let tar=cumulTarifs(), aprilEtat="", fs;
+    if(tous){
+      // Toutes les compagnies : chaque formule tarifée de chaque gamme, APRIL compris (produits ouverts, un seul appel).
+      const codes=cumulCompagnies().filter(x=>x.v.startsWith("APRIL:")).map(x=>x.v.slice(6));
+      aprilEtat=cumulAprilDemande(codes);
+      for(const code of codes){ const e=cumulAprilPrix(code); if(e.etat==="ok") Object.assign(tar,e.prix); }
+      fs=[].concat(...cumulCompagnies().map(x=>cumulFormules(x.v))).filter(c=>tar[c.key+"|"+c.fi]!=null);
+      for(const z of CUMUL.cochees) if(!fs.some(f=>f.key===z.key&&f.fi===z.fi)) fs.push(z);
+    } else {
+      fs=cumulFormules(v);
+      if(v.startsWith("APRIL:")){ const code=v.slice(6), e=cumulAprilPrix(code);
+        if(e.etat==="ok") Object.assign(tar,e.prix); else if(e.etat==="refus") aprilEtat="refus:"+(e.message||"non proposé pour ce profil");
+        else aprilEtat=cumulAprilDemande([code]); }
+    }
     const prix=c=>tar[c.key+"|"+c.fi], cleP=(c,i)=>prix(c)!=null?prix(c):1e6+i;
     box.querySelector('#cuSum').textContent=act.length?act.map(([c,s])=>LIBP[c]+" "+st(s)).join(" · "):"aucun";
     let c,msg,manque=[];
@@ -2979,19 +2993,23 @@ function showCumul(){
     if(!act.length){
       const ch=CUMUL.cochees.find(z=>fs.some(f=>f.key===z.key&&f.fi===z.fi));
       if(ch){ c=ch; msg="formule cochée dans le comparateur"; } else { c=tri[0].x; msg="aucun besoin : la moins chère de la gamme"; }
+      if(tous&&!ch){ msg="aucun besoin : la moins chère de toutes les compagnies"; }
     } else {
       const sc=tri.map(({x})=>({x,n:act.filter(([k,s])=>cumulTient(x,k,s)).length})).sort((a,b)=>b.n-a.n);
       c=sc[0].x; manque=act.filter(([k,s])=>!cumulTient(c,k,s));
-      msg=manque.length?"aucune formule ne remplit tout ; retenue : celle qui en remplit le plus":"la moins chère qui remplit "+(act.length>1?"tous les besoins":"le besoin");
+      msg=manque.length?"aucune formule ne remplit tout ; retenue : celle qui en remplit le plus":"la moins chère "+(tous?"de toutes les compagnies ":"")+"qui remplit "+(act.length>1?"tous les besoins":"le besoin");
+      if(tous) msg+=" ("+fs.length+" formules comparées)";
     }
     const s={key:"TALIS",fi:CUMUL.si}, pc=prix(c);
+    const enCours=tous&&act.length&&(aprilEtat==="attente"||APICIL.etat==="attente");
     const tarTxt=pc!=null?" · "+eurs(pc)
       :aprilEtat==="attente"?" · tarif APRIL en cours…":aprilEtat==="cp"?" · APRIL : code postal ou département requis":aprilEtat.startsWith("refus:")?' · <span class="w">APRIL : '+aprilEtat.slice(6)+'</span>'
       :(v==="APICIL"&&APICIL.etat==="attente")?" · tarif API SANTÉ en cours…"
       :(v==="APICIL"&&APICIL.etat==="erreur")?' · <span class="w">API SANTÉ : '+(APICIL.message||"pas de réponse")+'</span>'
       :' · <span class="w">non tarifée pour ce profil</span>';
     box.querySelector('#cuH').innerHTML=(manque.length?"⚠ ":"→ ")+"<b>"+Tableau.nomComplet(GAR,c.key,c.fi)+"</b>"+tarTxt+" — "+msg+"."
-      +(manque.length?'<br><span class="w">Non rempli : '+manque.map(([k,x])=>LIBP[k]+" "+st(x)+" ("+(fvaleur({key:c.key,fi:c.fi},k)||"—")+")").join(" · ")+"</span>":"");
+      +(manque.length?'<br><span class="w">Non rempli : '+manque.map(([k,x])=>LIBP[k]+" "+st(x)+" ("+(fvaleur({key:c.key,fi:c.fi},k)||"—")+")").join(" · ")+"</span>":"")
+      +(enCours?'<br><span class="w">Tarifs APRIL ou API SANTÉ encore en cours : le choix peut changer à leur arrivée.</span>':"");
     const tarifs={}; if(pc!=null) tarifs[c.key+"|"+c.fi]=pc; if(prix(s)!=null) tarifs["TALIS|"+s.fi]=prix(s);
     box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date});
     P=[{mut:c,sur:s}];
