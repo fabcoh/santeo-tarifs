@@ -108,8 +108,11 @@ surcomplémentaire**, la Sécu payant la même chose dans les deux cas — plus 
   « Les deux » — cotisations¹, remboursements (Sécu comprise), reste à payer (rappel « sans complémentaire : … »), **coût réel
   = cotisations + reste**. Pas de colonne « sans complémentaire » : sur ces seuls soins elle paraîtrait moins chère en oubliant
   l'hospitalisation.
-- **Ligne finale** : « Avec TALIS + : R € remboursés en plus pour C € de cotisation — + Z € pour vous » (vert) ; si négatif,
-  « Sur ces seuls soins, TALIS coûte plus qu'il ne rembourse » (gris). Z = R − C = coût réel mutuelle seule − coût réel cumul.
+- **Lignes finales** (Fabrice, 20/10/2026 : jamais « TALIS coûte plus qu'il ne rembourse ») : « Avec TALIS + : R € remboursés en
+  plus pour C € de cotisation — + Z € pour vous » **seulement si Z > 0** (Z = R − C) ; puis toujours, contrats hors Sécu face aux
+  cotisations de l'année — s'ils remboursent plus : **« Sur ces seuls soins, vous aurez un remboursement excédentaire de X € ! »** ;
+  sinon : **« Sur ces seuls soins, <mutuelle> et <surco> ne vous coûtent que Y € / mois ! »** (Y = (cotisations − remboursements
+  des contrats) / 12), avec le détail du calcul en petit.
 - Mentions : « ¹ Les cotisations évoluent chaque année à la date anniversaire du contrat. Tableau présenté à titre indicatif —
   document non contractuel. Prothèses hors panier 100 % Santé (dans le panier 100 % Santé, le reste à charge est nul avec un
   contrat responsable) » + tarifs de convention + plafonds appliqués.

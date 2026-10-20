@@ -528,9 +528,15 @@ function cuDepHTML(G,M,S,R,p1,p2){
   h+=L4('Remboursements <small>Sécu comprise</small>', cuE(B.mut.rem), sg(B.remS), cuE(B.tout.rem));
   h+=L4('Reste à payer sur ces soins <small>sans complémentaire : '+cuE(B.sans.reste)+'</small>', '<span class="cu-brr">'+cuE(B.mut.reste)+'</span>', sg(-B.remS), '<span class="cu-brr">'+cuE(B.tout.reste)+'</span>');
   if(B.tout.total!=null) h+=L4('<b>Coût réel de l’année</b><small>cotisations + reste</small>', '<b>'+cuE(B.mut.total)+'</b>', '<b>'+sg(-B.plusS)+'</b>', '<b>'+cuE(B.tout.total)+'</b>','cu-dgt');
-  if(B.plusS!=null) h+=B.plusS>0
-    ?'<div class="cu-dgain"><span>Avec '+nS+' : '+cuE(B.remS)+' remboursés en plus pour '+cuE(B.cotS)+' de cotisation</span><b>+ '+cuE(B.plusS)+' pour vous</b></div>'
-    :'<div class="cu-dgain cu-dg0"><span>Sur ces seuls soins, '+nS+' coûte plus qu’il ne rembourse ('+cuE(B.remS)+' pour '+cuE(B.cotS)+')</span><b>'+cuE(B.plusS)+'</b></div>';
+  // Ligne finale (Fabrice, 20/10/2026) : jamais « TALIS coûte plus qu'il ne rembourse ». Ce que paient les deux contrats (hors
+  // Sécurité sociale, qui paierait de toute façon) face aux cotisations de l'année : s'ils remboursent plus, « remboursement
+  // excédentaire de x € » ; sinon, ce que la mutuelle et la surcomplémentaire coûtent vraiment par mois, remboursements déduits.
+  // Le gain propre à la surcomplémentaire reste affiché au-dessus quand il est positif.
+  if(B.plusS!=null&&B.plusS>0) h+='<div class="cu-dgain"><span>Avec '+nS+' : '+cuE(B.remS)+' remboursés en plus pour '+cuE(B.cotS)+' de cotisation</span><b>+ '+cuE(B.plusS)+' pour vous</b></div>';
+  if(B.tout.cot!=null){ const remC=cuR(R.mut+R.sur), net=cuR(B.tout.cot-remC);
+    h+=net<0
+      ?'<div class="cu-dgain cu-dfin"><span>Sur ces seuls soins, vous aurez un remboursement excédentaire de</span><b>'+cuE(-net)+' !</b><small>vos contrats remboursent '+cuE(remC)+' pour '+cuE(B.tout.cot)+' de cotisations (hors Sécurité sociale)</small></div>'
+      :'<div class="cu-dgain cu-dfin"><span>Sur ces seuls soins, '+nMc+' et '+nS+' ne vous coûtent que</span><b>'+eur(net/12)+' / mois !</b><small>'+cuE(B.tout.cot)+' de cotisations − '+cuE(remC)+' remboursés par vos contrats (hors Sécurité sociale), sur 12 mois</small></div>'; }
   h+='</div><div class="cu-dn">'+(B.tout.cot!=null?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
     +'Tableau présenté à titre indicatif — document non contractuel. Prothèses hors panier 100 % Santé (dans le panier 100 % Santé, le reste à charge est nul avec un contrat responsable). Calcul sur les tarifs de convention de la Sécurité sociale (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre), implants et orthodontie non remboursée au forfait, après les délais d’attente. '+cuPlafTxt(G,M,S,R)
     +(R.nc?' † Garantie non chiffrable : non comptée.':'')+'</div></div>';
