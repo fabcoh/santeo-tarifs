@@ -547,7 +547,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-20T13:51:46Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T13:51:46Z</div>
+  <div id="buildstamp" data-build="2026-10-20T14:00:05Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-20T14:00:05Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2863,12 +2863,13 @@ function profilPage(){
   return {cpSaisi,dept,age:parseAge(document.getElementById("naiss").value),cnjAge:parseAge(document.getElementById("cnj").value),
           hasCnj:document.getElementById("cnj").value.trim()!=="",kids:+document.getElementById("kids").value,reg:document.getElementById("regime").value};
 }
-// Les compagnies de la fenêtre : toutes les gammes (TALIS à part), et chaque produit APRIL ouvert (« APRIL:code »).
+// Les compagnies de la fenêtre : toutes les gammes (TALIS à part), et chaque produit APRIL coché au ☰ du panneau ⚖
+// (« APRIL:code » ; Fabrice, 20/10/2026 : « ceux qui sont cochés pour APRIL »), ouvert à notre compte et au régime.
 function cumulCompagnies(){
   const out=[];
   for(const k of Object.keys(F)){ if(k==="TALIS"||k==="APRIL")continue; out.push({v:k,comp:COMP[k]||"",lab:F[k].label.replace(/^M\. VERTE /,"")}); }
   const reg=regimeActuel();
-  for(const code of APRIL_ORDRE_RANG){ if(APRIL_FERMES[code]||!APRIL_GAR[code]||!aprilRegimeOk(code,reg))continue; out.push({v:"APRIL:"+code,comp:"APRIL",lab:APRIL_NOM[code]||code}); }
+  for(const code of APRIL_ORDRE_RANG){ if(!APRIL_SEL.includes(code)||APRIL_FERMES[code]||!APRIL_GAR[code]||!aprilRegimeOk(code,reg))continue; out.push({v:"APRIL:"+code,comp:"APRIL",lab:APRIL_NOM[code]||code}); }
   return out;
 }
 // Formules d'une compagnie de la fenêtre : [{key, fi}], de la moins chère à la plus chère dans l'ordre de la gamme.
@@ -3011,7 +3012,8 @@ function showCumul(){
     box.querySelector('#cuH').innerHTML=(manque.length?"⚠ ":"→ ")+"<b>"+Tableau.nomComplet(GAR,c.key,c.fi)+"</b>"+tarTxt+" — "+msg+"."
       +(manque.length?'<br><span class="w">Non rempli : '+manque.map(([k,x])=>LIBP[k]+" "+st(x)+" ("+(fvaleur({key:c.key,fi:c.fi},k)||"—")+")").join(" · ")+"</span>":"")
       +(enCours?'<br><span class="w">Tarifs APRIL ou API SANTÉ encore en cours : le choix peut changer à leur arrivée.</span>':"")
-      +(tous&&!/TNS/.test(regimeActuel())?'<br>Régime salarié : produits APRIL réservés aux TNS (Santé Pro…) écartés.':"");
+      +(tous?'<br>APRIL : '+(()=>{const n=cumulCompagnies().filter(x=>x.comp==="APRIL").length;return n?n+" produit"+(n>1?"s":"")+" coché"+(n>1?"s":""):"aucun produit coché";})()+' au ☰ du panneau ⚖.':"")
+      +(tous&&!/TNS/.test(regimeActuel())&&APRIL_SEL.some(c=>APRIL_TNS.has(c))?' Régime salarié : produits TNS (Santé Pro…) écartés.':"");
     const tarifs={}; if(pc!=null) tarifs[c.key+"|"+c.fi]=pc; if(prix(s)!=null) tarifs["TALIS|"+s.fi]=prix(s);
     box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date});
     P=[{mut:c,sur:s}];
