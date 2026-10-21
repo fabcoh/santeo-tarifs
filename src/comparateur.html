@@ -66,7 +66,7 @@ h1{font-family:"Archivo",system-ui,sans-serif;font-weight:800;font-size:25px;mar
   .fname{font-size:12px}
   .chip{font-size:8.5px;padding:1px 5px}
   .total{font-size:13px}
-  table{min-width:812px}
+  table{min-width:886px}
   .tblwrap{max-height:76vh}
 }
 .f label{display:block;font-family:"Archivo",sans-serif;font-weight:500;font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
@@ -92,7 +92,7 @@ th.big{font-size:12.5px;font-weight:800;color:var(--ink)}
 thead tr:first-child th{vertical-align:top;padding-top:9px;color:var(--accent);font-weight:800;font-size:12px}
 thead tr:first-child th.grp,thead tr:first-child th.big{font-size:12px}
 thead tr:first-child th.grp,thead tr:first-child th.big{color:var(--accent)}
-table{border-collapse:collapse;width:100%;min-width:846px;table-layout:fixed}
+table{border-collapse:collapse;width:100%;min-width:920px;table-layout:fixed}
 th{font-family:"Archivo",sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:bottom}
 th.c{text-align:center}
 th.grp{text-align:center;border-bottom:none;padding-bottom:2px;font-size:12.5px;font-weight:800;color:var(--accent)}
@@ -829,7 +829,7 @@ function buildHead(){
   const xc='<col style="width:86px">';
   let cg='<col style="width:34px"><col style="width:168px"><col style="width:86px"><col style="width:74px>'.replace('74px>','74px">')+xc.repeat(ad.length)+
     '<col style="width:80px"><col style="width:70px"><col style="width:62px"><col style="width:70px"><col style="width:80px">'+xc.repeat(ao.length)+
-    '<col style="width:74px">';
+    '<col style="width:74px"><col style="width:74px">';
   document.getElementById("cg").innerHTML=cg;
   let r1='<tr><th rowspan="2" style="text-align:center"><input type="checkbox" id="sendall" class="sendchk" title="Cocher toutes les formules du tableau"></th><th rowspan="2">Gamme · Formule</th><th class="num" rowspan="2">Total / mois</th>'+
     '<th class="c big" rowspan="2">Dentaire</th>'+
@@ -837,13 +837,13 @@ function buildHead(){
     '<th class="c grp" colspan="2">Hospitalisation</th><th class="c grp" colspan="2">Honoraires</th>'+
     '<th class="c big" rowspan="2">Optique</th>'+
     ao.map(e=>'<th class="c" rowspan="2">'+e[1]+'</th>').join("")+
-    '<th class="c" rowspan="2">Méd. douce</th>';
+    '<th class="c" rowspan="2">Méd. douce</th><th class="c" rowspan="2" style="white-space:normal;line-height:1.25">Pharmacie<br>non remb.</th>';
   r1+='</tr><tr><th class="c sub">Optam</th><th class="c sub">hors Opt.</th><th class="c sub">Optam</th><th class="c sub">hors Opt.</th></tr>';
   // L'en-tête n'est remplacé que s'il change : un recalcul déclenché par la sortie d'un champ
   // (mousedown) ne doit pas effacer la case « tout cocher » au moment où on clique dessus.
   const thd=document.getElementById("thd");
   if(thd.dataset.h!==r1){thd.innerHTML=r1;thd.dataset.h=r1;}
-  return 10+ad.length+ao.length;
+  return 11+ad.length+ao.length;
 }
 // Documents contractuels par gamme. Une valeur est une adresse, ou un tableau indexé
 // sur la formule quand le document en dépend : plaquettes APICIL par gamme Équilibre,
@@ -4094,7 +4094,9 @@ function render(rows,warns){
       '<td class="g">'+r.honoO+'</td><td class="g">'+r.honoN+"</td>"+
       '<td class="g">'+r.opt+'</td>'+
       EXO.filter(e=>exOn[e[0]]).map(e=>'<td class="g">'+exVal(r.key,e[0],r.fi)+"</td>").join("")+
-      '<td class="g">'+r.md+"</td></tr>";
+      // Pharmacie non remboursée d'office, à côté des médecines douces (Fabrice, 21/10/2026 : « pour chaque compagnie, si ils
+      // ont, ajoute la médecine douce et la pharmacie non remboursée par défaut dans les résultats »).
+      '<td class="g">'+r.md+'</td><td class="g">'+exVal(r.key,"pharN",r.fi)+"</td></tr>";
       if(isOpen){
         h+='<tr class="detail"><td colspan="'+NC+'"><div class="bk">'+
         '<div><span class="who">'+(r.foyer?"Foyer":"Assuré")+'</span><b>'+eur(r.pA)+"</b></div>"+

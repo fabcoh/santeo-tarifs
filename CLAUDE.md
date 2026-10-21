@@ -517,6 +517,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   au lieu de 255 avant ce resserrement. **Options par poste** ouvre une fenêtre par-dessus (`ouvrirOptions`) :
   six cases en deux groupes, chacune ajoutant une colonne au tableau, plus « Tout décocher ». Au repos elle
   ne prend aucune place.
+- **Colonne « Pharmacie non remb. » d'office dans le tableau des résultats** (Fabrice, 21/10/2026 : « pour chaque compagnie, si ils
+  ont, ajoute la médecine douce et la pharmacie non remboursée par défaut dans les résultats ») : à côté de « Méd. douce » (déjà
+  fixe), valeur `EX.*.pharN` (`exVal`), « — » si la formule n'en a pas, « n.c. » si non relevé (CAP NR, APRIL sans document).
+  Colonne fixe, pas une option : un modèle de filtre ne la retire pas. `buildHead` rend 11 colonnes + options.
 - **Vérifier sur le document officiel** (Fabrice, 03/10/2026) : **icône 👁 à côté du nom de la formule** (ajoutée à sa demande), **appui long (0,5 s) sur la ligne**, ou clic
   droit sur ordinateur, ouvre `verifDocs(r)` — une fenêtre par-dessus qui affiche **dans la page** les PDF de la formule
   (tableau de garantie d'abord, puis IPID, notice, CG…), rendus par **pdf.js** chargé au premier usage depuis cdnjs (un PDF
