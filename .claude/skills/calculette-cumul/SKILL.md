@@ -150,7 +150,8 @@ pour chaque compagnie ». Réponses : colonnes = **formules cochées** (4 au plu
   logo dans une case de 40 px, nom, puis la cotisation en gros (17 px, verte pour la mieux placée), « / mois » et « x € / an »,
   calée en bas de chaque colonne quelle que soit la longueur du nom.
 - Soins prévus : **remboursé par la mutuelle, hors Sécu** (la Sécu est la même pour toutes), « reste » en rouge, centrés ;
-  « non remboursé » en gris quand la formule ne paie rien.
+  « non remboursé » en gris quand la formule ne paie rien. Un soin remboursé en totalité porte « reste 0 € · remboursé en totalité » en vert
+  (Fabrice, 21/10/2026 : sans « reste », la couronne de GCI 500 semblait non calculée).
 - **Un forfait non remboursé n'est pas déduit** (Fabrice, 20/10/2026) : médecines douces et pharmacie « auto » valent le forfait
   **de chaque formule**, consommé en entier ; une formule qui n'en a pas n'a ni dépense ni reste sur ce poste. Les autres soins
   sont la même dépense pour toutes les formules (mêmes plafonds, jamais plus que la dépense).

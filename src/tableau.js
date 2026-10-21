@@ -630,11 +630,13 @@ function comparatifSoins(G,o){
     for(const id of ids){
       const L=CU_DEPLIB[id]||[id,id], D=CU_DEP.find(x=>x[0]===id), sansSecu=!D[3], auto=estAuto(id);
       const l0=RS.map(R=>R.lignes.find(x=>x.id===id)).find(Boolean);
-      const sous=auto?'forfait de chaque formule'
+      // « reste 0 € » toujours écrit (Fabrice, 21/10/2026 : « pourquoi n'as-tu pas calculé les prothèses chez Mutuelle Verte ? » —
+  // GCI 500 rembourse la couronne en totalité, la case ne montrait que le montant).
+  const sous=auto?'forfait de chaque formule'
         :'coût '+(l0.n>1?l0.n+' × '+cuE(l0.p)+' = ':'')+cuE(l0.dep)+(sansSecu?' · non remboursé par la Sécu':l0.secu?' · Sécu '+cuE(l0.secu):'');
       h+=row('<b>'+L[0]+'</b><small>'+sous+'</small>',RS.map(R=>{const l=R.lignes.find(x=>x.id===id);
         if(!l||!(l.mut>0)) return '<span class="cu-cnr">non remboursé</span>'+(l&&!auto?'<small class="cu-dre">reste '+cuE(l.reste)+'</small>':'');
-        return '<b class="cu-bv">'+cuE(l.mut)+'</b>'+(!auto&&l.reste>0?'<small class="cu-dre">reste '+cuE(l.reste)+'</small>':'')
+        return '<b class="cu-bv">'+cuE(l.mut)+'</b>'+(auto?'':l.reste>0?'<small class="cu-dre">reste '+cuE(l.reste)+'</small>':'<small class="cu-dr0">reste 0 € · remboursé en totalité</small>')
           +(l.atM?'<small class="cu-dpa">plafond atteint</small>':'')+(l.nc?'<small>† non chiffrable</small>':'');}));
     }
     h+='<div class="cu-dpt" style="margin-top:10px">Votre bilan sur l’année</div>';
