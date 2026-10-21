@@ -77,17 +77,26 @@ for(const dep of [null,{cour:{n:1,p:680},imp:{n:1,p:1000},md:{auto:1},phn:{auto:
 { n++; const R=T.cumulDepenses(G,{key:"FLEXIA",fi:0},null,{md:{auto:1}});
   if(R.lignes.some(l=>l.id==="md"&&l.reste>0)) ko.push("FLEXIA Start : medecines douces non remboursees comptees en reste"); }
 
-// 7 bis. Cohérence du bilan (Fabrice, 21/10/2026 : « regarde la cohérence du tableau ») : pour chaque formule, ce que la mutuelle
-//    rembourse sur les soins (hors forfaits auto) + les montants non remboursés = la même dépense hors Sécu ; la ligne est affichée.
+// 7 bis. Bilan du comparatif (Fabrice, 21/10/2026) : Sécurité sociale et mutuelle sur deux lignes ; « vous reviendrait à » =
+//    cotisations sur 12 mois − remboursements de la mutuelle SEULE (la Sécu n'en est jamais déduite) ; plus de « Solde ».
 for(const cols of [[{key:"CAPEVO",fi:2},{key:"MV",fi:3},{key:"FLEXIA",fi:3}],[{key:"FLEXIA",fi:0},{key:"CAPEVO",fi:1},{key:"MV",fi:4}]]){ n++;
   const dep={cour:{n:1,p:680},imp:{n:1,p:1000},lun:{n:1,p:300},md:{auto:1},phn:{auto:1}};
   const t={}; cols.forEach((c,i)=>t[c.key+"|"+c.fi]=100+i*20);
   const h=T.comparatifSoins(G,{cols,tarifs:t,depenses:dep});
-  if(h.indexOf("Montants non remboursés")<0) ko.push("comparatif : ligne « Montants non remboursés » absente");
-  if(h.indexOf("Solde restant à votre charge")>=0) ko.push("comparatif : l'ancien bloc « Solde restant à votre charge » est encore là");
-  const s=cols.map(c=>{const R=T.cumulDepenses(G,c,null,dep), L=R.lignes.filter(l=>!l.auto); return Math.round(L.reduce((u,l)=>u+l.mut+l.reste,0));});
-  const d=Math.round(T.cumulDepenses(G,cols[0],null,dep).lignes.filter(l=>!l.auto).reduce((u,l)=>u+l.dep-l.secu,0));
-  if(s.some(x=>x!==d)) ko.push("comparatif : rembourse + non rembourse != depense hors Secu : "+s.join("/")+" au lieu de "+d); }
+  for(const lib of ["Votre cotisation par mois","Vos cotisations sur 12 mois","La Sécurité sociale vous rembourserait","Votre mutuelle vous rembourserait",
+    "Vous récupéreriez au total","Après ses remboursements, votre mutuelle vous reviendrait à","Estimation pour les soins renseignés, sous réserve des conditions, plafonds et délais d’attente du contrat."])
+    if(h.indexOf(lib)<0) ko.push("comparatif : ligne absente — "+lib);
+  if(/>Solde</.test(h)) ko.push("comparatif : le mot « Solde » est encore affiché");
+  for(const c of cols){ const R=T.cumulDepenses(G,c,null,dep), v=Math.round(t[c.key+"|"+c.fi]*12-R.mut);
+    const e=(v>=0?v:0).toLocaleString("fr-FR")+" €";
+    if(h.indexOf('cu-rev">'+e)<0) ko.push("comparatif : « vous reviendrait à » "+c.key+" "+e+" absent");
+    if(R.secu>0&&h.indexOf('cu-rev">'+Math.round(t[c.key+"|"+c.fi]*12-R.mut-R.secu).toLocaleString("fr-FR")+" €")>=0&&R.secu!==0) ko.push("comparatif : la Sécu semble déduite des cotisations ("+c.key+")"); } }
+// 7 ter. Une garantie « n.c. » n'est jamais un zéro : « À confirmer ».
+{ n++; const G2=JSON.parse(JSON.stringify(G)); G2.gammes.FLEXIA.dent[1]="n.c."; G2.gammes.FLEXIA.md[1]="n.c.";
+  const R=T.cumulDepenses(G2,{key:"FLEXIA",fi:1},null,{cour:{n:1,p:600},md:{auto:1}});
+  if(!R.nc||!R.lignes.find(l=>l.id==="cour").nc||!R.lignes.find(l=>l.id==="md")) ko.push("n.c. compte pour zero : "+JSON.stringify(R.lignes));
+  const h=T.comparatifSoins(G2,{cols:[{key:"FLEXIA",fi:1},{key:"CAPEVO",fi:1}],tarifs:{"FLEXIA|1":50,"CAPEVO|1":60},depenses:{cour:{n:1,p:600},md:{auto:1}}});
+  if(h.indexOf("À confirmer")<0) ko.push("comparatif : « À confirmer » absent pour une garantie n.c."); }
 
 // 8. Le plafond dentaire ne touche que les soins dentaires (constaté le 20/10/2026 : lunettes et médecines douces de la
 // Mutuelle Verte « plafond atteint » après une couronne et un implant).

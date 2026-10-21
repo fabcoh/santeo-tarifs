@@ -155,16 +155,19 @@ pour chaque compagnie ». Réponses : colonnes = **formules cochées** (4 au plu
 - **Un forfait non remboursé n'est pas déduit** (Fabrice, 20/10/2026) : médecines douces et pharmacie « auto » valent le forfait
   **de chaque formule**, consommé en entier ; une formule qui n'en a pas n'a ni dépense ni reste sur ce poste. Les autres soins
   sont la même dépense pour toutes les formules (mêmes plafonds, jamais plus que la dépense).
-- **Bilan en trois lignes** (Fabrice, 20/10/2026 : « Cotisation annuelle, Remboursements, Solde ») : cotisation annuelle¹
-  (x € × 12) · remboursements (par la mutuelle, hors Sécu, total des soins prévus) · **solde = remboursements − cotisation**,
-  « + x € » en vert s'il est en faveur du prospect, « − x € » en rouge sinon. Le classement se fait sur ce solde.
-  Libellés seuls, sans sous-titre : « Remboursements », « Solde » (Fabrice, 20/10/2026).
-  Sous les remboursements, « dont x € de forfaits médecines douces et pharmacie » (Fabrice, 21/10/2026 : « ok ») — ils comptent
-  dans le solde mais pas dans les montants non remboursés : c'est ce qui explique un écart entre le solde et « cotisation +
-  non remboursés ».
+- **Bilan pour le prospect** (Fabrice, 21/10/2026, remplace « Cotisation annuelle · Remboursements · Solde · Montants non
+  remboursés ») : « Votre cotisation par mois » · « Vos cotisations sur 12 mois¹ » · « La Sécurité sociale vous rembourserait » ·
+  « Votre mutuelle vous rembourserait » (+ « dont x € de forfaits médecines douces et pharmacie ») · « Vous récupéreriez au total »
+  (Sécu + mutuelle) · **« Après ses remboursements, votre mutuelle vous reviendrait à »** = cotisations sur 12 mois − remboursements
+  **de la mutuelle seule** (la Sécu n'en est jamais déduite) ; négatif → « 0 € — elle vous rembourserait x € de plus que vos
+  cotisations ». Exemple de contrôle : 100 €/mois, Sécu 200 €, mutuelle 400 € → total 600 €, revient à 1 200 − 400 = 800 €.
+  Plus de mot « Solde » ; le reste à régler au praticien reste sous chaque soin. Sous le bilan : « Estimation pour les soins
+  renseignés, sous réserve des conditions, plafonds et délais d'attente du contrat. » Classement sur « vous reviendrait à ».
+- **Inconnu = « À confirmer », jamais zéro** : cotisation absente, garantie « n.c. » (soin ou forfait auto) → la case, le total
+  et « vous reviendrait à » de la formule disent « À confirmer » ; elle n'entre pas dans le classement.
 - **Couronnes Mutuelle Verte au taux « autres dents »** (le plus bas ; dents visibles affichées à côté, `dentVisibles`).
 - Mieux disant en vert : **tous les ex æquo** sont en vert.
-- **« Montants non remboursés »**, en noir, dernière ligne du bilan, seulement s'il y a des soins hors forfaits auto (Fabrice,
+- (Retiré le 21/10/2026, remplacé par le bilan ci-dessus) **« Montants non remboursés »**, en noir, dernière ligne du bilan, seulement s'il y a des soins hors forfaits auto (Fabrice,
   21/10/2026 : un bloc « Solde restant à votre charge » essayé le même jour, puis « laisse juste la ligne montants non
   remboursés ») : somme des restes, « à régler au praticien ; ce montant pouvant être étalé chez votre praticien, s'il l'accepte ».
   Cohérence contrôlée par `verif_cumul` : remboursé par la mutuelle (soins) + non remboursé = la même dépense hors Sécu partout.
