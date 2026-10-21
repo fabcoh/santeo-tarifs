@@ -661,3 +661,19 @@ dit « Tarifs au …, valables 10 jours. »
 - (suite, 20/10/2026, soir) Vignette du cumul revue : le « gain » n'est plus « remboursements Sécu comprise − cotisations » mais
   ce que la surcomplémentaire rembourse en plus moins sa cotisation (mutuelle seule contre mutuelle + TALIS). Bilan à deux
   colonnes, délai d'attente TALIS (90 jours dentaire / optique) affiché près des soins. `cumulDepenses` ne change pas.
+
+## 21/10/2026 — comparateur → CRM : prothèses Mutuelle Verte à deux taux, vue « Comparatif des mutuelles »
+
+- **Correction de garantie** (relecture du tableau Mutuelle Verte, renvoi (12) p.1) : les couronnes et bridges ont deux taux,
+  « dents visibles » (incisives, canines, 1res prémolaires) et « autres dents » (2es prémolaires, molaires). `garanties.json`
+  portait le taux des dents visibles dans `gammes.MV.dent` ; il porte désormais **le plus bas**, celui des autres dents :
+  GCI 100 → 500 = 100 / 150 / 200 / 300 / 400 % (avant 100 / 200 / 250 / 400 / 500 %). Le taux des dents visibles est dans
+  `extras.MV.dentV`. Calculs, filtres et images utilisent `dent` ; l'affichage montre les deux.
+- `src/tableau.js` : `Tableau.affiche(G, key, fi, src)` rend « 300 % (dents visibles : 400 %) » pour `dent` quand les deux
+  taux diffèrent (sinon la valeur seule) ; `Tableau.dentVisibles(G, key, fi)` rend le taux des dents visibles ou "".
+  Le tableau de garantie (`Tableau.document`) ajoute « dents visibles : 400 % » sous la valeur. **Si vous écrivez la garantie
+  dentaire de la Mutuelle Verte dans un message, prenez `affiche`, pas `valeur`** : `valeur` donne le taux bas seul.
+- Images `docs/tg/` refaites : dentaire-2 garde GCI 150 (150 %), dentaire-3 passe de GCI 150 à GCI 200 (200 %), dentaire-4
+  garde GCI 500 (400 %).
+- Nouvelle vue `Tableau.comparatifSoins(G, {cols, tarifs, prospect, date, depenses})` : 2 à 4 mutuelles côte à côte, garanties
+  poste par poste, soins prévus, bilan « Cotisation annuelle · Remboursements (dont forfaits) · Solde · Montants non remboursés ».

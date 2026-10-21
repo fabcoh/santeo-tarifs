@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmpzjknqqb8.js",
+ "genere": "/tmp/tmp__mm0qyo.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -753,10 +753,10 @@
    ],
    "dent": [
     "100 %",
+    "150 %",
     "200 %",
-    "250 %",
-    "400 %",
-    "500 %"
+    "300 %",
+    "400 %"
    ],
    "opt": [
     "100 %",
@@ -1548,6 +1548,13 @@
    ]
   },
   "MV": {
+   "dentV": [
+    "100 %",
+    "200 %",
+    "250 %",
+    "400 %",
+    "500 %"
+   ],
    "optC": [
     "100 %",
     "200 €",

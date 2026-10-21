@@ -169,6 +169,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   de la gamme (MCCINOVA 18–90, FLEXIA 18–84, SOLENCIA 62–99, Révoluo 18–80, Mutuelle Verte dès 18, Cap Évolution / CAP NR / LPS /
   TALIS dès 16), aucune ligne de la gamme et une alerte « conjoint non éligible à n ans — gamme non tarifée ». Avant, MCCI sortait un
   total sans le conjoint (« * ») et Révoluo l'omettait sans rien dire au-delà de 80 ans. APICIL et APRIL : l'API en décide.
+- **Prothèses Mutuelle Verte à deux taux** (relecture du 21/10/2026 à la demande de Fabrice, d'après une critique ChatGPT ; « ok ») :
+  le tableau distingue « dents visibles » (incisives, canines, 1res prémolaires) et « autres dents » (2es prémolaires, molaires),
+  renvoi (12) p.1. `F.MV.dent` = le taux **le plus bas** (100 / 150 / 200 / 300 / 400 %), qui sert aux calculs, aux filtres et
+  aux images ; `EX.MV.dentV` = dents visibles (100 / 200 / 250 / 400 / 500 %). Affiché partout « 300 % · dents visibles 400 % »
+  (`Tableau.affiche`, `Tableau.dentVisibles` : tableau des résultats, tableau de garantie, courrier, texte WhatsApp, cumul,
+  comparatif). Avant, 400 % s'affichait et se calculait pour toutes les dents en GCI 300.
 - **MCCINOVA** : mineurs au tarif 18 ans ; cadre « Conditions MCCINOVA » (âge atteint dans l'année, enfants
   jusqu'à 28 ans) affiché seulement si la gamme est dans le tableau.
 - **RÉVOLUO / RF50 / RF100** : grille × zone (75 = zone 1) × régime (TNS ×0,90 ; Alsace-Moselle ×0,65 sans zone),

@@ -159,6 +159,11 @@ pour chaque compagnie ». Réponses : colonnes = **formules cochées** (4 au plu
   (x € × 12) · remboursements (par la mutuelle, hors Sécu, total des soins prévus) · **solde = remboursements − cotisation**,
   « + x € » en vert s'il est en faveur du prospect, « − x € » en rouge sinon. Le classement se fait sur ce solde.
   Libellés seuls, sans sous-titre : « Remboursements », « Solde » (Fabrice, 20/10/2026).
+  Sous les remboursements, « dont x € de forfaits médecines douces et pharmacie » (Fabrice, 21/10/2026 : « ok ») — ils comptent
+  dans le solde mais pas dans les montants non remboursés : c'est ce qui explique un écart entre le solde et « cotisation +
+  non remboursés ».
+- **Couronnes Mutuelle Verte au taux « autres dents »** (le plus bas ; dents visibles affichées à côté, `dentVisibles`).
+- Mieux disant en vert : **tous les ex æquo** sont en vert.
 - **« Montants non remboursés »**, en noir, dernière ligne du bilan, seulement s'il y a des soins hors forfaits auto (Fabrice,
   21/10/2026 : un bloc « Solde restant à votre charge » essayé le même jour, puis « laisse juste la ligne montants non
   remboursés ») : somme des restes, « à régler au praticien ; ce montant pouvant être étalé chez votre praticien, s'il l'accepte ».

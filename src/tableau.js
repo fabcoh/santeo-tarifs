@@ -84,6 +84,18 @@ function valeur(G,key,fi,src){
   const arr=f&&f[src];return (arr&&arr[fi]!==undefined)?arr[fi]:"—";
 }
 
+// Prothèses à deux taux (Mutuelle Verte : « dents visibles » / « autres dents », Fabrice 21/10/2026) : `dent` porte le taux le plus
+// bas — celui des calculs, des filtres et des images —, `x:dentV` celui des dents visibles. `affiche` les écrit tous les deux.
+function dentVisibles(G,key,fi){
+  const v=valeur(G,key,fi,"x:dentV"); return v!=="—"&&v!==valeur(G,key,fi,"dent")?v:"";
+}
+function affiche(G,key,fi,src){
+  const v=valeur(G,key,fi,src);
+  if(src!=="dent") return v;
+  const dv=dentVisibles(G,key,fi);
+  return dv?v+" (dents visibles : "+dv+")":v;
+}
+
 // Tant qu'un logo manque, le nom de la compagnie s'affiche à sa place : rien ne casse.
 // Dimensions des fichiers (px) : la vignette du cumul égalise la surface des logos, pas leur hauteur — un bandeau (MCCI,
 // 545 × 160) à la même hauteur qu'un logo presque carré (Avenir, 211 × 160) paraissait deux fois plus gros (Fabrice, 20/10/2026).
@@ -144,7 +156,8 @@ function corps(G,cols,reco){
       h+='<tr class="tgsec"><td>'+b+'</td>'+cols.map(c=>'<td'+(estReco(reco,c)?' class="reco"':'')+'></td>').join('')+'</tr>';
     }
     h+='<tr'+(fort?' class="fort"':'')+'><td>'+lab+'</td>'
-      +cols.map(c=>'<td'+(estReco(reco,c)?' class="reco"':'')+'>'+valeur(G,c.key,c.fi,src)+'</td>').join('')
+      +cols.map(c=>'<td'+(estReco(reco,c)?' class="reco"':'')+'>'+valeur(G,c.key,c.fi,src)
+        +(src==="dent"&&dentVisibles(G,c.key,c.fi)?'<div class="tgdv">dents visibles : '+dentVisibles(G,c.key,c.fi)+'</div>':'')+'</td>').join('')
       +'</tr>';
   }
   return h;
@@ -579,15 +592,15 @@ const CMP_BLOCS=[
   ["Optique",[["Lunettes, verres simples","opt",1],["Lunettes, verres complexes","x:optC"],["Lentilles","x:lentA"]]],
   ["Autres",[["Médecines douces","md"],["Aides auditives","x:aud"],["Pharmacie non remboursée","x:pharN"]]]
 ];
-// Indice de la meilleure valeur d'une ligne, quand toutes se lisent dans la même unité ; -1 sinon (ou si toutes sont égales).
+// Indices des meilleures valeurs d'une ligne, quand toutes se lisent dans la même unité ; [] sinon (ou si toutes sont égales).
 function cmpMeilleur(vals){
   // « — » (pas de garantie) compte pour zéro face aux autres ; « n.c. » ou un texte rendent la ligne incomparable.
   const Q=vals.map(v=>String(v).trim()==="—"?"—":cuLire(v)), R=Q.filter(x=>x!=="—");
-  if(!R.length||R.some(x=>!x||x.raw)) return -1;
+  if(!R.length||R.some(x=>!x||x.raw)) return [];
   const P=Q.map(x=>x==="—"?{n:0,u:R[0].u,s:R[0].s}:x);
-  if(P.some(x=>x.u!==P[0].u||(x.s||"")!==(P[0].s||""))) return -1;
-  const m=Math.max(...P.map(x=>x.n)); if(P.every(x=>x.n===m)) return -1;
-  return P.findIndex(x=>x.n===m);
+  if(P.some(x=>x.u!==P[0].u||(x.s||"")!==(P[0].s||""))) return [];
+  const m=Math.max(...P.map(x=>x.n)); if(P.every(x=>x.n===m)) return [];
+  return P.map((x,i)=>x.n===m?i:-1).filter(i=>i>=0);   // ex æquo : toutes en vert
 }
 function comparatifSoins(G,o){
   o=o||{}; const cols=(o.cols||[]).slice(0,4), tar=o.tarifs||{};
@@ -622,7 +635,8 @@ function comparatifSoins(G,o){
     // FLEXIA Start et GCI 100 n'en ont pas, la ligne disparaissait) : « — » dit au prospect que le poste n'est pas couvert.
     h+='<div class="cu-csec">'+bloc+'</div>';
     for(const [lab,src,f,vals] of rs){ const m=cmpMeilleur(vals);
-      h+=row(f?'<b>'+lab+'</b>':lab,vals.map((v,i)=>'<span class="cu-cv'+(i===m?' cu-cvm':'')+'">'+v+'</span>'),f?'cu-cfort':''); }
+      h+=row(f?'<b>'+lab+'</b>':lab,vals.map((v,i)=>'<span class="cu-cv'+(m.includes(i)?' cu-cvm':'')+'">'+v+'</span>'
+        +(src==="dent"&&dentVisibles(G,cols[i].key,cols[i].fi)?'<small>dents visibles : '+dentVisibles(G,cols[i].key,cols[i].fi)+'</small>':'')),f?'cu-cfort':''); }
   }
   if(!ids.length) h+='<div class="cu-dn">Indiquez les soins prévus (volet « Dépenses ») pour comparer les remboursements.</div>';
   else{
@@ -643,7 +657,10 @@ function comparatifSoins(G,o){
     if(prix) h+=row('Cotisation annuelle<sup>1</sup>',px.map(x=>'<b>'+cuE(x*12)+'</b><small>'+eur(x)+' × 12</small>'));
     // Trois lignes (Fabrice, 20/10/2026 : « Cotisation annuelle, Remboursements, Solde ») ; solde = remboursements − cotisation,
     // en vert s'il est en faveur du prospect, en rouge sinon.
-    h+=row('Remboursements',RS.map(R=>'<b class="cu-bv">'+cuE(R.mut)+'</b>'));
+    // « dont x € de forfaits » (Fabrice, 21/10/2026 : « ok ») : les forfaits médecines douces / pharmacie comptent dans le solde, pas
+    // dans les montants non remboursés — l'écart entre formules s'explique ainsi sans calcul.
+    h+=row('Remboursements',RS.map(R=>{const fa=cuR(R.lignes.filter(l=>l.auto).reduce((u,l)=>u+l.mut,0));
+      return '<b class="cu-bv">'+cuE(R.mut)+'</b>'+(fa>0?'<small>dont '+cuE(fa)+' de forfaits médecines douces et pharmacie</small>':'');}));
     if(prix) h+=row('<b>Solde</b>',net.map(v=>v<=0?'<b class="cu-bv">+ '+cuE(-v)+'</b>':'<b class="cu-brr">− '+cuE(v)+'</b>'),'cu-ctot');
     // Ce qu'aucun contrat ne paie, en noir, sous le solde (Fabrice, 21/10/2026 : d'abord un bloc « Solde restant à votre charge »,
     // puis « laisse juste la ligne montants non remboursés »). Forfaits auto exclus : ils sont consommés en entier.
@@ -697,7 +714,8 @@ function cumul(G,o){
         if(l.length){const n="*".repeat(notes.length+1);
           tt='<span>'+tt+'<sup class="cu-ast">'+n+'</sup></span>';
           notes.push('<sup>'+n+'</sup> '+ast.titre+' — '+l.map(x=>x.txt).join(" ; ")+"."+(a&&b?ast.fin(a,b):""));}}
-      h+=ligne(CU_POSTES[src],v1(src),cuPlus(v2(src)),tt,plus?"cu-up":"");}
+      const dv=src==="dent"?dentVisibles(G,M.key,M.fi):"";
+      h+=ligne(CU_POSTES[src],v1(src)+(dv?'<small>dents visibles : '+dv+'</small>':''),cuPlus(v2(src)),tt,plus?"cu-up":"");}
   }
   h+=ligne("","","","","cu-fin");
   // Cotisation juste sous le tableau, puis le bandeau TALIS, puis les explications (Fabrice, 20/10/2026 : « remonte les
@@ -724,6 +742,8 @@ exporter.BLOCS=BLOCS;
 exporter.ATOUTS=ATOUTS;
 exporter.LOGOBASE=LOGOBASE;
 exporter.valeur=valeur;
+exporter.affiche=affiche;
+exporter.dentVisibles=dentVisibles;
 exporter.logo=logo;
 exporter.marque=marque;
 exporter.legal=legal;

@@ -560,6 +560,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul.cu-cmp .cu-cbest .cu-cpx em{color:var(--v)}
 .cumul .cu-cr .cu-cnr{color:var(--m);font-size:10.5px}
 .cumul .cu-cbest{background:#EEF8F1}
+#tgbox .tgdv,.tgdv{font-size:10px;font-weight:400;color:#5B6778;margin-top:2px;line-height:1.2}
 .cumul .cu-csec{font:700 12px Archivo,sans-serif;text-transform:uppercase;letter-spacing:.04em;color:var(--k);padding:9px 3px 3px;border-bottom:2px solid var(--k)}
 .cumul .cu-cr .cu-cv{font-size:11.5px}.cumul .cu-cr .cu-cvm{color:var(--v);font-weight:700}
 .cumul .cu-cfort .cu-cv{font-weight:700}

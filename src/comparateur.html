@@ -561,6 +561,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul.cu-cmp .cu-cbest .cu-cpx em{color:var(--v)}
 .cumul .cu-cr .cu-cnr{color:var(--m);font-size:10.5px}
 .cumul .cu-cbest{background:#EEF8F1}
+#tgbox .tgdv,.tgdv{font-size:10px;font-weight:400;color:#5B6778;margin-top:2px;line-height:1.2}
 .cumul .cu-csec{font:700 12px Archivo,sans-serif;text-transform:uppercase;letter-spacing:.04em;color:var(--k);padding:9px 3px 3px;border-bottom:2px solid var(--k)}
 .cumul .cu-cr .cu-cv{font-size:11.5px}.cumul .cu-cr .cu-cvm{color:var(--v);font-weight:700}
 .cumul .cu-cfort .cu-cv{font-weight:700}
@@ -739,7 +740,10 @@ const F = {
   MV:{label:"M. VERTE GCI",resp:true,ins:"mverte",names:["GCI 100","GCI 150","GCI 200","GCI 300","GCI 500"],
     hospO:["100 %","160 %","200 %","300 %","500 %"],hospN:["100 %","140 %","180 %","200 %","200 %"],
     honoO:["100 %","160 %","200 %","300 %","500 %"],honoN:["100 %","140 %","180 %","200 %","500 %"],
-    dent:["100 %","200 %","250 %","400 %","500 %"],opt:["100 %","100 €","150 €","200 €","250 €"],
+    // Prothèses : le tableau distingue « dents visibles » (incisives, canines, 1res prémolaires) et « autres dents » (2es prémolaires,
+    // molaires), TG p.1 renvoi (12). `dent` porte le taux le plus bas, qui sert aux calculs, filtres et images ; `EX.MV.dentV` le taux
+    // des dents visibles, affiché à côté (Fabrice, 21/10/2026 : « ok » — le comparateur affichait 400 % partout en GCI 300).
+    dent:["100 %","150 %","200 %","300 %","400 %"],opt:["100 %","100 €","150 €","200 €","250 €"],
     ch:["—","50 €/j","55 €/j","65 €/j","70 €/j"],md:["10 €/s","20 €/s","30 €/s","40 €/s","50 €/s"]},
   LPSH:{label:"LPS HOSPI",resp:false,ins:"avenir",names:["LPS Hospi Santé"],
     ij:["20 €/jour dès le 1er jour"],
@@ -777,7 +781,7 @@ const EX={
     aud:["+50 €","+100 €","+150 €","+200 €","+250 €","+300 €","+350 €"],imp:["40 €","60 €","80 €","100 €","150 €","200 €","250 €"],orthR:["150 %","175 %","200 %","225 %","250 %","300 %","350 %"],orthN:["50 %","75 %","100 %","125 %","150 %","200 %","250 %"],lentA:["150 €","175 €","200 €","225 €","275 €","325 €","350 €"],lentR:["150 €","175 €","200 €","225 €","275 €","325 €","350 €"]},
   RF100:{optC:["250 €", "250 €", "250 €", "250 €", "275 €"],pharR:["100 %", "100 %", "100 %", "100 %", "100 %"],pharN:["—", "—", "—", "—", "—"],
     aud:["+50 €","+100 €","+150 €","+200 €","+250 €"],imp:["40 €","60 €","80 €","100 €","150 €"],orthR:["200 %","225 %","250 %","275 %","300 %"],orthN:["100 %","125 %","150 %","175 %","200 %"],lentA:["150 €","175 €","200 €","225 €","275 €"],lentR:["150 €","175 €","200 €","225 €","275 €"]},
-  MV:{optC:["100 %", "200 €", "250 €", "300 €", "350 €"],pharR:["100 %", "100 %", "100 %", "100 %", "100 %"],pharN:["—", "30 €/an (tabac)", "50 €/an (tabac)", "50 €/an (tabac)", "50 €/an (tabac)"],
+  MV:{dentV:["100 %","200 %","250 %","400 %","500 %"],optC:["100 %", "200 €", "250 €", "300 €", "350 €"],pharR:["100 %", "100 %", "100 %", "100 %", "100 %"],pharN:["—", "30 €/an (tabac)", "50 €/an (tabac)", "50 €/an (tabac)", "50 €/an (tabac)"],
     aud:["100 %","150 %","200 %","300 %","500 %"],imp:["—","300 €","350 €","400 €","500 €"],
     orthR:["100 %","200 %","250 %","400 %","500 %"],orthN:["—","300 €","350 €","400 €","500 €"],
     lentA:["50 €","100 €","150 €","150 €","200 €"],lentR:["50 €","100 €","150 €","150 €","200 €"]},
@@ -3101,6 +3105,7 @@ function offreTxt(r,full){
       let v;
       if(src.startsWith("x:")){const k2=src.slice(2);v=(e[k2]&&e[k2][r.fi]!==undefined)?e[k2][r.fi]:"—";}
       else v=(f[src]&&f[src][r.fi]!==undefined)?f[src][r.fi]:"—";
+      if(src==="dent"&&v&&v!=="—") v=Tableau.affiche(GAR,r.key,r.fi,"dent");
       if(v&&v!=="—")lines.push("   - "+lab+" : "+v);
     }
     if(lines.length)s+="\n"+lines.join("\n");
@@ -3481,7 +3486,7 @@ function mailTableau(cols){
   let bloc=null;
   for(const [lab,src,fort,b] of TGROWS){
     if(b!==bloc){ bloc=b; lignes.push([b,[],0,"titre"]); }
-    lignes.push([lab,cols.map(c=>String(Tableau.valeur(GAR,c.key,c.fi,src)||"—")),LIGNES_AVANT.has(lab)?1:0,fort?"fort":""]);
+    lignes.push([lab,cols.map(c=>String(Tableau.affiche(GAR,c.key,c.fi,src)||"—")),LIGNES_AVANT.has(lab)?1:0,fort?"fort":""]);
   }
   const colonnes=cols.map(c=>{
     const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi), g=F[c.key];
@@ -4088,7 +4093,7 @@ function render(rows,warns){
       +'<div class="fname">'+r.formule+'<button type="button" class="rowvoir" data-voir="'+rk+'" title="Voir le tableau de garantie officiel" aria-label="Voir le document">👁</button>'+('<button class="rowstar'+(isR?" on":"")+'" data-star="'+rk+'" title="Conseiller cette formule">'+(isR?"⭐":"☆")+'</button>')+'</div>'
       +'<div class="chips">'+(isR?'<span class="chip reco">⭐ Je vous conseille</span>':"")+chips+"</div></td>"+
       '<td class="num total">'+eur(r.total)+(r.incomplete?" *":"")+"</td>"+
-      '<td class="g">'+r.dent+"</td>"+
+      '<td class="g">'+r.dent+(Tableau.dentVisibles(GAR,r.key,r.fi)?'<div class="hosp">'+Tableau.dentVisibles(GAR,r.key,r.fi)+' dents visibles</div>':'')+"</td>"+
       EXD.filter(e=>exOn[e[0]]).map(e=>'<td class="g">'+exVal(r.key,e[0],r.fi)+"</td>").join("")+
       '<td class="g">'+r.hospO+(r.ch&&r.ch!=="—"?'<div class="hosp">'+r.ch.replace("/j","")+' ch. part.</div>':"")+'</td><td class="g">'+r.hospN+"</td>"+
       '<td class="g">'+r.honoO+'</td><td class="g">'+r.honoN+"</td>"+
