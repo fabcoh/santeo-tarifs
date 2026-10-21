@@ -173,6 +173,13 @@ pour chaque compagnie ». Réponses : colonnes = **formules cochées** (4 au plu
   cotisations ». Exemple de contrôle : 100 €/mois, Sécu 200 €, mutuelle 400 € → total 600 €, revient à 1 200 − 400 = 800 €.
   Plus de mot « Solde » ; le reste à régler au praticien reste sous chaque soin. Sous le bilan : « Estimation pour les soins
   renseignés, sous réserve des conditions, plafonds et délais d'attente du contrat. » Classement sur « vous reviendrait à ».
+- **Ordre de la vignette, tout sur une page** (Fabrice, 21/10/2026 : « fais au mieux mais garde tout sur la même page ») : bandeau
+  → en-tête (logos, cotisation) → **bilan** → « Vos soins prévus : détail des remboursements par la mutuelle » → « Vos garanties,
+  poste par poste » → mentions. Rien n'est retiré ; le message principal se lit sans faire défiler.
+- **Formulations prudentes** : remboursements supérieurs aux cotisations → « 0 € — pour ces soins, vos remboursements dépasseraient
+  vos cotisations de x € » (jamais « ne vous coûte rien ») ; forfaits auto → « dont x € si vous utilisez vos forfaits médecines
+  douces et pharmacie » dans le bandeau, « dont x € de forfaits, si utilisés » dans la case, « forfait de chaque formule, si vous
+  l'utilisez » sous le soin ; sous le bandeau : « La mieux placée pour ces soins, pas forcément la mieux couverte ».
 - **Inconnu = « À confirmer », jamais zéro** : cotisation absente, garantie « n.c. » (soin ou forfait auto) → la case, le total
   et « vous reviendrait à » de la formule disent « À confirmer » ; elle n'entre pas dans le classement.
 - **Couronnes Mutuelle Verte au taux « autres dents »** (le plus bas ; dents visibles affichées à côté, `dentVisibles`).

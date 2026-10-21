@@ -629,58 +629,68 @@ function comparatifSoins(G,o){
   const row=(lab,cells,cls)=>'<div class="cu-cr'+(cls?' '+cls:'')+'" style="grid-template-columns:30% repeat('+cols.length+',1fr)">'+C("cu-l",lab)
     +cells.map((x,i)=>C("cu-cc"+(i===best?" cu-cbest":""),x)).join("")+'</div>';
   let h='<div class="cu-ti">Comparatif de vos remboursements</div>'+(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'');
-  if(best>=0&&cols.length>1){ const o2=net.filter((v,i)=>i!==best&&v!=null), d=o2.length?Math.min(...o2)-net[best]:0;
+  const fa=R=>cuR(R.lignes.filter(l=>l.auto).reduce((u,l)=>u+l.mut,0));
+  if(best>=0&&cols.length>1){ const o2=net.filter((v,i)=>i!==best&&v!=null), d=o2.length?Math.min(...o2)-net[best]:0, faB=fa(RS[best]);
     h+='<div class="cu-top"><div class="cu-tg" style="text-align:left;border:0"><b>La plus avantageuse pour ces soins</b><em>'+nom(cols[best])+'</em>'
       +'<span>'+(net[best]>=0?'après ses remboursements, elle vous reviendrait à '+cuE(net[best])+' sur l’année'
-        :'elle vous rembourserait '+cuE(-net[best])+' de plus que vos cotisations sur l’année')+(d>0?' · '+cuE(d)+' de mieux que la suivante':'')+'</span></div></div>'; }
+        :'pour ces soins, vos remboursements dépasseraient vos cotisations de '+cuE(-net[best]))+(d>0?' · '+cuE(d)+' de mieux que la suivante':'')+'</span>'
+      // Les forfaits comptés d'office se disent dans le bandeau : ils ne valent que s'ils sont utilisés.
+      +(faB>0?'<span>dont '+cuE(faB)+' si vous utilisez vos forfaits médecines douces et pharmacie</span>':'')
+      +'<span class="cu-tnb">La mieux placée pour ces soins, pas forcément la mieux couverte : les garanties sont détaillées plus bas.</span></div></div>'; }
   // En-tête : logo dans une case de hauteur fixe, nom, puis la cotisation mise en avant, alignée en bas de toutes les colonnes
   // (Fabrice, 20/10/2026 : « mettre en avant le tarif du dessus et tout bien aligner les logos et textes »).
   h+=row('',cols.map((c,i)=>'<div class="cu-lg">'+logoEgal(G,c.key,o.base,40,36)+'</div><b>'+nom(c)+'</b>'
     +(px[i]!=null?'<span class="cu-cpx"><em>'+eur(px[i])+'</em> / mois<i>'+cuE(px[i]*12)+' / an</i></span>':'')),'cu-ch');
+  // Ordre (Fabrice, 21/10/2026 : « fais au mieux mais garde tout sur la même page ») : le bilan juste sous les cotisations — le message
+  // principal se lit sans faire défiler —, puis les soins qui le justifient, puis la grille complète des garanties. Rien n'est retiré.
+  let hg='', hs='', hb='';
   // Garanties poste par poste (Fabrice, 20/10/2026 : « pourquoi tu n'indiques que 2 postes ? fais un comparatif… ») ; la meilleure
   // valeur de la ligne en vert, seulement quand les valeurs se comparent (même unité).
-  h+='<div class="cu-leg">% = pourcentage de la base de remboursement de la Sécurité sociale, Sécu comprise · € = forfait · en vert : le mieux disant</div>';
+  hg+='<div class="cu-dpt" style="margin-top:12px">Vos garanties, poste par poste</div>';
+  hg+='<div class="cu-leg">% = pourcentage de la base de remboursement de la Sécurité sociale, Sécu comprise · € = forfait · en vert : le mieux disant</div>';
   for(const [bloc,ls] of CMP_BLOCS){
     const rs=ls.map(([lab,src,f])=>[lab,src,f,cols.map(c=>valeur(G,c.key,c.fi,src))]);   // toutes les lignes, même sans garantie (Fabrice, 20/10/2026 : « ajoute les implants dentaires » —
     // FLEXIA Start et GCI 100 n'en ont pas, la ligne disparaissait) : « — » dit au prospect que le poste n'est pas couvert.
-    h+='<div class="cu-csec">'+bloc+'</div>';
+    hg+='<div class="cu-csec">'+bloc+'</div>';
     for(const [lab,src,f,vals] of rs){ const m=cmpMeilleur(vals);
-      h+=row(f?'<b>'+lab+'</b>':lab,vals.map((v,i)=>'<span class="cu-cv'+(m.includes(i)?' cu-cvm':'')+'">'+v+'</span>'
+      hg+=row(f?'<b>'+lab+'</b>':lab,vals.map((v,i)=>'<span class="cu-cv'+(m.includes(i)?' cu-cvm':'')+'">'+v+'</span>'
         +(src==="dent"&&dentVisibles(G,cols[i].key,cols[i].fi)?'<small>dents visibles : '+dentVisibles(G,cols[i].key,cols[i].fi)+'</small>':'')),f?'cu-cfort':''); }
   }
-  if(!ids.length) h+='<div class="cu-dn">Indiquez les soins prévus (volet « Dépenses ») pour comparer les remboursements.</div>';
+  if(!ids.length) hs+='<div class="cu-dn">Indiquez les soins prévus (volet « Dépenses ») pour comparer les remboursements.</div>';
   else{
-    h+='<div class="cu-dpt" style="margin-top:8px">Vos soins prévus : estimation des remboursements par la mutuelle</div>';
+    hs+='<div class="cu-dpt" style="margin-top:12px">Vos soins prévus : détail des remboursements par la mutuelle</div>';
     for(const id of ids){
       const L=CU_DEPLIB[id]||[id,id], D=CU_DEP.find(x=>x[0]===id), sansSecu=!D[3], auto=estAuto(id);
       const l0=RS.map(R=>R.lignes.find(x=>x.id===id)).find(Boolean);
       // « reste 0 € » toujours écrit (Fabrice, 21/10/2026 : « pourquoi n'as-tu pas calculé les prothèses chez Mutuelle Verte ? » —
   // GCI 500 rembourse la couronne en totalité, la case ne montrait que le montant).
-  const sous=auto?'forfait de chaque formule'
+  const sous=auto?'forfait de chaque formule, si vous l’utilisez'
         :'coût '+(l0.n>1?l0.n+' × '+cuE(l0.p)+' = ':'')+cuE(l0.dep)+(sansSecu?' · non remboursé par la Sécu':l0.secu?' · Sécu '+cuE(l0.secu):'');
-      h+=row('<b>'+L[0]+'</b><small>'+sous+'</small>',RS.map(R=>{const l=R.lignes.find(x=>x.id===id);
+      hs+=row('<b>'+L[0]+'</b><small>'+sous+'</small>',RS.map(R=>{const l=R.lignes.find(x=>x.id===id);
         if(l&&l.nc) return AC;
         if(!l||!(l.mut>0)) return '<span class="cu-cnr">non remboursé</span>'+(l&&!auto?'<small class="cu-dre">reste '+cuE(l.reste)+'</small>':'');
         return '<b class="cu-bv">'+cuE(l.mut)+'</b>'+(auto?'':l.reste>0?'<small class="cu-dre">reste '+cuE(l.reste)+'</small>':'<small class="cu-dr0">reste 0 € · remboursé en totalité</small>')
           +(l.atM?'<small class="cu-dpa">plafond atteint</small>':'')+(l.nc?'<small>† non chiffrable</small>':'');}));
     }
+  }
+  if(ids.length){
     // Bilan pour un prospect, sans explication orale (Fabrice, 21/10/2026) : ce qu'il paie, ce que la Sécurité sociale et la mutuelle
     // lui rembourseraient (deux lignes distinctes), le total, puis ce que la mutuelle lui reviendrait à. Plus de « Solde » ni de
     // « Montants non remboursés » ici : le reste à régler au praticien est sous chaque soin.
-    h+='<div class="cu-dpt" style="margin-top:10px">Votre bilan sur l’année</div>';
+    hb+='<div class="cu-dpt" style="margin-top:10px">Votre bilan sur l’année</div>';
     const eu=(i,f)=>px[i]!=null?f(px[i]):AC;
-    h+=row('Votre cotisation par mois',cols.map((_,i)=>eu(i,x=>'<b>'+eur(x)+'</b>')));
-    h+=row('Vos cotisations sur 12 mois<sup>1</sup>',cols.map((_,i)=>eu(i,x=>'<b>'+cuE(x*12)+'</b>')));
-    h+=row('La Sécurité sociale vous rembourserait',RS.map(R=>'<span class="cu-cn">'+cuE(R.secu)+'</span>'));
-    h+=row('Votre mutuelle vous rembourserait',RS.map(R=>{if(R.nc) return AC;
-      const fa=cuR(R.lignes.filter(l=>l.auto).reduce((u,l)=>u+l.mut,0));
-      return '<b class="cu-bv">'+cuE(R.mut)+'</b>'+(fa>0?'<small>dont '+cuE(fa)+' de forfaits médecines douces et pharmacie</small>':'');}));
-    h+=row('Vous récupéreriez au total',RS.map(R=>R.nc?AC:'<b class="cu-bv">'+cuE(R.secu+R.mut)+'</b>'));
-    h+=row('<b>Après ses remboursements, votre mutuelle vous reviendrait à</b>',net.map(v=>v==null?AC
+    hb+=row('Votre cotisation par mois',cols.map((_,i)=>eu(i,x=>'<b>'+eur(x)+'</b>')));
+    hb+=row('Vos cotisations sur 12 mois<sup>1</sup>',cols.map((_,i)=>eu(i,x=>'<b>'+cuE(x*12)+'</b>')));
+    hb+=row('La Sécurité sociale vous rembourserait',RS.map(R=>'<span class="cu-cn">'+cuE(R.secu)+'</span>'));
+    hb+=row('Votre mutuelle vous rembourserait',RS.map(R=>{if(R.nc) return AC;
+      return '<b class="cu-bv">'+cuE(R.mut)+'</b>'+(fa(R)>0?'<small>dont '+cuE(fa(R))+' de forfaits, si utilisés</small>':'');}));
+    hb+=row('Vous récupéreriez au total',RS.map(R=>R.nc?AC:'<b class="cu-bv">'+cuE(R.secu+R.mut)+'</b>'));
+    hb+=row('<b>Après ses remboursements, votre mutuelle vous reviendrait à</b>',net.map(v=>v==null?AC
       :v>=0?'<b class="cu-cn cu-rev">'+cuE(v)+'</b><small>sur l’année</small>'
-      :'<b class="cu-cn cu-rev">0 €</b><small>elle vous rembourserait '+cuE(-v)+' de plus que vos cotisations</small>'),'cu-ctot');
-    h+='<div class="cu-res">Estimation pour les soins renseignés, sous réserve des conditions, plafonds et délais d’attente du contrat.</div>';
+      :'<b class="cu-cn cu-rev">0 €</b><small>pour ces soins, vos remboursements dépasseraient vos cotisations de '+cuE(-v)+'</small>'),'cu-ctot');
+    hb+='<div class="cu-res">Estimation pour les soins renseignés, sous réserve des conditions, plafonds et délais d’attente du contrat.</div>';
   }
+  h+=hb+hs+hg;
   const plaf=cols.map((c,i)=>{const P=RS[i].plafM; return nom(c)+' : '+(!P?'pas de plafond dentaire':P.m==null?'plafond '+P.nc:cuNb(P.m)+' € par an');});
   h+='<div class="cu-dn">'+(prix?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
     +'Tableau présenté à titre indicatif — document non contractuel. Les forfaits (implants, lunettes, lentilles, médecines douces…) sont remboursés dans la limite de la dépense réelle, jamais au-delà. Pourcentages Sécurité sociale comprise, sur les bases de remboursement de l’Assurance maladie (ameli.fr) : prothèse 60 % du tarif de convention (couronne 120 €, bridge 279,50 €, inlay-core 90 €), orthodontie avant 16 ans 100 % de 193,50 € par semestre ; implants, lunettes, lentilles, médecines douces : 0 € de Sécurité sociale ; prothèses hors panier 100 % Santé ; implants et orthodontie non remboursée au forfait, après les délais d’attente. Plafonds dentaires (1re année d’adhésion, appliqués) — '+plaf.join(' ; ')+'.'
