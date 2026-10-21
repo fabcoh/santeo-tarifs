@@ -569,6 +569,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul.cu-cmp .cu-cbest .cu-cpx em{color:var(--v)}
 .cumul .cu-cr .cu-cnr{color:var(--m);font-size:10.5px}
 .cumul .cu-cbest{background:#EEF8F1}
+#tgbox .tgdv,.tgdv{font-size:10px;font-weight:400;color:#5B6778;margin-top:2px;line-height:1.2}
 .cumul .cu-csec{font:700 12px Archivo,sans-serif;text-transform:uppercase;letter-spacing:.04em;color:var(--k);padding:9px 3px 3px;border-bottom:2px solid var(--k)}
 .cumul .cu-cr .cu-cv{font-size:11.5px}.cumul .cu-cr .cu-cvm{color:var(--v);font-weight:700}
 .cumul .cu-cfort .cu-cv{font-weight:700}
@@ -652,7 +653,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-21T04:41:59Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-21T04:41:59Z</div>
+  <div id="buildstamp" data-build="2026-10-21T04:51:04Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-21T04:51:04Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1048,6 +1049,18 @@ function valeur(G,key,fi,src){
   const arr=f&&f[src];return (arr&&arr[fi]!==undefined)?arr[fi]:"—";
 }
 
+// Prothèses à deux taux (Mutuelle Verte : « dents visibles » / « autres dents », Fabrice 21/10/2026) : `dent` porte le taux le plus
+// bas — celui des calculs, des filtres et des images —, `x:dentV` celui des dents visibles. `affiche` les écrit tous les deux.
+function dentVisibles(G,key,fi){
+  const v=valeur(G,key,fi,"x:dentV"); return v!=="—"&&v!==valeur(G,key,fi,"dent")?v:"";
+}
+function affiche(G,key,fi,src){
+  const v=valeur(G,key,fi,src);
+  if(src!=="dent") return v;
+  const dv=dentVisibles(G,key,fi);
+  return dv?v+" (dents visibles : "+dv+")":v;
+}
+
 // Tant qu'un logo manque, le nom de la compagnie s'affiche à sa place : rien ne casse.
 // Dimensions des fichiers (px) : la vignette du cumul égalise la surface des logos, pas leur hauteur — un bandeau (MCCI,
 // 545 × 160) à la même hauteur qu'un logo presque carré (Avenir, 211 × 160) paraissait deux fois plus gros (Fabrice, 20/10/2026).
@@ -1108,7 +1121,8 @@ function corps(G,cols,reco){
       h+='<tr class="tgsec"><td>'+b+'</td>'+cols.map(c=>'<td'+(estReco(reco,c)?' class="reco"':'')+'></td>').join('')+'</tr>';
     }
     h+='<tr'+(fort?' class="fort"':'')+'><td>'+lab+'</td>'
-      +cols.map(c=>'<td'+(estReco(reco,c)?' class="reco"':'')+'>'+valeur(G,c.key,c.fi,src)+'</td>').join('')
+      +cols.map(c=>'<td'+(estReco(reco,c)?' class="reco"':'')+'>'+valeur(G,c.key,c.fi,src)
+        +(src==="dent"&&dentVisibles(G,c.key,c.fi)?'<div class="tgdv">dents visibles : '+dentVisibles(G,c.key,c.fi)+'</div>':'')+'</td>').join('')
       +'</tr>';
   }
   return h;
@@ -1543,15 +1557,15 @@ const CMP_BLOCS=[
   ["Optique",[["Lunettes, verres simples","opt",1],["Lunettes, verres complexes","x:optC"],["Lentilles","x:lentA"]]],
   ["Autres",[["Médecines douces","md"],["Aides auditives","x:aud"],["Pharmacie non remboursée","x:pharN"]]]
 ];
-// Indice de la meilleure valeur d'une ligne, quand toutes se lisent dans la même unité ; -1 sinon (ou si toutes sont égales).
+// Indices des meilleures valeurs d'une ligne, quand toutes se lisent dans la même unité ; [] sinon (ou si toutes sont égales).
 function cmpMeilleur(vals){
   // « — » (pas de garantie) compte pour zéro face aux autres ; « n.c. » ou un texte rendent la ligne incomparable.
   const Q=vals.map(v=>String(v).trim()==="—"?"—":cuLire(v)), R=Q.filter(x=>x!=="—");
-  if(!R.length||R.some(x=>!x||x.raw)) return -1;
+  if(!R.length||R.some(x=>!x||x.raw)) return [];
   const P=Q.map(x=>x==="—"?{n:0,u:R[0].u,s:R[0].s}:x);
-  if(P.some(x=>x.u!==P[0].u||(x.s||"")!==(P[0].s||""))) return -1;
-  const m=Math.max(...P.map(x=>x.n)); if(P.every(x=>x.n===m)) return -1;
-  return P.findIndex(x=>x.n===m);
+  if(P.some(x=>x.u!==P[0].u||(x.s||"")!==(P[0].s||""))) return [];
+  const m=Math.max(...P.map(x=>x.n)); if(P.every(x=>x.n===m)) return [];
+  return P.map((x,i)=>x.n===m?i:-1).filter(i=>i>=0);   // ex æquo : toutes en vert
 }
 function comparatifSoins(G,o){
   o=o||{}; const cols=(o.cols||[]).slice(0,4), tar=o.tarifs||{};
@@ -1586,7 +1600,8 @@ function comparatifSoins(G,o){
     // FLEXIA Start et GCI 100 n'en ont pas, la ligne disparaissait) : « — » dit au prospect que le poste n'est pas couvert.
     h+='<div class="cu-csec">'+bloc+'</div>';
     for(const [lab,src,f,vals] of rs){ const m=cmpMeilleur(vals);
-      h+=row(f?'<b>'+lab+'</b>':lab,vals.map((v,i)=>'<span class="cu-cv'+(i===m?' cu-cvm':'')+'">'+v+'</span>'),f?'cu-cfort':''); }
+      h+=row(f?'<b>'+lab+'</b>':lab,vals.map((v,i)=>'<span class="cu-cv'+(m.includes(i)?' cu-cvm':'')+'">'+v+'</span>'
+        +(src==="dent"&&dentVisibles(G,cols[i].key,cols[i].fi)?'<small>dents visibles : '+dentVisibles(G,cols[i].key,cols[i].fi)+'</small>':'')),f?'cu-cfort':''); }
   }
   if(!ids.length) h+='<div class="cu-dn">Indiquez les soins prévus (volet « Dépenses ») pour comparer les remboursements.</div>';
   else{
@@ -1607,7 +1622,10 @@ function comparatifSoins(G,o){
     if(prix) h+=row('Cotisation annuelle<sup>1</sup>',px.map(x=>'<b>'+cuE(x*12)+'</b><small>'+eur(x)+' × 12</small>'));
     // Trois lignes (Fabrice, 20/10/2026 : « Cotisation annuelle, Remboursements, Solde ») ; solde = remboursements − cotisation,
     // en vert s'il est en faveur du prospect, en rouge sinon.
-    h+=row('Remboursements',RS.map(R=>'<b class="cu-bv">'+cuE(R.mut)+'</b>'));
+    // « dont x € de forfaits » (Fabrice, 21/10/2026 : « ok ») : les forfaits médecines douces / pharmacie comptent dans le solde, pas
+    // dans les montants non remboursés — l'écart entre formules s'explique ainsi sans calcul.
+    h+=row('Remboursements',RS.map(R=>{const fa=cuR(R.lignes.filter(l=>l.auto).reduce((u,l)=>u+l.mut,0));
+      return '<b class="cu-bv">'+cuE(R.mut)+'</b>'+(fa>0?'<small>dont '+cuE(fa)+' de forfaits médecines douces et pharmacie</small>':'');}));
     if(prix) h+=row('<b>Solde</b>',net.map(v=>v<=0?'<b class="cu-bv">+ '+cuE(-v)+'</b>':'<b class="cu-brr">− '+cuE(v)+'</b>'),'cu-ctot');
     // Ce qu'aucun contrat ne paie, en noir, sous le solde (Fabrice, 21/10/2026 : d'abord un bloc « Solde restant à votre charge »,
     // puis « laisse juste la ligne montants non remboursés »). Forfaits auto exclus : ils sont consommés en entier.
@@ -1661,7 +1679,8 @@ function cumul(G,o){
         if(l.length){const n="*".repeat(notes.length+1);
           tt='<span>'+tt+'<sup class="cu-ast">'+n+'</sup></span>';
           notes.push('<sup>'+n+'</sup> '+ast.titre+' — '+l.map(x=>x.txt).join(" ; ")+"."+(a&&b?ast.fin(a,b):""));}}
-      h+=ligne(CU_POSTES[src],v1(src),cuPlus(v2(src)),tt,plus?"cu-up":"");}
+      const dv=src==="dent"?dentVisibles(G,M.key,M.fi):"";
+      h+=ligne(CU_POSTES[src],v1(src)+(dv?'<small>dents visibles : '+dv+'</small>':''),cuPlus(v2(src)),tt,plus?"cu-up":"");}
   }
   h+=ligne("","","","","cu-fin");
   // Cotisation juste sous le tableau, puis le bandeau TALIS, puis les explications (Fabrice, 20/10/2026 : « remonte les
@@ -1688,6 +1707,8 @@ exporter.BLOCS=BLOCS;
 exporter.ATOUTS=ATOUTS;
 exporter.LOGOBASE=LOGOBASE;
 exporter.valeur=valeur;
+exporter.affiche=affiche;
+exporter.dentVisibles=dentVisibles;
 exporter.logo=logo;
 exporter.marque=marque;
 exporter.legal=legal;
@@ -1803,7 +1824,10 @@ const F = {
   MV:{label:"M. VERTE GCI",resp:true,ins:"mverte",names:["GCI 100","GCI 150","GCI 200","GCI 300","GCI 500"],
     hospO:["100 %","160 %","200 %","300 %","500 %"],hospN:["100 %","140 %","180 %","200 %","200 %"],
     honoO:["100 %","160 %","200 %","300 %","500 %"],honoN:["100 %","140 %","180 %","200 %","500 %"],
-    dent:["100 %","200 %","250 %","400 %","500 %"],opt:["100 %","100 €","150 €","200 €","250 €"],
+    // Prothèses : le tableau distingue « dents visibles » (incisives, canines, 1res prémolaires) et « autres dents » (2es prémolaires,
+    // molaires), TG p.1 renvoi (12). `dent` porte le taux le plus bas, qui sert aux calculs, filtres et images ; `EX.MV.dentV` le taux
+    // des dents visibles, affiché à côté (Fabrice, 21/10/2026 : « ok » — le comparateur affichait 400 % partout en GCI 300).
+    dent:["100 %","150 %","200 %","300 %","400 %"],opt:["100 %","100 €","150 €","200 €","250 €"],
     ch:["—","50 €/j","55 €/j","65 €/j","70 €/j"],md:["10 €/s","20 €/s","30 €/s","40 €/s","50 €/s"]},
   LPSH:{label:"LPS HOSPI",resp:false,ins:"avenir",names:["LPS Hospi Santé"],
     ij:["20 €/jour dès le 1er jour"],
@@ -1841,7 +1865,7 @@ const EX={
     aud:["+50 €","+100 €","+150 €","+200 €","+250 €","+300 €","+350 €"],imp:["40 €","60 €","80 €","100 €","150 €","200 €","250 €"],orthR:["150 %","175 %","200 %","225 %","250 %","300 %","350 %"],orthN:["50 %","75 %","100 %","125 %","150 %","200 %","250 %"],lentA:["150 €","175 €","200 €","225 €","275 €","325 €","350 €"],lentR:["150 €","175 €","200 €","225 €","275 €","325 €","350 €"]},
   RF100:{optC:["250 €", "250 €", "250 €", "250 €", "275 €"],pharR:["100 %", "100 %", "100 %", "100 %", "100 %"],pharN:["—", "—", "—", "—", "—"],
     aud:["+50 €","+100 €","+150 €","+200 €","+250 €"],imp:["40 €","60 €","80 €","100 €","150 €"],orthR:["200 %","225 %","250 %","275 %","300 %"],orthN:["100 %","125 %","150 %","175 %","200 %"],lentA:["150 €","175 €","200 €","225 €","275 €"],lentR:["150 €","175 €","200 €","225 €","275 €"]},
-  MV:{optC:["100 %", "200 €", "250 €", "300 €", "350 €"],pharR:["100 %", "100 %", "100 %", "100 %", "100 %"],pharN:["—", "30 €/an (tabac)", "50 €/an (tabac)", "50 €/an (tabac)", "50 €/an (tabac)"],
+  MV:{dentV:["100 %","200 %","250 %","400 %","500 %"],optC:["100 %", "200 €", "250 €", "300 €", "350 €"],pharR:["100 %", "100 %", "100 %", "100 %", "100 %"],pharN:["—", "30 €/an (tabac)", "50 €/an (tabac)", "50 €/an (tabac)", "50 €/an (tabac)"],
     aud:["100 %","150 %","200 %","300 %","500 %"],imp:["—","300 €","350 €","400 €","500 €"],
     orthR:["100 %","200 %","250 %","400 %","500 %"],orthN:["—","300 €","350 €","400 €","500 €"],
     lentA:["50 €","100 €","150 €","150 €","200 €"],lentR:["50 €","100 €","150 €","150 €","200 €"]},
@@ -4165,6 +4189,7 @@ function offreTxt(r,full){
       let v;
       if(src.startsWith("x:")){const k2=src.slice(2);v=(e[k2]&&e[k2][r.fi]!==undefined)?e[k2][r.fi]:"—";}
       else v=(f[src]&&f[src][r.fi]!==undefined)?f[src][r.fi]:"—";
+      if(src==="dent"&&v&&v!=="—") v=Tableau.affiche(GAR,r.key,r.fi,"dent");
       if(v&&v!=="—")lines.push("   - "+lab+" : "+v);
     }
     if(lines.length)s+="\n"+lines.join("\n");
@@ -4545,7 +4570,7 @@ function mailTableau(cols){
   let bloc=null;
   for(const [lab,src,fort,b] of TGROWS){
     if(b!==bloc){ bloc=b; lignes.push([b,[],0,"titre"]); }
-    lignes.push([lab,cols.map(c=>String(Tableau.valeur(GAR,c.key,c.fi,src)||"—")),LIGNES_AVANT.has(lab)?1:0,fort?"fort":""]);
+    lignes.push([lab,cols.map(c=>String(Tableau.affiche(GAR,c.key,c.fi,src)||"—")),LIGNES_AVANT.has(lab)?1:0,fort?"fort":""]);
   }
   const colonnes=cols.map(c=>{
     const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi), g=F[c.key];
@@ -5152,7 +5177,7 @@ function render(rows,warns){
       +'<div class="fname">'+r.formule+'<button type="button" class="rowvoir" data-voir="'+rk+'" title="Voir le tableau de garantie officiel" aria-label="Voir le document">👁</button>'+('<button class="rowstar'+(isR?" on":"")+'" data-star="'+rk+'" title="Conseiller cette formule">'+(isR?"⭐":"☆")+'</button>')+'</div>'
       +'<div class="chips">'+(isR?'<span class="chip reco">⭐ Je vous conseille</span>':"")+chips+"</div></td>"+
       '<td class="num total">'+eur(r.total)+(r.incomplete?" *":"")+"</td>"+
-      '<td class="g">'+r.dent+"</td>"+
+      '<td class="g">'+r.dent+(Tableau.dentVisibles(GAR,r.key,r.fi)?'<div class="hosp">'+Tableau.dentVisibles(GAR,r.key,r.fi)+' dents visibles</div>':'')+"</td>"+
       EXD.filter(e=>exOn[e[0]]).map(e=>'<td class="g">'+exVal(r.key,e[0],r.fi)+"</td>").join("")+
       '<td class="g">'+r.hospO+(r.ch&&r.ch!=="—"?'<div class="hosp">'+r.ch.replace("/j","")+' ch. part.</div>':"")+'</td><td class="g">'+r.hospN+"</td>"+
       '<td class="g">'+r.honoO+'</td><td class="g">'+r.honoN+"</td>"+

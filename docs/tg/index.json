@@ -1,6 +1,6 @@
 {
- "empreinte": "3610450ac51a3799",
- "genere": "2026-10-21T04:42:52.459Z",
+ "empreinte": "c45da5376963986b",
+ "genere": "2026-10-21T04:51:52.629Z",
  "source": "Comparateur Santéo — src/selections.js sur src/garanties.json",
  "niveaux": {
   "1": "100 % (ou un forfait en euros)",
@@ -113,7 +113,7 @@
      "gamme": "M. VERTE GCI",
      "formule": "GCI 150",
      "nom": "M. VERTE GCI 150",
-     "valeur": "200 %",
+     "valeur": "150 %",
      "responsable": true
     },
     {
@@ -172,12 +172,12 @@
     },
     {
      "key": "MV",
-     "fi": 1,
+     "fi": 2,
      "compagnie": "M. VERTE",
      "logo": "mverte",
      "gamme": "M. VERTE GCI",
-     "formule": "GCI 150",
-     "nom": "M. VERTE GCI 150",
+     "formule": "GCI 200",
+     "nom": "M. VERTE GCI 200",
      "valeur": "200 %",
      "responsable": true
     },
@@ -243,7 +243,7 @@
      "gamme": "M. VERTE GCI",
      "formule": "GCI 500",
      "nom": "M. VERTE GCI 500",
-     "valeur": "500 %",
+     "valeur": "400 %",
      "responsable": true
     },
     {
