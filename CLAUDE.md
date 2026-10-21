@@ -351,7 +351,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   pour chaque compagnie ») : bascule dans la fenêtre 🧮 Cumul, `Tableau.comparatifSoins` — formules cochées (4 au plus), soins seulement,
   garanties poste par poste (`CMP_BLOCS`, mieux disant en vert ; Fabrice : « pourquoi tu n'indiques que 2 postes ? »), puis les soins prévus,
   cotisation mise en avant et en-têtes alignés, remboursé par la mutuelle (hors Sécu), un forfait non remboursé n'est pas
-  déduit, bilan « Cotisation annuelle · Remboursements · Solde », le meilleur mis en avant (détail dans le skill). Paro et endo : pas encore dans les données. Corrigé au passage : le plafond dentaire ne
+  déduit, bilan « Cotisation annuelle · Remboursements · Solde » puis, en noir, « Solde restant à votre charge » (cotisation de l'année + montants non remboursés = solde à votre charge, étalable chez le praticien), le meilleur mis en avant (détail dans le skill). Paro et endo : pas encore dans les données. Corrigé au passage : le plafond dentaire ne
   s'applique plus qu'aux soins dentaires (`cuSoin`), il touchait aussi lunettes, médecines douces et pharmacie. Test : scratchpad `t_cumul16.js`.
   **Toutes les règles du cumul sont dans le skill `.claude/skills/calculette-cumul/SKILL.md`** (Fabrice, 20/10/2026 : « fais un
   skill avec toutes les règles et les suivantes ») — chaque nouvelle règle s'y ajoute. Règle absolue : **jamais plus remboursé

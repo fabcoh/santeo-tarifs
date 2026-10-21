@@ -159,6 +159,11 @@ pour chaque compagnie ». Réponses : colonnes = **formules cochées** (4 au plu
   (x € × 12) · remboursements (par la mutuelle, hors Sécu, total des soins prévus) · **solde = remboursements − cotisation**,
   « + x € » en vert s'il est en faveur du prospect, « − x € » en rouge sinon. Le classement se fait sur ce solde.
   Libellés seuls, sans sous-titre : « Remboursements », « Solde » (Fabrice, 20/10/2026).
+- **« Solde restant à votre charge pour les dépenses »**, en noir, sous le bilan (Fabrice, 21/10/2026), seulement s'il y a des
+  soins hors forfaits auto : « Cotisation mutuelle » (cotisation de l'année) · « Montants non remboursés »
+  (somme des restes, après Sécu et mutuelle) · **« Solde à votre charge »** = les deux (les remboursements sont déjà sortis des
+  restes : les retirer aussi de la cotisation les compterait deux fois), avec « ce montant pouvant être étalé chez votre
+  praticien, s'il l'accepte ». Même classement que le solde (la dépense hors Sécu est la même pour toutes les formules).
 - En tête (`.cu-top`) : « La plus avantageuse pour ces soins : <formule> — solde de l'année ± X € · Y € de mieux que la suivante » ; sa colonne sur fond vert très pâle (`.cu-cbest`), le seul fond permis.
 - Image `comparatif_….png`, même barre (WhatsApp, Télécharger, CRM).
 

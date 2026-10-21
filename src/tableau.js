@@ -645,6 +645,17 @@ function comparatifSoins(G,o){
     // en vert s'il est en faveur du prospect, en rouge sinon.
     h+=row('Remboursements',RS.map(R=>'<b class="cu-bv">'+cuE(R.mut)+'</b>'));
     if(prix) h+=row('<b>Solde</b>',net.map(v=>v<=0?'<b class="cu-bv">+ '+cuE(-v)+'</b>':'<b class="cu-brr">− '+cuE(v)+'</b>'),'cu-ctot');
+    // Ce qui reste à payer en tout, en noir (Fabrice, 21/10/2026 : « Solde restant à votre charge pour les dépenses — Cotisation
+    // mutuelle = + ou −, Montants non remboursés, Solde à votre charge, ce montant pouvant être étalé chez votre praticien s'il
+    // accepte ») : cotisation de l'année + ce qu'aucun contrat ne paie. Les remboursements sont déjà sortis des « montants non
+    // remboursés » : déduire aussi la cotisation des remboursements les compterait deux fois.
+    if(prix&&ids.some(id=>!estAuto(id))){
+      h+='<div class="cu-dpt cu-chg" style="margin-top:10px">Solde restant à votre charge pour les dépenses</div>';
+      h+=row('Cotisation mutuelle',px.map(x=>'<span class="cu-cn">'+cuE(x*12)+'</span>'));
+      h+=row('Montants non remboursés',RS.map(R=>'<span class="cu-cn">+ '+cuE(R.reste)+'</span>'));
+      h+=row('<b>Solde à votre charge</b><small>ce montant pouvant être étalé chez votre praticien, s’il l’accepte</small>',
+        RS.map((R,i)=>'<b class="cu-cn">'+cuE(cuR(px[i]*12+R.reste))+'</b>'),'cu-ctot cu-chg');
+    }
   }
   const plaf=cols.map((c,i)=>{const P=RS[i].plafM; return nom(c)+' : '+(!P?'pas de plafond dentaire':P.m==null?'plafond '+P.nc:cuNb(P.m)+' € par an');});
   h+='<div class="cu-dn">'+(prix?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')

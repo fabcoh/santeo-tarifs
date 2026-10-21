@@ -77,6 +77,13 @@ for(const dep of [null,{cour:{n:1,p:680},imp:{n:1,p:1000},md:{auto:1},phn:{auto:
 { n++; const R=T.cumulDepenses(G,{key:"FLEXIA",fi:0},null,{md:{auto:1}});
   if(R.lignes.some(l=>l.id==="md"&&l.reste>0)) ko.push("FLEXIA Start : medecines douces non remboursees comptees en reste"); }
 
+// 7 bis. Solde à votre charge = cotisation de l'année + montants non remboursés (Fabrice, 21/10/2026) ; même classement que le solde.
+{ n++; const cols=[{key:"FLEXIA",fi:0},{key:"CAPEVO",fi:1}], t={"FLEXIA|0":33.67,"CAPEVO|1":53.65}, dep={cour:{n:1,p:680},imp:{n:1,p:1000},lun:{n:1,p:300},md:{auto:1},phn:{auto:1}};
+  const h=T.comparatifSoins(G,{cols,tarifs:t,depenses:dep});
+  if(h.indexOf("Solde restant à votre charge")<0) ko.push("comparatif : bloc « Solde restant à votre charge » absent");
+  for(const c of cols){ const R=T.cumulDepenses(G,c,null,dep), v=Math.round(t[c.key+"|"+c.fi]*12+R.reste), e=Math.abs(v).toLocaleString("fr-FR")+" €";
+    if(h.indexOf(e)<0) ko.push("comparatif : solde à charge "+c.key+" "+e+" absent"); } }
+
 // 8. Le plafond dentaire ne touche que les soins dentaires (constaté le 20/10/2026 : lunettes et médecines douces de la
 // Mutuelle Verte « plafond atteint » après une couronne et un implant).
 { const R=T.cumulDepenses(G,{key:"MV",fi:2},null,{cour:{n:1,p:680},imp:{n:1,p:1000},lun:{n:1,p:300},md:{n:1,p:160},phn:{n:1,p:30}}); n++;
