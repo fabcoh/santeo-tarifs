@@ -495,6 +495,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Tests : scratchpad `t_mcci.js`, `t_mcci2.js`, `depot/t_lien.js`.
 - **Titre de la fenêtre d'adhésion** (01/10/2026) : « Adhésion — gamme formule · xx,xx €/mois » (`#adhtit`), le tarif
   retenu pour vérifier ; il suit le recalcul « Souscripteur non assuré » de Révoluo.
+  **Code postal d'une fiche du CRM** (Fabrice, 21/10/2026 : fiche de Saint-Maur arrivée sans code postal, le champ gardait celui du
+  prospect précédent) : `cpNorm` accepte nombre ou chaîne (`94100`, `9400.0`, `6000` → `06000`, aussi `codePostal` / `code_postal`) ;
+  une fiche choisie dans la recherche (`applyFicheJSON(d, true)`) **remet à zéro** code postal, conjoint, enfants, régime et coordonnées
+  du prospect précédent ; sans code postal, `cpParVille` interroge geo.api.gouv.fr — un seul code postal → posé, plusieurs → département
+  seul + « code postal à préciser (94100 ou 94210) » dans la fenêtre « Données importées » (`#impnote`), rien → « à saisir ». Cause
+  probable côté CRM (`readSanteoText` ignore un code postal en nombre) : demande dans le carnet du 21/10/2026. Test : scratchpad `t_cpville.js`.
   **Une fiche n'est pas une liste** (30/09/2026, fiche 294413) : la fiche complète porte ses propres tableaux
   (`assures`, `enfants`) ; la règle « premier tableau d'objets de la réponse » prenait `assures` pour une liste —
   « 3 fiches, choisis la bonne » (l'adhérent, un assuré vide, ENFANT3). Un objet qui a `nom`, `prenom`,
