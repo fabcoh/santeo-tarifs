@@ -630,6 +630,11 @@ function comparatifSoins(G,o){
     +cells.map((x,i)=>C("cu-cc"+(i===best?" cu-cbest":""),x)).join("")+'</div>';
   let h='<div class="cu-ti">Comparatif de vos remboursements</div>'+(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'');
   const fa=R=>cuR(R.lignes.filter(l=>l.auto).reduce((u,l)=>u+l.mut,0));
+  // Rappel des besoins saisis, en tête, en bordeaux un peu plus gros (Fabrice, 21/10/2026 : « Rappel des besoins : implantologie
+  // 2 000 €, prothèse dentaire 600 €, lunettes 250 € »). Seuls les soins renseignés ; les forfaits comptés d'office n'y sont pas.
+  const rap=ids.filter(id=>!estAuto(id)).map(id=>{const l=RS.map(R=>R.lignes.find(x=>x.id===id)).find(Boolean), L=CU_DEPLIB[id]||[id,id];
+    return '<span>'+(l.n>1?l.n+' × ':'')+L[0]+' <b>'+cuE(l.dep)+'</b></span>';});
+  if(rap.length) h+='<div class="cu-rap"><em>Rappel des besoins :</em> '+rap.join('<i>·</i>')+'</div>';
   if(best>=0&&cols.length>1){ const o2=net.filter((v,i)=>i!==best&&v!=null), d=o2.length?Math.min(...o2)-net[best]:0, faB=fa(RS[best]);
     h+='<div class="cu-top"><div class="cu-tg" style="text-align:left;border:0"><b>La plus avantageuse pour ces soins</b><em>'+nom(cols[best])+'</em>'
       +'<span>'+(net[best]>=0?'après ses remboursements, elle vous reviendrait à '+cuE(net[best])+' sur l’année'

@@ -180,6 +180,9 @@ pour chaque compagnie ». Réponses : colonnes = **formules cochées** (4 au plu
   vos cotisations de x € » (jamais « ne vous coûte rien ») ; forfaits auto → « dont x € si vous utilisez vos forfaits médecines
   douces et pharmacie » dans le bandeau, « dont x € de forfaits, si utilisés » dans la case, « forfait de chaque formule, si vous
   l'utilisez » sous le soin ; sous le bandeau : « La mieux placée pour ces soins, pas forcément la mieux couverte ».
+- **Rappel des besoins** en tête (Fabrice, 21/10/2026) : sous le titre, en bordeaux #8B1E2D, 13,5 px, filet à gauche :
+  « Rappel des besoins : Implant 2 000 € · Prothèse dentaire (couronne) 600 € · Lunettes 250 € » — les soins saisis dans le volet
+  Dépenses (n × libellé si n > 1, montant total), sans les forfaits comptés d'office.
 - **Inconnu = « À confirmer », jamais zéro** : cotisation absente, garantie « n.c. » (soin ou forfait auto) → la case, le total
   et « vous reviendrait à » de la formule disent « À confirmer » ; elle n'entre pas dans le classement.
 - **Couronnes Mutuelle Verte au taux « autres dents »** (le plus bas ; dents visibles affichées à côté, `dentVisibles`).
