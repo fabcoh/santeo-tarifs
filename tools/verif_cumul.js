@@ -77,12 +77,17 @@ for(const dep of [null,{cour:{n:1,p:680},imp:{n:1,p:1000},md:{auto:1},phn:{auto:
 { n++; const R=T.cumulDepenses(G,{key:"FLEXIA",fi:0},null,{md:{auto:1}});
   if(R.lignes.some(l=>l.id==="md"&&l.reste>0)) ko.push("FLEXIA Start : medecines douces non remboursees comptees en reste"); }
 
-// 7 bis. Solde à votre charge = cotisation de l'année + montants non remboursés (Fabrice, 21/10/2026) ; même classement que le solde.
-{ n++; const cols=[{key:"FLEXIA",fi:0},{key:"CAPEVO",fi:1}], t={"FLEXIA|0":33.67,"CAPEVO|1":53.65}, dep={cour:{n:1,p:680},imp:{n:1,p:1000},lun:{n:1,p:300},md:{auto:1},phn:{auto:1}};
+// 7 bis. Cohérence du bilan (Fabrice, 21/10/2026 : « regarde la cohérence du tableau ») : pour chaque formule, ce que la mutuelle
+//    rembourse sur les soins (hors forfaits auto) + les montants non remboursés = la même dépense hors Sécu ; la ligne est affichée.
+for(const cols of [[{key:"CAPEVO",fi:2},{key:"MV",fi:3},{key:"FLEXIA",fi:3}],[{key:"FLEXIA",fi:0},{key:"CAPEVO",fi:1},{key:"MV",fi:4}]]){ n++;
+  const dep={cour:{n:1,p:680},imp:{n:1,p:1000},lun:{n:1,p:300},md:{auto:1},phn:{auto:1}};
+  const t={}; cols.forEach((c,i)=>t[c.key+"|"+c.fi]=100+i*20);
   const h=T.comparatifSoins(G,{cols,tarifs:t,depenses:dep});
-  if(h.indexOf("Solde restant à votre charge")<0) ko.push("comparatif : bloc « Solde restant à votre charge » absent");
-  for(const c of cols){ const R=T.cumulDepenses(G,c,null,dep), v=Math.round(t[c.key+"|"+c.fi]*12+R.reste), e=Math.abs(v).toLocaleString("fr-FR")+" €";
-    if(h.indexOf(e)<0) ko.push("comparatif : solde à charge "+c.key+" "+e+" absent"); } }
+  if(h.indexOf("Montants non remboursés")<0) ko.push("comparatif : ligne « Montants non remboursés » absente");
+  if(h.indexOf("Solde restant à votre charge")>=0) ko.push("comparatif : l'ancien bloc « Solde restant à votre charge » est encore là");
+  const s=cols.map(c=>{const R=T.cumulDepenses(G,c,null,dep), L=R.lignes.filter(l=>!l.auto); return Math.round(L.reduce((u,l)=>u+l.mut+l.reste,0));});
+  const d=Math.round(T.cumulDepenses(G,cols[0],null,dep).lignes.filter(l=>!l.auto).reduce((u,l)=>u+l.dep-l.secu,0));
+  if(s.some(x=>x!==d)) ko.push("comparatif : rembourse + non rembourse != depense hors Secu : "+s.join("/")+" au lieu de "+d); }
 
 // 8. Le plafond dentaire ne touche que les soins dentaires (constaté le 20/10/2026 : lunettes et médecines douces de la
 // Mutuelle Verte « plafond atteint » après une couronne et un implant).

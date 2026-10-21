@@ -547,7 +547,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-cr>div{padding:5px 3px;font-size:11.5px;display:flex;flex-direction:column;justify-content:center;text-align:center;min-width:0}
 .cumul .cu-cr>.cu-l{text-align:left;align-items:flex-start}
 .cumul .cu-cr small{display:block;font:400 9.5px 'IBM Plex Sans',sans-serif;color:var(--m)}
-.cumul .cu-cr small.cu-dre{color:var(--r);text-align:center}.cumul .cu-cr .cu-cn{color:var(--k)}.cumul .cu-chg .cu-cbest b.cu-cn{color:var(--k)}.cumul .cu-cr small.cu-dr0{color:var(--v);text-align:center}.cumul .cu-cr small.cu-dpa{color:var(--r);font-weight:700}
+.cumul .cu-cr small.cu-dre{color:var(--r);text-align:center}.cumul .cu-cr .cu-cn{color:var(--k)}.cumul .cu-cnr2{border-bottom:2px solid var(--k)}.cumul .cu-cr small.cu-dr0{color:var(--v);text-align:center}.cumul .cu-cr small.cu-dpa{color:var(--r);font-weight:700}
 .cumul .cu-ch>div{border-top:3px solid var(--k);font-size:11px;justify-content:flex-start;padding-top:6px}
 .cumul .cu-ch>.cu-l{border-top-color:transparent}
 .cumul .cu-ch b{display:block;min-height:28px}
@@ -565,7 +565,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-cfort .cu-cv{font-weight:700}
 .cumul .cu-ch .cu-cbest{border-top-color:var(--v)}
 .cumul .cu-ctot{border-bottom:2px solid var(--k)}.cumul .cu-ctot>div{font-size:12.5px}
-.cumul .cu-ctot .cu-cbest b{color:var(--v)}
+.cumul .cu-ctot .cu-cbest b:not(.cu-brr){color:var(--v)}
 #cubox .cu-dauto{font:600 10.5px 'Archivo',sans-serif;color:var(--muted);text-align:center}
 #cubox .cu-dlh{font:700 9.5px 'Archivo',sans-serif;color:var(--muted);text-transform:uppercase}
 #cubox #cuRaz,#cubox #cuRazD{margin-top:6px;font:600 11.5px 'Archivo',sans-serif;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:3px 9px;cursor:pointer}
