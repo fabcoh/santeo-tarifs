@@ -640,7 +640,8 @@ function comparatifSoins(G,o){
   // En-tête : logo dans une case de hauteur fixe, nom, puis la cotisation mise en avant, alignée en bas de toutes les colonnes
   // (Fabrice, 20/10/2026 : « mettre en avant le tarif du dessus et tout bien aligner les logos et textes »).
   h+=row('',cols.map((c,i)=>'<div class="cu-lg">'+logoEgal(G,c.key,o.base,40,36)+'</div><b>'+nom(c)+'</b>'
-    +(px[i]!=null?'<span class="cu-cpx"><em>'+eur(px[i])+'</em> / mois<i>'+cuE(px[i]*12)+' / an</i></span>':'')),'cu-ch');
+    // Le prix annuel n'est plus dans l'en-tête : le bilan, juste dessous, le donne (Fabrice, 21/10/2026 : « retire le 888 € / an »).
+    +(px[i]!=null?'<span class="cu-cpx"><em>'+eur(px[i])+'</em> / mois</span>':'')),'cu-ch');
   // Ordre (Fabrice, 21/10/2026 : « fais au mieux mais garde tout sur la même page ») : le bilan juste sous les cotisations — le message
   // principal se lit sans faire défiler —, puis les soins qui le justifient, puis la grille complète des garanties. Rien n'est retiré.
   let hg='', hs='', hb='';

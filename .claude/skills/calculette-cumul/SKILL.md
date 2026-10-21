@@ -158,7 +158,7 @@ pour chaque compagnie ». Réponses : colonnes = **formules cochées** (4 au plu
 - La bannière « La plus avantageuse pour ces soins » n'apparaît qu'avec des soins prévus.
 - **En-tête aligné** (Fabrice, 20/10/2026 : « mettre en avant le tarif du dessus et tout bien aligner les logos et textes ») :
   logo dans une case de 40 px, nom, puis la cotisation en gros (17 px, verte pour la mieux placée), « / mois » et « x € / an »,
-  calée en bas de chaque colonne quelle que soit la longueur du nom.
+  calée en bas de chaque colonne quelle que soit la longueur du nom. Le prix annuel n'y figure plus (Fabrice, 21/10/2026) : il est dans le bilan.
 - Soins prévus : **remboursé par la mutuelle, hors Sécu** (la Sécu est la même pour toutes), « reste » en rouge, centrés ;
   « non remboursé » en gris quand la formule ne paie rien. Un soin remboursé en totalité porte « reste 0 € · remboursé en totalité » en vert
   (Fabrice, 21/10/2026 : sans « reste », la couronne de GCI 500 semblait non calculée).
