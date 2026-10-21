@@ -74,6 +74,16 @@ avant de publier ; un écart arrête la publication).
   pas remboursés par la Sécu donc ils viennent directement en positif ») : Sécu = 0, tout ce que paient les contrats vient en
   plus ; la carte porte « non remboursé par la Sécu ». « Sans complémentaire », le prospect en paierait la totalité.
 
+## Références Sécurité sociale (ameli.fr) — confirmées par Fabrice le 21/10/2026
+
+| Soin | Base (tarif de convention) | Sécu |
+|---|---|---|
+| Couronne / bridge / inlay-core | 120 € / 279,50 € / 90 € | 60 % (72 € pour une couronne) |
+| Orthodontie remboursée | **avant 16 ans**, 193,50 € par semestre | 100 % (193,50 €) |
+| Implants, orthodontie non remboursée, lunettes, lentilles, médecines douces, pharmacie non remboursée, chambre | — | 0 € |
+
+Libellé « Orthodontie remboursée (moins de 16 ans) » ; les mentions citent « bases de remboursement de l'Assurance maladie (ameli.fr) ».
+
 ## Plafonds dentaires (1re année d'adhésion, par bénéficiaire, hors Sécu) — `CU_PLAFD`
 
 Fabrice, 20/10/2026 : « faire attention aux plafonds… TALIS 900 €… vérifier les plafonds dentaires dans chacun des cas ».

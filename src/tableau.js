@@ -388,7 +388,9 @@ const CU_DEP=[
   ["bri","Bridges","dent",279.5,.6,"bridge","u"],
   ["inl","Inlay-core","dent",90,.6,"inlay-core","u"],
   ["imp","Implants","x:imp",0,0,"implant","imp"],
-  ["orR","Orthodontie remboursée","x:orthR",193.5,1,"semestre","u"],
+  // Références Assurance maladie (ameli.fr), confirmées par Fabrice le 21/10/2026 : orthodontie remboursée avant 16 ans seulement,
+  // 100 % de 193,50 € par semestre ; prothèses 60 % du tarif de convention ; implants, lunettes, lentilles, médecines douces : 0 €.
+  ["orR","Orthodontie remboursée (moins de 16 ans)","x:orthR",193.5,1,"semestre","u"],
   ["orN","Orthodontie non remboursée","x:orthN",0,0,"semestre","orN"],
   ["lun","Lunettes (verres simples)","opt",0,0,"équipement","u"],
   ["len","Lentilles","x:lentA",0,0,"an","an"],
@@ -513,7 +515,7 @@ function cumulDepenses(G,M,S,dep){
 const cuE=n=>cuNb(Math.round(n))+" €";
 // Libellés au singulier, pour la carte de chaque soin et le récapitulatif (« 1 000 € (implant) »).
 const CU_DEPLIB={cour:["Prothèse dentaire (couronne)","prothèses"],bri:["Bridge","bridges"],inl:["Inlay-core","inlay-core"],
-  imp:["Implant","implants"],orR:["Orthodontie remboursée","orthodontie"],orN:["Orthodontie non remboursée","orthodontie non remb."],
+  imp:["Implant","implants"],orR:["Orthodontie remboursée (moins de 16 ans)","orthodontie"],orN:["Orthodontie non remboursée","orthodontie non remb."],
   lun:["Lunettes","lunettes"],len:["Lentilles","lentilles"],chb:["Chambre particulière","chambre"],
   md:["Médecines douces (ostéo, chiro…)","médecines douces"],phn:["Pharmacie non remboursée","pharmacie"]};
 // Présentation pour un néophyte (Fabrice, 20/10/2026) : une carte par soin — coût, mutuelle de base (Sécu comprise) puis
@@ -577,7 +579,7 @@ function cuDepHTML(G,M,S,R,p1,p2){
       ?'<div class="cu-dgain cu-dfin"><span>Sur ces seuls soins, vous aurez un remboursement excédentaire de</span><b>'+cuE(-net)+' !</b><small>vos contrats remboursent '+cuE(remC)+' pour '+cuE(B.tout.cot)+' de cotisations (hors Sécurité sociale)</small></div>'
       :'<div class="cu-dgain cu-dfin"><span>Sur ces seuls soins, '+nMc+' et '+nS+' ne vous coûtent que</span><b>'+eur(net/12)+' / mois !</b><small>'+cuE(B.tout.cot)+' de cotisations − '+cuE(remC)+' remboursés par vos contrats (hors Sécurité sociale), sur 12 mois</small></div>'; }
   h+='</div><div class="cu-dn">'+(B.tout.cot!=null?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
-    +'Tableau présenté à titre indicatif — document non contractuel. Prothèses hors panier 100 % Santé (dans le panier 100 % Santé, le reste à charge est nul avec un contrat responsable). Calcul sur les tarifs de convention de la Sécurité sociale (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre), implants et orthodontie non remboursée au forfait, après les délais d’attente. '+cuPlafTxt(G,M,S,R)
+    +'Tableau présenté à titre indicatif — document non contractuel. Prothèses hors panier 100 % Santé (dans le panier 100 % Santé, le reste à charge est nul avec un contrat responsable). Calcul sur les bases de remboursement de l’Assurance maladie (ameli.fr) : prothèse 60 % du tarif de convention (couronne 120 €, bridge 279,50 €, inlay-core 90 €), orthodontie avant 16 ans 100 % de 193,50 € par semestre ; implants, lunettes, lentilles, médecines douces : 0 € de Sécurité sociale ; implants et orthodontie non remboursée au forfait, après les délais d’attente. '+cuPlafTxt(G,M,S,R)
     +(R.nc?' † Garantie non chiffrable : non comptée.':'')+'</div></div>';
   return h;
 }
@@ -681,7 +683,7 @@ function comparatifSoins(G,o){
   }
   const plaf=cols.map((c,i)=>{const P=RS[i].plafM; return nom(c)+' : '+(!P?'pas de plafond dentaire':P.m==null?'plafond '+P.nc:cuNb(P.m)+' € par an');});
   h+='<div class="cu-dn">'+(prix?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
-    +'Tableau présenté à titre indicatif — document non contractuel. Les forfaits (implants, lunettes, lentilles, médecines douces…) sont remboursés dans la limite de la dépense réelle, jamais au-delà. Pourcentages Sécurité sociale comprise, sur les tarifs de convention (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre) ; prothèses hors panier 100 % Santé ; implants et orthodontie non remboursée au forfait, après les délais d’attente. Plafonds dentaires (1re année d’adhésion, appliqués) — '+plaf.join(' ; ')+'.'
+    +'Tableau présenté à titre indicatif — document non contractuel. Les forfaits (implants, lunettes, lentilles, médecines douces…) sont remboursés dans la limite de la dépense réelle, jamais au-delà. Pourcentages Sécurité sociale comprise, sur les bases de remboursement de l’Assurance maladie (ameli.fr) : prothèse 60 % du tarif de convention (couronne 120 €, bridge 279,50 €, inlay-core 90 €), orthodontie avant 16 ans 100 % de 193,50 € par semestre ; implants, lunettes, lentilles, médecines douces : 0 € de Sécurité sociale ; prothèses hors panier 100 % Santé ; implants et orthodontie non remboursée au forfait, après les délais d’attente. Plafonds dentaires (1re année d’adhésion, appliqués) — '+plaf.join(' ; ')+'.'
     +(o.date?' Tarifs au '+o.date+', valables '+VALIDITE+' jours.':'')+'</div>'
     +'<div class="cu-mq">'+marque(o.base)+'<span>Courtier comparateur depuis 1992 · Infos légales : www.santeo.net</span></div>';
   return '<div class="cumul cu-cmp">'+h+'</div>';
