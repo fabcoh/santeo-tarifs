@@ -652,7 +652,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-21T04:39:43Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-21T04:39:43Z</div>
+  <div id="buildstamp" data-build="2026-10-21T04:41:59Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-21T04:41:59Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1617,7 +1617,7 @@ function comparatifSoins(G,o){
   }
   const plaf=cols.map((c,i)=>{const P=RS[i].plafM; return nom(c)+' : '+(!P?'pas de plafond dentaire':P.m==null?'plafond '+P.nc:cuNb(P.m)+' € par an');});
   h+='<div class="cu-dn">'+(prix?'<sup>1</sup> Les cotisations évoluent chaque année à la date anniversaire du contrat. ':'')
-    +'Tableau présenté à titre indicatif — document non contractuel. Pourcentages Sécurité sociale comprise, sur les tarifs de convention (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre) ; prothèses hors panier 100 % Santé ; implants et orthodontie non remboursée au forfait, après les délais d’attente. Plafonds dentaires (1re année d’adhésion, appliqués) — '+plaf.join(' ; ')+'.'
+    +'Tableau présenté à titre indicatif — document non contractuel. Les forfaits (implants, lunettes, lentilles, médecines douces…) sont remboursés dans la limite de la dépense réelle, jamais au-delà. Pourcentages Sécurité sociale comprise, sur les tarifs de convention (couronne 120 €, bridge 279,50 €, inlay-core 90 €, orthodontie 193,50 € par semestre) ; prothèses hors panier 100 % Santé ; implants et orthodontie non remboursée au forfait, après les délais d’attente. Plafonds dentaires (1re année d’adhésion, appliqués) — '+plaf.join(' ; ')+'.'
     +(o.date?' Tarifs au '+o.date+', valables '+VALIDITE+' jours.':'')+'</div>'
     +'<div class="cu-mq">'+marque(o.base)+'<span>Courtier comparateur depuis 1992 · Infos légales : www.santeo.net</span></div>';
   return '<div class="cumul cu-cmp">'+h+'</div>';
