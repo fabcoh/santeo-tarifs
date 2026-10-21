@@ -4435,7 +4435,7 @@ function applyImport(raw){
       +(nomTxt?'<div style="font:700 16px \'Archivo\',sans-serif;color:var(--accent,#1d4ed8);margin-bottom:8px">'+nomTxt.replace(/</g,"&lt;")+'</div>':"")
       +imported.map(([l,v])=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:14px"><span style="color:var(--muted,#5b6b82)">'+l+'</span><span style="font-weight:800;white-space:nowrap">'+String(v).replace(/</g,"&lt;")+'</span></div>').join("")
       // Note en clair posée par l'appelant (ex. fiche reprise en partie) : une seule fenêtre, pas d'écran technique
-      +(window.IMPNOTE?'<div style="margin-top:10px;padding:8px 10px;border-radius:8px;background:var(--ground,#f6f7f4);color:var(--muted,#5b6b82);font-size:12.5px;line-height:1.45">'+String(window.IMPNOTE).replace(/</g,"&lt;")+'</div>':"")
+      +(window.IMPNOTE?'<div id="impnote" style="margin-top:10px;padding:8px 10px;border-radius:8px;background:var(--ground,#f6f7f4);color:var(--muted,#5b6b82);font-size:12.5px;line-height:1.45">'+String(window.IMPNOTE).replace(/</g,"&lt;")+'</div>':"")
       +'<button id="impok" style="margin-top:14px;width:100%;padding:10px;border:0;border-radius:9px;background:var(--accent,#1d4ed8);color:#fff;font:800 15px \'Archivo\',sans-serif;cursor:pointer">OK — voir les tarifs</button></div>';
     document.body.appendChild(ov);
     window.IMPNOTE=""; // la note ne sert qu'une fois
@@ -4519,17 +4519,49 @@ window.addEventListener("hashchange",()=>applyImport((location.hash||"").replace
 // Le lien continue de porter #fiche= : si la route n'existe pas ou refuse, rien ne change.
 const ISO2FR=v=>{const m=String(v||"").match(/^(\d{4})-(\d{2})-(\d{2})/);return m?m[3]+"/"+m[2]+"/"+m[1]:"";};
 // Applique une fiche reçue du CRM (même format pour le jeton et pour la recherche)
-function applyFicheJSON(d){
+// Code postal tel que Santéo le range : parfois un nombre (94100, 9400.0, 6000 pour 06000) ou le seul département.
+const cpNorm=v=>{let c=String(v??"").replace(/\.0$/,"").replace(/\s/g,""); if(/^\d{4}$/.test(c))c="0"+c; return c;};
+// Code postal retrouvé d'après la ville (geo.api.gouv.fr) quand la fiche n'en porte pas : jamais deviné.
+// Un seul code postal pour la commune → il est posé ; plusieurs (Saint-Maur 94100 / 94210) → le département seul.
+async function cpParVille(ville){
+  const nz=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z0-9]+/g," ")
+    .replace(/\bSTE\b/g,"SAINTE").replace(/\bST\b/g,"SAINT").replace(/\bCEDEX\b.*$/,"").trim();
+  const v=nz(ville); if(!v)return null;
+  const ac=new AbortController(); const t=setTimeout(()=>ac.abort(),6000);
+  try{
+    const rp=await fetch("https://geo.api.gouv.fr/communes?nom="+encodeURIComponent(v)+"&fields=nom,codesPostaux,codeDepartement&boost=population&limit=20",{signal:ac.signal});
+    if(!rp.ok)return null;
+    const L=(await rp.json()).filter(c=>nz(c.nom)===v);
+    const deps=[...new Set(L.map(c=>c.codeDepartement))];
+    if(deps.length!==1)return {deps,cps:[]};
+    const cps=[...new Set(L.flatMap(c=>c.codesPostaux||[]))].sort();
+    return {dep:deps[0],cps};
+  }catch(e){ return null; } finally{ clearTimeout(t); }
+}
+function applyFicheJSON(d,nouvelle){
   if(!d||typeof d!=="object")return false;
   const P=new URLSearchParams();
   PRO=PRO||{};
+  // Fiche choisie dans la recherche = nouveau prospect : rien du précédent ne reste (code postal, conjoint,
+  // enfants, coordonnées). Avant, un champ absent de la nouvelle fiche gardait la valeur de l'ancienne.
+  if(nouvelle){
+    for(const k of ["civ","nom","prenom","ddn","cp5","cp","adresse","ville","email","tel","conjoint","enfants","secu","org","situation"]) delete PRO[k];
+    const el=id=>document.getElementById(id);
+    el("cp").value=""; el("cnj").value=""; el("kids").value="0";
+    const rs=el("regime"); const dft=[...rs.options].find(o=>o.defaultSelected)||rs.options[0]; if(dft)rs.value=dft.value;
+  }
   const put=(k,v)=>{if(v!==null&&v!==undefined&&v!=="")PRO[k]=v;};
   put("civ",d.civilite); put("nom",d.nom); put("prenom",d.prenom);
-  put("adresse",d.adresse); put("ville",d.ville); put("cp5",d.cp);
+  put("adresse",d.adresse); put("ville",d.ville);
+  const cpF=cpNorm(d.cp??d.codePostal??d.code_postal);
+  if(/^\d{5}$/.test(cpF))PRO.cp5=cpF; else delete PRO.cp5;
   put("email",d.email); put("tel",telFR(d.telephone)||d.telephone);
   put("secu",d.secu); put("org",d.organisme); put("situation",d.situation);
   const ddn=ISO2FR(d.naissance); if(ddn){PRO.ddn=ddn;P.set("naiss",ddn.slice(-4));}
-  if(d.cp)P.set("dept",String(d.cp));
+  let cpVille=false;
+  if(/^\d{5}$/.test(cpF)||/^(\d{2}|2[AB]|97\d)$/i.test(cpF))P.set("dept",cpF);
+  else if(d.ville){ cpVille=true; window.IMPNOTE=[window.IMPNOTE,"Code postal absent de la fiche CRM : recherche d\u2019après la ville ("+d.ville+")\u2026"].filter(Boolean).join(" "); }
+  else if(nouvelle) window.IMPNOTE=[window.IMPNOTE,"Code postal absent de la fiche CRM : à saisir pour avoir les tarifs."].filter(Boolean).join(" ");
   if(d.regime)P.set("regime",String(d.regime));
   // Conjoint et enfants : fournis tels quels, ou déduits de la liste brute « assures » par l'âge
   let cj=(d.conjoint&&(d.conjoint.nom||d.conjoint.naissance))?d.conjoint:null;
@@ -4563,6 +4595,21 @@ function applyFicheJSON(d){
   if(![...P.keys()].length&&!nomTxt)return false;
   applyImport(P.toString());
   try{calc();}catch(e){}
+  if(cpVille){
+    const ville=d.ville, note=txt=>{const n=document.getElementById("impnote"); if(n)n.textContent=txt; else bandeauOk(txt);};
+    cpParVille(ville).then(r=>{
+      if(PRO.cp5||PRO.ville!==ville)return; // entre-temps, autre fiche ou code postal saisi
+      const champ=document.getElementById("cp");
+      if(!r||!r.dep){ note("Code postal absent de la fiche CRM et ville introuvable : à saisir pour avoir les tarifs."); return; }
+      const val=r.cps.length===1?r.cps[0]:r.dep;
+      if(r.cps.length===1)PRO.cp5=val;
+      if(!champ.value.trim()){ champ.value=val; champ.dispatchEvent(new Event("input",{bubbles:true})); try{calc();}catch(e){} }
+      const b2=document.getElementById("prospect");
+      if(b2&&!b2.hidden&&b2.textContent.includes(ville)&&!b2.textContent.includes(val+" "+ville))b2.textContent=b2.textContent.replace(ville,val+" "+ville);
+      note(r.cps.length===1?"Code postal absent de la fiche CRM : "+val+" retrouvé d\u2019après la ville ("+ville+")."
+        :"Code postal absent de la fiche CRM : département "+r.dep+" retenu d\u2019après la ville ; code postal à préciser ("+r.cps.join(" ou ")+").");
+    });
+  }
   return true;
 }
 async function crmFiche(){
@@ -5093,7 +5140,7 @@ const IA_CHEMIN="/api/comparateur/ia";
       const b=prompt("Adresse du CRM :",base()); if(b)set(KB,b.trim().replace(/\/+$/,""));
       ov.querySelector("#cspin").style.display="flex"; ov.querySelector("#cspv").focus();
     });
-    const remplir=d=>{ if(applyFicheJSON(d)){ov.remove();} else res.innerHTML='<div class="irow iwarn"><span>Fiche reçue mais vide</span><b>rien à reprendre</b></div>'+diagHTML(); };
+    const remplir=d=>{ if(applyFicheJSON(d,true)){ov.remove();} else res.innerHTML='<div class="irow iwarn"><span>Fiche reçue mais vide</span><b>rien à reprendre</b></div>'+diagHTML(); };
     const lancer=async()=>{
       const v=q.value.trim(); if(!v)return;
       if(!get(KP)){res.innerHTML='<div class="irow iwarn"><span>PIN manquant</span><b>saisis-le ci-dessus</b></div>';ov.querySelector("#cspin").style.display="flex";return;}
@@ -5131,7 +5178,7 @@ const IA_CHEMIN="/api/comparateur/ia";
         // (nom, prénom, date de naissance, ville), et on le dit — adresse, e-mail, téléphone et famille manquent.
         // Une seule fenêtre : la note part dans « Données importées du CRM » et le panneau se ferme
         window.IMPNOTE="Le CRM n\u2019a renvoyé que ces informations : adresse, e-mail, téléphone, conjoint et enfants sont à compléter à la main.";
-        if(applyFicheJSON({nom:f.nom,prenom:f.prenom,naissance:f.naissance,ville:f.ville})){ ov.remove(); return; }
+        if(applyFicheJSON({nom:f.nom,prenom:f.prenom,naissance:f.naissance,ville:f.ville,cp:f.cp??f.codePostal},true)){ ov.remove(); return; }
         window.IMPNOTE="";
         res.innerHTML='<div class="irow iwarn"><span>Fiche illisible</span><b>n° '+esc(sid)+'</b></div>'+diagHTML();
       };

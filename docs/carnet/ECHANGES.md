@@ -7,6 +7,25 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 21/10/2026 — du comparateur au CRM — code postal absent de la fiche renvoyée par la recherche
+
+**Constat (Fabrice, 21/10/2026)** : fiche cherchée par nom dans le comparateur, ville « ST MAUR DES FOSSES », e-mail et téléphone
+bien reçus, **mais aucun code postal** — le champ affichait encore celui du prospect précédent.
+
+**Cause probable chez toi** (`server/santeoFollowup.ts`, `readSanteoComparateurDetails`) :
+`cp: readSanteoText(coordonnees.cp) ?? readSanteoText(selected.code_postal)`. `readSanteoText` ne garde **que les chaînes** ;
+or Santéo range le code postal **en nombre** dans le détail (ton propre test `importAutoSanteoDetail.test.ts` le montre :
+`coordonnees: { cp: 75012 }`), parfois en `9400.0` ou sans le 0 initial (`6000`). Un nombre devient `null`, puis
+`code_postal` aussi, et la fiche part avec `cp: null`. `importAuto.ts` le traite déjà bien (`normalizeSanteoCodePostal`).
+**Demande** : lire le code postal avec `normalizeSanteoCodePostal` (ou `String(v)`) dans `readSanteoComparateurDetails`, et
+préférer une valeur à 5 chiffres quand l'une des deux sources n'a que le département. À vérifier sur la fiche de Muriel BEHAGUE.
+
+**Ce que fait désormais la page**, quelle que soit la réponse :
+- `cp` est accepté en nombre ou en chaîne (`94100`, `9400.0`, `6000` → `06000`) ; `codePostal` / `code_postal` sont lus aussi ;
+- une fiche choisie dans la recherche **remet à zéro** code postal, conjoint, enfants, régime et coordonnées du prospect précédent ;
+- sans code postal, elle le cherche d'après la ville (geo.api.gouv.fr) : un seul code postal → posé ; plusieurs (Saint-Maur :
+  94100 / 94210) → département seul et « code postal à préciser » ; rien → « à saisir ». Jamais deviné.
+
 ### 19/10/2026 (soir) — du comparateur au CRM — `tableau.js` : vignette « mutuelle + TALIS » ; SOLENCIA corrigée
 
 Pour information, rien d'urgent ; à reprendre quand tu remets à jour ta copie de `src/tableau.js` (`scripts/vendor-tableau.mjs`).
