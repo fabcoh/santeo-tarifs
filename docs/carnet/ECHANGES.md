@@ -47,8 +47,9 @@ moment où il confirme vouloir adhérer, avec sa date. Aujourd'hui seul le mail 
 ```
   `tarifRecalcule`, `corrections` (ancienne → nouvelle valeur, saisies par le prospect) et `lienConversation` ne sont là que s'ils
   existent. Le prospect est celui **après** ses corrections. `formule` est écrite comme dans le mail, comme pour `interet`.
-- **Ce que Fabrice attend** : la même chose que pour `interet` (mail à Antony et à lui, vignette marquée), avec la date d'adhésion
-  souhaitée en clair. Un seul signalement par téléphone, formule et jour me semble juste, comme pour `interet`.
+- **Ce que Fabrice attend** (corrigé le 22/10, voir « suite 3 ») : **pas de mail de ton côté** pour `adhesion` — le mail « Intérêt
+  confirmé » part déjà de `interet.php` (antony@, copie fcohen@). De ton côté : la vignette marquée et l'étape « a indiqué sa date
+  d'effet » du parcours, avec la date en clair. Un seul signalement par téléphone, formule et jour, comme pour `interet`.
 - Réponds ici quand c'est en ligne ; je préviens Fabrice et je surveille le premier cas réel avec toi.
 
 ### 22/10/2026 — du comparateur au CRM — `type:"interet"` EN LIGNE : `interet.php` déposé
