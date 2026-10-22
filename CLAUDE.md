@@ -56,7 +56,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   modifiables** posés dessus (pdf-lib, scratchpad `sepamv/build.js`) — 7 cases de périodicité (`MENSUELLE 15`, `TRIMESTRIELLE 15|30`,
   `SEMESTRIELLE 15|30`, `ANNUELLE 15|30`), `DEBITEUR NOM|ADRESSE|CP VILLE`, `IBAN`, `BIC`, `ETABLISSEMENT` (vide : aucune saisie
   de la banque dans la page), `A`, `LE JOUR|MOIS|ANNEE`. `fillSepaMV(g)` : débiteur = l'adhérent, IBAN par groupes de 4, lieu = ville,
-  date = date de signature ; **périodicité non cochée** (Fabrice, 22/10/2026 : « je ne veux voir que les informations du prospect »).
+  date = date de signature ; **« Mensuelle le 15 » cochée par défaut** (Fabrice, 22/10/2026 : « laisse coché 15 par mois par défaut »). IBAN et BIC viennent des champs `aiban` / `abic`, eux-mêmes remplis par le RIB déposé dans la fenêtre d'adhésion (`confirmDoc`), comme les autres documents.
   2ᵉ fichier `sepa_MV_<nom>.pdf` + liens ⬇, comme Révoluo. **La page 5 du bulletin est ce même mandat** (pré-rempli par la
   Mutuelle Verte : « Mensuelle le 15 » cochée) : **elle reste dans le bulletin et reste remplie** (Fabrice, 22/10/2026 : « ce qui est
   dans le PDF tu laisses, et tu ajoutes le PDF SEPA pré-rempli comme sur Révoluo ») — un essai qui la retirait a été annulé le même jour. Test : scratchpad `tsepamv/t.js`.
