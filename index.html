@@ -656,7 +656,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-22T10:19:35Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-22T10:19:35Z</div>
+  <div id="buildstamp" data-build="2026-10-22T10:50:37Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-22T10:50:37Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2809,7 +2809,8 @@ async function fillSepaMV(g){
   T("A",g("avil").toUpperCase());
   const now=new Date(), sig=g("asig")||(("0"+now.getDate()).slice(-2)+"/"+("0"+(now.getMonth()+1)).slice(-2)+"/"+now.getFullYear());
   const m=sig.match(/^(\d{2})\D(\d{2})\D(\d{4})$/); if(m){T("LE JOUR",m[1]);T("LE MOIS",m[2]);T("LE ANNEE",m[3]);}
-  // Périodicité : laissée au prospect (Fabrice, 22/10/2026 : « je ne veux voir que les informations du prospect »).
+  // Périodicité : « Mensuelle le 15 » cochée par défaut (Fabrice, 22/10/2026 : « laisse coché 15 par mois par défaut »).
+  try{form.getCheckBox("MENSUELLE 15").check();}catch(e){}
   return pdf;
 }
 // ---- RÉVOLUO (REMA Assurances / CERGAP) : bulletin propre, mandat SEPA signé à part ----
