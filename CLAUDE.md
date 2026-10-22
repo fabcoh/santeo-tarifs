@@ -987,7 +987,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   suivi de l'**icône WhatsApp officielle et du 01 53 19 86 36**, qui ouvre WhatsApp, puis « Besoin d'un
   renseignement ? **01 53 19 86 36** » en noir, qui lance l'appel. **Un seul numéro, la ligne du CRM**, pour les
   deux (Fabrice, 25/09/2026 — le 86 46 cité la veille et le 86 34 vu dans l'en-tête du CRM ne sont pas les bons).
-  Les deux mails vont au **conseiller expéditeur du courrier**, copie `fcohen@` ; `Reply-To` = le prospect ;
+  **Destinataires depuis le 22/10/2026 (Fabrice) : tous les mails du parcours vont à `antony@santeo.net`, copie (cc) `fcohen@`**
+  (`$DEST_PARCOURS`, `$COPIE_PARCOURS`), quel que soit le conseiller ; ouverture de la page = nouveau mail « A ouvert … », un par
+  téléphone, formule et jour (`santeo_vumail_*` dans le dossier temporaire). Avant : Les deux mails vont au **conseiller expéditeur du courrier**, copie `fcohen@` ; `Reply-To` = le prospect ;
   même compte Mailgun, même `santeo-mail-config.php` — **aucune clé nouvelle**. 20 envois/heure/IP.
   **Le corps reprend la forme des demandes de prospect du CRM** : « Nouvelle demande de prospect
   suite à email », puis `Destinataire`, `Conversation`, `Option`, `Tarif`, la date d'adhésion souhaitée, et

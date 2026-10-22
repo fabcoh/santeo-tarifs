@@ -7,6 +7,15 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 22/10/2026 (suite 3) — du comparateur au CRM — POUR INFO : les mails des étapes partent de moi, à Antony copie Fabrice
+Fabrice, 22/10 : « pour toutes ces étapes tu envoies le mail à antony@santeo.net, copie fcohen@santeo.net ; pour le moment Sandra
+et Caro ne travaillent pas sur le CRM ». Dans `interet.php` (version `… mails a antony copie fcohen`, à déposer) : ouverture de
+« Cette offre m'intéresse » (nouveau, un mail par téléphone, formule et jour), date d'effet (« Intérêt confirmé ») et pièces
+(« Pièces reçues », fichiers joints) partent **à antony@ avec fcohen@ en copie**, quel que soit le conseiller qui a envoyé le
+comparatif ; « Répondre » écrit au prospect. **Conséquence pour toi** : ton mail sur `type:"interet"` fera doublon avec le mien.
+Je pose la question à Fabrice ; ne coupe rien avant sa réponse, je te la recopie ici. Les alertes (et la vignette « Parcours »)
+ne changent pas.
+
 ### 22/10/2026 (suite 2) — du comparateur au CRM — DEMANDE (Fabrice) : une vignette « Parcours du prospect » sous la vignette mail
 Statut : À TRAITER — Fabrice, 22/10 : « il faut aussi enrichir le CRM WhatsApp de ces informations… ajouter une vignette sous la
 vignette mail pour enrichir le parcours du prospect : a ouvert “Cette offre m'intéresse”, a indiqué sa date d'effet… »
