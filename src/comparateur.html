@@ -1475,7 +1475,7 @@ function showAdh(r){
    +'<button type="button" class="addb" id="addkid"'+(kids>=4?" hidden":"")+'>＋ Ajouter un enfant</button></div>';
   const ov=document.createElement("div");ov.id="tgov";
   const rev=isREV(r.key); ADHKEY=r.key;
-  ov.innerHTML='<div id="tgbox" style="max-width:760px"><button class="close">Fermer ✕</button><h2>Adhésion — '+r.gamme+" "+r.formule+' <span id="adhtit" style="color:var(--accent);white-space:nowrap">· '+eur(r.total)+'/mois</span></h2><div class="src"><b id="adhcot">'+eur(r.total)+'</b> /mois · le bulletin '+(r.key==="MV"?"LA MUTUELLE VERTE":rev?"RÉVOLUO (REMA / CERGAP)":"AVENIR MUTUELLE")+' sera rempli et téléchargé'+(rev?' · <b>+ mandat SEPA CERGAP en 2e fichier</b> (signé à part)':'')+'</div>'+
+  ov.innerHTML='<div id="tgbox" style="max-width:760px"><button class="close">Fermer ✕</button><h2>Adhésion — '+r.gamme+" "+r.formule+' <span id="adhtit" style="color:var(--accent);white-space:nowrap">· '+eur(r.total)+'/mois</span></h2><div class="src"><b id="adhcot">'+eur(r.total)+'</b> /mois · le bulletin '+(r.key==="MV"?"LA MUTUELLE VERTE":rev?"RÉVOLUO (REMA / CERGAP)":"AVENIR MUTUELLE")+' sera rempli et téléchargé'+(rev?' · <b>+ mandat SEPA CERGAP en 2e fichier</b> (signé à part)':r.key==="MV"?' · <b>+ mandat SEPA Mutuelle Verte en 2e fichier</b> (signé à part)':'')+'</div>'+
   (rev?'<label class="nosubl" style="display:flex;gap:9px;align-items:flex-start;margin:6px 0 8px;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--ground);cursor:pointer;font-size:13px"><input type="checkbox" id="nosub" style="margin-top:2px;accent-color:var(--accent)"><span><b>Souscripteur non assuré</b> — le souscripteur signe et paie, mais n’apparaît pas parmi les personnes à assurer (enfants'+(nC?' et conjoint':'')+' seuls). Cotisation recalculée : <b>'+eur(r.noSubTotal)+'</b> /mois</span></label>':'')+
   '<form autocomplete="off" onsubmit="return false" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:4px 12px">'+
   '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Civilité</label><select id="aciv" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option'+(P.civ!=="Mme"?" selected":"")+'>M.</option><option'+(P.civ==="Mme"?" selected":"")+'>Mme</option></select></div>'+
@@ -1674,6 +1674,32 @@ async function fillAdhMV(r,st,g){
   }catch(e){}
   return pdf;
 }
+// ---- Mandat SEPA de La Mutuelle Verte, rempli à part, 2e fichier (Fabrice, 22/10/2026 : « remplir à part le mandat SEPA
+// de la Mutuelle Verte et télécharger 2 PDF comme sur Révoluo »). Le formulaire reçu était une page scannée, verrouillée,
+// sans aucun champ : docs/sepa_mv_2026.pdf en reprend l'image (200 dpi) avec des champs modifiables posés aux bons endroits.
+const SEPAMV=["docs/sepa_mv_2026.pdf","https://fabcoh.github.io/santeo-tarifs/docs/sepa_mv_2026.pdf"];
+async function fillSepaMV(g){
+  let bytes=null,last="";
+  for(const u of SEPAMV){
+    try{ const rp=await fetch(u,{cache:"force-cache"}); if(rp.ok){bytes=new Uint8Array(await rp.arrayBuffer());break;} last="HTTP "+rp.status; }
+    catch(e){ last=e&&e.message||String(e); }
+  }
+  if(!bytes) throw new Error("mandat SEPA Mutuelle Verte introuvable ("+last+")");
+  const pdf=await PDFLib.PDFDocument.load(bytes), form=pdf.getForm();
+  const T=(n,v)=>{try{if(v!==""&&v!=null)form.getTextField(n).setText(String(v));}catch(e){}};
+  T("DEBITEUR NOM",[g("aciv"),g("anom").toUpperCase(),g("apre")].filter(Boolean).join(" "));
+  T("DEBITEUR ADRESSE",g("aadr"));
+  T("DEBITEUR CP VILLE",[g("acp"),g("avil").toUpperCase()].filter(Boolean).join(" "));
+  const iban=g("aiban").replace(/\s+/g,"").toUpperCase();
+  T("IBAN",iban.replace(/(.{4})/g,"$1 ").trim());
+  T("BIC",g("abic").replace(/\s+/g,"").toUpperCase());
+  T("A",g("avil").toUpperCase());
+  const now=new Date(), sig=g("asig")||(("0"+now.getDate()).slice(-2)+"/"+("0"+(now.getMonth()+1)).slice(-2)+"/"+now.getFullYear());
+  const m=sig.match(/^(\d{2})\D(\d{2})\D(\d{4})$/); if(m){T("LE JOUR",m[1]);T("LE MOIS",m[2]);T("LE ANNEE",m[3]);}
+  // Cotisations mensuelles dans le comparateur : seule la case « Mensuelle — le 15 » existe pour un prélèvement mensuel.
+  try{form.getCheckBox("MENSUELLE 15").check();}catch(e){}
+  return pdf;
+}
 // ---- RÉVOLUO (REMA Assurances / CERGAP) : bulletin propre, mandat SEPA signé à part ----
 const REVKEYS=["REV","RF50","RF100"];
 const isREV=k=>REVKEYS.includes(k);
@@ -1848,7 +1874,15 @@ async function fillAdh(r,ov){
       const SAVE=async(fn,data)=>{ if(dlMV){ await dlMV.save({filename:fn,data}); } else { const b2=new Blob([data],{type:"application/pdf"});const a3=document.createElement("a");a3.href=URL.createObjectURL(b2);a3.download=fn;document.body.appendChild(a3);a3.click();a3.remove(); } };
       await SAVE(fMV,outMV);
       const gen=[{name:fMV,data:outMV}];
-      if(isREV(r.key)){
+      if(r.key==="MV"){
+        // 2e fichier : mandat SEPA de La Mutuelle Verte, signé à part
+        try{
+          const pdfS=await fillSepaMV(g); const outS=await pdfS.save();
+          await new Promise(res=>setTimeout(res,600));
+          const fS="sepa_MV_"+(g("anom")||"client")+".pdf"; await SAVE(fS,outS); gen.push({name:fS,data:outS});
+          st.textContent=warn+"✅ 2 fichiers : bulletin d\u2019adhésion + mandat SEPA Mutuelle Verte.";
+        }catch(e){ st.textContent=warn+"✅ Bulletin téléchargé — ❌ mandat SEPA : "+(e&&e.message||e); }
+      } else if(isREV(r.key)){
         // 2e fichier : mandat SEPA CERGAP, signé à part
         try{
           const pdfS=await fillSepaREV(g); const outS=await pdfS.save();

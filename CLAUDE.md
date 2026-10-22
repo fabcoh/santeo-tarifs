@@ -50,6 +50,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 
 - `bulletin_avenir_2026.pdf` (Cap Évolution, 72 p.), `bulletin_avenir_tns_2026.pdf` (Cap Évolution TNS, 85 p.), `bulletin_capnr_2026.pdf` (73 p.), `bulletin_talis_2026.pdf` (48 p.),
   `bulletin_mv_2026.pdf` (Mutuelle Verte, 22 p.), `bulletin_revoluo_2026.pdf` (24 p.) + `sepa_revoluo_2026.pdf`.
+  **Mandat SEPA de La Mutuelle Verte à part** (Fabrice, 22/10/2026 : « remplir à part le mandat SEPA de la Mutuelle Verte et
+  télécharger 2 PDF comme sur Révoluo ») : `docs/sepa_mv_2026.pdf` (1 p., 365 ko). Le formulaire reçu (« Mandat_SEPA_4.pdf »,
+  StreamServe, verrouillé RC4, **aucun champ**, page scannée) a été refait : image de la page à 200 dpi en gris + **16 champs
+  modifiables** posés dessus (pdf-lib, scratchpad `sepamv/build.js`) — 7 cases de périodicité (`MENSUELLE 15`, `TRIMESTRIELLE 15|30`,
+  `SEMESTRIELLE 15|30`, `ANNUELLE 15|30`), `DEBITEUR NOM|ADRESSE|CP VILLE`, `IBAN`, `BIC`, `ETABLISSEMENT` (vide : aucune saisie
+  de la banque dans la page), `A`, `LE JOUR|MOIS|ANNEE`. `fillSepaMV(g)` : débiteur = l'adhérent, IBAN par groupes de 4, lieu = ville,
+  date = date de signature, **« Mensuelle — le 15 » cochée** (seul choix mensuel du formulaire). 2ᵉ fichier `sepa_MV_<nom>.pdf` +
+  liens ⬇, comme Révoluo. Le mandat CAPI FINANCE de l'annexe du bulletin (page 5) reste rempli. Test : scratchpad `tsepamv/t.js`.
   Formulaires AcroForm remplis côté navigateur avec pdf-lib ; les PDF ont été allégés (pikepdf/qpdf),
   widgets orphelins rattachés, noms de champs en double suffixés `_2`.
 - Tableaux de garantie / IPID / notices par gamme (`*_tg_2026.pdf`, `*_ipid_2026.pdf`, `*_notice_2026.pdf`,
