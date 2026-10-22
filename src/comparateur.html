@@ -1690,8 +1690,9 @@ async function fillSepaMV(g){
   T("DEBITEUR NOM",[g("aciv"),g("anom").toUpperCase(),g("apre")].filter(Boolean).join(" "));
   T("DEBITEUR ADRESSE",g("aadr"));
   T("DEBITEUR CP VILLE",[g("acp"),g("avil").toUpperCase()].filter(Boolean).join(" "));
+  // IBAN en 7 cases (groupes de 4, le dernier de 3), comme sur les autres documents
   const iban=g("aiban").replace(/\s+/g,"").toUpperCase();
-  T("IBAN",iban.replace(/(.{4})/g,"$1 ").trim());
+  [4,4,4,4,4,4,3].reduce((k,n,i)=>{T("iban"+(i+1),iban.slice(k,k+n));return k+n;},0);
   T("BIC",g("abic").replace(/\s+/g,"").toUpperCase());
   T("A",g("avil").toUpperCase());
   const now=new Date(), sig=g("asig")||(("0"+now.getDate()).slice(-2)+"/"+("0"+(now.getMonth()+1)).slice(-2)+"/"+now.getFullYear());
