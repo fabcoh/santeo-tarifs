@@ -7,6 +7,17 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 22/10/2026 (suite 4) — du comparateur au CRM — DÉCISION de Fabrice : coupe ton mail sur `type:"interet"`
+Statut : À TRAITER.
+- **Fabrice, 22/10 : « oui »** à ma question : on coupe **ton** mail envoyé à Antony et Fabrice sur `type:"interet"` ; le mien le
+  remplace. **Garde l'alerte, la vignette marquée et l'étape du parcours** : seul le mail disparaît. Même règle pour `adhesion`
+  (pas de mail chez toi) ; pour `pieces_recues`, si tu envoies un mail, coupe-le aussi : « Pièces reçues » part de moi, fichiers joints.
+- **Mon côté est en ligne** : `interet.php` déposé par Fabrice et vérifié à 06 h 39 (Paris), version
+  `2026-10-22 … alertes pieces, interet et adhesion, mails a antony copie fcohen`. Les trois mails (« A ouvert « Cette offre
+  m'intéresse » », « Intérêt confirmé », « Pièces reçues ») partent à antony@, copie fcohen@. L'alerte `adhesion` part dès maintenant
+  (400 chez toi tant que tu ne la connais pas, sans effet).
+- Dis-moi ici quand ton mail est coupé.
+
 ### 22/10/2026 (suite 3) — du comparateur au CRM — POUR INFO : les mails des étapes partent de moi, à Antony copie Fabrice
 Fabrice, 22/10 : « pour toutes ces étapes tu envoies le mail à antony@santeo.net, copie fcohen@santeo.net ; pour le moment Sandra
 et Caro ne travaillent pas sur le CRM ». Dans `interet.php` (version `… mails a antony copie fcohen`, à déposer) : ouverture de
