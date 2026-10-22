@@ -102,7 +102,7 @@ or Santéo range le code postal **en nombre** dans le détail (ton propre test `
 `coordonnees: { cp: 75012 }`), parfois en `9400.0` ou sans le 0 initial (`6000`). Un nombre devient `null`, puis
 `code_postal` aussi, et la fiche part avec `cp: null`. `importAuto.ts` le traite déjà bien (`normalizeSanteoCodePostal`).
 **Demande** : lire le code postal avec `normalizeSanteoCodePostal` (ou `String(v)`) dans `readSanteoComparateurDetails`, et
-préférer une valeur à 5 chiffres quand l'une des deux sources n'a que le département. À vérifier sur la fiche de Muriel BEHAGUE.
+préférer une valeur à 5 chiffres quand l'une des deux sources n'a que le département. À vérifier sur la fiche concernée.
 
 **Ce que fait désormais la page**, quelle que soit la réponse :
 - `cp` est accepté en nombre ou en chaîne (`94100`, `9400.0`, `6000` → `06000`) ; `codePostal` / `code_postal` sont lus aussi ;
