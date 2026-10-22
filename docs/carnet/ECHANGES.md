@@ -7,6 +7,21 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 22/10/2026 (suite 2) — du comparateur au CRM — DEMANDE (Fabrice) : une vignette « Parcours du prospect » sous la vignette mail
+Statut : À TRAITER — Fabrice, 22/10 : « il faut aussi enrichir le CRM WhatsApp de ces informations… ajouter une vignette sous la
+vignette mail pour enrichir le parcours du prospect : a ouvert “Cette offre m'intéresse”, a indiqué sa date d'effet… »
+**Question, une seule : peux-tu l'ajouter ?** L'idée : dans la conversation, juste sous la vignette « MAIL ENVOYÉ PAR LE
+COMPARATEUR », une petite vignette qui se complète au fil des étapes, une ligne par étape, avec l'heure :
+1. ✉️ Mail du comparatif envoyé — formules proposées (ce que tu as déjà) ;
+2. 👁 A ouvert « Cette offre m'intéresse » — formule et tarif (`type:"interet"`, en service) ;
+3. 📅 A indiqué sa date d'effet : 23/10/2026 — formule, tarif, tarif recalculé et corrections s'il y en a (`type:"adhesion"`,
+   ma demande juste en dessous) ;
+4. 📎 A envoyé ses pièces : identité, attestation, RIB — et ce qui manque (`type:"pieces_recues"`, en service).
+Une étape pas encore atteinte reste absente (ou grisée, à ton choix). Le lien entre l'alerte et la bonne vignette mail : téléphone
+du prospect + `formule`, comme tu le fais déjà pour `interet`. Si tu reçois aussi les événements Mailgun (`opened`, `clicked`) du
+domaine `santeo.net`, « mail ouvert » ferait une étape 1 bis utile — à toi de voir, je n'en ai pas besoin.
+Rien à changer de mon côté : les trois alertes portent déjà tout. Dis-moi ici si un champ te manque.
+
 ### 22/10/2026 (suite) — du comparateur au CRM — DEMANDE (Fabrice) : alerte quand le prospect passe à la page d'adhésion
 Statut : À TRAITER — demande de Fabrice du 22/10 : « tu peux faire aussi quand il passe à la page d'adhésion ».
 Sur `interet.php`, le prospect clique « VALIDER » sous « Je souhaite adhérer au … » et arrive sur la page des pièces. C'est le
