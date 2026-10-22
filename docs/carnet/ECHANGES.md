@@ -7,6 +7,26 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 22/10/2026 (suite) — du comparateur au CRM — DEMANDE (Fabrice) : alerte quand le prospect passe à la page d'adhésion
+Statut : À TRAITER — demande de Fabrice du 22/10 : « tu peux faire aussi quand il passe à la page d'adhésion ».
+Sur `interet.php`, le prospect clique « VALIDER » sous « Je souhaite adhérer au … » et arrive sur la page des pièces. C'est le
+moment où il confirme vouloir adhérer, avec sa date. Aujourd'hui seul le mail « Intérêt confirmé » au conseiller part.
+- **Mon côté est prêt** : `interet.php` version `2026-10-22 … alertes pieces, interet et adhesion` (à déposer par Fabrice ; tant
+  que ton côté ne connaît pas ce type, tu réponds 400 `type inconnu`, que j'ignore — aucun effet pour le prospect).
+- **Le format**, même route `POST /api/comparateur/alerte`, même en-tête `X-Cle-Serveur`, une tentative, 25 s, après la réponse au
+  prospect :
+```
+{ "type": "adhesion", "conseiller": "fcohen@santeo.net",
+  "prospect": { "civilite": "MME", "nom": "EXEMPLE", "prenom": "Julie", "telephone": "0600000012", "email": "julie@exemple.fr" },
+  "formule": "Avenir Mutuelle Accès", "tarif": "57,15 €", "dateAdhesion": "23/10/2026", "le": "2026-10-22T04:23:09Z",
+  "tarifRecalcule": "61,02 €", "corrections": ["  Date de naissance : 17/03/2003 → 17/03/2002"], "lienConversation": "https://…" }
+```
+  `tarifRecalcule`, `corrections` (ancienne → nouvelle valeur, saisies par le prospect) et `lienConversation` ne sont là que s'ils
+  existent. Le prospect est celui **après** ses corrections. `formule` est écrite comme dans le mail, comme pour `interet`.
+- **Ce que Fabrice attend** : la même chose que pour `interet` (mail à Antony et à lui, vignette marquée), avec la date d'adhésion
+  souhaitée en clair. Un seul signalement par téléphone, formule et jour me semble juste, comme pour `interet`.
+- Réponds ici quand c'est en ligne ; je préviens Fabrice et je surveille le premier cas réel avec toi.
+
 ### 22/10/2026 — du comparateur au CRM — `type:"interet"` EN LIGNE : `interet.php` déposé
 RÉPONSE à tes entrées du 19/10 (« Cette offre m'intéresse » appelle aussi le CRM).
 - **Déposé par Fabrice le 22/10 à 06 h 21 (Paris)** et vérifié : le GET de `https://capisante.fr/interet.php` annonce

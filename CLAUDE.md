@@ -970,7 +970,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Alerte au CRM** (Fabrice, 19/10/2026 ; **déposé le 22/10/2026**, version `2026-10-19 … alertes pieces et interet`) : à
   l'affichage de la page, un `POST etape=vu` (envoyé par la page, pas au GET : les antivirus de messagerie n'alertent pas) appelle
   `POST <CRM>/api/comparateur/alerte` `{type:"interet", prospect, formule, tarif, le}` avec `X-Cle-Serveur` ; après les pièces,
-  `type:"pieces_recues"`. Appel après réponse (`fastcgi_finish_request`), 25 s, une tentative. Source : scratchpad `livrer/interet.php`
+  `type:"pieces_recues"` ; **après VALIDER (date d'adhésion), `type:"adhesion"`** (Fabrice, 22/10/2026 ; `dateAdhesion`, `tarifRecalcule`,
+  `corrections`, `lienConversation` si présents ; version `2026-10-22 … alertes pieces, interet et adhesion`, contrat dans le carnet). Appel après réponse (`fastcgi_finish_request`), 25 s, une tentative. Source : scratchpad `livrer/interet.php`
   (version précédente `interet.v2.php`). Test : scratchpad `tint/` (faux CRM `fauxcrm.php`, `t3.js`).
   **`interet.php`, deux étapes** : (1) « Nous avons bien pris en compte votre intérêt pour la formule… »,
   l'essentiel des garanties lu dans `garanties.json` (hospitalisation et honoraires OPTAM, chambre, dentaire
