@@ -656,7 +656,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-22T10:09:48Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-22T10:09:48Z</div>
+  <div id="buildstamp" data-build="2026-10-22T10:18:16Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-22T10:18:16Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2773,18 +2773,25 @@ async function fillAdhMV(r,st,g){
   S("NIV2",g("bnd"));S("NIV4",g("bno"));S("NIV6",g("bnh"));S("NIV8",g("bnhon"));
   if(g("bbes"))T("BESOINS 1",g("bbes"));
   S("NB_ASSURES",String(Math.min(nAss,7)));
-  // Mandat SEPA
-  SPLIT(["iban1","iban2","iban3","iban4","iban5","iban6","iban7"],[4,4,4,4,4,4,3],iban);
-  T("BIC",g("abic").replace(/\s+/g,"").toUpperCase());
+  // « Fait à … le … » des pages 3 et 4 (mêmes champs que le mandat de la page 5)
   T("VILLE",g("avil"));
   const ds=D3(sig); if(ds){T("JOUR",ds[0]);T("MOIS",ds[1]);T("ANNEE",ds[2]);}
-  // Mandat SEPA : le cadre « Nom, prénom, adresse du débiteur » n'a pas de champ — on l'écrit
+  // Page 5 = le mandat SEPA de La Mutuelle Verte, pré-rempli par elle (IBAN « 1212 1212 », « Mensuelle le 15 » cochée).
+  // Il part désormais à part, vierge et rempli des seules informations du prospect (fillSepaMV, 2e fichier) : on le retire
+  // du bulletin pour que le client ne signe pas deux fois le même mandat (Fabrice, 22/10/2026).
   try{
-    const pg=pdf.getPages()[4];
-    const fnt=await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
-    const lines=[(g("aciv")+" "+g("anom").toUpperCase()+" "+g("apre")).trim(),g("aadr"),(g("acp")+" "+g("avil")).trim()];
-    lines.forEach((t,i)=>{if(t)pg.drawText(t,{x:44,y:252-i*15,size:9.5,font:fnt,color:PDFLib.rgb(0,0,0)});});
-  }catch(e){}
+    const pages=pdf.getPages(), p5=pages[4];
+    // garde-fou : on ne retire la page que si elle porte bien le mandat (champ « iban1 »)
+    const ib=(()=>{try{return form.getTextField("iban1").acroField.getWidgets()[0];}catch(e){return null;}})();
+    if(p5&&ib&&ib.P()===p5.ref){
+      // form.removeField échoue sur ce PDF (« Unexpected N type ») : on retire les champs du formulaire à la main.
+      for(const f of form.getFields()){
+        const ws=f.acroField.getWidgets();
+        if(ws.length&&ws.every(w=>w.P()===p5.ref)){ const par=f.acroField.getParent(); if(par) par.removeField(f.acroField); else form.acroForm.removeField(f.acroField); }
+      }
+      pdf.removePage(4);
+    }
+  }catch(e){ console.warn("page 5 (mandat SEPA) non retirée",e); }
   return pdf;
 }
 // ---- Mandat SEPA de La Mutuelle Verte, rempli à part, 2e fichier (Fabrice, 22/10/2026 : « remplir à part le mandat SEPA
@@ -2809,8 +2816,7 @@ async function fillSepaMV(g){
   T("A",g("avil").toUpperCase());
   const now=new Date(), sig=g("asig")||(("0"+now.getDate()).slice(-2)+"/"+("0"+(now.getMonth()+1)).slice(-2)+"/"+now.getFullYear());
   const m=sig.match(/^(\d{2})\D(\d{2})\D(\d{4})$/); if(m){T("LE JOUR",m[1]);T("LE MOIS",m[2]);T("LE ANNEE",m[3]);}
-  // Cotisations mensuelles dans le comparateur : seule la case « Mensuelle — le 15 » existe pour un prélèvement mensuel.
-  try{form.getCheckBox("MENSUELLE 15").check();}catch(e){}
+  // Périodicité : laissée au prospect (Fabrice, 22/10/2026 : « je ne veux voir que les informations du prospect »).
   return pdf;
 }
 // ---- RÉVOLUO (REMA Assurances / CERGAP) : bulletin propre, mandat SEPA signé à part ----
