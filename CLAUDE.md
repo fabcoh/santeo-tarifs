@@ -57,10 +57,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `SEMESTRIELLE 15|30`, `ANNUELLE 15|30`), `DEBITEUR NOM|ADRESSE|CP VILLE`, `IBAN`, `BIC`, `ETABLISSEMENT` (vide : aucune saisie
   de la banque dans la page), `A`, `LE JOUR|MOIS|ANNEE`. `fillSepaMV(g)` : débiteur = l'adhérent, IBAN par groupes de 4, lieu = ville,
   date = date de signature ; **périodicité non cochée** (Fabrice, 22/10/2026 : « je ne veux voir que les informations du prospect »).
-  2ᵉ fichier `sepa_MV_<nom>.pdf` + liens ⬇, comme Révoluo. **La page 5 du bulletin était ce même mandat**, pré-rempli par la
-  Mutuelle Verte (IBAN « 1212 1212 », « Mensuelle le 15 » cochée) : `fillAdhMV` la **retire** (bulletin de 21 p.), avec ses 10 champs
-  propres (`iban1`–`iban7`, `BIC`, `nom de la baque`, `Case à cocher2`), retirés à la main du formulaire — `form.removeField` échoue
-  (« Unexpected N type »). `VILLE`, `JOUR`, `MOIS`, `ANNEE` servent aussi au « Fait à … le … » des pages 3 et 4 : toujours remplis. Test : scratchpad `tsepamv/t.js`.
+  2ᵉ fichier `sepa_MV_<nom>.pdf` + liens ⬇, comme Révoluo. **La page 5 du bulletin est ce même mandat** (pré-rempli par la
+  Mutuelle Verte : « Mensuelle le 15 » cochée) : **elle reste dans le bulletin et reste remplie** (Fabrice, 22/10/2026 : « ce qui est
+  dans le PDF tu laisses, et tu ajoutes le PDF SEPA pré-rempli comme sur Révoluo ») — un essai qui la retirait a été annulé le même jour. Test : scratchpad `tsepamv/t.js`.
   Formulaires AcroForm remplis côté navigateur avec pdf-lib ; les PDF ont été allégés (pikepdf/qpdf),
   widgets orphelins rattachés, noms de champs en double suffixés `_2`.
 - Tableaux de garantie / IPID / notices par gamme (`*_tg_2026.pdf`, `*_ipid_2026.pdf`, `*_notice_2026.pdf`,
