@@ -54,7 +54,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   télécharger 2 PDF comme sur Révoluo ») : `docs/sepa_mv_2026.pdf` (1 p., 365 ko). Le formulaire reçu (« Mandat_SEPA_4.pdf »,
   StreamServe, verrouillé RC4, **aucun champ**, page scannée) a été refait : image de la page à 200 dpi en gris + **16 champs
   modifiables** posés dessus (pdf-lib, scratchpad `sepamv/build.js`) — 7 cases de périodicité (`MENSUELLE 15`, `TRIMESTRIELLE 15|30`,
-  `SEMESTRIELLE 15|30`, `ANNUELLE 15|30`), `DEBITEUR NOM|ADRESSE|CP VILLE`, `IBAN`, `BIC`, `ETABLISSEMENT` (vide : aucune saisie
+  `SEMESTRIELLE 15|30`, `ANNUELLE 15|30`), `DEBITEUR NOM|ADRESSE|CP VILLE`, `iban1`–`iban7` (7 cases, groupes 4,4,4,4,4,4,3), `BIC`, `ETABLISSEMENT` (vide : aucune saisie
   de la banque dans la page), `A`, `LE JOUR|MOIS|ANNEE`. `fillSepaMV(g)` : débiteur = l'adhérent, IBAN par groupes de 4, lieu = ville,
   date = date de signature ; **« Mensuelle le 15 » cochée par défaut** (Fabrice, 22/10/2026 : « laisse coché 15 par mois par défaut »). IBAN et BIC viennent des champs `aiban` / `abic`, eux-mêmes remplis par le RIB déposé dans la fenêtre d'adhésion (`confirmDoc`), comme les autres documents.
   2ᵉ fichier `sepa_MV_<nom>.pdf` + liens ⬇, comme Révoluo. **La page 5 du bulletin est ce même mandat** (pré-rempli par la
