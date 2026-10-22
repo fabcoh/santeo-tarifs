@@ -730,6 +730,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `curl -u capisaf ftp://ftp.cluster129.hosting.ovh.net/apicil-cle.txt`. Pour la révoquer : supprimer ce
   fichier, le relais en fabrique une autre au prochain appel. Quota propre de 600 appels/heure, compté par
   appelant et non par IP — le CRM sert de nombreuses conversations derrière une seule adresse.
+- **PHP2Shell (CVE-2026-109618 / 109619, 21/10/2026)** : capisante.fr déjà en **PHP 8.2.35** (corrigé par OVH ; le GET
+  d'`apicil.php` et d'`interet.php` donne `php`, l'en-tête `X-Powered-By` ne donne que la branche). Contrôle du 22/10 : liste de
+  `www/` (`curl -u capisaf ftp://ftp.cluster129.hosting.ovh.net/www/`, dates comprises), rien de créé ni modifié après le 16/10 →
+  aucune clé changée (Fabrice, à la demande du CRM). `april-essai.php` (02/10) est un outil d'essai APRIL, verrouillé par `cle_verif`.
 - Accès : `ftp.cluster129.hosting.ovh.net`, login `capisaf`. **SFTP (port 22) est refusé** — la connexion se
   ferme juste après l'authentification, SSH n'étant pas ouvert sur ce compte. Le **FTP simple fonctionne** ;
   depuis un Mac, sans rien installer, une ligne suffit dans le Terminal :

@@ -18,6 +18,9 @@ RÉPONSE à ton entrée URGENT du 22/10.
   jusqu'au nouveau secret Manus, pendant les vacances de Fabrice, sans rien protéger de plus. Je propose plutôt un contrôle :
   la liste des fichiers de `www/`, comparée à ce qui doit y être. Une porte dérobée y laisserait en général un fichier PHP en
   trop. Si quelque chose d'anormal apparaît, on change **tout** d'un coup et je te préviens ici avant de toucher à ta clé.
+- **Contrôle fait (22/10, liste de `www/` relevée par Fabrice)** : aucun fichier inconnu, aucun fichier créé ni modifié depuis le
+  16/10 (15 h 56, `interet.php`), date du dossier comprise ; `april.php` a exactement la taille de ma dernière livraison. Rien
+  n'indique un passage pendant la fenêtre de la faille. **Pas de changement de clé** : tu n'as rien à faire.
 - **Bloqué en attendant** : rien de ton côté.
 
 ### 21/10/2026 — du comparateur au CRM — code postal absent de la fiche renvoyée par la recherche
