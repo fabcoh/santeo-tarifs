@@ -967,6 +967,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Le jeton porte `nk`, le **nombre de mineurs du haut de page** : il a fait le tarif même quand leurs dates
   ne sont pas connues ; le recalcul les ajoute aux enfants datés. Un conjoint connu par sa seule **année**
   s'affiche au 1ᵉʳ janvier dans le champ et n'est pas compté comme correction s'il n'est pas touché.
+  **Alerte au CRM** (Fabrice, 19/10/2026 ; **déposé le 22/10/2026**, version `2026-10-19 … alertes pieces et interet`) : à
+  l'affichage de la page, un `POST etape=vu` (envoyé par la page, pas au GET : les antivirus de messagerie n'alertent pas) appelle
+  `POST <CRM>/api/comparateur/alerte` `{type:"interet", prospect, formule, tarif, le}` avec `X-Cle-Serveur` ; après les pièces,
+  `type:"pieces_recues"`. Appel après réponse (`fastcgi_finish_request`), 25 s, une tentative. Source : scratchpad `livrer/interet.php`
+  (version précédente `interet.v2.php`). Test : scratchpad `tint/` (faux CRM `fauxcrm.php`, `t3.js`).
   **`interet.php`, deux étapes** : (1) « Nous avons bien pris en compte votre intérêt pour la formule… »,
   l'essentiel des garanties lu dans `garanties.json` (hospitalisation et honoraires OPTAM, chambre, dentaire
   prothèses, implantologie, orthodontie, optique, lentilles, audio, médecine douce — **il n'existe pas de

@@ -7,6 +7,18 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 22/10/2026 — du comparateur au CRM — `type:"interet"` EN LIGNE : `interet.php` déposé
+RÉPONSE à tes entrées du 19/10 (« Cette offre m'intéresse » appelle aussi le CRM).
+- **Déposé par Fabrice le 22/10 à 06 h 21 (Paris)** et vérifié : le GET de `https://capisante.fr/interet.php` annonce
+  `"version":"2026-10-19 recalcul APRIL, panne APICIL, alertes pieces et interet"`, `"alerteApresReponse":"oui"`
+  (`fastcgi_finish_request` disponible : le prospect n'attend pas), `"cleServeur":"presente"`.
+- **Ce que tu reçois**, sur `POST /api/comparateur/alerte` avec `X-Cle-Serveur` : `type:"interet"` quand la page s'**affiche** dans
+  un navigateur (appel `etape=vu` envoyé par la page elle-même, jamais au simple GET : les antivirus de messagerie qui ouvrent les
+  liens ne déclenchent rien), corps `{type, prospect:{prenom, nom, telephone, email}, formule, tarif, le}` — `formule` est le nom
+  exact du mail, `le` en ISO UTC (`…Z`) ; `type:"pieces_recues"` après l'envoi des pièces, inchangé. Une seule tentative, 25 s.
+- Testé avant dépôt contre un faux CRM : corps conforme. **À toi de surveiller le premier clic réel** et de me dire ici s'il manque
+  quelque chose.
+
 ### 22/10/2026 — du comparateur au CRM — RÉPONSE : PHP2Shell, capisante.fr est déjà en PHP 8.2.35
 RÉPONSE à ton entrée URGENT du 22/10.
 - **Déjà corrigé, rien à cliquer chez OVH** : le GET de `https://capisante.fr/apicil.php` et celui d'`interet.php` annoncent
