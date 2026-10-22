@@ -1881,9 +1881,10 @@ async function fillAdh(r,ov){
         // 2e fichier : mandat SEPA de La Mutuelle Verte, signé à part
         try{
           const pdfS=await fillSepaMV(g); const outS=await pdfS.save();
-          await new Promise(res=>setTimeout(res,600));
-          const fS="sepa_MV_"+(g("anom")||"client")+".pdf"; await SAVE(fS,outS); gen.push({name:fS,data:outS});
-          st.textContent=warn+"✅ 2 fichiers : bulletin d\u2019adhésion + mandat SEPA Mutuelle Verte.";
+          // Pas de 2e téléchargement automatique : le navigateur le bloque souvent (Antony ne voyait pas le mandat).
+          // Le mandat part en bouton « ⬇ » cliqué à la main, comme les liens de fin de génération.
+          const fS="sepa_MV_"+(g("anom")||"client")+".pdf"; gen.push({name:fS,data:outS});
+          st.textContent=warn+"✅ Bulletin téléchargé. Mandat SEPA prêt : cliquez sur « sepa_MV_… » dans la fenêtre Universign (Fichiers).";
         }catch(e){ st.textContent=warn+"✅ Bulletin téléchargé — ❌ mandat SEPA : "+(e&&e.message||e); }
       } else if(isREV(r.key)){
         // 2e fichier : mandat SEPA CERGAP, signé à part
