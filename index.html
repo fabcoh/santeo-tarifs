@@ -656,7 +656,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-22T10:57:12Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-22T10:57:12Z</div>
+  <div id="buildstamp" data-build="2026-10-27T11:49:27Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-27T11:49:27Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2994,9 +2994,10 @@ async function fillAdh(r,ov){
         // 2e fichier : mandat SEPA de La Mutuelle Verte, signé à part
         try{
           const pdfS=await fillSepaMV(g); const outS=await pdfS.save();
-          await new Promise(res=>setTimeout(res,600));
-          const fS="sepa_MV_"+(g("anom")||"client")+".pdf"; await SAVE(fS,outS); gen.push({name:fS,data:outS});
-          st.textContent=warn+"✅ 2 fichiers : bulletin d\u2019adhésion + mandat SEPA Mutuelle Verte.";
+          // Pas de 2e téléchargement automatique : le navigateur le bloque souvent (Antony ne voyait pas le mandat).
+          // Le mandat part en bouton « ⬇ » cliqué à la main, comme les liens de fin de génération.
+          const fS="sepa_MV_"+(g("anom")||"client")+".pdf"; gen.push({name:fS,data:outS});
+          st.textContent=warn+"✅ Bulletin téléchargé. Mandat SEPA prêt : cliquez sur « sepa_MV_… » dans la fenêtre Universign (Fichiers).";
         }catch(e){ st.textContent=warn+"✅ Bulletin téléchargé — ❌ mandat SEPA : "+(e&&e.message||e); }
       } else if(isREV(r.key)){
         // 2e fichier : mandat SEPA CERGAP, signé à part
@@ -4856,6 +4857,37 @@ function telFR(v){
   return /^0[1-9]\d{8}$/.test(t)?t:"";
 }
 
+// Lien court « Cette offre m'intéresse » (lien.php, capisante.fr, valable 10 jours, tarif figé) : le prospect
+// arrive directement à la validation de ses informations, puis dépose ses pièces. Le même lien part du CRM.
+async function lienAdhesion(r,btn){
+  const P=(typeof PRO!=="undefined"&&PRO)?PRO:{};
+  const civ=/^mme$/i.test(P.civ||"")?"MME":(P.civ?"MR":"");
+  let exp=EXPEDITEURS[0][0];
+  try{const m=localStorage.getItem("santeo_exp"); if(m&&EXPEDITEURS.some(e=>e[0]===m))exp=m;}catch(e){}
+  const corps={c:exp, k:r.key, fi:r.fi, n:r.gamme+" "+r.formule, p:eur(r.total),
+    cv:(window.CRMLINK&&window.CRMLINK.back)||"",
+    pr:{civ:civ, nom:P.nom||"", prenom:P.prenom||"", ddn:P.ddn||"", reg:regimeActuel(),
+        tel:P.tel||"", email:P.email||"", adr:P.adresse||"", cp:P.cp5||P.cp||"", ville:P.ville||"",
+        cj:(P.conjoint&&P.conjoint.ddn)||document.getElementById("cnj").value.trim(),
+        en:(Array.isArray(P.enfants)?P.enfants.map(e=>e.ddn||"").filter(Boolean):[]),
+        nk:+document.getElementById("kids").value||0}};
+  const txt=btn.textContent; btn.disabled=true; btn.textContent="⏳ Lien…";
+  try{
+    const rp=await fetch("https://capisante.fr/lien.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(corps)});
+    const d=await rp.json().catch(()=>({}));
+    if(!rp.ok||!d.ok) throw new Error(d.erreur||("HTTP "+rp.status));
+    const pre=(P.prenom||"").trim();
+    const msg=(pre?"Bonjour "+pre+", voici":"Voici")+" le lien pour mettre en place votre adhésion :\n"+d.lien;
+    const ov=overlay('<h3 style="margin:0 0 8px">Lien d’adhésion</h3>'
+      +'<p style="font-size:13px;color:var(--muted);margin:0 0 8px">Valable jusqu’au '+d.jusquau+' · tarif '+eur(r.total)+' · '+r.gamme+' '+r.formule+'</p>'
+      +'<textarea readonly rows="3" style="width:100%;box-sizing:border-box;font:inherit;font-size:13px">'+msg.replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</textarea>'
+      +'<div style="display:flex;gap:8px;margin-top:8px"><button type="button" class="tgbtn cpLien" style="background:var(--accent);color:var(--accent-ink);border:none">Copier le message</button><button type="button" class="close tgbtn">Fermer</button></div>',520,false);
+    ov.querySelector(".cpLien").addEventListener("click",async()=>{
+      try{ await navigator.clipboard.writeText(msg); ov.querySelector(".cpLien").textContent="✓ Copié"; }catch(e){ ov.querySelector("textarea").select(); }
+    });
+  }catch(e){ alert("Lien non créé : "+(e&&e.message||e)); }
+  finally{ btn.disabled=false; btn.textContent=txt; }
+}
 function devisFenetre(r){
   const pro = (typeof PRO!=="undefined"&&PRO)?PRO:{};
   const age = parseAge(document.getElementById("naiss").value);
@@ -5265,6 +5297,7 @@ function render(rows,warns){
         Object.entries(docsDe(r)).map(([n,u])=>'<a class="tgbtn doc" href="'+u+'" target="_blank" rel="noopener" onclick="event.stopPropagation();try{var w=window.open(this.href,\'docwin\',\'popup,width=980,height=860,left=120,top=60\');if(w){event.preventDefault();w.focus();}}catch(e){}">'+n+' ↗</a>').join('')+
         ((INFO[r.key]&&INFO[r.key].length)?'<button class="tgbtn ibtn" data-info="'+i+'" title="Limites, plafonds et exclusions" aria-label="Informations"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16.5"></line><circle cx="12" cy="7.6" r="1.1" fill="currentColor" stroke="none"></circle></svg><span>Infos</span></button>':'')+
         (true&&["CAPEVO","CAPNR","TALIS","MV","REV","RF50","RF100"].includes(r.key)?'<button class="tgbtn" data-adh="'+i+'">📝 Adhésion</button>':'')+
+        (true&&r.key!=="APRIL"?'<button class="tgbtn" data-lien="'+i+'" title="Lien valable 10 jours : le prospect valide ses informations, puis dépose ses documents">🔗 Lien d’adhésion</button>':'')+
         // Adresse de production (souscription en ligne, page de dépôt) : MCCI n'a que celle-ci, sans bulletin papier (Fabrice, 05/10/2026).
         (true&&r.key!=="APRIL"&&lienAdh(r)?'<a class="tgbtn" href="'+lienAdh(r).replace(/"/g,"&quot;")+'" target="_blank" rel="noopener" title="Créer le dossier sur le site de la compagnie (adresse de production)">'+(["MCCINOVA","FLEXIA","SOLENCIA"].includes(r.key)?"📝 Adhésion (site MCCI)":"🌐 Souscrire en ligne")+'</a>':'')+
         (r.key==="APICIL"?'<button class="tgbtn" data-devis="'+i+'" title="Enregistrer ce devis chez APICIL">🧾 Devis</button>':'')+
@@ -5283,6 +5316,7 @@ function render(rows,warns){
         ev.stopPropagation();
         if(btn.dataset.info!==undefined){ showInfo(LASTROWS[+btn.dataset.info]); return; }
         if(btn.dataset.devis!==undefined){ devisFenetre(LASTROWS[+btn.dataset.devis]); return; }
+        if(btn.dataset.lien!==undefined){ lienAdhesion(LASTROWS[+btn.dataset.lien],btn); return; }
         if(btn.dataset.aprilon!==undefined){ aprilOn(LASTROWS[+btn.dataset.aprilon],btn); return; }
         if(btn.dataset.adh!==undefined) withAdhGate(()=>showAdh(LASTROWS[+btn.dataset.adh]));
         else if(btn.dataset.tg){ if(SENDSEL.size) showTGSel(); else showTG(btn.dataset.tg); } // formules cochées → tableau de la sélection (toutes gammes)
