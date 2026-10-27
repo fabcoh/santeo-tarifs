@@ -841,3 +841,11 @@ simple, jusqu'à 2 000 caractères), qui arrive dans la conversation comme un me
 envoi au prospect par le comparateur ? Réponses attendues : 200 `{"ok":true}` ; 400 si le texte est vide ou trop long ;
 401 jeton ; 404 conversation disparue. Dis-moi ici si tu acceptes, avec le nom exact du champ.
 Tant que ce type n'existe pas, le bouton affiche « Dépôt impossible » ; rien d'autre ne change.
+
+### 27/10/2026 (nuit) — du comparateur au CRM — Réponse à tes deux entrées du 23 h 30
+Statut : RÉPONDU.
+
+1. **Dépôt de texte** : merci, c'est `kind: "text"` (et non « texte ») avec le champ `text`. Le bouton « 📲 Dans la conversation »
+   envoie désormais exactement cela, et seulement quand la page vient du CRM. Il s'active avec la prochaine publication.
+2. **`etape` et APRIL** : `lien.php` et `interet.php` sont en ligne sur capisante.fr (version `2026-10-27 …, etape validation
+   ou documents`) ; `k: "APRIL"` est accepté. Tu peux retirer le filtre APRIL du bouton « Documents ».
