@@ -780,3 +780,37 @@ dit « Tarifs au …, valables 10 jours. »
   garde GCI 500 (400 %).
 - Nouvelle vue `Tableau.comparatifSoins(G, {cols, tarifs, prospect, date, depenses})` : 2 à 4 mutuelles côte à côte, garanties
   poste par poste, soins prévus, bilan « Cotisation annuelle · Remboursements (dont forfaits) · Solde · Montants non remboursés ».
+
+### 27/10/2026 — du comparateur au CRM — Lien court d'adhésion (`lien.php`) : contrat d'appel
+Statut : À LIRE — relais à déposer par Fabrice, ne pas l'appeler avant son annonce ici.
+
+Fabrice veut envoyer depuis la fiche, par WhatsApp, un lien qui mène le prospect directement à la validation de ses
+informations, puis au dépôt de ses pièces. Même page que « Cette offre m'intéresse » depuis un e-mail, sans passer par le mail.
+Durée : **10 jours**. Tarif : **figé** (celui envoyé ; la page ne le recalcule pas).
+
+**Appel** : `POST https://capisante.fr/lien.php`, `Content-Type: application/json`, en-tête `X-Cle-Serveur` = la clé
+serveur (la même que `apicil.php`, quota **200 par heure**). Le comparateur l'appelle aussi depuis son navigateur, sans clé
+(origine autorisée, 30 par heure et par adresse).
+
+**Corps** :
+- `c` : conseiller, une des adresses de la liste (`fcohen@santeo.net`, `sandra@…`, `caroline@…`, `antony@…`). Obligatoire.
+- `k` : gamme, comme dans `garanties.json` (`MV`, `CAPEVO`, `REV`…). Pas `APRIL` : pas de garanties dans la page.
+- `fi` : numéro de formule (entier). `n` : nom de la formule affichée (ex. « M. VERTE GCI 200 »).
+- `p` : tarif affiché, texte (ex. « 134,33 € »).
+- `cv` : adresse de la conversation (`https`), facultative, pour le mail au conseiller.
+- `pr` : la fiche : `civ` (`MME`, `MR` ou vide), `nom`, `prenom`, `ddn` (`jj/mm/aaaa`), `reg` (`SAL`, `TNS`, `RL`, `TNSRL`),
+  `tel`, `email`, `adr`, `cp` (5 chiffres), `ville`, `cj` (conjoint : `jj/mm/aaaa`, année, ou vide), `en` (dates des enfants,
+  4 au plus), `nk` (nombre de mineurs, 0 à 8). **Un téléphone ou un e-mail est obligatoire.**
+
+**Réponse** : `{"ok":true,"lien":"https://capisante.fr/lien.php?c=…","jusquau":"jj/mm/aaaa"}`.
+Erreurs : `{"ok":false,"erreur":"…"}` avec 400 (champ manquant ou invalide, le texte dit lequel), 403 (clé absente ou fausse),
+405, 429 (quota), 500.
+
+**Ouverture par le prospect** : le lien court le fait arriver à la validation (récapitulatif, date d'adhésion, VALIDER), puis au
+dépôt des pièces (pièce d'identité, attestation de Sécurité sociale, RIB). Les mêmes étapes que « Cette offre m'intéresse ».
+Un lien expiré ou inconnu affiche « Ce lien n'est plus valable. Demandez un nouveau lien à votre conseiller ».
+
+**Message suggéré** (à votre rédaction) : « Bonjour {prénom}, voici le lien pour mettre en place votre adhésion : {lien} ».
+
+**Ce qui reste de notre côté** : `lien.php` (nouveau) et `interet.php` (même fichier, une ligne de plus : jeton à tarif figé)
+à déposer sur capisante.fr. Dès que Fabrice l'annonce ici, le contrat est en service.
