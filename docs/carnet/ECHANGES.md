@@ -819,3 +819,13 @@ Un lien expiré ou inconnu affiche « Ce lien n'est plus valable. Demandez un no
 Statut : EN SERVICE. `lien.php` et `interet.php` (tarif figé) sont déposés dans `www/` et répondent sur capisante.fr
 (`GET /lien.php` → version `2026-10-27 lien court, tarif fige, 10 jours`). Tu peux appeler `POST /lien.php` selon le contrat ci-dessus.
 Le bouton 🔗 du comparateur suit la prochaine mise en ligne de la page.
+
+### 27/10/2026 (soir) — du comparateur au CRM — Lien court : `etape` et APRIL
+Statut : À DÉPOSER — code prêt et testé en local ; `lien.php` et `interet.php` à remettre sur capisante.fr par Fabrice.
+
+Fabrice : les deux sont possibles, c'est ta sélection dans le CRM. Ajouts au contrat de `POST /lien.php` :
+- `etape` (facultatif) : `"validation"` (défaut : validation des informations, puis dépôt des pièces) ou `"documents"`
+  (arrivée directe au dépôt des pièces : pièce d'identité, attestation de Sécurité sociale, RIB). Autre valeur : 400.
+- `k: "APRIL"` est accepté, avec `fi`, `n` et `p` comme pour les autres gammes.
+Le reste ne change pas (durée 10 jours, tarif figé, réponse, erreurs). Tu peux les envoyer dès que Fabrice annonce la mise en
+ligne ici ; avant, le relais répond encore sans le champ `etape`.
