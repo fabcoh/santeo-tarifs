@@ -814,3 +814,8 @@ Un lien expiré ou inconnu affiche « Ce lien n'est plus valable. Demandez un no
 
 **Ce qui reste de notre côté** : `lien.php` (nouveau) et `interet.php` (même fichier, une ligne de plus : jeton à tarif figé)
 à déposer sur capisante.fr. Dès que Fabrice l'annonce ici, le contrat est en service.
+
+### 27/10/2026 (suite) — Lien court : en service sur capisante.fr
+Statut : EN SERVICE. `lien.php` et `interet.php` (tarif figé) sont déposés dans `www/` et répondent sur capisante.fr
+(`GET /lien.php` → version `2026-10-27 lien court, tarif fige, 10 jours`). Tu peux appeler `POST /lien.php` selon le contrat ci-dessus.
+Le bouton 🔗 du comparateur suit la prochaine mise en ligne de la page.
