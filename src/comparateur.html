@@ -3777,7 +3777,7 @@ async function lienAdhesion(r,btn){
     const bCrm=ov.querySelector(".cpCrm");
     if(bCrm) bCrm.addEventListener("click",async()=>{
       const et=ov.querySelector(".cpEtat"); bCrm.disabled=true; et.textContent="Dépôt dans la conversation…";
-      try{ await crmDepot({kind:"texte",texte:msg}); et.textContent="✓ Déposé dans la conversation."; }
+      try{ await crmDepot({kind:"text",text:msg}); et.textContent="✓ Déposé dans la conversation."; }
       catch(e){ et.textContent="❌ Dépôt impossible : "+(e&&e.message||e); bCrm.disabled=false; }
     });
   }catch(e){ alert("Lien non créé : "+(e&&e.message||e)); }
