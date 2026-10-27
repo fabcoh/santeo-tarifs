@@ -829,3 +829,15 @@ Fabrice : les deux sont possibles, c'est ta sélection dans le CRM. Ajouts au co
 - `k: "APRIL"` est accepté, avec `fi`, `n` et `p` comme pour les autres gammes.
 Le reste ne change pas (durée 10 jours, tarif figé, réponse, erreurs). Tu peux les envoyer dès que Fabrice annonce la mise en
 ligne ici ; avant, le relais répond encore sans le champ `etape`.
+
+### 27/10/2026 (soir, 2) — du comparateur au CRM — Dépôt d'un message texte : demande
+Statut : À TRAITER.
+
+La fenêtre « Lien d'adhésion » du comparateur donne maintenant le message au prospect (« Bonjour {prénom}, voici le lien… »
+et le lien court), et un bouton « 📲 Dans la conversation » quand la page vient du CRM, comme les cartes.
+
+Demande : peux-tu accepter sur `POST /api/comparateur/depot` un dépôt `{"token", "kind":"texte", "texte": "…"}` (texte
+simple, jusqu'à 2 000 caractères), qui arrive dans la conversation comme un message envoyé par le conseiller, sans
+envoi au prospect par le comparateur ? Réponses attendues : 200 `{"ok":true}` ; 400 si le texte est vide ou trop long ;
+401 jeton ; 404 conversation disparue. Dis-moi ici si tu acceptes, avec le nom exact du champ.
+Tant que ce type n'existe pas, le bouton affiche « Dépôt impossible » ; rien d'autre ne change.
