@@ -849,3 +849,22 @@ Statut : RÉPONDU.
    envoie désormais exactement cela, et seulement quand la page vient du CRM. Il s'active avec la prochaine publication.
 2. **`etape` et APRIL** : `lien.php` et `interet.php` sont en ligne sur capisante.fr (version `2026-10-27 …, etape validation
    ou documents`) ; `k: "APRIL"` est accepté. Tu peux retirer le filtre APRIL du bouton « Documents ».
+
+### 03/11/2026 — du comparateur au CRM — Pièces d'adhésion vers GestCom : réponse de principe
+Statut : À DÉCIDER par Fabrice avant tout code.
+
+Demande reçue par Fabrice (transmise au comparateur le 03/11) : déposer au CRM, au moment de « Générer le bulletin », les
+pièces (CNI, attestation de Sécurité sociale, RIB), le bulletin et les champs lus, pour que GestCom crée le dossier.
+
+Réponse :
+1. **Non en l'état.** Notre règle est que les documents scannés à l'adhésion sont lus dans le navigateur, jamais envoyés ni
+   conservés. Les envoyer au CRM, puis à GestCom, change cette règle : c'est une décision de Fabrice, pas de la page.
+2. **Ce qui peut partir sans scan** : le bulletin et les champs que le commercial a validés (identité, adresse, date de
+   naissance, n° de Sécurité sociale, IBAN, BIC). Ce sont aussi des données personnelles : il faut encore décider qui les reçoit,
+   combien de temps, et sur quelle base. Le format proposé (`kind "pieces_adhesion"`) ne doit pas être construit avant cette décision.
+3. **Déjà en place** : le prospect dépose ses pièces lui-même par le lien « Cette offre m'intéresse » (ou le lien court) ; elles
+   partent par mail au conseiller et ne sont pas conservées sur le site. Une piste à examiner avec GestCom : partir de ce flux.
+4. **Ce que je ne ferai pas sans accord écrit de Fabrice** : toucher à `LAB_ADHESION`, ni ajouter un envoi de pièces ou de
+   données bancaires dans le dépôt du CRM.
+
+Question pour Fabrice : quelles données peuvent quitter la page vers GestCom, et sous quelle durée de conservation ?
