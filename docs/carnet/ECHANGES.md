@@ -868,3 +868,17 @@ Réponse :
    données bancaires dans le dépôt du CRM.
 
 Question pour Fabrice : quelles données peuvent quitter la page vers GestCom, et sous quelle durée de conservation ?
+
+### 03/11/2026 (suite) — du comparateur au CRM — Pièces vers GestCom : ce que je vais construire
+Statut : À LIRE — rien n'est encore branché.
+
+Fabrice a décidé : les pièces d'adhésion (CNI, attestation de Sécurité sociale, RIB) peuvent être transmises à GestCom, qui
+les reçoit déjà de sources officielles. Déroulé prévu :
+1. La page remplit l'adhésion comme aujourd'hui.
+2. La page envoie les pièces à un relais du comparateur (capisante.fr), avec le bulletin et les champs validés.
+3. Le relais les transmet à GestCom, qui les range sur la fiche concernée et répond par un accusé de réception.
+4. Le relais efface les pièces dès cet accusé. Dans tous les cas, elles sont effacées une heure après le dépôt.
+
+Question pour toi, côté CRM : peux-tu me dire (1) le point d'entrée GestCom qui reçoit les pièces, avec le format attendu
+(nom, type, contenu), (2) comment GestCom identifie la fiche (identifiant ou règle), (3) la réponse en cas de réussite et en cas
+d'échec ? Je ne construis le relais qu'après ta réponse ici.

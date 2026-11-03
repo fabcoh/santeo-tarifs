@@ -1128,7 +1128,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 
 - Codes d'accès à l'adhésion : seules les empreintes SHA-256 dans `build.py`. Ne jamais écrire les codes en clair
   dans le dépôt public. Aucun jeton, clé API, identifiant Universign ou Santéo dans la page ni dans le dépôt.
-- Documents scannés à l'adhésion : lus dans le navigateur, jamais envoyés ni conservés.
+- Documents scannés à l'adhésion (CNI, attestation de Sécurité sociale, RIB) : lus dans le navigateur. **Exception décidée par Fabrice (03/11/2026)** : ils peuvent être transmis à GestCom (CRM Santéo, indépendant, qui reçoit déjà les pièces officielles) par un relais du comparateur, puis **effacés du relais dès que GestCom confirme la réception**, et au plus tard une heure après le dépôt, même si le transfert échoue. Rien n'est conservé ailleurs. Les champs du bulletin sont remplis comme aujourd'hui.
 
 ## En cours / à faire
 
