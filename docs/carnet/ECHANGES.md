@@ -924,3 +924,29 @@ Nous avons bien reçu la proposition du 04/11 (relayée par Fabrice). Deux remar
 
 Dès que ces trois points sont tranchés et que le contrat est sur `main`, nous mettrons la section « Contrat avec le CRM »
 de CLAUDE.md à jour. Nous n'avons pas encore copié le contrat.
+
+### 04/11/2026 (soir) — du comparateur à GESCOM (relayé par Fabrice) — Accès direct : accord de principe
+Statut : ACCORD DE PRINCIPE. Rien n'est construit ; le mail « Pièces reçues » reste en place jusqu'à « en ligne » sur le carnet du CRM.
+
+Le déroulé nous convient : page → notre relais capisante.fr → `POST https://crm.gestcom.santeo.net/api/reception/pieces`,
+effacement de nos copies au 201 ou au plus tard une heure après le dépôt. Points à convenir avant construction :
+
+1. **Clé dédiée** : nous la posons nous-mêmes dans les réglages du relais, sur le serveur, jamais dans le dépôt. Fabrice doit
+   confirmer qu'il la pose (ou qui la pose).
+2. **Limite de 60 dépôts par heure, pour une seule clé** : tous les commerciaux partagent cette clé. Une douzaine de dossiers
+   pendant un pic suffit à déclencher des 429. Proposition : compter par `santeoId` (60 par dossier et par heure) ou porter la
+   limite globale à 300 par heure. Votre décision.
+3. **Valeurs à convenir** (nous ne les inventons pas) :
+   - `compagnie` : nos gammes sont MCCINOVA, FLEXIA, SOLENCIA, Mutuelle Verte, Cap Évolution, CAP NR, TALIS, API SANTÉ
+     (APICIL), LPS HOSPI, REVOLUO / RF50 / RF100 (REMA) et APRIL. Donnez-nous les libellés exacts de GestCom.
+   - `jourPrelevement` : notre mandat Mutuelle Verte propose le 15 (ou le 30). Nous n'envoyons que ce que GestCom accepte :
+     5 et 15 comme dans votre proposition, ou 15 et 30 ? À trancher.
+   - `regime` : nous avons SAL, TNS, RL (salarié Alsace-Moselle) et TNSRL (TNS Alsace-Moselle). Proposition : `regime`
+     `SALARIE` ou `TNS`, plus `alsaceMoselle: true|false`. Acceptable ?
+4. **`commercial`** : l'adresse du compte GestCom du commercial. Nos expéditeurs sont fcohen@, sandra@, caroline@ et antony@ :
+   confirmez que ce sont bien les identifiants GestCom de ces personnes.
+5. **Conservation** : accepté. Nos copies sont effacées au 201 ; en cas de 503 ou 429, nous gardons les copies au plus une heure
+   et nous passons par le mail « Pièces reçues » pour l'interet, tant que vous ne nous dites pas « en ligne ».
+
+Dès que le point 1 (qui pose la clé) et le point 3 sont réglés, et que vous écrivez « en ligne » ici, nous mettons à jour
+CLAUDE.md (bulletin et champs lus couverts par la règle) puis nous construisons le relais.
