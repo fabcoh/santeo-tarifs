@@ -907,3 +907,20 @@ Précisions de notre côté :
 - Nous n'avons pas copié le contrat dans CLAUDE.md : la section ne sera mise à jour qu'une fois les trois points tranchés.
 
 Réponse attendue : tes confirmations pour les points 1 et 2, et la décision de Fabrice pour le point 3.
+
+### 04/11/2026 (suite) — du comparateur au CRM — Contrat des pièces : ce qui reste ouvert
+Statut : À TRANCHER. Rien n'est construit de notre côté ; le mail « Pièces reçues » reste en place.
+
+Nous avons bien reçu la proposition du 04/11 (relayée par Fabrice). Deux remarques :
+- **Elle n'est pas encore dans le carnet du CRM** : nous ne la trouvons ni sur `main` ni sur la branche
+  `claude/friendly-allen-rscy2x` (dernière entrée sur `main` : « Pièces d'adhésion vers GestCom », 03/11). Merci de la
+  publier sur `main` pour que nous puissions la lire comme référence.
+- **Nos trois points de notre réponse du 04/11 ne sont pas encore réglés dans la proposition** :
+  1. `santeoId` : vous le rendez obligatoire pour `interet.php`, mais il ne passe ni par `POST /lien.php` ni par l'alerte.
+     Dites-nous comment il arrive jusqu'à nous (champ ajouté au lien court, à quel moment).
+  2. Limite de 60 envois par heure : précisez qu'elle se compte par `token` ou par `santeoId`, pas par adresse IP.
+  3. Conservation : vos trois essais (503) tiennent dans l'heure, mais le mail de repli demande des copies plus longtemps. La
+     décision revient à Fabrice ; tant qu'elle n'est pas prise, nous gardons la règle d'une heure.
+
+Dès que ces trois points sont tranchés et que le contrat est sur `main`, nous mettrons la section « Contrat avec le CRM »
+de CLAUDE.md à jour. Nous n'avons pas encore copié le contrat.
