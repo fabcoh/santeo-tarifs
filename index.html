@@ -656,7 +656,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-10-27T11:49:27Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-27T11:49:27Z</div>
+  <div id="buildstamp" data-build="2026-10-27T22:59:41Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-10-27T22:59:41Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -4881,9 +4881,17 @@ async function lienAdhesion(r,btn){
     const ov=overlay('<h3 style="margin:0 0 8px">Lien d’adhésion</h3>'
       +'<p style="font-size:13px;color:var(--muted);margin:0 0 8px">Valable jusqu’au '+d.jusquau+' · tarif '+eur(r.total)+' · '+r.gamme+' '+r.formule+'</p>'
       +'<textarea readonly rows="3" style="width:100%;box-sizing:border-box;font:inherit;font-size:13px">'+msg.replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</textarea>'
-      +'<div style="display:flex;gap:8px;margin-top:8px"><button type="button" class="tgbtn cpLien" style="background:var(--accent);color:var(--accent-ink);border:none">Copier le message</button><button type="button" class="close tgbtn">Fermer</button></div>',520,false);
+      +'<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button type="button" class="tgbtn cpLien" style="background:var(--accent);color:var(--accent-ink);border:none">Copier le message</button>'
+      +(window.CRMLINK?'<button type="button" class="tgbtn cpCrm" style="background:#059669;color:#fff;border:none" title="Dépose le message dans la conversation WhatsApp, comme les cartes">📲 Dans la conversation</button>':'')
+      +'<button type="button" class="close tgbtn">Fermer</button></div><div class="cpEtat" style="font-size:12px;color:var(--muted);margin-top:6px"></div>',520,false);
     ov.querySelector(".cpLien").addEventListener("click",async()=>{
       try{ await navigator.clipboard.writeText(msg); ov.querySelector(".cpLien").textContent="✓ Copié"; }catch(e){ ov.querySelector("textarea").select(); }
+    });
+    const bCrm=ov.querySelector(".cpCrm");
+    if(bCrm) bCrm.addEventListener("click",async()=>{
+      const et=ov.querySelector(".cpEtat"); bCrm.disabled=true; et.textContent="Dépôt dans la conversation…";
+      try{ await crmDepot({kind:"text",text:msg}); et.textContent="✓ Déposé dans la conversation."; }
+      catch(e){ et.textContent="❌ Dépôt impossible : "+(e&&e.message||e); bCrm.disabled=false; }
     });
   }catch(e){ alert("Lien non créé : "+(e&&e.message||e)); }
   finally{ btn.disabled=false; btn.textContent=txt; }
