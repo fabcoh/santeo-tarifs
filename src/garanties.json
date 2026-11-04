@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmpa8v9b09c.js",
+ "genere": "/tmp/tmp22_q182f.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -31,6 +31,11 @@
   {
    "cle": "ch",
    "libelle": "Chambre particulière",
+   "source": "gammes"
+  },
+  {
+   "cle": "honoG",
+   "libelle": "Consult. généralistes Optam",
    "source": "gammes"
   },
   {
@@ -396,8 +401,17 @@
     "300 %",
     "400 %"
    ],
+   "honoG": [
+    "100 %",
+    "100 %",
+    "130 %",
+    "160 %",
+    "200 %",
+    "300 %",
+    "400 %"
+   ],
    "honoO": [
-    "100 % (généralistes)",
+    "—",
     "100 %",
     "130 %",
     "160 %",

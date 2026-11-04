@@ -30,7 +30,7 @@
 // par famille, ses lignes dessous. 3e élément à 1 = ligne en gras (parcours OPTAM, prothèses dentaires, verres simples).
 const BLOCS=[
   ["Hospitalisation",[["Hospitalisation Optam","hospO",1],["Hospitalisation hors Optam","hospN"],["Chambre particulière","ch"]]],
-  ["Honoraires",[["Consult. spécialistes Optam","honoO",1],["Consult. hors Optam","honoN"]]],
+  ["Honoraires",[["Consult. généralistes Optam","honoG"],["Consult. spécialistes Optam","honoO",1],["Consult. hors Optam","honoN"]]],
   ["Pharmacie",[["Médicaments remboursés","x:pharR"],["Pharmacie non remboursée","x:pharN"]]],
   ["Dentaire",[["Prothèses dentaires","dent",1],["Implantologie","x:imp"],["Orthodontie remboursée","x:orthR"],["Orthodontie non remboursée","x:orthN"]]],
   ["Optique",[["Verres et monture simples","opt",1],["Verres et monture complexes","x:optC"],["Lentilles acceptées","x:lentA"],["Lentilles refusées","x:lentR"]]],
@@ -81,7 +81,10 @@ function nomComplet(G,key,fi){
 function valeur(G,key,fi,src){
   const f=G.gammes[key], e=(G.extras||{})[key]||{};
   if(src.startsWith("x:")){const k=src.slice(2);return (e[k]&&e[k][fi]!==undefined)?e[k][fi]:"—";}
-  const arr=f&&f[src];return (arr&&arr[fi]!==undefined)?arr[fi]:"—";
+  const arr=f&&f[src];
+  // Généralistes : relevés pour CAP NR seulement ; ailleurs « n.c. » (non relevé), jamais « — » (pas couvert).
+  if(src==="honoG") return (arr&&arr[fi]!==undefined)?arr[fi]:"n.c.";
+  return (arr&&arr[fi]!==undefined)?arr[fi]:"—";
 }
 
 // Prothèses à deux taux (Mutuelle Verte : « dents visibles » / « autres dents », Fabrice 21/10/2026) : `dent` porte le taux le plus
@@ -322,7 +325,7 @@ function cumulTotal(a,b){
   return '<span class="cu-mx">'+P.n+" % + "+cuNb(E.n)+" €</span>";
 }
 const CU_POSTES={hospO:"Hospitalisation Optam",hospN:"Hospitalisation hors Optam",ch:"Chambre particulière",
-  honoO:"Spécialistes Optam",honoN:"Spécialistes hors Optam","x:pharR":"Médicaments remboursés","x:pharN":"Pharmacie non remboursée",
+  honoG:"Généralistes Optam",honoO:"Spécialistes Optam",honoN:"Spécialistes hors Optam","x:pharR":"Médicaments remboursés","x:pharN":"Pharmacie non remboursée",
   dent:"Prothèses dentaires","x:imp":"Implantologie","x:orthR":"Orthodontie remboursée","x:orthN":"Orthodontie non remb.",
   opt:"Verres et monture simples","x:optC":"Verres et monture complexes","x:lentA":"Lentilles acceptées","x:lentR":"Lentilles refusées",
   "x:aud":"Aides auditives",md:"Médecines douces"};
