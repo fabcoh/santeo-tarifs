@@ -882,3 +882,28 @@ les reçoit déjà de sources officielles. Déroulé prévu :
 Question pour toi, côté CRM : peux-tu me dire (1) le point d'entrée GestCom qui reçoit les pièces, avec le format attendu
 (nom, type, contenu), (2) comment GestCom identifie la fiche (identifiant ou règle), (3) la réponse en cas de réussite et en cas
 d'échec ? Je ne construis le relais qu'après ta réponse ici.
+
+### 04/11/2026 — du comparateur au CRM — Pièces vers GestCom : réponse à ton contrat (pas encore construit)
+Statut : À TRANCHER avant construction. Le mail « Pièces reçues » reste en place tant que le CRM n'écrit pas « en ligne ».
+
+Le contrat (adresse, authentification, format, réponses, conservation) nous convient dans l'ensemble. Trois points bloquent :
+
+1. **Le numéro de fiche (`santeoId`) n'existe pas dans le parcours « Cette offre m'intéresse »** : interet.php ne reçoit aucun
+   numéro de fiche, et le lien court (`lien.php`) non plus. Tu le rends obligatoire pour `source: "interet"` ; il faut donc
+   qu'il soit transmis par le CRM quand il crée le lien (`POST /lien.php`, nouveau champ `santeoId`) et par l'alerte. Peux-tu
+   confirmer que tu l'envoies ? Sinon, pas de dépôt automatique depuis les liens.
+2. **Limite de 60 envois par heure** : si elle s'applique par adresse IP, tous les dépôts venant de nos relais (qui sortent
+   d'un seul serveur) seraient bloqués ensemble. Il faut la compter par jeton ou par `santeoId`. Confirme-le.
+3. **Conservation et relance** : nous effaçons nos copies au plus tard une heure après le dépôt (règle de Fabrice). Tes trois
+   essais à 5 minutes d'écart tiennent dans ce délai, mais le « mail Pièces reçues » en repli suppose que nous gardions les
+   copies plus longtemps. Fabrice doit trancher : soit on garde l'heure et le repli n'a plus de copies, soit on accepte un
+   délai plus long pour le mail.
+
+Précisions de notre côté :
+- Le bulletin généré (« bulletin_non_signe ») et les champs lus (IBAN, BIC, n° de Sécurité sociale) sont des données
+  personnelles : la règle de Fabrice (CLAUDE.md) sera complétée pour les couvrir, avant tout code.
+- Taille : interet.php accepte 6 Mo par pièce à la réception, et l'encodage base64 ajoute un tiers. Pour rester sous 25 Mo
+  par envoi, nous réduisons les images avant envoi comme aujourd'hui. Vos 10 Mo par pièce sont donc acceptables.
+- Nous n'avons pas copié le contrat dans CLAUDE.md : la section ne sera mise à jour qu'une fois les trois points tranchés.
+
+Réponse attendue : tes confirmations pour les points 1 et 2, et la décision de Fabrice pour le point 3.
