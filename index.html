@@ -656,7 +656,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-04T17:57:20Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-04T17:57:20Z</div>
+  <div id="buildstamp" data-build="2026-11-04T18:27:57Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-04T18:27:57Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -998,7 +998,7 @@ exporter.eur=eur;
 // par famille, ses lignes dessous. 3e élément à 1 = ligne en gras (parcours OPTAM, prothèses dentaires, verres simples).
 const BLOCS=[
   ["Hospitalisation",[["Hospitalisation Optam","hospO",1],["Hospitalisation hors Optam","hospN"],["Chambre particulière","ch"]]],
-  ["Honoraires",[["Consult. spécialistes Optam","honoO",1],["Consult. hors Optam","honoN"]]],
+  ["Honoraires",[["Consult. généralistes Optam","honoG"],["Consult. spécialistes Optam","honoO",1],["Consult. hors Optam","honoN"]]],
   ["Pharmacie",[["Médicaments remboursés","x:pharR"],["Pharmacie non remboursée","x:pharN"]]],
   ["Dentaire",[["Prothèses dentaires","dent",1],["Implantologie","x:imp"],["Orthodontie remboursée","x:orthR"],["Orthodontie non remboursée","x:orthN"]]],
   ["Optique",[["Verres et monture simples","opt",1],["Verres et monture complexes","x:optC"],["Lentilles acceptées","x:lentA"],["Lentilles refusées","x:lentR"]]],
@@ -1049,7 +1049,10 @@ function nomComplet(G,key,fi){
 function valeur(G,key,fi,src){
   const f=G.gammes[key], e=(G.extras||{})[key]||{};
   if(src.startsWith("x:")){const k=src.slice(2);return (e[k]&&e[k][fi]!==undefined)?e[k][fi]:"—";}
-  const arr=f&&f[src];return (arr&&arr[fi]!==undefined)?arr[fi]:"—";
+  const arr=f&&f[src];
+  // Généralistes : relevés pour CAP NR seulement ; ailleurs « n.c. » (non relevé), jamais « — » (pas couvert).
+  if(src==="honoG") return (arr&&arr[fi]!==undefined)?arr[fi]:"n.c.";
+  return (arr&&arr[fi]!==undefined)?arr[fi]:"—";
 }
 
 // Prothèses à deux taux (Mutuelle Verte : « dents visibles » / « autres dents », Fabrice 21/10/2026) : `dent` porte le taux le plus
@@ -1290,7 +1293,7 @@ function cumulTotal(a,b){
   return '<span class="cu-mx">'+P.n+" % + "+cuNb(E.n)+" €</span>";
 }
 const CU_POSTES={hospO:"Hospitalisation Optam",hospN:"Hospitalisation hors Optam",ch:"Chambre particulière",
-  honoO:"Spécialistes Optam",honoN:"Spécialistes hors Optam","x:pharR":"Médicaments remboursés","x:pharN":"Pharmacie non remboursée",
+  honoG:"Généralistes Optam",honoO:"Spécialistes Optam",honoN:"Spécialistes hors Optam","x:pharR":"Médicaments remboursés","x:pharN":"Pharmacie non remboursée",
   dent:"Prothèses dentaires","x:imp":"Implantologie","x:orthR":"Orthodontie remboursée","x:orthN":"Orthodontie non remb.",
   opt:"Verres et monture simples","x:optC":"Verres et monture complexes","x:lentA":"Lentilles acceptées","x:lentR":"Lentilles refusées",
   "x:aud":"Aides auditives",md:"Médecines douces"};
@@ -1836,7 +1839,7 @@ const F = {
     dent:["100 %","130 %","160 %","200 %"],opt:["100 €","230 €","250 €","300 €"],aud:["200 €","200 €","1 000 €","1 000 €"],ch:["—","40 €/j","60 €/j","80 €/j"],md:["—","120 €/an","160 €/an","200 €/an"]},
   CAPNR:{label:"CAP NR",resp:false,ins:"avenir",names:["Cap Essentiel","Cap 100 NR","Cap 130 NR","Cap 160 NR","Cap 200 NR","Cap 300 NR","Cap 400 NR"],
     hospO:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],hospN:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],
-    honoO:["100 % (généralistes)","100 %","130 %","160 %","200 %","300 %","400 %"],honoN:["—","100 %","130 %","160 %","200 %","300 %","400 %"],
+    honoG:["100 %","100 %","130 %","160 %","200 %","300 %","400 %"],honoO:["—","100 %","130 %","160 %","200 %","300 %","400 %"],honoN:["—","100 %","130 %","160 %","200 %","300 %","400 %"],
     dent:["—","100 %","130 %","160 %","200 %","300 %","400 %"],opt:["—","130 €","200 €","200 €","250 €","350 €","450 €"],aud:["—","100 %","130 %","160 %","200 %","200 %","200 %"],ch:["25 €/j","30 €/j","40 €/j","60 €/j","80 €/j","100 €/j","120 €/j"],md:["—","30 €","40 €","50 €","75 €","100 €","150 €"]},
   REV:{label:"REVOLUO",resp:true,ins:"rema",logo:"revoluo",names:["Rev 1","Rev 2","Rev 3","Rev 4","Rev 5","Rev 6","Rev 7","Rev 8"],
     hospO:["100 %","100 %","125 %","150 %","175 %","200 %","250 %","300 %"],hospN:["100 %","100 %","105 %","130 %","155 %","180 %","200 %","200 %"],
