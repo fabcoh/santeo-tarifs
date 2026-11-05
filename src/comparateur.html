@@ -2462,7 +2462,8 @@ function showCumul(){
     box.querySelector('#cuDSum').textContent=depA?(()=>{const R=Tableau.cumulDepenses(GAR,c,s,depA);
       const g=(pc!=null&&prix(s)!=null)?R.secu+R.mut+R.sur-(pc+prix(s))*12:null;
       return R.lignes.length+" soin"+(R.lignes.length>1?"s":"")+" · "+eur(R.dep)+(g!=null?" · "+(g>0?"gain ":"écart ")+eur(g):"");})():"aucune";
-    box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depA});
+    // Deux vignettes : la mutuelle + surcomplémentaire, puis les remboursements (seulement si des besoins sont renseignés).
+    box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depA})+Tableau.remboursements(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depA});
     P=[{mut:c,sur:s}];
   }
   CUMUL.maj=rendre;
@@ -2490,7 +2491,7 @@ function showCumul(){
     for(const [i,el] of [...box.querySelectorAll('.cumul')].entries()){
       el.classList.add('cu-cap');
       try{ const c=await html2canvas(el,{scale:2,backgroundColor:"#ffffff",useCORS:true});
-        out.push({blob:await new Promise(r=>c.toBlob(r,'image/png')),fname:nomFic(P[i])}); }
+        out.push({blob:await new Promise(r=>c.toBlob(r,'image/png')),fname:i?nomFic(P[0]).replace(/\.png$/,'_remboursements.png'):nomFic(P[0])}); }
       finally{ el.classList.remove('cu-cap'); }
     }
     return out;

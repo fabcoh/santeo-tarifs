@@ -722,12 +722,6 @@ function cumul(G,o){
   // Première ligne (Fabrice, 20/10/2026 : « afficher les gains de la solution en première ligne », « une composition des deux »,
   // puis la critique relue ensemble) : le reste à payer sur les soins, hors cotisations, comparé à « sans complémentaire » ; à côté,
   // seulement s'il est positif, ce que la surcomplémentaire fait gagner (remboursé en plus − sa cotisation) — même calcul que le bilan.
-  const RD=o.depenses?cumulDepenses(G,M,S,o.depenses):null;
-  if(RD&&RD.lignes.length){ const B=cuBilan(RD,prix?p1:null,prix?p2:null);
-    h+='<div class="cu-top"><div class="cu-tr"><b>Reste à payer sur vos soins</b><em>'+cuE(RD.reste)+'</em>'
-      +'<span>au lieu de <i>'+cuE(RD.dep-RD.secu)+'</i> sans complémentaire · hors cotisations</span></div>'
-      +(B.plusS!=null&&B.plusS>0?'<div class="cu-tg"><b>Avec '+nS+'</b><em>+ '+cuE(B.plusS)+'</em><span>'+cuE(B.remS)+' remboursés en plus pour '+cuE(B.cotS)+' de cotisation</span></div>':'')
-      +'</div>'; }
   // Le bandeau « Pour x € de plus par mois… » ferme le tableau, juste au-dessus de la cotisation (Fabrice, 20/10/2026).
   const gain=ch?'<div class="cu-gain">'+(prix?'Pour <b>'+eur(p2)+' de plus par mois</b>, ':'')+nS+' renforce vos remboursements :<div class="cu-chips">'+ch+'</div></div>':'';
   h+='<div class="cu-r cu-h">'+cell("cu-l","")
@@ -757,7 +751,6 @@ function cumul(G,o){
     +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>')
     +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
     +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')+'</div>';
-  if(RD) h+=cuDepHTML(G,M,S,RD,prix?p1:null,prix?p2:null);
   h+=gain;
   if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
   const gM=G.gammes[M.key], nr=gM&&(gM.resp===false||/^\s*Contrat NON responsable/i.test(String(limites(G,M.key,M.fi)||"")));
@@ -797,7 +790,26 @@ exporter.pied=pied;
 exporter.bloc=bloc;
 exporter.document=documentHTML;
 exporter.eur=eur;
+// Deuxième vignette (Fabrice, 05/11/2026 : « deux vignettes, une vignette très longue c'est illisible ») : les remboursements
+// des soins prévus, seulement lorsque les besoins sont renseignés. Envoyée à part, comme la vignette mutuelle + surcomplémentaire.
+function remboursements(G,o){
+  o=o||{};
+  const M=o.mut,S=o.sur;
+  const nS=nomComplet(G,S.key,S.fi).replace(/^TALIS Talis/,"TALIS").replace(/^TALIS TALIS/,"TALIS");
+  const p1=(o.tarifs||{})[M.key+"|"+M.fi], p2=(o.tarifs||{})[S.key+"|"+S.fi], prix=!o.sansTarifs&&p1!=null&&p2!=null;
+  const RD=o.depenses?cumulDepenses(G,M,S,o.depenses):null;
+  if(!RD||!RD.lignes.length) return "";
+  let h='<div class="cumul"><div class="cu-ti">Vos remboursements sur vos soins</div>'+(o.prospect?'<div class="cu-pr">'+o.prospect+'</div>':'');
+  { const B=cuBilan(RD,prix?p1:null,prix?p2:null);
+    h+='<div class="cu-top"><div class="cu-tr"><b>Reste à payer sur vos soins</b><em>'+cuE(RD.reste)+'</em>'
+      +'<span>au lieu de <i>'+cuE(RD.dep-RD.secu)+'</i> sans complémentaire · hors cotisations</span></div>'
+      +(B.plusS!=null&&B.plusS>0?'<div class="cu-tg"><b>Avec '+nS+'</b><em>+ '+cuE(B.plusS)+'</em><span>'+cuE(B.remS)+' remboursés en plus pour '+cuE(B.cotS)+' de cotisation</span></div>':'')
+      +'</div>'; }
+  h+=cuDepHTML(G,M,S,RD,prix?p1:null,prix?p2:null);
+  return h+'</div>';
+}
 exporter.cumul=cumul;
+exporter.remboursements=remboursements;
 exporter.cumulTotal=cumulTotal;
 exporter.cumulDepenses=cumulDepenses;
 exporter.comparatifSoins=comparatifSoins;
