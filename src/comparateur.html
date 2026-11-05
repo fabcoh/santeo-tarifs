@@ -2463,9 +2463,9 @@ function showCumul(){
       const g=(pc!=null&&prix(s)!=null)?R.secu+R.mut+R.sur-(pc+prix(s))*12:null;
       return R.lignes.length+" soin"+(R.lignes.length>1?"s":"")+" · "+eur(R.dep)+(g!=null?" · "+(g>0?"gain ":"écart ")+eur(g):"");})():"aucune";
     // Deux vignettes : la mutuelle + surcomplémentaire, puis les remboursements (seulement si des besoins sont renseignés).
-    // Les forfaits proposés d'office (médecines douces, pharmacie) ne comptent pas : seul un besoin saisi ouvre la 2e vignette.
-    const depSaisi=(()=>{const o={};for(const [k,v] of Object.entries(depA||{})){if(!(v&&v.auto&&Object.keys(v).length===1))o[k]=v;}return Object.keys(o).length?o:null;})();
-    box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depA})+Tableau.remboursements(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depSaisi});
+    // La 2e vignette (remboursements) ne s'ouvre que si des besoins sont renseignés dans le panneau Besoins.
+    const besoinsOk=Object.keys(CUMUL.fil||{}).length>0;
+    box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depA})+Tableau.remboursements(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:besoinsOk?depA:null});
     P=[{mut:c,sur:s}];
   }
   CUMUL.maj=rendre;
