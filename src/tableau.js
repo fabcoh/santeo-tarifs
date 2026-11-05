@@ -552,7 +552,8 @@ function cuDepHTML(G,M,S,R,p1,p2){
   // Mêmes colonnes que la grille des garanties (Fabrice, 20/10/2026 : « aligner dans les colonnes les remboursements… l'explication
   // verticalement ») : soin · mutuelle · surcomplémentaire · total, une ligne par soin, puis le bilan de l'année dans les mêmes colonnes.
   const C=(c,x)=>'<div class="'+c+'">'+x+'</div>';
-  const L4=(a,b,c,d,cls)=>'<div class="cu-r cu-dg'+(cls?' '+cls:'')+'">'+C("cu-l",'<span>'+a+'</span>')+C("cu-a",'<span>'+b+'</span>')+C("cu-b",'<span>'+c+'</span>')+C("cu-t",'<span>'+d+'</span>')+'</div>';
+  // Même ordre que le tableau cumul : libellé · Total (noir, gras) · mutuelle · surcomplémentaire (gris identiques).
+  const L4=(a,b,c,d,cls)=>'<div class="cu-r cu-dg'+(cls?' '+cls:'')+'">'+C("cu-l",'<span>'+a+'</span>')+C("cu-t",'<span>'+d+'</span>')+C("cu-a",'<span>'+b+'</span>')+C("cu-b",'<span>'+c+'</span>')+'</div>';
   h+=L4('', '<b>'+nMc+'</b>', '<b>'+nS+'</b>', '<b>Total</b>','cu-dgh');
   for(const l of R.lignes){
     const L=CU_DEPLIB[l.id]||[l.lib,l.lib], r1=l.secu+l.mut;
