@@ -544,10 +544,10 @@ function cuBilan(R,p1,p2){
   return {sans,mut,tout,plusS,remS:R.sur,cotS:c2};
 }
 function cuDepHTML(G,M,S,R,p1,p2){
-  if(!R) return "";
+  if(!R||!R.lignes.length) return "";
   const nM=nomComplet(G,M.key,M.fi), nS=nomComplet(G,S.key,S.fi).replace(/^TALIS Talis/,"TALIS").replace(/^TALIS TALIS/,"TALIS");
   const nMc=nM.length>22?G.gammes[M.key].label.replace(/^M\. VERTE /,""):nM;
-  let h='<div class="cu-dp"><div class="cu-dpt">'+(R.lignes.length?'Vos soins prévus : estimation des remboursements':'Vos remboursements : aucun soin saisi')+'</div>'
+  let h='<div class="cu-dp"><div class="cu-dpt">Vos soins prévus : estimation des remboursements</div>'
     +(CU_CARENCE[S.key]?'<div class="cu-dca">⚠ '+nS+' : '+CU_CARENCE[S.key]+'.</div>':'');
   // Mêmes colonnes que la grille des garanties (Fabrice, 20/10/2026 : « aligner dans les colonnes les remboursements… l'explication
   // verticalement ») : soin · mutuelle · surcomplémentaire · total, une ligne par soin, puis le bilan de l'année dans les mêmes colonnes.
@@ -578,8 +578,7 @@ function cuDepHTML(G,M,S,R,p1,p2){
   // excédentaire de x € » ; sinon, ce que la mutuelle et la surcomplémentaire coûtent vraiment par mois, remboursements déduits.
   // Le gain propre à la surcomplémentaire reste affiché au-dessus quand il est positif.
   if(B.plusS!=null&&B.plusS>0) h+='<div class="cu-dgain"><span>Avec '+nS+' : '+cuE(B.remS)+' remboursés en plus pour '+cuE(B.cotS)+' de cotisation</span><b>+ '+cuE(B.plusS)+' pour vous</b></div>';
-  // Sans soin saisi, pas de conclusion chiffrée : elle ne vaudrait que pour des soins.
-  if(B.tout.cot!=null&&R.lignes.length){ const remC=cuR(R.mut+R.sur), net=cuR(B.tout.cot-remC);
+  if(B.tout.cot!=null){ const remC=cuR(R.mut+R.sur), net=cuR(B.tout.cot-remC);
     h+=net<0
       ?'<div class="cu-dgain cu-dfin"><span>Sur ces seuls soins, vous aurez un remboursement excédentaire de</span><b>'+cuE(-net)+' !</b><small>vos contrats remboursent '+cuE(remC)+' pour '+cuE(B.tout.cot)+' de cotisations (hors Sécurité sociale)</small></div>'
       :'<div class="cu-dgain cu-dfin"><span>Sur ces seuls soins, '+nMc+' et '+nS+' ne vous coûtent que</span><b>'+eur(net/12)+' / mois !</b><small>'+cuE(B.tout.cot)+' de cotisations − '+cuE(remC)+' remboursés par vos contrats (hors Sécurité sociale), sur 12 mois</small></div>'; }
@@ -723,7 +722,7 @@ function cumul(G,o){
   // Première ligne (Fabrice, 20/10/2026 : « afficher les gains de la solution en première ligne », « une composition des deux »,
   // puis la critique relue ensemble) : le reste à payer sur les soins, hors cotisations, comparé à « sans complémentaire » ; à côté,
   // seulement s'il est positif, ce que la surcomplémentaire fait gagner (remboursé en plus − sa cotisation) — même calcul que le bilan.
-  const RD=cumulDepenses(G,M,S,o.depenses||{});   // toujours affiché : sans soin saisi, les remboursements sont à 0 €
+  const RD=o.depenses?cumulDepenses(G,M,S,o.depenses):null;
   if(RD&&RD.lignes.length){ const B=cuBilan(RD,prix?p1:null,prix?p2:null);
     h+='<div class="cu-top"><div class="cu-tr"><b>Reste à payer sur vos soins</b><em>'+cuE(RD.reste)+'</em>'
       +'<span>au lieu de <i>'+cuE(RD.dep-RD.secu)+'</i> sans complémentaire · hors cotisations</span></div>'
