@@ -657,7 +657,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-05T16:10:04Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-05T16:10:04Z</div>
+  <div id="buildstamp" data-build="2026-11-05T16:14:12Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-05T16:14:12Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -3592,7 +3592,9 @@ function showCumul(){
       const g=(pc!=null&&prix(s)!=null)?R.secu+R.mut+R.sur-(pc+prix(s))*12:null;
       return R.lignes.length+" soin"+(R.lignes.length>1?"s":"")+" · "+eur(R.dep)+(g!=null?" · "+(g>0?"gain ":"écart ")+eur(g):"");})():"aucune";
     // Deux vignettes : la mutuelle + surcomplémentaire, puis les remboursements (seulement si des besoins sont renseignés).
-    box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depA})+Tableau.remboursements(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depA});
+    // La 2e vignette (remboursements) ne s'ouvre que si des besoins sont renseignés dans le panneau Besoins.
+    const besoinsOk=Object.keys(CUMUL.fil||{}).length>0;
+    box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depA})+Tableau.remboursements(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:besoinsOk?depA:null});
     P=[{mut:c,sur:s}];
   }
   CUMUL.maj=rendre;
