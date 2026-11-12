@@ -3,10 +3,11 @@
 Propriétaire : Fabrice Cohen, courtier santé (CAPI FINANCE / SANTÉO, ORIAS 07001983). GitHub : `fabcoh`.
 Langue de travail : français. Réponses courtes et directes ; pour une procédure, **une seule étape à la fois**.
 
-**Bureau commun des conversations Claude de Santéo** (Fabrice, 12/11/2026) : dépôt privé `fabcoh/santeo-bureau` —
-lire `REGLES.md` et `ANNUAIRE.md` en commençant et après un résumé ; livraisons, chantiers et questions à Fabrice dans `taches/comparateur-claude.md` (mis à jour le jour même ; `PLAN.md` est une archive) ; demandes pour
-Manus seulement dans `FILE-MANUS.md` (jamais d'envoi direct) ; un sujet qui n'est pas le nôtre est transmis à la bonne
-conversation (« Transmis à … »). Cette conversation y est « comparateur claude ».
+**Bureau commun des conversations (Fabrice, 12/11/2026)** : au début de chaque conversation, attacher le dépôt
+`fabcoh/santeo-bureau` (outil `add_repo`, accès push), le cloner, lire `README.md` et `REGLES.md`, et tenir
+`taches/comparateur-claude.md` (livraisons, chantiers, questions à Fabrice, mis à jour le jour même ; `PLAN.md` est une
+archive). Demandes pour Manus seulement dans `FILE-MANUS.md` (jamais d'envoi direct) ; un sujet qui n'est pas le nôtre est
+transmis à la bonne conversation (« Transmis à … »). Cette conversation y est « comparateur claude ».
 
 ## Ce que c'est
 
