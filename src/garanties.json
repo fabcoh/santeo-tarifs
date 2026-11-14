@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmp22_q182f.js",
+ "genere": "/tmp/tmp395bj75e.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -1971,6 +1971,2280 @@
    "Tableau de garantie": "https://fabcoh.github.io/santeo-tarifs/docs/talis_tg_2026.pdf",
    "IPID": "https://fabcoh.github.io/santeo-tarifs/docs/talis_ipid_2026.pdf",
    "Notice": "https://fabcoh.github.io/santeo-tarifs/docs/talis_notice_2026.pdf"
+  }
+ },
+ "april": {
+  "avertissement": "Produits APRIL : une entree par code produit APRIL (celui du relais april.php). Tableaux par niveau : indice 0 = niveau 1. fi = rang x 100 + niveau est l'identifiant de la ligne APRIL dans le comparateur.",
+  "gammes": {
+   "SanteMix": {
+    "label": "APRIL Santé Mix Proximité",
+    "ins": "april",
+    "resp": true,
+    "tns": false,
+    "rang": 0,
+    "niv": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "fi": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "names": [
+     "Santé Mix Proximité Niv. 1",
+     "Santé Mix Proximité Niv. 2",
+     "Santé Mix Proximité Niv. 3",
+     "Santé Mix Proximité Niv. 4",
+     "Santé Mix Proximité Niv. 5",
+     "Santé Mix Proximité Niv. 6"
+    ],
+    "hospO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "hospN": [
+     "100 %",
+     "100 %",
+     "125 %",
+     "175 %",
+     "200 %",
+     "200 %"
+    ],
+    "honoO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "honoN": [
+     "100 %",
+     "100 %",
+     "125 %",
+     "175 %",
+     "200 %",
+     "200 %"
+    ],
+    "dent": [
+     "100 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %",
+     "350 %"
+    ],
+    "opt": [
+     "100 % BR",
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €",
+     "300 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR"
+    ],
+    "ch": [
+     "—",
+     "40 €/j",
+     "55 €/j",
+     "70 €/j",
+     "85 €/j",
+     "100 €/j"
+    ],
+    "md": [
+     "—",
+     "40 €",
+     "60 €",
+     "80 €",
+     "100 €",
+     "120 €"
+    ]
+   },
+   "FlexiSante": {
+    "label": "APRIL Flexi Santé",
+    "ins": "april",
+    "resp": true,
+    "tns": false,
+    "rang": 2,
+    "niv": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "fi": [
+     201,
+     202,
+     203,
+     204,
+     205,
+     206
+    ],
+    "names": [
+     "Flexi Santé Niv. 1",
+     "Flexi Santé Niv. 2",
+     "Flexi Santé Niv. 3",
+     "Flexi Santé Niv. 4",
+     "Flexi Santé Niv. 5",
+     "Flexi Santé Niv. 6"
+    ],
+    "hospO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "hospN": [
+     "100 %",
+     "105 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "200 %"
+    ],
+    "honoO": [
+     "100 %",
+     "100 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %"
+    ],
+    "honoN": [
+     "100 %",
+     "100 %",
+     "105 %",
+     "125 %",
+     "150 %",
+     "200 %"
+    ],
+    "dent": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "opt": [
+     "100 % BR",
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €",
+     "300 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR"
+    ],
+    "ch": [
+     "—",
+     "30 €/j",
+     "45 €/j",
+     "60 €/j",
+     "70 €/j",
+     "80 €/j"
+    ],
+    "md": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ]
+   },
+   "OnlySante": {
+    "label": "APRIL Only Santé",
+    "ins": "april",
+    "resp": false,
+    "tns": false,
+    "rang": 3,
+    "niv": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "fi": [
+     301,
+     302,
+     303,
+     304,
+     305,
+     306
+    ],
+    "names": [
+     "Only Santé Niv. 1",
+     "Only Santé Niv. 2",
+     "Only Santé Niv. 3",
+     "Only Santé Niv. 4",
+     "Only Santé Niv. 5",
+     "Only Santé Niv. 6"
+    ],
+    "hospO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "250 %"
+    ],
+    "hospN": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "250 %"
+    ],
+    "honoO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "250 %"
+    ],
+    "honoN": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "250 %"
+    ],
+    "dent": [
+     "100 %",
+     "150 €/acte",
+     "200 €/acte",
+     "250 €/acte",
+     "300 €/acte",
+     "400 €/acte"
+    ],
+    "opt": [
+     "100 % BR",
+     "150 €",
+     "200 €",
+     "250 €",
+     "300 €",
+     "350 €"
+    ],
+    "aud": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "ch": [
+     "—",
+     "40 €/j",
+     "60 €/j",
+     "80 €/j",
+     "100 €/j",
+     "100 €/j"
+    ],
+    "md": [
+     "—",
+     "50 €",
+     "60 €",
+     "70 €",
+     "80 €",
+     "90 €"
+    ]
+   },
+   "SanteTranquil": {
+    "label": "APRIL Tranquillité Santé",
+    "ins": "april",
+    "resp": true,
+    "tns": false,
+    "rang": 4,
+    "niv": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "fi": [
+     401,
+     402,
+     403,
+     404,
+     405,
+     406
+    ],
+    "names": [
+     "Tranquillité Santé Niv. 1",
+     "Tranquillité Santé Niv. 2",
+     "Tranquillité Santé Niv. 3",
+     "Tranquillité Santé Niv. 4",
+     "Tranquillité Santé Niv. 5",
+     "Tranquillité Santé Niv. 6"
+    ],
+    "hospO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "hospN": [
+     "100 %",
+     "105 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "200 %"
+    ],
+    "honoO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "honoN": [
+     "100 %",
+     "105 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "200 %"
+    ],
+    "dent": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "opt": [
+     "100 % BR",
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €",
+     "300 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR"
+    ],
+    "ch": [
+     "—",
+     "35 €/j",
+     "50 €/j",
+     "65 €/j",
+     "75 €/j",
+     "85 €/j"
+    ],
+    "md": [
+     "—",
+     "40 €",
+     "60 €",
+     "80 €",
+     "100 €",
+     "120 €"
+    ]
+   },
+   "SanteZen": {
+    "label": "APRIL Santé Zen",
+    "ins": "april",
+    "resp": true,
+    "tns": false,
+    "rang": 5,
+    "niv": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "fi": [
+     501,
+     502,
+     503,
+     504,
+     505,
+     506
+    ],
+    "names": [
+     "Santé Zen Niv. 1",
+     "Santé Zen Niv. 2",
+     "Santé Zen Niv. 3",
+     "Santé Zen Niv. 4",
+     "Santé Zen Niv. 5",
+     "Santé Zen Niv. 6"
+    ],
+    "hospO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "hospN": [
+     "100 %",
+     "100 %",
+     "125 %",
+     "175 %",
+     "200 %",
+     "200 %"
+    ],
+    "honoO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "honoN": [
+     "100 %",
+     "100 %",
+     "125 %",
+     "175 %",
+     "200 %",
+     "200 %"
+    ],
+    "dent": [
+     "100 %",
+     "100 %",
+     "200 %",
+     "250 %",
+     "300 %",
+     "400 %"
+    ],
+    "opt": [
+     "100 % BR",
+     "125 €",
+     "150 €",
+     "200 €",
+     "250 €",
+     "300 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR"
+    ],
+    "ch": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "md": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ]
+   },
+   "SantePeps": {
+    "label": "APRIL Santé Peps",
+    "ins": "april",
+    "resp": true,
+    "tns": false,
+    "rang": 6,
+    "niv": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "fi": [
+     601,
+     602,
+     603,
+     604,
+     605
+    ],
+    "names": [
+     "Santé Peps Niv. 1",
+     "Santé Peps Niv. 2",
+     "Santé Peps Niv. 3",
+     "Santé Peps Niv. 4",
+     "Santé Peps Niv. 5"
+    ],
+    "hospO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %"
+    ],
+    "hospN": [
+     "100 %",
+     "105 %",
+     "130 %",
+     "175 %",
+     "200 %"
+    ],
+    "honoO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "225 %"
+    ],
+    "honoN": [
+     "100 %",
+     "105 %",
+     "130 %",
+     "150 %",
+     "200 %"
+    ],
+    "dent": [
+     "100 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "opt": [
+     "100 % BR",
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR + 100 €",
+     "100 % BR + 150 €",
+     "100 % BR + 200 €",
+     "100 % BR + 300 €"
+    ],
+    "ch": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "md": [
+     "—",
+     "45 €",
+     "45 €",
+     "55 €",
+     "55 €"
+    ]
+   },
+   "SanteOptimale": {
+    "label": "APRIL Santé Optimale",
+    "ins": "april",
+    "resp": true,
+    "tns": false,
+    "rang": 9,
+    "niv": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "fi": [
+     901,
+     902,
+     903,
+     904,
+     905,
+     906,
+     907
+    ],
+    "names": [
+     "Santé Optimale Niv. 1",
+     "Santé Optimale Niv. 2",
+     "Santé Optimale Niv. 3",
+     "Santé Optimale Niv. 4",
+     "Santé Optimale Niv. 5",
+     "Santé Optimale Niv. 6",
+     "Santé Optimale Niv. 7"
+    ],
+    "hospO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "225 %",
+     "250 %"
+    ],
+    "hospN": [
+     "100 %",
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "200 %"
+    ],
+    "honoO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "225 %",
+     "250 %"
+    ],
+    "honoN": [
+     "100 %",
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "200 %"
+    ],
+    "dent": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "225 %",
+     "250 %"
+    ],
+    "opt": [
+     "100 % BR",
+     "100 €",
+     "150 €",
+     "175 €",
+     "200 €",
+     "225 €",
+     "250 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR + 100 €",
+     "100 % BR + 200 €",
+     "100 % BR + 250 €",
+     "100 % BR + 300 €",
+     "100 % BR + 350 €",
+     "100 % BR + 400 €"
+    ],
+    "ch": [
+     "—",
+     "30 €/j",
+     "40 €/j",
+     "50 €/j",
+     "60 €/j",
+     "70 €/j",
+     "80 €/j"
+    ],
+    "md": [
+     "—",
+     "50 €",
+     "80 €",
+     "100 €",
+     "120 €",
+     "130 €",
+     "150 €"
+    ]
+   },
+   "SanteVita": {
+    "label": "APRIL Vita Santé",
+    "ins": "april",
+    "resp": true,
+    "tns": false,
+    "rang": 11,
+    "niv": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "fi": [
+     1101,
+     1102,
+     1103,
+     1104,
+     1105,
+     1106
+    ],
+    "names": [
+     "Vita Santé Niv. 1",
+     "Vita Santé Niv. 2",
+     "Vita Santé Niv. 3",
+     "Vita Santé Niv. 4",
+     "Vita Santé Niv. 5",
+     "Vita Santé Niv. 6"
+    ],
+    "hospO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "250 %"
+    ],
+    "hospN": [
+     "100 %",
+     "105 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %"
+    ],
+    "honoO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "225 %"
+    ],
+    "honoN": [
+     "100 %",
+     "105 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %"
+    ],
+    "dent": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "250 %"
+    ],
+    "opt": [
+     "100 % BR",
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €",
+     "300 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR"
+    ],
+    "ch": [
+     "—",
+     "20 €/j",
+     "30 €/j",
+     "40 €/j",
+     "50 €/j",
+     "60 €/j"
+    ],
+    "md": [
+     "—",
+     "30 €",
+     "30 €",
+     "50 €",
+     "50 €",
+     "70 €"
+    ]
+   },
+   "SantePro": {
+    "label": "APRIL Santé Pro",
+    "ins": "april",
+    "resp": true,
+    "tns": true,
+    "rang": 14,
+    "niv": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "fi": [
+     1401,
+     1402,
+     1403,
+     1404,
+     1405,
+     1406
+    ],
+    "names": [
+     "Santé Pro Niv. 1",
+     "Santé Pro Niv. 2",
+     "Santé Pro Niv. 3",
+     "Santé Pro Niv. 4",
+     "Santé Pro Niv. 5",
+     "Santé Pro Niv. 6"
+    ],
+    "hospO": [
+     "125 %",
+     "180 %",
+     "250 %",
+     "350 %",
+     "450 %",
+     "500 %"
+    ],
+    "hospN": [
+     "105 %",
+     "160 %",
+     "200 %",
+     "200 %",
+     "200 %",
+     "200 %"
+    ],
+    "honoO": [
+     "125 %",
+     "150 %",
+     "250 %",
+     "300 %",
+     "400 %",
+     "500 %"
+    ],
+    "honoN": [
+     "105 %",
+     "130 %",
+     "200 %",
+     "200 %",
+     "200 %",
+     "200 %"
+    ],
+    "dent": [
+     "125 %",
+     "200 %",
+     "250 %",
+     "350 %",
+     "450 %",
+     "550 %"
+    ],
+    "opt": [
+     "100 €",
+     "200 €",
+     "250 €",
+     "300 €",
+     "350 €",
+     "420 €"
+    ],
+    "aud": [
+     "125 %",
+     "150 %",
+     "250 %",
+     "300 %",
+     "365 %",
+     "365 %"
+    ],
+    "ch": [
+     "40 €/j",
+     "60 €/j",
+     "80 €/j",
+     "100 €/j",
+     "120 €/j",
+     "140 €/j"
+    ],
+    "md": [
+     "3×30 €",
+     "4×30 €",
+     "4×30 €",
+     "4×40 €",
+     "5×50 €",
+     "5×60 €"
+    ]
+   },
+   "SanteProStart": {
+    "label": "APRIL Santé Pro Start",
+    "ins": "april",
+    "resp": true,
+    "tns": true,
+    "rang": 15,
+    "niv": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "fi": [
+     1501,
+     1502,
+     1503,
+     1504,
+     1505
+    ],
+    "names": [
+     "Santé Pro Start Niv. 1",
+     "Santé Pro Start Niv. 2",
+     "Santé Pro Start Niv. 3",
+     "Santé Pro Start Niv. 4",
+     "Santé Pro Start Niv. 5"
+    ],
+    "hospO": [
+     "100 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "hospN": [
+     "100 %",
+     "130 %",
+     "180 %",
+     "200 %",
+     "200 %"
+    ],
+    "honoO": [
+     "100 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "honoN": [
+     "100 %",
+     "130 %",
+     "180 %",
+     "200 %",
+     "200 %"
+    ],
+    "dent": [
+     "125 %",
+     "150 %",
+     "175 %",
+     "225 %",
+     "275 %"
+    ],
+    "opt": [
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €",
+     "300 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %"
+    ],
+    "ch": [
+     "30 €/j",
+     "50 €/j",
+     "60 €/j",
+     "70 €/j",
+     "80 €/j"
+    ],
+    "md": [
+     "2×30 €",
+     "3×35 €",
+     "3×40 €",
+     "4×45 €",
+     "4×50 €"
+    ]
+   },
+   "SanteGan": {
+    "label": "APRIL Senior GAN",
+    "ins": "april",
+    "resp": true,
+    "tns": false,
+    "rang": 19,
+    "niv": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "fi": [
+     1901,
+     1902,
+     1903,
+     1904,
+     1905
+    ],
+    "names": [
+     "Senior GAN Niv. 1",
+     "Senior GAN Niv. 2",
+     "Senior GAN Niv. 3",
+     "Senior GAN Niv. 4",
+     "Senior GAN Niv. 5"
+    ],
+    "hospO": [
+     "125 %",
+     "150 %",
+     "200 %",
+     "300 %",
+     "400 %"
+    ],
+    "hospN": [
+     "100 %",
+     "130 %",
+     "175 %",
+     "200 %",
+     "200 %"
+    ],
+    "honoO": [
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "honoN": [
+     "100 %",
+     "130 %",
+     "175 %",
+     "200 %",
+     "200 %"
+    ],
+    "dent": [
+     "125 %",
+     "230 %",
+     "300 %",
+     "330 %",
+     "430 %"
+    ],
+    "opt": [
+     "100 % BR",
+     "200 €",
+     "225 €",
+     "250 €",
+     "350 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR",
+     "125 %",
+     "150 %",
+     "200 %"
+    ],
+    "ch": [
+     "25 €/j",
+     "45 €/j",
+     "60 €/j",
+     "80 €/j",
+     "100 €/j"
+    ],
+    "md": [
+     "60 €",
+     "80 €",
+     "100 €",
+     "120 €",
+     "160 €"
+    ]
+   }
+  },
+  "extras": {
+   "SanteMix": {
+    "imp": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "orthR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "orthN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "lentA": [
+     "100 % BR",
+     "20 €",
+     "70 €",
+     "120 €",
+     "170 €",
+     "220 €"
+    ],
+    "lentR": [
+     "—",
+     "50 €",
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR"
+    ],
+    "optC": [
+     "100 % BR",
+     "200 €",
+     "275 €",
+     "350 €",
+     "425 €",
+     "500 €"
+    ],
+    "pharR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "pharN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "plaf": [
+     "Aucun plafond",
+     "Aucun plafond",
+     "1 400 €",
+     "1 500 €",
+     "1 600 €",
+     "1 800 €"
+    ]
+   },
+   "FlexiSante": {
+    "imp": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "orthR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "orthN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "lentA": [
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR"
+    ],
+    "lentR": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR"
+    ],
+    "optC": [
+     "100 % BR",
+     "200 €",
+     "200 €",
+     "250 €",
+     "300 €",
+     "350 €"
+    ],
+    "pharR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "pharN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "plaf": [
+     "Aucun plafond",
+     "Aucun plafond",
+     "Aucun plafond",
+     "1 500 €",
+     "1 800 €",
+     "2 000 €"
+    ]
+   },
+   "OnlySante": {
+    "imp": [
+     "—",
+     "50 €",
+     "100 €",
+     "150 €",
+     "200 €",
+     "200 €"
+    ],
+    "orthR": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "250 %"
+    ],
+    "orthN": [
+     "—",
+     "50 €",
+     "100 €",
+     "150 €",
+     "200 €",
+     "200 €"
+    ],
+    "lentA": [
+     "100 % BR",
+     "50 €",
+     "50 €",
+     "70 €",
+     "70 €",
+     "100 €"
+    ],
+    "lentR": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "aud": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "optC": [
+     "100 % BR",
+     "200 €",
+     "250 €",
+     "300 €",
+     "350 €",
+     "400 €"
+    ],
+    "pharR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "pharN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "plaf": [
+     "Aucun plafond",
+     "800 €",
+     "1 000 €",
+     "1 200 €",
+     "1 400 €",
+     "1 600 €"
+    ]
+   },
+   "SanteTranquil": {
+    "imp": [
+     "—",
+     "50 €",
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €"
+    ],
+    "orthR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "orthN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "lentA": [
+     "100 % BR",
+     "75 €",
+     "125 €",
+     "150 €",
+     "175 €",
+     "200 €"
+    ],
+    "lentR": [
+     "100 % BR",
+     "75 €",
+     "125 €",
+     "150 €",
+     "175 €",
+     "200 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR"
+    ],
+    "optC": [
+     "100 % BR",
+     "200 €",
+     "200 €",
+     "250 €",
+     "350 €",
+     "450 €"
+    ],
+    "pharR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "pharN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "plaf": [
+     "Aucun plafond",
+     "Aucun plafond",
+     "Aucun plafond",
+     "1 500 €",
+     "2 000 €",
+     "2 500 €"
+    ]
+   },
+   "SanteZen": {
+    "imp": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "orthR": [
+     "100 %",
+     "100 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "250 %"
+    ],
+    "orthN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "lentA": [
+     "100 % BR",
+     "35 €",
+     "70 €",
+     "120 €",
+     "170 €",
+     "200 €"
+    ],
+    "lentR": [
+     "—",
+     "50 €",
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR"
+    ],
+    "optC": [
+     "100 % BR",
+     "200 €",
+     "200 €",
+     "250 €",
+     "300 €",
+     "350 €"
+    ],
+    "pharR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "pharN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "plaf": [
+     "Aucun plafond",
+     "Aucun plafond",
+     "1 500 €",
+     "2 000 €",
+     "2 500 €",
+     "2 500 €"
+    ]
+   },
+   "SantePeps": {
+    "imp": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "orthR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "orthN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "lentA": [
+     "100 % BR",
+     "50 €",
+     "75 €",
+     "100 €",
+     "125 €"
+    ],
+    "lentR": [
+     "100 % BR",
+     "50 €",
+     "75 €",
+     "100 €",
+     "125 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR + 100 €",
+     "100 % BR + 150 €",
+     "100 % BR + 200 €",
+     "100 % BR + 300 €"
+    ],
+    "optC": [
+     "100 % BR",
+     "250 €",
+     "300 €",
+     "350 €",
+     "400 €"
+    ],
+    "pharR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "pharN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "plaf": [
+     "Aucun plafond",
+     "1 400 €",
+     "1 600 €",
+     "1 800 €",
+     "2 000 €"
+    ]
+   },
+   "SanteOptimale": {
+    "imp": [
+     "—",
+     "50 €",
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €",
+     "300 €"
+    ],
+    "orthR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "orthN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "lentA": [
+     "100 % BR",
+     "20 €",
+     "30 €",
+     "40 €",
+     "50 €",
+     "60 €",
+     "70 €"
+    ],
+    "lentR": [
+     "100 % BR",
+     "20 €",
+     "30 €",
+     "40 €",
+     "50 €",
+     "60 €",
+     "70 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR + 100 €",
+     "100 % BR + 200 €",
+     "100 % BR + 250 €",
+     "100 % BR + 300 €",
+     "100 % BR + 350 €",
+     "100 % BR + 400 €"
+    ],
+    "optC": [
+     "100 % BR",
+     "200 €",
+     "250 €",
+     "300 €",
+     "350 €",
+     "375 €",
+     "400 €"
+    ],
+    "pharR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "pharN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "plaf": [
+     "Aucun plafond",
+     "600 €",
+     "800 €",
+     "1 000 €",
+     "1 500 €",
+     "1 600 €",
+     "1 800 €"
+    ]
+   },
+   "SanteVita": {
+    "imp": [
+     "—",
+     "50 €",
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €"
+    ],
+    "orthR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "orthN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "lentA": [
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR"
+    ],
+    "lentR": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR",
+     "100 % BR"
+    ],
+    "optC": [
+     "100 % BR",
+     "200 €",
+     "250 €",
+     "300 €",
+     "350 €",
+     "400 €"
+    ],
+    "pharR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "pharN": [
+     "—",
+     "20 €/an",
+     "30 €/an",
+     "40 €/an",
+     "50 €/an",
+     "60 €/an"
+    ],
+    "plaf": [
+     "500 €",
+     "800 €",
+     "1 000 €",
+     "1 500 €",
+     "2 000 €",
+     "2 500 €"
+    ]
+   },
+   "SantePro": {
+    "imp": [
+     "400 €",
+     "600 €",
+     "900 €",
+     "1 100 €",
+     "1 400 €",
+     "1 650 €"
+    ],
+    "orthR": [
+     "125 %",
+     "200 %",
+     "250 %",
+     "350 %",
+     "450 %",
+     "550 %"
+    ],
+    "orthN": [
+     "400 €",
+     "600 €",
+     "900 €",
+     "1 100 €",
+     "1 400 €",
+     "1 650 €"
+    ],
+    "lentA": [
+     "50 €",
+     "100 €",
+     "150 €",
+     "225 €",
+     "350 €",
+     "400 €"
+    ],
+    "lentR": [
+     "50 €",
+     "100 €",
+     "150 €",
+     "225 €",
+     "350 €",
+     "400 €"
+    ],
+    "aud": [
+     "125 %",
+     "150 %",
+     "250 %",
+     "300 %",
+     "365 %",
+     "365 %"
+    ],
+    "optC": [
+     "200 €",
+     "350 €",
+     "400 €",
+     "450 €",
+     "600 €",
+     "700 €"
+    ],
+    "pharR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "pharN": [
+     "30 €/an",
+     "40 €/an",
+     "50 €/an",
+     "60 €/an",
+     "70 €/an",
+     "80 €/an"
+    ],
+    "plaf": [
+     "1 800 € (années 1–2), 2 500 € ensuite",
+     "1 800 € (années 1–2), 2 500 € ensuite",
+     "1 800 € (années 1–2), 2 500 € ensuite",
+     "1 800 € (années 1–2), 2 500 € ensuite",
+     "1 800 € (années 1–2), 2 500 € ensuite",
+     "1 800 € (années 1–2), 2 500 € ensuite"
+    ]
+   },
+   "SanteProStart": {
+    "imp": [
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €",
+     "275 €"
+    ],
+    "orthR": [
+     "125 %",
+     "150 %",
+     "175 %",
+     "225 %",
+     "275 %"
+    ],
+    "orthN": [
+     "100 €",
+     "150 €",
+     "200 €",
+     "250 €",
+     "275 €"
+    ],
+    "lentA": [
+     "40 €",
+     "60 €",
+     "100 €",
+     "150 €",
+     "200 €"
+    ],
+    "lentR": [
+     "40 €",
+     "60 €",
+     "100 €",
+     "150 €",
+     "200 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %"
+    ],
+    "optC": [
+     "200 €",
+     "250 €",
+     "325 €",
+     "400 €",
+     "450 €"
+    ],
+    "pharR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "pharN": [
+     "10 €/an",
+     "20 €/an",
+     "30 €/an",
+     "40 €/an",
+     "50 €/an"
+    ],
+    "plaf": [
+     "1 800 € (années 1–2), 2 500 € ensuite",
+     "1 800 € (années 1–2), 2 500 € ensuite",
+     "1 800 € (années 1–2), 2 500 € ensuite",
+     "1 800 € (années 1–2), 2 500 € ensuite",
+     "1 800 € (années 1–2), 2 500 € ensuite"
+    ]
+   },
+   "SanteGan": {
+    "imp": [
+     "200 €",
+     "280 €",
+     "450 €",
+     "620 €",
+     "900 €"
+    ],
+    "orthR": [
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %",
+     "250 %"
+    ],
+    "orthN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "lentA": [
+     "35 €",
+     "50 €",
+     "65 €",
+     "75 €",
+     "100 €"
+    ],
+    "lentR": [
+     "35 €",
+     "50 €",
+     "65 €",
+     "75 €",
+     "100 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR",
+     "125 %",
+     "150 %",
+     "200 %"
+    ],
+    "optC": [
+     "100 % BR",
+     "200 €",
+     "225 €",
+     "300 €",
+     "400 €"
+    ],
+    "pharR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "pharN": [
+     "35 €/an",
+     "50 €/an",
+     "70 €/an",
+     "100 €/an",
+     "150 €/an"
+    ],
+    "plaf": [
+     "500 €",
+     "1 000 €",
+     "1 500 €",
+     "2 000 €",
+     "3 000 €"
+    ]
+   }
+  },
+  "limites": {
+   "SanteMix": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "FlexiSante": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "OnlySante": [
+    "Contrat NON responsable.",
+    "Contrat NON responsable.",
+    "Contrat NON responsable.",
+    "Contrat NON responsable.",
+    "Contrat NON responsable.",
+    "Contrat NON responsable."
+   ],
+   "SanteTranquil": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "SanteZen": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "SantePeps": [
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "SanteOptimale": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "SanteVita": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "SantePro": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "SanteProStart": [
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "SanteGan": [
+    "",
+    "",
+    "",
+    "",
+    ""
+   ]
+  },
+  "documents": {
+   "SanteMix": {
+    "Tableau de garantie + notice": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santemix_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santemix_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santemix_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santemix_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santemix_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santemix_tg_2026.pdf"
+    ],
+    "IPID": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santemix_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santemix_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santemix_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santemix_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santemix_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santemix_ipid_2026.pdf"
+    ]
+   },
+   "FlexiSante": {
+    "Tableau de garantie + notice": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_flexisante_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_flexisante_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_flexisante_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_flexisante_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_flexisante_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_flexisante_tg_2026.pdf"
+    ]
+   },
+   "OnlySante": {
+    "Tableau de garantie + notice": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_onlysante_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_onlysante_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_onlysante_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_onlysante_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_onlysante_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_onlysante_tg_2026.pdf"
+    ],
+    "IPID": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_onlysante_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_onlysante_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_onlysante_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_onlysante_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_onlysante_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_onlysante_ipid_2026.pdf"
+    ]
+   },
+   "SanteTranquil": {
+    "Tableau de garantie + notice": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santetranquil_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santetranquil_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santetranquil_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santetranquil_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santetranquil_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santetranquil_tg_2026.pdf"
+    ],
+    "IPID": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santetranquil_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santetranquil_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santetranquil_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santetranquil_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santetranquil_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santetranquil_ipid_2026.pdf"
+    ]
+   },
+   "SanteZen": {
+    "Tableau de garantie + notice": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santezen_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santezen_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santezen_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santezen_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santezen_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santezen_tg_2026.pdf"
+    ],
+    "IPID": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santezen_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santezen_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santezen_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santezen_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santezen_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santezen_ipid_2026.pdf"
+    ]
+   },
+   "SantePeps": {
+    "Tableau de garantie + notice": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepeps_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepeps_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepeps_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepeps_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepeps_tg_2026.pdf"
+    ],
+    "IPID": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepeps_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepeps_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepeps_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepeps_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepeps_ipid_2026.pdf"
+    ]
+   },
+   "SanteOptimale": {
+    "Tableau de garantie + notice": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_tg_2026.pdf"
+    ],
+    "IPID": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeoptimale_ipid_2026.pdf"
+    ]
+   },
+   "SanteVita": {
+    "Tableau de garantie + notice": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santevita_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santevita_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santevita_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santevita_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santevita_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santevita_tg_2026.pdf"
+    ],
+    "IPID": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santevita_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santevita_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santevita_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santevita_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santevita_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santevita_ipid_2026.pdf"
+    ]
+   },
+   "SantePro": {
+    "Tableau de garantie + notice": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepro_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepro_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepro_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepro_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepro_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepro_tg_2026.pdf"
+    ],
+    "IPID": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepro_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepro_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepro_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepro_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepro_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santepro_ipid_2026.pdf"
+    ]
+   },
+   "SanteProStart": {
+    "Tableau de garantie + notice": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeprostart_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeprostart_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeprostart_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeprostart_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeprostart_tg_2026.pdf"
+    ],
+    "IPID": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeprostart_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeprostart_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeprostart_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeprostart_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santeprostart_ipid_2026.pdf"
+    ]
+   },
+   "SanteGan": {
+    "Tableau de garantie + notice": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_tg_2026.pdf"
+    ],
+    "IPID": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_ipid_2026.pdf"
+    ]
+   }
   }
  }
 }

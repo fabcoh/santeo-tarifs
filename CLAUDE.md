@@ -24,6 +24,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   réseau) et `src/tableau.js` (fabrique du tableau de garantie). `build.py` les recopie dans la page — elle
   reste un fichier unique — et les publie tels quels. **Toute règle de tarification se modifie dans
   `src/moteur.js`, jamais dans la page** : sinon le CRM et le comparateur annoncent deux tarifs différents.
+- **APRIL dans `garanties.json`** (Fabrice, 14/11/2026 : « oui », pour que www.santeo.net affiche leur tableau) : section **`april`**
+  à part (`gammes`, `extras`, `limites`, `documents`, une entrée par code produit APRIL — celui du relais `april.php` —, tableaux
+  par niveau, indice 0 = niveau 1, plus `niv`, `fi` = rang × 100 + niveau, `resp`, `tns`). `build.py` rejoue le code de la page
+  (`APRIL_GAR` → `F.APRIL`…) puis retire APRIL de `gammes` : les autres sections et les images `docs/tg/` ne bougent pas. Seuls les
+  11 produits ouverts dont les garanties sont lues dans un document APRIL ; Simply, Pro Privilège, Protect, Cap Sérénité (tout
+  « n.c. ») ne sont pas publiés. Documents : tableau de garantie + IPID seulement.
 - **Fichiers dérivés, jamais édités à la main** : `src/garanties.json` (objets `F`, `EX`, `COMP`, `TGNOTE`
   republiés en JSON) et `src/tableau.css` (le `<style>` de la page). `build.py` les régénère ; l'Action les
   commit avec `index.html`. Ils sont servis par GitHub Pages : `https://fabcoh.github.io/santeo-tarifs/src/…`.

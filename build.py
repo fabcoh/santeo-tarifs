@@ -60,17 +60,55 @@ def ecrire_garanties():
         _bloc("DOCS", "const DOCS={"),
         _bloc("COMP", "const COMP={"),
     ])
+    # APRIL (Fabrice, 14/11/2026 : « oui ») : la page pose F.APRIL / EX.APRIL a l'execution, fi = rang x 100 + niveau.
+    # On rejoue ce code tel quel, puis on publie a part, un produit par entree, des tableaux denses (indice = niveau - 1).
+    # Hors de « gammes » : les images docs/tg et les lecteurs actuels ne changent pas.
+    def _entre(debut, fin):
+        i, j = tpl.find(debut), tpl.find(fin)
+        if i < 0 or j < i:
+            raise SystemExit("build.py : bloc APRIL introuvable — " + debut)
+        return tpl[i:j]
+    april = "\n".join([
+        _entre("const APRIL_PRODUITS=[", "// Rang de chaque produit"),
+        _entre("const APRIL_ORDRE_RANG=[", "// Produits de la liste que le relais"),
+        _entre("const APRIL_FERMES={", "// Produits TNS"),
+        "const APRIL_TNS=new Set(APRIL_PRODUITS.find(g=>g[0]===\"TNS\")[1].map(x=>x[0]));",
+        _entre("const APRIL_GAR={", "const APRIL_REG="),
+    ])
     # Les lignes du tableau vivent desormais dans src/tableau.js, partage avec le serveur.
-    dump = decls + "\nconst TGROWS = require(" + json.dumps(str(SRC/"tableau.js")) + ").POSTES;\n" + """
+    dump = decls + "\n" + april + "\nconst TGROWS = require(" + json.dumps(str(SRC/"tableau.js")) + ").POSTES;\n" + """
 const postes = TGROWS.map(([libelle, src]) => src.startsWith("x:")
   ? {cle: src.slice(2), libelle, source: "extras"}
   : {cle: src, libelle, source: "gammes"});
+// Produits APRIL publies : ouverts a notre compte et dont les garanties sont lues dans un document APRIL
+// (sans document : Simply, Pro Privilege, Protect, Cap Serenite, tout en « n.c. » — non publies).
+const APRIL_NOM_ = {}; APRIL_PRODUITS.forEach(g => g[1].forEach(([c, l]) => { APRIL_NOM_[c] = l; }));
+const aprilOut = {avertissement: "Produits APRIL : une entree par code produit APRIL (celui du relais april.php). "
+  + "Tableaux par niveau : indice 0 = niveau 1. fi = rang x 100 + niveau est l'identifiant de la ligne APRIL dans le comparateur.",
+  gammes: {}, extras: {}, limites: {}, documents: {}};
+for (const code of APRIL_ORDRE_RANG) {
+  const g = APRIL_GAR[code];
+  if (!g || APRIL_FERMES[code] || g.hospO.every(v => v === "n.c.")) continue;
+  const fis = g.niv.map(n => APRIL_RANG[code] * 100 + n), pick = a => fis.map(fi => (a && a[fi] != null) ? a[fi] : null);
+  const gam = {label: "APRIL " + (APRIL_NOM_[code] || code), ins: "april", resp: g.resp === true,
+    tns: APRIL_TNS.has(code), rang: APRIL_RANG[code], niv: g.niv, fi: fis, names: pick(F.APRIL.names)};
+  for (const k of ["hospO","hospN","honoO","honoN","dent","opt","aud","ch","md"]) gam[k] = pick(F.APRIL[k]);
+  aprilOut.gammes[code] = gam;
+  const ex = {}; for (const k of Object.keys(EX.APRIL)) if (k !== "cumCode") ex[k] = pick(EX.APRIL[k]);
+  aprilOut.extras[code] = ex;
+  aprilOut.limites[code] = pick(LIMITES.APRIL).map(v => v || "");
+  const d = {};
+  for (const k of ["Tableau de garantie + notice", "IPID"]) { const v = pick(DOCS.APRIL[k]); if (v.some(Boolean)) d[k] = v; }
+  aprilOut.documents[code] = d;
+}
+// Retire de F / EX / LIMITES / DOCS ce que le code de la page vient d'y poser : « gammes » ne change pas.
+delete F.APRIL; delete EX.APRIL; delete LIMITES.APRIL; delete DOCS.APRIL;
 console.log(JSON.stringify({
   genere: process.argv[1],
   source: "src/comparateur.html — objets F, EX, COMP, TGNOTE",
   avertissement: "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
   compagnies: COMP, postes, gammes: F, extras: EX, notes: TGNOTE,
-  limites: LIMITES, documents: DOCS,
+  limites: LIMITES, documents: DOCS, april: aprilOut,
 }, null, 1));
 """
     with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as fh:
