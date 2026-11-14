@@ -657,7 +657,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-11T17:34:33Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-11T17:34:33Z</div>
+  <div id="buildstamp" data-build="2026-11-14T11:32:22Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-14T11:32:22Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1794,7 +1794,7 @@ const CUSE=async n=>{try{return (typeof claude!=="undefined"&&claude&&claude.use
 // HOSTED = page hébergée hors claude.ai (GitHub Pages / CRM) : aucune contrainte de plateforme
 const HOSTED=true;
 // Accès au bulletin d'adhésion sur le site hébergé : code d'accès (empreinte SHA-256), mémorisé sur l'appareil
-const ADHGATE="771b132d4416ba004e694647abf789f5a5ac3c076eb4cca1b1dff3252873f486,d8be6f5e88953c3603fa0a5aaed3819710944f30c8f1c974b08232a76b41d05f";
+const ADHGATE="771b132d4416ba004e694647abf789f5a5ac3c076eb4cca1b1dff3252873f486,d8be6f5e88953c3603fa0a5aaed3819710944f30c8f1c974b08232a76b41d05f,02023546b4039abe3b9f355c23dafd9119570f301a024e2fd2ff3186ae54060c";
 const ADHGATES=ADHGATE?ADHGATE.split(","):[];
 async function sha256(s){const b=new TextEncoder().encode(s);const h=await crypto.subtle.digest("SHA-256",b);return [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,"0")).join("");}
 function adhUnlocked(){if(!ADHGATE)return true;try{return ADHGATES.includes(localStorage.getItem("santeo_adh"));}catch(e){return false;}}
