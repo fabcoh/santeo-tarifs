@@ -22,6 +22,8 @@ BUILD = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S
 ADH_GATE = ",".join([
     "771b132d4416ba004e694647abf789f5a5ac3c076eb4cca1b1dff3252873f486",
     "d8be6f5e88953c3603fa0a5aaed3819710944f30c8f1c974b08232a76b41d05f",
+    # 3e code ajouté à la demande de Fabrice (14/11/2026, pour Antony sur téléphone)
+    "02023546b4039abe3b9f355c23dafd9119570f301a024e2fd2ff3186ae54060c",
 ])
 ROOT = pathlib.Path(__file__).parent
 # Ce fichier fonctionne qu'il soit a la racine du depot ou dans src/
