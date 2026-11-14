@@ -509,6 +509,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   privée ne peut pas écrire dans le dépôt GitHub : **quand il dit « liens modifiés »**, lire `catalogue/liens`, recopier
   `lignes` dans `docs/liens_adhesion.json`, pousser, puis remettre `aReporter:false`. APRIL garde son bouton April-On.
   Tests : scratchpad `t_mcci.js`, `t_mcci2.js`, `depot/t_lien.js`.
+- **« 1 mois offert »** (Fabrice, 14/11/2026 : « ajouter une option 1 mois gratuit dans le formulaire… en haut du bulletin à côté de la
+  date d'effet ») : case `#amois` juste après la date d'effet, **seulement pour les bulletins Avenir** (Cap Évolution, TNS, CAP NR,
+  TALIS, LPS), qui portent la liste `offre` (« CAPI FINANCE SANTEO » par défaut / « 1 MOIS OFFERT ») ; cochée → `offre` = « 1 MOIS
+  OFFERT » (`fillAdh`). Non cochée par défaut. Mutuelle Verte et Révoluo n'ont pas cette case dans leur bulletin : pas d'option.
+  Test : scratchpad `w/t_mois.js`.
 - **Titre de la fenêtre d'adhésion** (01/10/2026) : « Adhésion — gamme formule · xx,xx €/mois » (`#adhtit`), le tarif
   retenu pour vérifier ; il suit le recalcul « Souscripteur non assuré » de Révoluo.
   **Code postal d'une fiche du CRM** (Fabrice, 21/10/2026 : fiche de Saint-Maur arrivée sans code postal, le champ gardait celui du
