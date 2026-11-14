@@ -657,7 +657,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-14T11:32:22Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-14T11:32:22Z</div>
+  <div id="buildstamp" data-build="2026-11-14T12:12:25Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-14T12:12:25Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -2616,7 +2616,13 @@ function showAdh(r){
   F1("aadr","Adresse","",P.adresse)+F1("acp","Code postal","",P.cp5||(document.getElementById("cp").value.length>=4?document.getElementById("cp").value:""))+F1("avil","Ville","",P.ville)+
   F1("amail","Email","",P.email)+F1("atel","Tél. mobile","",P.tel)+
   '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Situation</label><select id="asit" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option>activité salarié</option><option>activité indépendante</option><option>auto entrepreneur</option><option>retraité</option><option>fonctionnaire</option><option>chômage</option><option>sans profession</option><option>autre...</option></select></div>'+
-  F1("aeff","Date d\u2019effet (d\u00e9faut : demain)","jj/mm/aaaa",fmtD(new Date(Date.now()+86400000)))+F1("asig","Date de signature","",fmtD(new Date()))+
+  F1("aeff","Date d\u2019effet (d\u00e9faut : demain)","jj/mm/aaaa",fmtD(new Date(Date.now()+86400000)))+
+  // « 1 mois offert » (Fabrice, 14/11/2026) : les bulletins Avenir (Cap Évolution, TNS, CAP NR, TALIS, LPS) portent
+  // en haut, près de la date d'effet, la liste « offre » avec « 1 MOIS OFFERT ». Mutuelle Verte et Révoluo n'ont pas cette case.
+  (["CAPEVO","CAPNR","TALIS","LPSH"].includes(r.key)
+    ?'<div style="display:flex;align-items:flex-end"><label for="amois" style="display:flex;gap:8px;align-items:center;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--ground);cursor:pointer;font-size:13px;font-weight:700;width:100%;box-sizing:border-box;min-height:34px"><input type="checkbox" id="amois" style="width:18px;height:18px;margin:0;flex:none"> 1 mois offert</label></div>'
+    :"")+
+  F1("asig","Date de signature","",fmtD(new Date()))+
   '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Ancienne mutuelle (niveau)</label><select id="aanc" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option>OPTIONS</option><option>je n\u2019avais pas de mutuelle</option><option>hospitaliation seulement</option><option>100%</option><option>125% - 130%</option><option>150% - 160%</option><option>200% - 250%</option><option>300% - 400%</option><option>plus de 400%</option><option>ancienne mutuelle obligatoire</option></select></div>'+
   '<div><label style="font-size:10px;text-transform:uppercase;color:var(--muted)">Motif de d\u00e9part</label><select id="amot" style="width:100%;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)"><option>MOTIFS DE DEPART</option><option>Mauvaise gestion</option><option>Probl\u00e8mes de remboursements</option><option>Augmentations des cotisations</option><option>Peu rembours\u00e9 </option><option>Plus adapt\u00e9 \u00e0 mes besoins</option><option>Motifs personnels</option><option>Cotisation trop \u00e9lev\u00e9e</option><option>Autres</option></select></div>'+
   (HOSTED?docDropHTML():"")+
@@ -3076,6 +3082,8 @@ async function fillAdh(r,ov){
     T("COTISATION MENS",r.total.toFixed(2).replace(".",","));
     const eff=g("aeff").split("/");
     if(eff.length===3){T("JOUR EFFET ADHESION",eff[0]);T("MOIS EFFET ADHESION",eff[1]);T("ANNEE EFFET ADHESION",eff[2]);}
+    // « 1 mois offert » coché dans le formulaire → liste « offre » du bulletin, en haut près de la date d'effet.
+    {const m=document.getElementById("amois"); if(m&&m.checked)S("offre","1 MOIS OFFERT");}
     const iban=g("aiban").replace(/\s+/g,"").toUpperCase();
     for(let i=0;i<7;i++){
       const part=iban.slice(i*4,i*4+4);
