@@ -2631,6 +2631,9 @@ function renderTG(cols,title,sub,note,single){
   bar.innerHTML='<label style="display:inline-flex;align-items:center;gap:5px;font:600 12.5px \'Archivo\',sans-serif;margin-right:6px;cursor:pointer"><input type="checkbox" id="tgnoprices" style="accent-color:var(--accent)">Sans tarifs</label>'
     +'<button data-a="mail" title="Copier l\u2019image et ouvrir votre messagerie" aria-label="Messagerie" style="'+ico+';color:var(--ink)">'+svgMail+'</button>'
     +'<button data-a="wa" title="Envoyer l\u2019image sur WhatsApp" aria-label="WhatsApp" style="'+ico+'">'+svgWa+'</button>'
+    // Résumé WhatsApp (Fabrice, 16/11/2026, relayé par CRM WhatsApp) : cochée, « Envoyer dans le CRM » joint au dépôt la clé et
+    // le prix de chaque offre ; le CRM écrit sous l'image un résumé des garanties et le lien « Cette offre m'intéresse ».
+    +(window.CRMLINK?'<label title="Avec « Envoyer dans le CRM » : un résumé des garanties et le lien de souscription sous l\u2019image, pour chaque offre" style="display:inline-flex;align-items:center;gap:5px;font:600 12.5px \'Archivo\',sans-serif;margin:0 4px;cursor:pointer"><input type="checkbox" id="tgresume" style="accent-color:#059669">Résumé WhatsApp</label>':'')
     // Télécharger la capture (Fabrice, 03/10/2026) : la même image que celle envoyée, rangée dans Téléchargements.
     +'<button data-a="dl" title="Télécharger l\u2019image du tableau" aria-label="Télécharger" style="'+ico+';color:var(--ink)"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5"/><path d="M4 17v3h16v-3"/></svg></button>'
     +'<button data-a="mel" style="'+bst+';background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">Envoyer par mail</button>'
@@ -2716,7 +2719,9 @@ function renderTG(cols,title,sub,note,single){
       } else if(a==="crm"){
         btn.textContent="⏳ Dépôt…";
         const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);});
-        await crmDepot({kind:"image",filename:fname,mime:"image/png",data:b64,caption:"Tableau de garantie — "+nm});
+        const dep={kind:"image",filename:fname,mime:"image/png",data:b64,caption:"Tableau de garantie — "+nm};
+        const cR=ov.querySelector('#tgresume'); if(cR&&cR.checked) dep.resumes=resumesCRM(cols);
+        await crmDepot(dep);
         // Le même clic envoie le courrier au prospect (Fabrice, 26/09/2026) et en dépose la copie
         // dans la conversation, pour la garder ou la renvoyer depuis le CRM. Sans adresse, l'image
         // part seule : jamais de blocage.
@@ -3179,6 +3184,18 @@ function sendText(){
   return sendIntro()+selRows().map(r=>offreTxt(r,true)).join("\n\n")+reco+"\n\nLes documents contractuels seuls font foi.";
 }
 // Dépôt dans la conversation du CRM (lien venu du CRM avec jeton) — rien n'est envoyé au prospect
+// Champ « resumes » du dépôt (contrat avec CRM WhatsApp, 16/11/2026) : une entrée par colonne du tableau, dans l'ordre, 5 au
+// plus. cle = celle du lien de recueil (lien.php) : « K|fi » pour une gamme, « APRIL:<code produit>|<niveau> » pour APRIL ;
+// prix = tarif mensuel affiché (nombre), null s'il manque — le CRM n'envoie alors pas ce résumé.
+function resumesCRM(cols){
+  return cols.slice(0,5).map(c=>{
+    let cle=c.key+"|"+c.fi;
+    if(c.key==="APRIL"){ const code=APRIL_ORDRE_RANG[Math.floor(c.fi/100)]; cle="APRIL:"+code+"|"+(c.fi%100); }
+    const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi);
+    const prix=r&&isFinite(r.total)?Math.round(r.total*100)/100:null;
+    return {cle,prix};
+  });
+}
 async function crmDepot(payload){
   const body=JSON.stringify(Object.assign({token:window.CRMLINK.token},payload));
   let resp;

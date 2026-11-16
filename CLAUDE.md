@@ -297,6 +297,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   le courrier** : `mailTableau` ajoute un 3ᵉ élément à chaque ligne (`[libellé, valeurs, 1|0]`), que
   `santeo-mail.php` rend avec le même fond (`#FFF3C4`) ; la version texte marque ces lignes d'un `*`. Un relais
   plus ancien ignore ce 3ᵉ élément sans erreur.
+- **Case « Résumé WhatsApp »** (Fabrice, 16/11/2026, relayé par CRM WhatsApp) : barre du tableau de garantie, après l'icône WhatsApp,
+  seulement depuis le CRM, décochée par défaut. Cochée, « Envoyer dans le CRM » ajoute au dépôt `resumes: [{cle, prix}]`
+  (`resumesCRM(cols)` : ordre des colonnes, 5 au plus ; `cle` = `K|fi` ou `APRIL:<code>|<niveau>`, la clé de `lien.php` ; `prix`
+  = tarif affiché ou `null`). Le CRM écrit sous l'image un résumé par offre + « Cette offre m'intéresse ». Contrat dans le carnet.
+  Test : scratchpad `w/t_resume.js`.
 - **🧮 Cumul mutuelle + surcomplémentaire** (Fabrice, 19/10/2026 : « une calculette… MCCI plus Talis… le total sur chaque poste »,
   « une petite cartouche, comme une capture d'écran… pour envoyer directement sur WhatsApp ») : cocher une mutuelle **et TALIS** →
   bouton **🧮 Cumul** de la barre flottante (`#sbcu`, caché sinon) → `showCumul()`, une vignette par mutuelle cochée (× chaque TALIS

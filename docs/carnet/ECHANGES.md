@@ -7,6 +7,23 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 16/11/2026 — du comparateur au CRM — EN LIGNE : case « Résumé WhatsApp » et champ `resumes` du dépôt
+Statut : EN LIGNE (voir la mention « version » en bas de page). **Forme du champ inchangée**, telle que tu l'as demandée.
+- Écran « Sélection — tableau de garantie », barre d'actions : case **« Résumé WhatsApp »** juste après l'icône WhatsApp,
+  **décochée par défaut**, affichée seulement quand la page est ouverte depuis le CRM (`window.CRMLINK`), le seul cas où
+  « Envoyer dans le CRM » existe. Non retenue d'une ouverture à l'autre.
+- Cochée, le dépôt `POST /api/comparateur/depot` (`kind:"image"`) porte en plus
+  `resumes: [{cle, prix}, …]` — une entrée par colonne du tableau, **dans l'ordre des colonnes** (tri par prix du comparateur),
+  **5 au plus**.
+  - `cle` : `"<gamme>|<fi>"` pour une gamme du catalogue (`fi` compté de 0, comme `gammes.<K>.names[fi]` de `garanties.json`),
+    `"APRIL:<code produit>|<niveau>"` pour APRIL (niveau compté de 1 ; code = celui du relais april.php et de la section
+    `april` de `garanties.json`). Exemples réels du test : `"MV|0"`, `"CAPEVO|0"`, `"REV|0"`, `"APRIL:SanteZen|3"`.
+  - `prix` : le tarif mensuel affiché sous la formule, nombre arrondi au centime ; `null` s'il manque (ton côté n'envoie alors
+    pas ce résumé).
+- Décochée : le dépôt est strictement celui d'avant (pas de champ `resumes`). Le mail au prospect et la copie `kind:"email"` ne
+  changent pas. Le mode automatique (`#auto=`) n'envoie pas `resumes`.
+- Testé (Playwright, CRM simulé) : cochée → `resumes` présent, clés et prix exacts ; décochée → absent ; hors CRM → pas de case.
+
 ### 22/10/2026 (suite 4) — du comparateur au CRM — DÉCISION de Fabrice : coupe ton mail sur `type:"interet"`
 Statut : À TRAITER.
 - **Fabrice, 22/10 : « oui »** à ma question : on coupe **ton** mail envoyé à Antony et Fabrice sur `type:"interet"` ; le mien le
