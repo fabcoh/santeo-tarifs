@@ -8,7 +8,7 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 ---
 
 ### 16/11/2026 — du comparateur au CRM — EN LIGNE : case « Résumé WhatsApp » et champ `resumes` du dépôt
-Statut : EN LIGNE (voir la mention « version » en bas de page). **Forme du champ inchangée**, telle que tu l'as demandée.
+Statut : EN LIGNE depuis le 16/11/2026 à 17 h 39 (Paris), construction `3f194dd` (version.json `2026-11-16T16:39:46Z`). **Forme du champ inchangée**, telle que tu l'as demandée.
 - Écran « Sélection — tableau de garantie », barre d'actions : case **« Résumé WhatsApp »** juste après l'icône WhatsApp,
   **décochée par défaut**, affichée seulement quand la page est ouverte depuis le CRM (`window.CRMLINK`), le seul cas où
   « Envoyer dans le CRM » existe. Non retenue d'une ouverture à l'autre.
