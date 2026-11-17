@@ -122,6 +122,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   48 p., 109 champs) : coupon sans « CAP EVOLUTION » et liste `OPTION CHOISIE LISTE` réduite à `TALIS` / `TALIS +` (1re ligne
   « OPTION CHOISIE », valeur cachée `TALIS`). `fillAdh` choisit `TALIS` ou `TALIS +` selon la formule et pose `/I` (ligne 1 ou 2)
   pour qu'Acrobat n'affiche pas « OPTION CHOISIE ». Test : scratchpad `w/t_talis.js`.
+- **CAP NR : bulletin v2 de Fabrice** (17/11/2026, 16 h 51, bureau `fichiers/bulletin_capnr_2026_corrige_fabrice_17-11_v2.pdf`, 73 p.,
+  130 champs) : liste `OPTION CHOISIE LISTE` = CAP ESSENTIEL, CAP 100, 130, 200, 300, 400. `fillAdh` choisit « CAP ESSENTIEL » ou
+  « CAP n » ; **CAP 160 n'est pas dans sa liste** : le comparateur l'y ajoute au moment de remplir (question posée à Fabrice).
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
 - **Avenir Mutuelle, mise à jour du 28/09/2026** (dépôt de Fabrice sur la page de dépôt) : Cap Évolution, Cap Évolution
   TNS, CAP NR, TALIS — tableau de garantie, IPID, notice et bulletin. **Aucune garantie ne change** : les pages de
