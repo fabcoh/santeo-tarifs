@@ -113,6 +113,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   n'était jamais cochée** : corrigé (`C("LPS HOSPI")` + formule). **Aucune notice LPS dans ce fichier** : la suite est le
   dossier Cap Évolution (descriptif, IPID, assistance RMA, statuts AG 2026, règlement mutualiste **garanties responsables** —
   qui ne vaut pas pour LPS, non responsable). La notice LPS est arrivée à part le même jour (voir plus haut).
+- **« CAP EVOLUTION » retiré du coupon des besoins (page 5) de CAP NR, TALIS et LPS** (Fabrice, 17/11/2026) : texte imprimé dans le
+  modèle (pas un champ ; codes de glyphes, police `C2_9`, invisible à `pdftotext`), juste sous « Garantie retenue : ». CAP NR = le
+  fichier corrigé par Fabrice dans Acrobat (bureau `fichiers/bulletin_capnr_2026_corrige_fabrice_17-11.pdf`, mêmes 130 champs) ;
+  TALIS et LPS = les 3 lignes du bloc retirées du contenu de la page 5 (pypdf, mise à jour incrémentale, champs inchangés). Gardé
+  sur Cap Évolution et TNS. Le 17/11 j'avais d'abord dit à tort que ce texte ne venait pas de nos bulletins.
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
 - **Avenir Mutuelle, mise à jour du 28/09/2026** (dépôt de Fabrice sur la page de dépôt) : Cap Évolution, Cap Évolution
   TNS, CAP NR, TALIS — tableau de garantie, IPID, notice et bulletin. **Aucune garantie ne change** : les pages de
