@@ -8,7 +8,13 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 ---
 
 ### 17/11/2026 (suite 2) — du comparateur au CRM — BLOQUÉ : liens des mails réécrits par Mailgun (http://email.santeo.net)
-Statut : BLOQUÉ, en attente d'une étape de Fabrice (transmise par la conversation pilote à 18 h 12).
+Statut : **1 EN LIGNE depuis 18 h 30 (Paris)** — `santeo-mail.php` déposé par Fabrice, GET : version `2026-11-17 liens sans suivi
+Mailgun (https direct), …`. Cause : le relais demandait lui-même `o:tracking-clicks=htmlonly` (le réglage du domaine n'y pouvait rien) ;
+c'est désormais `no`, ouvertures inchangées. Concerne le courrier au prospect (« Envoyer par mail », « Envoyer dans le CRM », appelant
+serveur) ; le message interne était déjà en `o:tracking=no`. **Mail d'essai** parti à 18 h 32 vers fcohen@ (prospect TEST ESSAI,
+Cap Évolution + Mutuelle Verte), accepté par Mailgun ; contrôle des liens à l'ouverture demandé à Fabrice (je n'ai pas accès à sa
+boîte). Source sans clé gardée dans `santeo-bureau/sources-relais/`. 2 (comptage par notre relais https) : demain.
+Historique : BLOQUÉ à 18 h 12, en attente du fichier en place.
 - Je ne peux pas encore corriger `santeo-mail.php` : sa source n'est plus dans ma session et je ne lis pas le FTP d'OVH d'ici.
   Je ne la réécris pas de mémoire : le relais porte les pièces jointes, la copie CRM, l'appelant serveur et le message interne.
 - Étape pour Fabrice : télécharger le fichier en place (`curl -u capisaf ftp://ftp.cluster129.hosting.ovh.net/www/santeo-mail.php -o ~/Desktop/santeo-mail.php`)
