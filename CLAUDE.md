@@ -118,6 +118,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   fichier corrigé par Fabrice dans Acrobat (bureau `fichiers/bulletin_capnr_2026_corrige_fabrice_17-11.pdf`, mêmes 130 champs) ;
   TALIS et LPS = les 3 lignes du bloc retirées du contenu de la page 5 (pypdf, mise à jour incrémentale, champs inchangés). Gardé
   sur Cap Évolution et TNS. Le 17/11 j'avais d'abord dit à tort que ce texte ne venait pas de nos bulletins.
+- **TALIS : bulletin remplacé par celui de Fabrice** (17/11/2026, bureau `fichiers/bulletin_talis_2026_corrige_fabrice_17-11.pdf`,
+  48 p., 109 champs) : coupon sans « CAP EVOLUTION » et liste `OPTION CHOISIE LISTE` réduite à `TALIS` / `TALIS +` (1re ligne
+  « OPTION CHOISIE », valeur cachée `TALIS`). `fillAdh` choisit `TALIS` ou `TALIS +` selon la formule et pose `/I` (ligne 1 ou 2)
+  pour qu'Acrobat n'affiche pas « OPTION CHOISIE ». Test : scratchpad `w/t_talis.js`.
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
 - **Avenir Mutuelle, mise à jour du 28/09/2026** (dépôt de Fabrice sur la page de dépôt) : Cap Évolution, Cap Évolution
   TNS, CAP NR, TALIS — tableau de garantie, IPID, notice et bulletin. **Aucune garantie ne change** : les pages de

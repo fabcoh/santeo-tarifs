@@ -1947,7 +1947,7 @@ async function fillAdh(r,ov){
     ["EVO SAL","EVO TNS","EVO PRO","LPS HOSPI","CAP  NR","TALIS","TALIS +"].forEach(U);
     if(r.key==="CAPEVO"){C(reg==="TNS"||reg==="TNSRL"?"EVO TNS":"EVO SAL");S("OPTION CHOISIE LISTE",{0:"ACCÈS",1:"ÉQUILIBRE",2:"TRANQUILLITÉ",3:"SÉRÉNITÉ"}[r.fi]);}
     else if(r.key==="CAPNR"){C("CAP  NR");T("BESOINS 1","Formule choisie : "+r.formule);SOPT("OPTION CHOISIE LISTE",r.formule);}
-    else if(r.key==="TALIS"){C(r.fi===0?"TALIS":"TALIS +");C("TALIS ADHERENT");SOPT("OPTION CHOISIE LISTE",r.formule);}
+    else if(r.key==="TALIS"){C(r.fi===0?"TALIS":"TALIS +");C("TALIS ADHERENT");SOPT("OPTION CHOISIE LISTE",r.fi===0?"TALIS":"TALIS +");try{const dd=form.getDropdown("OPTION CHOISIE LISTE").acroField.dict;const op=dd.lookup(PDFLib.PDFName.of("Opt"));if(op&&op.size){const v=r.fi===0?"TALIS":"TALIS +";for(let i=0;i<op.size();i++){const e=op.get(i);if(e instanceof PDFLib.PDFString||e instanceof PDFLib.PDFHexString){if(e.decodeText()===v){dd.set(PDFLib.PDFName.of("I"),pdf.context.obj([i]));break;}}}}}catch(e){}}   // liste réduite par Fabrice (17/11/2026) : TALIS / TALIS + ; sa 1re ligne « OPTION CHOISIE » a aussi la valeur TALIS → /I pose la bonne ligne
     // La case « LPS Hospi » n'était jamais cochée (relevé le 05/10/2026) : le bulletin partait sans produit.
     else if(r.key==="LPSH"){C("LPS HOSPI");SOPT("OPTION CHOISIE LISTE",r.formule);}
     T("COTISATION MENS",r.total.toFixed(2).replace(".",","));
