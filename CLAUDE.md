@@ -30,6 +30,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (`APRIL_GAR` → `F.APRIL`…) puis retire APRIL de `gammes` : les autres sections et les images `docs/tg/` ne bougent pas. Seuls les
   11 produits ouverts dont les garanties sont lues dans un document APRIL ; Simply, Pro Privilège, Protect, Cap Sérénité (tout
   « n.c. ») ne sont pas publiés. Documents : tableau de garantie + IPID seulement.
+- **Le comparateur vert (`comparateur2.santeo.net`, conversation « Comparateur Santeo ») lit en direct** (17/11/2026) sur
+  fabcoh.github.io/santeo-tarifs : `src/moteur.js` (`Moteur.calculer`, `Moteur.departement`, `Moteur.zones`), `src/tarifs_all.json`,
+  `src/garanties.json` (`gammes`, `extras`, `documents`) et les PDF de `docs/`. **Garder ces noms ou le prévenir avant d'y toucher.**
+  `apicil.php` l'accepte en appelant (version `2026-11-17 …comparateur2.santeo.net`, tarification seulement), comme `april.php`.
 - **Fichiers dérivés, jamais édités à la main** : `src/garanties.json` (objets `F`, `EX`, `COMP`, `TGNOTE`
   republiés en JSON) et `src/tableau.css` (le `<style>` de la page). `build.py` les régénère ; l'Action les
   commit avec `index.html`. Ils sont servis par GitHub Pages : `https://fabcoh.github.io/santeo-tarifs/src/…`.
