@@ -657,7 +657,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-17T16:38:38Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-17T16:38:38Z</div>
+  <div id="buildstamp" data-build="2026-11-17T16:58:36Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-17T16:58:36Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -3810,16 +3810,10 @@ function renderTG(cols,title,sub,note,single){
     // le CRM » mais sans le mail : c'est le CRM qui envoie sur WhatsApp (Fabrice, 17/11/2026).
     const sansMail=a==="wa"&&!!window.CRMLINK&&!window.AUTO; if(sansMail) a="crm";
     if(a==="res"){
-      btn.disabled=true; btn.textContent="⏳ Dépôt…"; stat("");
-      try{
-        await crmDepot({kind:"resumes",resumes:resumesCRM(cols)});
-        stat("✅ Résumés déposés — retour à la conversation…");
-        setTimeout(()=>{fermerTableaux();bandeauOk("✅ Résumés déposés dans la conversation");crmBack();},1200);
-      }catch(err){
-        stat(err&&(err.status===401||err.status===403)?"❌ Dépôt refusé : le lien du CRM a expiré (il vaut 2 h). Rouvrez le comparateur depuis la conversation WhatsApp."
-          :err&&err.status===undefined&&err instanceof TypeError?"❌ CRM injoignable pour l'instant — réessayez dans une minute."
-          :"❌ Dépôt impossible"+(err&&err.message?" ("+err.message+")":""));
-      }
+      btn.disabled=true; btn.textContent="⏳ Envoi en cours…"; stat("Le CRM envoie les résumés un par un (jusqu'à 20 s)…");
+      const rr=await deposerResumes(resumesCRM(cols));
+      if(rr.ok){ stat("✅ "+rr.txt+" — retour à la conversation…"); setTimeout(()=>{fermerTableaux();bandeauOk("✅ "+rr.txt);crmBack();},1600); }
+      else stat("⚠ "+rr.txt);
       btn.disabled=false; btn.innerHTML=old; return;
     }
     // Copie de l'image : lancée dès le clic (geste utilisateur conservé, Safari/Samsung), l'image arrive ensuite
@@ -4366,7 +4360,24 @@ async function crmDepot(payload){
     let t=""; try{t=(await resp.text()).replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim().slice(0,140);}catch(_){}
     const e=new Error("HTTP "+resp.status+(t?" · "+t:"")); e.status=resp.status; throw e;
   }
-  return true;
+  try{ const d=await resp.json(); return d||true; }catch(_){ return true; }
+}
+// Résumés seuls dans la conversation (dépôt kind "resumes", contrat du CRM du 17/11/2026) : 1 à 5 offres, prix > 0 et ≤ 5 000 €
+// (un prix absent ferait refuser tout le lot : ces offres-là restent de côté). Rend {ok, txt} à afficher.
+async function deposerResumes(res){
+  const bons=(res||[]).filter(r=>r&&r.cle&&typeof r.prix==="number"&&r.prix>0&&r.prix<=5000).slice(0,5);
+  const sansPrix=(res||[]).length-bons.length;
+  if(!bons.length) return {ok:false,txt:"aucun résumé à envoyer (tarif manquant)"};
+  let d;
+  try{ d=await crmDepot({kind:"resumes",resumes:bons}); }
+  catch(e){ return {ok:false,txt:"résumés non déposés dans le CRM ("+((e&&(e.status===401||e.status===403))?"lien du CRM expiré, rouvrez-le depuis la conversation":(e&&e.status===undefined&&e instanceof TypeError)?"CRM injoignable":((e&&e.message)||"erreur"))+")"}; }
+  if(d&&d.doublon) return {ok:true,txt:"résumés déjà envoyés il y a moins d'une minute"};
+  const n=(d&&typeof d.envoyes==="number")?d.envoyes:bons.length;
+  let txt=n+" résumé"+(n>1?"s":"")+" envoyé"+(n>1?"s":"");
+  const refus=(d&&Array.isArray(d.refus))?d.refus:[];
+  if(refus.length) txt+=" · refusé"+(refus.length>1?"s":"")+" : "+refus.map(r=>{const c=String(r.cle||"");const l=LASTROWS.find(x=>(x.key+"|"+x.fi)===c);return (l?(l.gamme+" "+l.formule):c)+" ("+(r.raison||"?")+")";}).join(" ; ");
+  if(sansPrix) txt+=" · "+sansPrix+" sans tarif, non envoyé"+(sansPrix>1?"s":"");
+  return {ok:!refus.length&&!sansPrix&&n>0,txt};
 }
 // Copie d'un courrier envoyé, déposée dans la conversation du CRM (demande du CRM, 26/09/2026) :
 // tout envoi réussi depuis une page ouverte par le CRM, quel que soit le destinataire. Renvoie la
@@ -4859,8 +4870,9 @@ function mailFenetre(blob,tg,PR,tetes,autre,resumes){
       // Case « Résumé WhatsApp » cochée (Fabrice, 17/11/2026 : « soit le mail et le résumé ») : les résumés partent aussi dans
       // la conversation du CRM (dépôt kind "resumes", sans image). Un échec ne touche pas au mail, déjà parti.
       if(resumes&&resumes.length&&window.CRMLINK&&RESUMES_SEULS){
-        try{ await crmDepot({kind:"resumes",resumes}); cp.txt=(cp.txt?cp.txt+", ":"")+"résumés dans la conversation"; }
-        catch(e){ cp.ok=false; cp.txt=(cp.txt?cp.txt+" · ":"")+"résumés non déposés dans le CRM ("+((e&&(e.status===401||e.status===403))?"lien du CRM expiré":((e&&e.message)||"CRM injoignable"))+")"; }
+        msg.innerHTML='<b>Comparatif envoyé à '+dvEch(dest)+'.</b><div style="color:var(--muted);margin-top:5px">Envoi des résumés dans la conversation…</div>';
+        const rr=await deposerResumes(resumes);
+        if(!rr.ok) cp.ok=false; cp.txt=(cp.txt?cp.txt+" · ":"")+rr.txt;
       }
       if(cp.txt) msg.innerHTML='<b>Comparatif envoyé à '+dvEch(dest)+'.</b>'
         +'<div style="color:var(--muted);margin-top:5px">Copie cachée au conseiller et à la direction.</div>'
