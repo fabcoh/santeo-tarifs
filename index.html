@@ -657,7 +657,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-17T16:32:06Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-17T16:32:06Z</div>
+  <div id="buildstamp" data-build="2026-11-17T16:38:38Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-17T16:38:38Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -3864,7 +3864,8 @@ function renderTG(cols,title,sub,note,single){
         stat("✅ Image téléchargée");
       } else if(a==="mel"||a==="mel2"){
         const t=el=>{const e=box.querySelector(el);return e?e.textContent.trim():"";};
-        mailFenetre(blob,mailTableau(cols),PR,{entete:t('.tghdr'),soustitre:t('.src')},a==="mel2"); stat("");
+        const cRm=ov.querySelector('#tgresume');
+        mailFenetre(blob,mailTableau(cols),PR,{entete:t('.tghdr'),soustitre:t('.src')},a==="mel2",(a==="mel"&&cRm&&cRm.checked)?resumesCRM(cols):null); stat("");
       } else if(a==="crm"){
         btn.textContent="⏳ Dépôt…";
         const b64=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(String(fr.result).split(",")[1]);fr.onerror=rej;fr.readAsDataURL(blob);});
@@ -4783,7 +4784,7 @@ function envoiNote(cle){const m=envoisLus(),now=Date.now();
   for(const k in m)if(now-m[k]>DOUBLON_MS)delete m[k];
   m[cle]=ENVOIS[cle]=now; try{localStorage.setItem("santeo_envois",JSON.stringify(m));}catch(_){}}
 function envoiHeure(t){const d=new Date(t);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");}
-function mailFenetre(blob,tg,PR,tetes,autre){
+function mailFenetre(blob,tg,PR,tetes,autre,resumes){
   const offres=tg.colonnes;
   let expChoisi=EXPEDITEURS[0][0];
   try{const m=localStorage.getItem("santeo_exp"); if(m&&EXPEDITEURS.some(e=>e[0]===m))expChoisi=m;}catch(e){}
@@ -4855,6 +4856,12 @@ function mailFenetre(blob,tg,PR,tetes,autre){
         +(window.CRMLINK?' Dépôt de la copie dans le CRM…':'')+'</div>';
       // Ouverte par le CRM, la page y dépose la copie du courrier, quel que soit le destinataire.
       const cp=await copieCRM(d);
+      // Case « Résumé WhatsApp » cochée (Fabrice, 17/11/2026 : « soit le mail et le résumé ») : les résumés partent aussi dans
+      // la conversation du CRM (dépôt kind "resumes", sans image). Un échec ne touche pas au mail, déjà parti.
+      if(resumes&&resumes.length&&window.CRMLINK&&RESUMES_SEULS){
+        try{ await crmDepot({kind:"resumes",resumes}); cp.txt=(cp.txt?cp.txt+", ":"")+"résumés dans la conversation"; }
+        catch(e){ cp.ok=false; cp.txt=(cp.txt?cp.txt+" · ":"")+"résumés non déposés dans le CRM ("+((e&&(e.status===401||e.status===403))?"lien du CRM expiré":((e&&e.message)||"CRM injoignable"))+")"; }
+      }
       if(cp.txt) msg.innerHTML='<b>Comparatif envoyé à '+dvEch(dest)+'.</b>'
         +'<div style="color:var(--muted);margin-top:5px">Copie cachée au conseiller et à la direction.</div>'
         +'<div style="margin-top:5px"'+(cp.ok?'':' class="dvwarn"')+'>'+(cp.ok?'✅ ':'⚠ ')+dvEch(cp.txt[0].toUpperCase()+cp.txt.slice(1))+'.</div>';
