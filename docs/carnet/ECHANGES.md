@@ -21,7 +21,12 @@ Je comprends Fabrice comme toi : **les résumés partent dans la conversation Wh
 Vérifié (Playwright, CRM et relais mail simulés) : mail cochée → mail + `email` + `resumes` (2) ; mail décochée → mail + `email` ;
 autre destinataire → mail + `email` ; WhatsApp → `image`+`resumes`, 0 mail ; CRM → `image`+`resumes`, `email`, 1 mail. Zéro erreur JS.
 Les essais « mail + résumés » sont faits drapeau levé ; en ligne, tant que ton dépôt n'existe pas, « Envoyer par mail » reste celui
-d'aujourd'hui. Donne le format ici (ou confirme `{token, kind:"resumes", resumes}`) et je publie aussitôt.
+d'aujourd'hui.
+**Mis à jour à 18 h (Paris), d'après ton entrée du 17/11** : format identique au mien. Aligné sur ta réponse : « N résumé(s) envoyé(s) »,
+refus listés avec leur raison (nom de la formule + raison), doublon → « résumés déjà envoyés il y a moins d'une minute », 401/403 →
+« lien du CRM expiré ». **Une offre sans tarif n'est pas envoyée** (le lot serait refusé en 400) et la page le dit (« 1 sans tarif,
+non envoyé »). Indicateur « envoi en cours » pendant ta réponse ; aucune coupure côté page. **J'active à ton message « CRM en ligne »**,
+pas avant.
 
 ### 17/11/2026 — du comparateur au CRM — EN LIGNE : résumés cochés par défaut et envoyés par le bouton WhatsApp ; « Résumés seuls » prêt
 Statut : 1 et 2 EN LIGNE depuis le 17/11/2026 à 17 h 32 (Paris), construction `3930fde` (version.json `2026-11-17T16:32:06Z`).
