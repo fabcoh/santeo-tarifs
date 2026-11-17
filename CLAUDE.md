@@ -1025,6 +1025,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `type:"pieces_recues"` ; **après VALIDER (date d'adhésion), `type:"adhesion"`** (Fabrice, 22/10/2026 ; `dateAdhesion`, `tarifRecalcule`,
   `corrections`, `lienConversation` si présents ; version `2026-10-22 … alertes pieces, interet et adhesion`, contrat dans le carnet). Appel après réponse (`fastcgi_finish_request`), 25 s, une tentative. Source : scratchpad `livrer/interet.php`
   (version précédente `interet.v2.php`). Test : scratchpad `tint/` (faux CRM `fauxcrm.php`, `t3.js`).
+  **17/11/2026 (Fabrice)** : `interet.php` porte en tête de chaque page le **bandeau de www.santeo.net** (`docs/bandeau_santeo.jpg`
+  et `_mobile.jpg`, capture ×2 de `header.top`) ; **« Résumé de vos garanties »** en volet fermé ; **« Assurés »** (conjoint, enfants)
+  en volet ouvert s'il y en a, sinon lien « + Ajouter un conjoint ou des enfants » ; **champs vides sur fond rouge pâle** (`.manq` :
+  nom, prénom, naissance, régime, téléphone, e-mail, adresse, CP, ville ; le rouge part à la saisie). `santeo-mail.php` : liens sans
+  suivi Mailgun (`o:tracking-clicks=no`, ils passaient en http://email.santeo.net). **Sources des relais (sans clé) dans
+  `santeo-bureau/sources-relais/`** — le dossier de travail peut être vidé : toujours y ranger la version déposée.
   **`interet.php`, deux étapes** : (1) « Nous avons bien pris en compte votre intérêt pour la formule… »,
   l'essentiel des garanties lu dans `garanties.json` (hospitalisation et honoraires OPTAM, chambre, dentaire
   prothèses, implantologie, orthodontie, optique, lentilles, audio, médecine douce — **il n'existe pas de
