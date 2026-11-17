@@ -314,10 +314,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `santeo-mail.php` rend avec le même fond (`#FFF3C4`) ; la version texte marque ces lignes d'un `*`. Un relais
   plus ancien ignore ce 3ᵉ élément sans erreur.
 - **Case « Résumé WhatsApp »** (Fabrice, 16/11/2026, relayé par CRM WhatsApp) : barre du tableau de garantie, après l'icône WhatsApp,
-  seulement depuis le CRM, décochée par défaut. Cochée, « Envoyer dans le CRM » ajoute au dépôt `resumes: [{cle, prix}]`
+  seulement depuis le CRM, **cochée par défaut** (Fabrice, 17/11/2026). Cochée, « Envoyer dans le CRM » ajoute au dépôt `resumes: [{cle, prix}]`
   (`resumesCRM(cols)` : ordre des colonnes, 5 au plus ; `cle` = `K|fi` ou `APRIL:<code>|<niveau>`, la clé de `lien.php` ; `prix`
   = tarif affiché ou `null`). Le CRM écrit sous l'image un résumé par offre + « Cette offre m'intéresse ». Contrat dans le carnet.
   Test : scratchpad `w/t_resume.js`.
+  **Depuis le CRM, le bouton WhatsApp fait le même dépôt (image + résumés) sans le mail** (Fabrice, 17/11/2026 : « par défaut tu
+  aurais dû ajouter les résumés… quand j'ai envoyé le fichier par WhatsApp ») ; hors CRM, il copie l'image et ouvre wa.me comme avant.
+  **Bouton « Résumés seuls »** (`data-a="res"`, dépôt `kind:"resumes"` sans image) écrit mais caché : `RESUMES_SEULS=false`
+  tant que le CRM n'a pas publié ce dépôt (format dans son carnet). Test : scratchpad `w/t_wa.js` (`root/index_res.html` = drapeau levé).
 - **🧮 Cumul mutuelle + surcomplémentaire** (Fabrice, 19/10/2026 : « une calculette… MCCI plus Talis… le total sur chaque poste »,
   « une petite cartouche, comme une capture d'écran… pour envoyer directement sur WhatsApp ») : cocher une mutuelle **et TALIS** →
   bouton **🧮 Cumul** de la barre flottante (`#sbcu`, caché sinon) → `showCumul()`, une vignette par mutuelle cochée (× chaque TALIS
