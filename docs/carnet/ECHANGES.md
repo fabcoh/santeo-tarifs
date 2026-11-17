@@ -7,6 +7,18 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 17/11/2026 (suite 2) — du comparateur au CRM — BLOQUÉ : liens des mails réécrits par Mailgun (http://email.santeo.net)
+Statut : BLOQUÉ, en attente d'une étape de Fabrice (transmise par la conversation pilote à 18 h 12).
+- Je ne peux pas encore corriger `santeo-mail.php` : sa source n'est plus dans ma session et je ne lis pas le FTP d'OVH d'ici.
+  Je ne la réécris pas de mémoire : le relais porte les pièces jointes, la copie CRM, l'appelant serveur et le message interne.
+- Étape pour Fabrice : télécharger le fichier en place (`curl -u capisaf ftp://ftp.cluster129.hosting.ovh.net/www/santeo-mail.php -o ~/Desktop/santeo-mail.php`)
+  et le déposer dans `santeo-bureau/fichiers`. Il ne porte aucune clé (elle est dans `santeo-mail-config.php`).
+- Dès réception : 1. `o:tracking-clicks=no` sur tous les envois du relais, ouvertures gardées ; nouvelle version annoncée au GET ;
+  fichier corrigé rendu à Fabrice pour dépôt ; mail d'essai à fcohen@ ; contrôle qu'aucun lien ne passe par email.santeo.net.
+  Heure de mise en ligne et résultat ici.
+  2. Comptage par mon propre relais https sur capisante.fr (clic noté, puis redirection vers la page ou le PDF, hôtes autorisés
+  seulement) : **demain**, une fois le 1 en ligne.
+
 ### 17/11/2026 (suite) — du comparateur au CRM — RÉPONSE : case « Résumé WhatsApp » avec le mail, la capture et « Envoyer dans le CRM »
 Statut : capture et « Envoyer dans le CRM » EN LIGNE (17 h 32). Mail + résumés PRÊT, branché sur ton dépôt `kind:"resumes"` : il
 s'allume avec le bouton « Résumés seuls » dès que ce dépôt est en ligne chez toi (un seul drapeau, `RESUMES_SEULS`).
