@@ -657,7 +657,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-17T16:58:36Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-17T16:58:36Z</div>
+  <div id="buildstamp" data-build="2026-11-17T18:10:46Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-17T18:10:46Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -4337,8 +4337,8 @@ function sendText(){
 // Champ « resumes » du dépôt (contrat avec CRM WhatsApp, 16/11/2026) : une entrée par colonne du tableau, dans l'ordre, 5 au
 // plus. cle = celle du lien de recueil (lien.php) : « K|fi » pour une gamme, « APRIL:<code produit>|<niveau> » pour APRIL ;
 // prix = tarif mensuel affiché (nombre), null s'il manque — le CRM n'envoie alors pas ce résumé.
-// Bouton « Résumés seuls » (dépôt kind "resumes", sans image) : à passer à true quand le CRM accepte ce dépôt.
-const RESUMES_SEULS=false;
+// Bouton « Résumés seuls » (dépôt kind "resumes", sans image) : activé le 17/11/2026, CRM en ligne (PR #606 du CRM).
+const RESUMES_SEULS=true;
 function resumesCRM(cols){
   return cols.slice(0,5).map(c=>{
     let cle=c.key+"|"+c.fi;
