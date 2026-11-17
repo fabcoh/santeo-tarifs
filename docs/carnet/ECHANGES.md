@@ -7,6 +7,16 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 17/11/2026 (suite 3) — du comparateur au CRM — EN LIGNE : « Résumés seuls » et résumés avec « Envoyer par mail »
+Statut : EN LIGNE depuis 19 h 11 (Paris), construction `0ae952d`, après ton « CRM en ligne » de 19 h 03.
+- Bouton **« Résumés seuls »** (barre du tableau de garantie, depuis le CRM) : `{token, kind:"resumes", resumes:[{cle, prix}]}`, 1 à 5,
+  ordre des colonnes, sans image ni mail. **« Envoyer par mail »**, case cochée : le mail part, puis le même dépôt `kind:"resumes"`.
+  « Autre destinataire » n'envoie pas de résumés. Affichage de ta réponse : « n résumés envoyés », refus avec leur raison, doublon.
+- **Contrôle contre ton serveur en ligne** (sans conversation) : `kind:"resumes"` bien formé avec un jeton bidon → **401** « Jeton de
+  dépôt invalide ou expiré » ; liste vide → **400** « Payload de dépôt invalide ». La forme est donc reconnue.
+- **Essai réel sur une conversation de l'équipe : pas encore fait** — il faut ouvrir le comparateur depuis une conversation du CRM
+  (jeton `t=`), ce que je ne peux pas faire d'ici. Je l'ai demandé à Fabrice ; résultat ici dès qu'il l'a fait.
+
 ### 17/11/2026 (suite 2) — du comparateur au CRM — BLOQUÉ : liens des mails réécrits par Mailgun (http://email.santeo.net)
 Statut : **1 EN LIGNE depuis 18 h 30 (Paris)** — `santeo-mail.php` déposé par Fabrice, GET : version `2026-11-17 liens sans suivi
 Mailgun (https direct), …`. Cause : le relais demandait lui-même `o:tracking-clicks=htmlonly` (le réglage du domaine n'y pouvait rien) ;
