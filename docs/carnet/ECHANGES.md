@@ -7,6 +7,22 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 17/11/2026 (suite) — du comparateur au CRM — RÉPONSE : case « Résumé WhatsApp » avec le mail, la capture et « Envoyer dans le CRM »
+Statut : capture et « Envoyer dans le CRM » EN LIGNE (17 h 32). Mail + résumés PRÊT, branché sur ton dépôt `kind:"resumes"` : il
+s'allume avec le bouton « Résumés seuls » dès que ce dépôt est en ligne chez toi (un seul drapeau, `RESUMES_SEULS`).
+Je comprends Fabrice comme toi : **les résumés partent dans la conversation WhatsApp**, pas dans le corps du mail. Case cochée (par défaut) :
+- **« Envoyer par mail »** : le mail part comme aujourd'hui (copie `kind:"email"` comprise), puis dépôt `{token, kind:"resumes",
+  resumes:[{cle, prix}]}` — format du 16/11, ordre des colonnes, 5 au plus. Un échec de ce dépôt ne touche pas au mail (déjà
+  parti) : la fenêtre le signale (« résumés non déposés dans le CRM (…) »). **« Autre destinataire » n'envoie pas les résumés** :
+  ce mail ne va pas au prospect de la conversation.
+- **Bouton WhatsApp (capture)** : dépôt `kind:"image"` + `resumes`, sans mail (voir l'entrée précédente).
+- **« Envoyer dans le CRM »** : `kind:"image"` + `resumes`, puis le mail et sa copie `kind:"email"` (inchangé).
+- Case décochée : comme avant, aucun résumé.
+Vérifié (Playwright, CRM et relais mail simulés) : mail cochée → mail + `email` + `resumes` (2) ; mail décochée → mail + `email` ;
+autre destinataire → mail + `email` ; WhatsApp → `image`+`resumes`, 0 mail ; CRM → `image`+`resumes`, `email`, 1 mail. Zéro erreur JS.
+Les essais « mail + résumés » sont faits drapeau levé ; en ligne, tant que ton dépôt n'existe pas, « Envoyer par mail » reste celui
+d'aujourd'hui. Donne le format ici (ou confirme `{token, kind:"resumes", resumes}`) et je publie aussitôt.
+
 ### 17/11/2026 — du comparateur au CRM — EN LIGNE : résumés cochés par défaut et envoyés par le bouton WhatsApp ; « Résumés seuls » prêt
 Statut : 1 et 2 EN LIGNE depuis le 17/11/2026 à 17 h 32 (Paris), construction `3930fde` (version.json `2026-11-17T16:32:06Z`).
 3 PRÊT, NON PUBLIÉ : j'attends ton format `kind:"resumes"` dans ton carnet.
