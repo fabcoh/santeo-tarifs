@@ -1028,7 +1028,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **17/11/2026 (Fabrice)** : `interet.php` porte en tête de chaque page le **bandeau de www.santeo.net** (`docs/bandeau_santeo.jpg`
   et `_mobile.jpg`, capture ×2 de `header.top`) ; **« Résumé de vos garanties »** en volet fermé ; **« Assurés »** (conjoint, enfants)
   en volet ouvert s'il y en a, sinon lien « + Ajouter un conjoint ou des enfants » ; **champs vides sur fond rouge pâle** (`.manq` :
-  nom, prénom, naissance, régime, téléphone, e-mail, adresse, CP, ville ; le rouge part à la saisie). `santeo-mail.php` : liens sans
+  nom, prénom, naissance, régime, téléphone, e-mail, adresse, CP, ville ; le rouge part à la saisie). Puis (même jour) : **titres de volet tous sur le modèle « icône + Corriger mes informations »** (`$titreVolet`, icônes SVG au trait),
+  « Documents : » sur une ligne, **bloc `.offre`** encadré = formule + tarif, résumé des garanties, documents, date d'adhésion + VALIDER. `santeo-mail.php` : liens sans
   suivi Mailgun (`o:tracking-clicks=no`, ils passaient en http://email.santeo.net). **Sources des relais (sans clé) dans
   `santeo-bureau/sources-relais/`** — le dossier de travail peut être vidé : toujours y ranger la version déposée.
   **`interet.php`, deux étapes** : (1) « Nous avons bien pris en compte votre intérêt pour la formule… »,
