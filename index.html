@@ -657,7 +657,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-17T15:54:49Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-17T15:54:49Z</div>
+  <div id="buildstamp" data-build="2026-11-17T16:32:06Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-17T16:32:06Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -3759,10 +3759,14 @@ function renderTG(cols,title,sub,note,single){
   const svgWa='<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="fill:#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
   bar.innerHTML='<label style="display:inline-flex;align-items:center;gap:5px;font:600 12.5px \'Archivo\',sans-serif;margin-right:6px;cursor:pointer"><input type="checkbox" id="tgnoprices" style="accent-color:var(--accent)">Sans tarifs</label>'
     +'<button data-a="mail" title="Copier l\u2019image et ouvrir votre messagerie" aria-label="Messagerie" style="'+ico+';color:var(--ink)">'+svgMail+'</button>'
-    +'<button data-a="wa" title="Envoyer l\u2019image sur WhatsApp" aria-label="WhatsApp" style="'+ico+'">'+svgWa+'</button>'
-    // Résumé WhatsApp (Fabrice, 16/11/2026, relayé par CRM WhatsApp) : cochée, « Envoyer dans le CRM » joint au dépôt la clé et
-    // le prix de chaque offre ; le CRM écrit sous l'image un résumé des garanties et le lien « Cette offre m'intéresse ».
-    +(window.CRMLINK?'<label title="Avec « Envoyer dans le CRM » : un résumé des garanties et le lien de souscription sous l\u2019image, pour chaque offre" style="display:inline-flex;align-items:center;gap:5px;font:600 12.5px \'Archivo\',sans-serif;margin:0 4px;cursor:pointer"><input type="checkbox" id="tgresume" style="accent-color:#059669">Résumé WhatsApp</label>':'')
+    +'<button data-a="wa" title="'+(window.CRMLINK?'Déposer l\u2019image dans la conversation WhatsApp (avec les résumés si la case est cochée, sans mail)':'Envoyer l\u2019image sur WhatsApp')+'" aria-label="WhatsApp" style="'+ico+'">'+svgWa+'</button>'
+    // Résumé WhatsApp (Fabrice, 16/11/2026, relayé par CRM WhatsApp) : cochée, le dépôt joint la clé et le prix de chaque offre ;
+    // le CRM écrit sous l'image un résumé des garanties et le lien « Cette offre m'intéresse ». Cochée par défaut et valable
+    // aussi pour le bouton WhatsApp (Fabrice, 17/11/2026 : « par défaut tu aurais dû ajouter les résumés »).
+    +(window.CRMLINK?'<label title="Avec WhatsApp ou « Envoyer dans le CRM » : un résumé des garanties et le lien de souscription sous l\u2019image, pour chaque offre" style="display:inline-flex;align-items:center;gap:5px;font:600 12.5px \'Archivo\',sans-serif;margin:0 4px;cursor:pointer"><input type="checkbox" id="tgresume" checked style="accent-color:#059669">Résumé WhatsApp</label>':'')
+    // Résumés seuls (Fabrice, 17/11/2026 : « je n'ai pas d'option pour l'envoyer solo ») : dépôt kind "resumes", sans image.
+    // Prêt mais caché tant que le CRM n'accepte pas ce dépôt (RESUMES_SEULS).
+    +((window.CRMLINK&&RESUMES_SEULS)?'<button data-a="res" title="Déposer dans la conversation les résumés des offres, sans image" style="'+bst+';background:#fff;color:#059669;border-color:#059669">Résumés seuls</button>':'')
     // Télécharger la capture (Fabrice, 03/10/2026) : la même image que celle envoyée, rangée dans Téléchargements.
     +'<button data-a="dl" title="Télécharger l\u2019image du tableau" aria-label="Télécharger" style="'+ico+';color:var(--ink)"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5"/><path d="M4 17v3h16v-3"/></svg></button>'
     +'<button data-a="mel" style="'+bst+';background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">Envoyer par mail</button>'
@@ -3801,7 +3805,23 @@ function renderTG(cols,title,sub,note,single){
   }
   bar.addEventListener('click',async e=>{
     const btn=e.target.closest('button[data-a]'); if(!btn)return;
-    const a=btn.dataset.a; const old=btn.innerHTML;   // innerHTML : les icônes sont des SVG
+    let a=btn.dataset.a; const old=btn.innerHTML;   // innerHTML : les icônes sont des SVG
+    // Ouvert depuis le CRM, le bouton WhatsApp dépose l'image (et les résumés) dans la conversation, comme « Envoyer dans
+    // le CRM » mais sans le mail : c'est le CRM qui envoie sur WhatsApp (Fabrice, 17/11/2026).
+    const sansMail=a==="wa"&&!!window.CRMLINK&&!window.AUTO; if(sansMail) a="crm";
+    if(a==="res"){
+      btn.disabled=true; btn.textContent="⏳ Dépôt…"; stat("");
+      try{
+        await crmDepot({kind:"resumes",resumes:resumesCRM(cols)});
+        stat("✅ Résumés déposés — retour à la conversation…");
+        setTimeout(()=>{fermerTableaux();bandeauOk("✅ Résumés déposés dans la conversation");crmBack();},1200);
+      }catch(err){
+        stat(err&&(err.status===401||err.status===403)?"❌ Dépôt refusé : le lien du CRM a expiré (il vaut 2 h). Rouvrez le comparateur depuis la conversation WhatsApp."
+          :err&&err.status===undefined&&err instanceof TypeError?"❌ CRM injoignable pour l'instant — réessayez dans une minute."
+          :"❌ Dépôt impossible"+(err&&err.message?" ("+err.message+")":""));
+      }
+      btn.disabled=false; btn.innerHTML=old; return;
+    }
     // Copie de l'image : lancée dès le clic (geste utilisateur conservé, Safari/Samsung), l'image arrive ensuite
     let copyP=null,resolveImg=null,rejectImg=null;
     const wantCopy=(a==="wa"&&!canSh)||a==="mail";
@@ -3851,6 +3871,12 @@ function renderTG(cols,title,sub,note,single){
         const dep={kind:"image",filename:fname,mime:"image/png",data:b64,caption:"Tableau de garantie — "+nm};
         const cR=ov.querySelector('#tgresume'); if(cR&&cR.checked) dep.resumes=resumesCRM(cols);
         await crmDepot(dep);
+        const resMsg=dep.resumes?" avec les résumés":"";
+        if(sansMail){
+          stat("✅ Image déposée"+resMsg+" — retour à la conversation…");
+          setTimeout(()=>{fermerTableaux();bandeauOk("✅ Image déposée"+resMsg);crmBack();},1200);
+          btn.disabled=false; btn.innerHTML=old; return;
+        }
         // Le même clic envoie le courrier au prospect (Fabrice, 26/09/2026) et en dépose la copie
         // dans la conversation, pour la garder ou la renvoyer depuis le CRM. Sans adresse, l'image
         // part seule : jamais de blocage.
@@ -4316,6 +4342,8 @@ function sendText(){
 // Champ « resumes » du dépôt (contrat avec CRM WhatsApp, 16/11/2026) : une entrée par colonne du tableau, dans l'ordre, 5 au
 // plus. cle = celle du lien de recueil (lien.php) : « K|fi » pour une gamme, « APRIL:<code produit>|<niveau> » pour APRIL ;
 // prix = tarif mensuel affiché (nombre), null s'il manque — le CRM n'envoie alors pas ce résumé.
+// Bouton « Résumés seuls » (dépôt kind "resumes", sans image) : à passer à true quand le CRM accepte ce dépôt.
+const RESUMES_SEULS=false;
 function resumesCRM(cols){
   return cols.slice(0,5).map(c=>{
     let cle=c.key+"|"+c.fi;
