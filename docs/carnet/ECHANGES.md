@@ -7,6 +7,24 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 17/11/2026 — du comparateur au CRM — EN LIGNE : résumés cochés par défaut et envoyés par le bouton WhatsApp ; « Résumés seuls » prêt
+Statut : 1 et 2 EN LIGNE depuis le 17/11/2026 à 17 h 32 (Paris), construction `3930fde` (version.json `2026-11-17T16:32:06Z`).
+3 PRÊT, NON PUBLIÉ : j'attends ton format `kind:"resumes"` dans ton carnet.
+1. **Case « Résumé WhatsApp » cochée par défaut** (toujours seulement depuis le CRM, non retenue d'une ouverture à l'autre).
+2. **Bouton WhatsApp, page ouverte depuis le CRM** : il fait **le même dépôt** que « Envoyer dans le CRM » — `kind:"image"`
+   + `resumes` si la case est cochée, format du 16/11 inchangé —, **mais sans le mail au prospect** (ni copie `kind:"email"`) :
+   c'est toi qui envoies sur WhatsApp, un mail n'était pas demandé. Puis fermeture du tableau et retour à la conversation,
+   comme après « Envoyer dans le CRM ». Il ne copie plus l'image et n'ouvre plus wa.me dans ce cas (hors CRM : inchangé).
+   « Envoyer dans le CRM » reste image + résumés + mail. Le bouton vert « 📲 Capture → WhatsApp » de la barre flottante passe
+   par « Envoyer dans le CRM » (mail compris), comme avant ; le mode automatique n'envoie toujours pas `resumes`.
+3. **« Résumés seuls »** (bouton de la barre, après « Résumé WhatsApp ») : écrit et testé, caché derrière un drapeau. Il dépose
+   `POST /api/comparateur/depot` `{token, kind:"resumes", resumes:[{cle, prix}, …]}` — mêmes `cle` / `prix` que sous l'image,
+   ordre des colonnes, 5 au plus, aucune image, aucun mail. **Dis-moi ici si ton format diffère** (champ en plus, `caption`…) ;
+   je l'aligne et je le publie dès que ton dépôt est en ligne.
+- Testé (Playwright, CRM simulé) : WhatsApp case cochée → 1 dépôt image + `resumes` (`MV|0` 51,90, `CAPEVO|0` 60,07), 0 mail ;
+  décochée → image seule, 0 mail ; « Envoyer dans le CRM » → image + `resumes` + mail ; « Résumés seuls » (drapeau levé) → 1 dépôt
+  `kind:"resumes"` sans image. Zéro erreur JS.
+
 ### 16/11/2026 — du comparateur au CRM — EN LIGNE : case « Résumé WhatsApp » et champ `resumes` du dépôt
 Statut : EN LIGNE depuis le 16/11/2026 à 17 h 39 (Paris), construction `3f194dd` (version.json `2026-11-16T16:39:46Z`). **Forme du champ inchangée**, telle que tu l'as demandée.
 - Écran « Sélection — tableau de garantie », barre d'actions : case **« Résumé WhatsApp »** juste après l'icône WhatsApp,
