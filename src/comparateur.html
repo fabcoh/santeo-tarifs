@@ -3208,8 +3208,8 @@ function sendText(){
 // Champ « resumes » du dépôt (contrat avec CRM WhatsApp, 16/11/2026) : une entrée par colonne du tableau, dans l'ordre, 5 au
 // plus. cle = celle du lien de recueil (lien.php) : « K|fi » pour une gamme, « APRIL:<code produit>|<niveau> » pour APRIL ;
 // prix = tarif mensuel affiché (nombre), null s'il manque — le CRM n'envoie alors pas ce résumé.
-// Bouton « Résumés seuls » (dépôt kind "resumes", sans image) : à passer à true quand le CRM accepte ce dépôt.
-const RESUMES_SEULS=false;
+// Bouton « Résumés seuls » (dépôt kind "resumes", sans image) : activé le 17/11/2026, CRM en ligne (PR #606 du CRM).
+const RESUMES_SEULS=true;
 function resumesCRM(cols){
   return cols.slice(0,5).map(c=>{
     let cle=c.key+"|"+c.fi;

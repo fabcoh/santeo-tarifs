@@ -320,8 +320,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Test : scratchpad `w/t_resume.js`.
   **Depuis le CRM, le bouton WhatsApp fait le même dépôt (image + résumés) sans le mail** (Fabrice, 17/11/2026 : « par défaut tu
   aurais dû ajouter les résumés… quand j'ai envoyé le fichier par WhatsApp ») ; hors CRM, il copie l'image et ouvre wa.me comme avant.
-  **Bouton « Résumés seuls »** (`data-a="res"`, dépôt `kind:"resumes"` sans image) écrit mais caché : `RESUMES_SEULS=false`
-  tant que le CRM n'a pas publié ce dépôt (format dans son carnet). Test : scratchpad `w/t_wa.js` (`root/index_res.html` = drapeau levé).
+  **Bouton « Résumés seuls »** (`data-a="res"`, dépôt `{token, kind:"resumes", resumes}` sans image, `deposerResumes`) **en ligne le
+  17/11/2026 au soir** (`RESUMES_SEULS=true`, CRM en ligne avec sa PR #606) ; **« Envoyer par mail » (pas « autre destinataire ») dépose
+  aussi les résumés** quand la case est cochée. Réponse du CRM `{ok, doublon, envoyes, refus:[{cle,raison}]}` → « n résumés envoyés »,
+  refus avec leur raison, « déjà envoyés » ; une offre sans tarif reste de côté (sinon 400 sur tout le lot). Tests : scratchpad
+  `w/t_wa.js`, `w/t_res2.js`, `w/t_mel.js`.
 - **🧮 Cumul mutuelle + surcomplémentaire** (Fabrice, 19/10/2026 : « une calculette… MCCI plus Talis… le total sur chaque poste »,
   « une petite cartouche, comme une capture d'écran… pour envoyer directement sur WhatsApp ») : cocher une mutuelle **et TALIS** →
   bouton **🧮 Cumul** de la barre flottante (`#sbcu`, caché sinon) → `showCumul()`, une vignette par mutuelle cochée (× chaque TALIS
