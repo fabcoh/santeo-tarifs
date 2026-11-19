@@ -16,7 +16,7 @@
   --best:#FBF3DC; --best-line:#D9C489;
   --ok:#1A7A5C; --ok-bg:#E4F1EB; --warn:#A9651B; --warn-bg:#F6EBDA;
   --mcci:#C33B54; --avenir:#2F6B3C; --rema:#6B3FA0;
-  --respc:#157A46; --nrc:#8B2332;
+  --respc:#157A46; --nrc:#8B2332; --alerte-bg:#FDECEC;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -25,7 +25,7 @@
     --best:#33301F; --best-line:#8A7A45;
     --ok:#5CC79C; --ok-bg:#1E332B; --warn:#E0A55E; --warn-bg:#39301F;
     --mcci:#E06A80; --avenir:#7BC488; --rema:#B393E6;
-    --respc:#5CC79C; --nrc:#E08A96;
+    --respc:#5CC79C; --nrc:#E08A96; --alerte-bg:#3A1F24;
   }
 }
 :root[data-theme="dark"]{
@@ -34,7 +34,7 @@
   --best:#33301F; --best-line:#8A7A45;
   --ok:#5CC79C; --ok-bg:#1E332B; --warn:#E0A55E; --warn-bg:#39301F;
   --mcci:#E06A80; --avenir:#7BC488; --rema:#B393E6;
-  --respc:#5CC79C; --nrc:#E08A96;
+  --respc:#5CC79C; --nrc:#E08A96; --alerte-bg:#3A1F24;
 }
 *{box-sizing:border-box}
 body{background:var(--ground);color:var(--ink);font:14.5px/1.5 "IBM Plex Sans",system-ui,sans-serif;margin:0;padding:0 14px 48px}
@@ -132,6 +132,7 @@ tr.open .caret{transform:rotate(90deg)}
 .chip.resp{background:var(--ok-bg);color:var(--ok)}
 .chip.nr{background:var(--warn-bg);color:var(--warn)}
 .chip.info{background:var(--soft);color:var(--muted);border-color:var(--line)}
+.chip.alerte{background:var(--alerte-bg);color:var(--nrc);border-color:var(--nrc);font-weight:700}
 tr.best td{background:var(--best)}
 tr.best td:first-child{box-shadow:inset 3px 0 0 var(--best-line)}
 tr.best.offer:hover td{background:var(--best)}
@@ -657,7 +658,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-19T11:44:51Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-19T11:44:51Z</div>
+  <div id="buildstamp" data-build="2026-11-19T11:53:02Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-19T11:53:02Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -768,7 +769,9 @@ function calculer(e){
   mcci("MCCINOVA","",D.MCCINOVA,[["nr","Non responsable"]].concat(isTNS?[["info","Pas de Madelin"]]:[]),18,90,D.MCCINOVA["18"],"tarif 18 ans");
   if(zone){
     mcci("FLEXIA","",D.FLEXIA[zone],[["resp","Responsable"]].concat(chMadelin),18,84,D.FLEXIA[zone]["E"]);
-    mcci("SOLENCIA","",D.SOLENCIA[zone],[["resp","Responsable"]],62,99,D.SOLENCIA[zone]["E"]);
+    // SOLENCIA : réservée aux retraités (notice 2.1 « Bénéficier d'une pension de retraite ») ; l'âge seul ne le dit pas,
+    // d'où l'avertissement en rouge sur chaque ligne (Fabrice, 19/11/2026).
+    mcci("SOLENCIA","",D.SOLENCIA[zone],[["alerte","⚠ Retraités uniquement"],["resp","Responsable"]],62,99,D.SOLENCIA[zone]["E"]);
   } else if(!isRL) warns.push("Code postal manquant ou hors zonage : FLEXIA et SOLENCIA non calculées.");
   // CAP EVOLUTION — bloc par régime
   if(on("CAPEVO")&&age>=16&&!cnjHors("CAP EVOLUTION",16,100)){
