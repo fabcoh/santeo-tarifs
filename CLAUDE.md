@@ -213,6 +213,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   aux images ; `EX.MV.dentV` = dents visibles (100 / 200 / 250 / 400 / 500 %). Affiché partout « 300 % · dents visibles 400 % »
   (`Tableau.affiche`, `Tableau.dentVisibles` : tableau des résultats, tableau de garantie, courrier, texte WhatsApp, cumul,
   comparatif). Avant, 400 % s'affichait et se calculait pour toutes les dents en GCI 300.
+- **MCCI et régimes** (Fabrice, 19/11/2026, après relecture des notices) : **MCCINOVA ouverte à tous les régimes mais jamais Madelin**
+  (contrat non responsable, notice 2.1) → pastille « Pas de Madelin » en TNS (avant : « Madelin à confirmer ») ; **FLEXIA** conçue pour
+  « Actifs, Auto-Entrepreneurs et TNS » → proposée en TNS, « Madelin à confirmer » ; **SOLENCIA** réservée aux retraités (pension), grille
+  62–99 ans. Fabrice avait d'abord demandé FLEXIA aux seuls salariés et SOLENCIA aux TNS : contraire aux documents, non appliqué.
 - **MCCINOVA** : mineurs au tarif 18 ans ; cadre « Conditions MCCINOVA » (âge atteint dans l'année, enfants
   jusqu'à 28 ans) affiché seulement si la gamme est dans le tableau.
 - **RÉVOLUO / RF50 / RF100** : grille × zone (75 = zone 1) × régime (TNS ×0,90 ; Alsace-Moselle ×0,65 sans zone),

@@ -96,7 +96,9 @@ function calculer(e){
       push(key,i,suffix,chips.slice(),pA,hasCnj?(cW?undefined:pC):null,pK,kidNote,(hasCnj&&cW)||(kids>0&&pK==null));
     }
   }
-  mcci("MCCINOVA","",D.MCCINOVA,[["nr","Non responsable"]].concat(chMadelin),18,90,D.MCCINOVA["18"],"tarif 18 ans");
+  // MCCINOVA, contrat non responsable : ouverte à tous les régimes, mais jamais déductible en Madelin (notice MCCINOVA 2.1 ;
+  // Fabrice, 19/11/2026). Un TNS y lisait « Madelin à confirmer ».
+  mcci("MCCINOVA","",D.MCCINOVA,[["nr","Non responsable"]].concat(isTNS?[["info","Pas de Madelin"]]:[]),18,90,D.MCCINOVA["18"],"tarif 18 ans");
   if(zone){
     mcci("FLEXIA","",D.FLEXIA[zone],[["resp","Responsable"]].concat(chMadelin),18,84,D.FLEXIA[zone]["E"]);
     mcci("SOLENCIA","",D.SOLENCIA[zone],[["resp","Responsable"]],62,99,D.SOLENCIA[zone]["E"]);
