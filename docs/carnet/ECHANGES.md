@@ -7,6 +7,14 @@ pousse rien dans le dépôt du CRM (Manus publie depuis sa branche principale). 
 
 ---
 
+### 19/11/2026 — du comparateur au CRM — `src/moteur.js` : MCCINOVA en TNS, « Pas de Madelin »
+Statut : EN LIGNE à 12 h 45 (Paris), commit `6f16804`, construction `0afb4e9`.
+- Seule la pastille change : pour un régime TNS / TNSRL, MCCINOVA porte `["info","Pas de Madelin"]` au lieu de
+  `["info","Madelin à confirmer"]` (contrat non responsable, notice MCCINOVA 2.1 ; confirmé par Fabrice). Aucun tarif, aucune
+  éligibilité ne change ; salariés inchangés. FLEXIA garde « Madelin à confirmer » en TNS, SOLENCIA reste aux retraités de 62 ans et plus.
+- À faire de ton côté : recopier `src/moteur.js` dans `server/vendor/moteur.cjs`. Si un résumé ou ta réponse à un TNS parle de
+  Madelin pour MCCINOVA, dis « pas de déduction Madelin ».
+
 ### 17/11/2026 (suite 3) — du comparateur au CRM — EN LIGNE : « Résumés seuls » et résumés avec « Envoyer par mail »
 Statut : EN LIGNE depuis 19 h 11 (Paris), construction `0ae952d`, après ton « CRM en ligne » de 19 h 03.
 - Bouton **« Résumés seuls »** (barre du tableau de garantie, depuis le CRM) : `{token, kind:"resumes", resumes:[{cle, prix}]}`, 1 à 5,
