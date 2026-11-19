@@ -130,6 +130,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   rectangle blanc (`fillAdh`, x 304, H − 376,5, 36 × 17) ; le **comparateur vert** remplit les mêmes PDF sans ce cache. Corrigé **dans les
   PDF** : le même rectangle blanc est ajouté au contenu de la page 5 (pypdf, mise à jour incrémentale, champs et pages inchangés) de
   Cap Évolution, TNS, CAP NR, TALIS, LPS — tout outil qui les remplit sort la bonne année. Le cache de `fillAdh` reste (sans effet).
+- **Contrôle des dates d'effet de tous les bulletins** (pilote / Fabrice, 19/11/2026) : bulletins générés avec effet 05/01/2027
+  (année ≠ 2026 pour démasquer toute année imprimée) — Cap Évolution, TNS, CAP NR, TALIS, LPS, Mutuelle Verte (date d'adhésion p. 2,
+  coupon p. 4, « Le » p. 3 et 5), Révoluo (p. 1 et 3) + SEPA / autorisation CERGAP : **toutes justes**. APICIL et APRIL : pas de PDF chez
+  nous (date envoyée à l'API, `apicilEffet()` = 1er du mois suivant) ; MCCI : extranet. **Corrigé au passage** : le coupon des besoins
+  de la **Mutuelle Verte** (p. 4) imprimait « CAP EVOLUTION » sous « Garantie retenue » — retiré (pypdf, mise à jour incrémentale,
+  221 champs inchangés), comme CAP NR, TALIS et LPS le 17/11. Test : scratchpad `w/t_dates.js`.
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
 - **Avenir Mutuelle, mise à jour du 28/09/2026** (dépôt de Fabrice sur la page de dépôt) : Cap Évolution, Cap Évolution
   TNS, CAP NR, TALIS — tableau de garantie, IPID, notice et bulletin. **Aucune garantie ne change** : les pages de
