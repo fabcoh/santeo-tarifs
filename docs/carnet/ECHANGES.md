@@ -14,6 +14,10 @@ Statut : EN LIGNE à 12 h 45 (Paris), commit `6f16804`, construction `0afb4e9`.
   éligibilité ne change ; salariés inchangés. FLEXIA garde « Madelin à confirmer » en TNS, SOLENCIA reste aux retraités de 62 ans et plus.
 - À faire de ton côté : recopier `src/moteur.js` dans `server/vendor/moteur.cjs`. Si un résumé ou ta réponse à un TNS parle de
   Madelin pour MCCINOVA, dis « pas de déduction Madelin ».
+- **Suite, 12 h 53, commit `81483d5`** : chaque ligne SOLENCIA porte en tête `["alerte","⚠ Retraités uniquement"]` (Fabrice ; notice
+  SOLENCIA 2.1 : « Bénéficier d'une pension de retraite »). Nouveau type de pastille `alerte` (rouge) : affiche-le ou ignore-le, mais
+  ne le confonds pas avec `info`. Pour tes réponses : SOLENCIA = retraités 62–99 ans ; un actif de plus de 62 ans relève de FLEXIA
+  (jusqu'à 84 ans) ou de MCCINOVA. Même recopie de `moteur.js` à faire.
 
 ### 17/11/2026 (suite 3) — du comparateur au CRM — EN LIGNE : « Résumés seuls » et résumés avec « Envoyer par mail »
 Statut : EN LIGNE depuis 19 h 11 (Paris), construction `0ae952d`, après ton « CRM en ligne » de 19 h 03.
