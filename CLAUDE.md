@@ -125,6 +125,11 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 - **CAP NR : bulletin v2 de Fabrice** (17/11/2026, 16 h 51, bureau `fichiers/bulletin_capnr_2026_corrige_fabrice_17-11_v2.pdf`, 73 p.,
   130 champs) : liste `OPTION CHOISIE LISTE` = CAP ESSENTIEL, CAP 100, 130, 200, 300, 400. `fillAdh` choisit « CAP ESSENTIEL » ou
   « CAP n » ; **CAP 160 n'est pas dans sa liste** : le comparateur l'y ajoute au moment de remplir (question posée à Fabrice).
+- **« 2025 » imprimé sous l'année d'effet, page 5 (devoir de conseil) des cinq bulletins Avenir** (pilote, 19/11/2026 : dossier GestCom
+  4019, Cap Évolution signé le 19/11, page 5 « 20/11/2025 » alors que la page 2 dit 2026). Notre page le cachait depuis le 22/10 par un
+  rectangle blanc (`fillAdh`, x 304, H − 376,5, 36 × 17) ; le **comparateur vert** remplit les mêmes PDF sans ce cache. Corrigé **dans les
+  PDF** : le même rectangle blanc est ajouté au contenu de la page 5 (pypdf, mise à jour incrémentale, champs et pages inchangés) de
+  Cap Évolution, TNS, CAP NR, TALIS, LPS — tout outil qui les remplit sort la bonne année. Le cache de `fillAdh` reste (sans effet).
 - `adhesion.pdf.pdf` : dépôt par erreur, à supprimer.
 - **Avenir Mutuelle, mise à jour du 28/09/2026** (dépôt de Fabrice sur la page de dépôt) : Cap Évolution, Cap Évolution
   TNS, CAP NR, TALIS — tableau de garantie, IPID, notice et bulletin. **Aucune garantie ne change** : les pages de
