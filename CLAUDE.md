@@ -217,6 +217,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (contrat non responsable, notice 2.1) → pastille « Pas de Madelin » en TNS (avant : « Madelin à confirmer ») ; **FLEXIA** conçue pour
   « Actifs, Auto-Entrepreneurs et TNS » → proposée en TNS, « Madelin à confirmer » ; **SOLENCIA** réservée aux retraités (pension), grille
   62–99 ans. Fabrice avait d'abord demandé FLEXIA aux seuls salariés et SOLENCIA aux TNS : contraire aux documents, non appliqué.
+  Tarifs vérifiés le 19/11/2026 contre l'extranet MCCI (salarié et TNS, 60 ans, Paris) : identiques au centime. **Pastille rouge
+  « ⚠ Retraités uniquement » sur chaque ligne SOLENCIA** (Fabrice, 19/11/2026 : « une information en rouge… dès que la personne a
+  dépassé 62 ans ») : chip `alerte` posée par `moteur.js`, classe `.chip.alerte` (variable `--alerte-bg`, déclarée dans les trois thèmes).
 - **MCCINOVA** : mineurs au tarif 18 ans ; cadre « Conditions MCCINOVA » (âge atteint dans l'année, enfants
   jusqu'à 28 ans) affiché seulement si la gamme est dans le tableau.
 - **RÉVOLUO / RF50 / RF100** : grille × zone (75 = zone 1) × régime (TNS ×0,90 ; Alsace-Moselle ×0,65 sans zone),

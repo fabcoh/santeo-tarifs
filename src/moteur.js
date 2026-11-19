@@ -101,7 +101,9 @@ function calculer(e){
   mcci("MCCINOVA","",D.MCCINOVA,[["nr","Non responsable"]].concat(isTNS?[["info","Pas de Madelin"]]:[]),18,90,D.MCCINOVA["18"],"tarif 18 ans");
   if(zone){
     mcci("FLEXIA","",D.FLEXIA[zone],[["resp","Responsable"]].concat(chMadelin),18,84,D.FLEXIA[zone]["E"]);
-    mcci("SOLENCIA","",D.SOLENCIA[zone],[["resp","Responsable"]],62,99,D.SOLENCIA[zone]["E"]);
+    // SOLENCIA : réservée aux retraités (notice 2.1 « Bénéficier d'une pension de retraite ») ; l'âge seul ne le dit pas,
+    // d'où l'avertissement en rouge sur chaque ligne (Fabrice, 19/11/2026).
+    mcci("SOLENCIA","",D.SOLENCIA[zone],[["alerte","⚠ Retraités uniquement"],["resp","Responsable"]],62,99,D.SOLENCIA[zone]["E"]);
   } else if(!isRL) warns.push("Code postal manquant ou hors zonage : FLEXIA et SOLENCIA non calculées.");
   // CAP EVOLUTION — bloc par régime
   if(on("CAPEVO")&&age>=16&&!cnjHors("CAP EVOLUTION",16,100)){
