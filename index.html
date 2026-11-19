@@ -657,7 +657,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-17T18:10:46Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-17T18:10:46Z</div>
+  <div id="buildstamp" data-build="2026-11-19T11:44:51Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-19T11:44:51Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -763,7 +763,9 @@ function calculer(e){
       push(key,i,suffix,chips.slice(),pA,hasCnj?(cW?undefined:pC):null,pK,kidNote,(hasCnj&&cW)||(kids>0&&pK==null));
     }
   }
-  mcci("MCCINOVA","",D.MCCINOVA,[["nr","Non responsable"]].concat(chMadelin),18,90,D.MCCINOVA["18"],"tarif 18 ans");
+  // MCCINOVA, contrat non responsable : ouverte à tous les régimes, mais jamais déductible en Madelin (notice MCCINOVA 2.1 ;
+  // Fabrice, 19/11/2026). Un TNS y lisait « Madelin à confirmer ».
+  mcci("MCCINOVA","",D.MCCINOVA,[["nr","Non responsable"]].concat(isTNS?[["info","Pas de Madelin"]]:[]),18,90,D.MCCINOVA["18"],"tarif 18 ans");
   if(zone){
     mcci("FLEXIA","",D.FLEXIA[zone],[["resp","Responsable"]].concat(chMadelin),18,84,D.FLEXIA[zone]["E"]);
     mcci("SOLENCIA","",D.SOLENCIA[zone],[["resp","Responsable"]],62,99,D.SOLENCIA[zone]["E"]);
