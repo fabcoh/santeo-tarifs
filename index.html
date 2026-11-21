@@ -342,6 +342,11 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 .volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 .volet .vmx{margin-left:4px;padding:2px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:700 11.5px 'IBM Plex Sans',sans-serif;cursor:pointer;white-space:nowrap}
 .volet .vmx:hover{border-color:var(--nrc);color:var(--nrc)}
+#impnote{display:flex;align-items:flex-start;gap:8px;margin-top:4px;padding:5px 10px;border-radius:8px;background:var(--alerte-bg);color:var(--ink);font:600 12.5px 'IBM Plex Sans',sans-serif;line-height:1.4}
+#impnote span{flex:1}
+#impnote button{border:0;background:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0 2px}
+@keyframes fflash{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px var(--accent)}}
+#fbtn.flash{animation:fflash .7s ease 2}
 #tgbox .mdlret{display:flex;align-items:center;gap:8px;margin:2px 0 8px;font-size:12.5px;color:var(--muted)}
 .volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
 .volet.open .chev{transform:rotate(180deg)}
@@ -661,7 +666,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-21T09:41:45Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-21T09:41:45Z</div>
+  <div id="buildstamp" data-build="2026-11-21T09:53:28Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-21T09:53:28Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -5718,7 +5723,9 @@ function applyImport(raw){
   if(nom)nomTxt=decodeURIComponent(nom).replace(/\+/g," ");
   // Nouvelle fiche = nouvelle étude : le panneau de filtres repart de zéro, sans quoi
   // les seuils du prospect précédent écarteraient des offres à l'insu du commercial.
-  if(imported.length||nomTxt){ filtresRAZ(); try{ filtresApercu(); }catch(e){} }
+  // Le panneau ⚖ ne s'ouvre plus à l'arrivée (Fabrice, 21/11/2026 : « trop de popup qui s'ouvre… alléger ») :
+  // il est remis à zéro sans bruit ; le bouton ⚖ clignote une fois pour le signaler.
+  if(imported.length||nomTxt){ filtresRAZ(); try{ const fb=document.getElementById("fbtn"); fb.classList.remove("flash"); void fb.offsetWidth; fb.classList.add("flash"); }catch(e){} }
   // Ligne récapitulative permanente en haut : toutes les infos importées
   if(imported.length||nomTxt){
     const PR=typeof PRO!=="undefined"?PRO:{};
@@ -5736,22 +5743,17 @@ function applyImport(raw){
     b2.textContent="Prospect : "+bits.join("  ·  ");
   }
   if(imported.length||nomTxt){
-    // Popup récapitulative : les infos importées doivent être impossibles à rater (jamais en double)
+    // Plus de fenêtre « Données importées du CRM » (Fabrice, 21/11/2026) : le bandeau « Prospect : … » dit déjà tout.
+    // Seule une note utile (fiche incomplète, code postal à préciser) s'affiche, en une ligne sous le bandeau, sans bloquer.
     const prev=document.getElementById("impov"); if(prev)prev.remove();
-    const ov=document.createElement("div");
-    ov.id="impov";
-    ov.style.cssText="position:fixed;inset:0;background:rgba(10,20,35,.55);z-index:999;display:flex;align-items:center;justify-content:center;padding:16px";
-    ov.innerHTML='<div style="background:var(--card,#fff);color:var(--ink,#12233d);border-radius:14px;max-width:400px;width:100%;padding:20px 22px;box-shadow:0 18px 50px rgba(0,0,0,.35);font-family:\'Archivo\',sans-serif">'
-      +'<div style="font:800 17px \'Archivo\',sans-serif;margin-bottom:4px">📥 Données importées du CRM</div>'
-      +(nomTxt?'<div style="font:700 16px \'Archivo\',sans-serif;color:var(--accent,#1d4ed8);margin-bottom:8px">'+nomTxt.replace(/</g,"&lt;")+'</div>':"")
-      +imported.map(([l,v])=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:14px"><span style="color:var(--muted,#5b6b82)">'+l+'</span><span style="font-weight:800;white-space:nowrap">'+String(v).replace(/</g,"&lt;")+'</span></div>').join("")
-      // Note en clair posée par l'appelant (ex. fiche reprise en partie) : une seule fenêtre, pas d'écran technique
-      +(window.IMPNOTE?'<div id="impnote" style="margin-top:10px;padding:8px 10px;border-radius:8px;background:var(--ground,#f6f7f4);color:var(--muted,#5b6b82);font-size:12.5px;line-height:1.45">'+String(window.IMPNOTE).replace(/</g,"&lt;")+'</div>':"")
-      +'<button id="impok" style="margin-top:14px;width:100%;padding:10px;border:0;border-radius:9px;background:var(--accent,#1d4ed8);color:#fff;font:800 15px \'Archivo\',sans-serif;cursor:pointer">OK — voir les tarifs</button></div>';
-    document.body.appendChild(ov);
+    let n=document.getElementById("impnote");
+    if(window.IMPNOTE){
+      if(!n){ n=document.createElement("div"); n.id="impnote"; document.getElementById("prospect").after(n); }
+      n.innerHTML='<span></span><button type="button" title="Fermer">✕</button>';
+      n.querySelector("span").textContent=String(window.IMPNOTE);
+      n.querySelector("button").addEventListener("click",()=>n.remove());
+    } else if(n) n.remove();
     window.IMPNOTE=""; // la note ne sert qu'une fois
-    ov.querySelector("#impok").addEventListener("click",()=>ov.remove());
-    ov.addEventListener("click",e=>{if(e.target===ov)ov.remove();});
     calc();
     return true;
   }
@@ -5907,7 +5909,7 @@ function applyFicheJSON(d,nouvelle){
   applyImport(P.toString());
   try{calc();}catch(e){}
   if(cpVille){
-    const ville=d.ville, note=txt=>{const n=document.getElementById("impnote"); if(n)n.textContent=txt; else bandeauOk(txt);};
+    const ville=d.ville, note=txt=>{const n=document.getElementById("impnote"), sp=n&&n.querySelector("span"); if(sp)sp.textContent=txt; else if(n)n.textContent=txt; else bandeauOk(txt);};
     cpParVille(ville).then(r=>{
       if(PRO.cp5||PRO.ville!==ville)return; // entre-temps, autre fiche ou code postal saisi
       const champ=document.getElementById("cp");

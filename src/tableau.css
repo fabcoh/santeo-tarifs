@@ -333,6 +333,11 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 .volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 .volet .vmx{margin-left:4px;padding:2px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:700 11.5px 'IBM Plex Sans',sans-serif;cursor:pointer;white-space:nowrap}
 .volet .vmx:hover{border-color:var(--nrc);color:var(--nrc)}
+#impnote{display:flex;align-items:flex-start;gap:8px;margin-top:4px;padding:5px 10px;border-radius:8px;background:var(--alerte-bg);color:var(--ink);font:600 12.5px 'IBM Plex Sans',sans-serif;line-height:1.4}
+#impnote span{flex:1}
+#impnote button{border:0;background:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0 2px}
+@keyframes fflash{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px var(--accent)}}
+#fbtn.flash{animation:fflash .7s ease 2}
 #tgbox .mdlret{display:flex;align-items:center;gap:8px;margin:2px 0 8px;font-size:12.5px;color:var(--muted)}
 .volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
 .volet.open .chev{transform:rotate(180deg)}
