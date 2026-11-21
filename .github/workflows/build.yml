@@ -45,6 +45,10 @@ jobs:
       - name: Regles du cumul
         run: node tools/verif_cumul.js
 
+      # Choix des offres du mail vitrine du CRM Santéo (src/vitrine.js) : un écart arrête la publication.
+      - name: Regles du mail vitrine
+        run: node tools/verif_vitrine.js
+
       - name: Images des selections sans tarif
         run: |
           if node tools/images_tg.js --verifier; then exit 0; fi

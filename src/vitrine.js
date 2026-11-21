@@ -1,0 +1,192 @@
+/* Mail « vitrine » du CRM Santéo : les offres à montrer à une fiche (3, 6 ou 9).
+ *
+ * Demande de CRM Santeo, validée par Fabrice le 21/11/2026 (« ok lance la construction du mail ») :
+ *  - nombre d'offres selon l'âge : « les jeunes de 18 à 29 = 3 offres, de 30 à 50 = 6 offres, de 51 à plus = 9 offres » ;
+ *  - niveau : « les deux, l'âge et les étoiles du site » — un niveau d'office selon l'âge, relevé poste par
+ *    poste par les étoiles que le client a choisies sur www.santeo.net ;
+ *  - « un mixte de nos meilleures solutions » : contrats responsables seulement, ni TALIS (surcomplémentaire)
+ *    ni LPS Hospi (hospitalisation seule) ; une compagnie par offre avant d'en répéter une ; pour chaque
+ *    compagnie, la formule la moins chère qui atteint le niveau ; Cap Évolution (Avenir Mutuelle) en tête, avec
+ *    le « 1 mois offert » ; 9 offres = les 6 + un niveau au-dessus pour les 3 compagnies les moins chères ;
+ *  - une offre sans prix réel (relais APRIL ou APICIL absent ou en erreur) n'est jamais choisie.
+ *
+ * Étoiles 0 à 5 par poste : la grille du site (fabcoh/santeo-site, maquette/template.html, « grille validée par
+ * Fabrice, 08/11/2026 ») — hospitalisation et honoraires OPTAM, prothèses dentaires en % : 1 = jusqu'à 125 %,
+ * 2 = jusqu'à 175 %, 3 = jusqu'à 275 %, 4 = jusqu'à 350 %, 5 au-delà ; optique (verres simples et monture) en €,
+ * mêmes seuils, un forfait en % (« 100 % BR », 100 % Santé) vaut 1 ; « — », vide ou « n.c. » = 0.
+ * Recopiée ici telle quelle : si elle change, la changer aux deux endroits (ou faire lire ce module par le site).
+ *
+ * Fonction pure, sans DOM ni réseau : navigateur (window.Vitrine) et Node (require("./vitrine.js")).
+ *
+ *   const {rows} = Moteur.calculer({...});           // APRIL / APICIL : réponses des relais remises au moteur
+ *   const v = Vitrine.choisir(rows, {age: 40, etoiles: {hosp: 3, hono: 2, dent: 4, opt: 2}, G, reg: "SAL"});
+ *   v.offres → [{key, fi, cle, assureur, gamme, formule, nom, prix, etoiles:{hosp,hono,dent,opt},
+ *                valeurs:{hospO,honoO,dent,opt}, palier, enDessous, reco, offert, documents:[{libelle,url}]}]
+ *   palier : « base » (atteint la cible), « plus » (un niveau au-dessus, mail à 9), « approche » (ne l'atteint pas :
+ *   étoiles du client trop hautes pour assez de formules ; enDessous = les postes en dessous). v.notes dit pourquoi.
+ */
+(function(exporter){
+"use strict";
+
+// --- Étoiles (grille du site, 08/11/2026) ------------------------------------------------------------
+const SEUILS_ETOILES=[125,175,275,350];      // ≤ 125 → 1 … > 350 → 5
+const POSTES=[                                // poste du site → champ des garanties
+  {k:"hosp", champ:"hospO", nom:"Hospitalisation"},
+  {k:"hono", champ:"honoO", nom:"Honoraires"},
+  {k:"dent", champ:"dent",  nom:"Dentaire"},
+  {k:"opt",  champ:"opt",   nom:"Optique"}
+];
+const vide=s=>s==null||s===""||s==="—"||s==="n.c.";
+function premierNombre(s){const m=String(s).replace(/\s/g,"").replace(",",".").match(/\d+(?:\.\d+)?/);return m?+m[0]:null}
+function palier(v){let n=1;for(const s of SEUILS_ETOILES) if(v>s) n++;return n}
+function etoile(champ,s){
+  if(vide(s)) return 0;
+  if(champ==="opt"&&/%/.test(String(s))) return 1;
+  const v=premierNombre(s); return v==null?0:palier(v);
+}
+function etoiles(r){const o={};for(const p of POSTES) o[p.k]=etoile(p.champ,r[p.champ]);return o}
+
+// --- Règles du mail ----------------------------------------------------------------------------------
+// Nombre d'offres selon l'âge de l'assuré principal (âge atteint dans l'année).
+function nombreOffres(age){return age<=29?3:age<=50?6:9}
+// Niveau d'office (mêmes étoiles sur les 4 postes), avant les étoiles du client.
+// Proposition du comparateur, à revoir avec Fabrice : 18–29 ans 1, 30 ans et plus 2 ; le palier « plus » du mail
+// à 9 offres vise un niveau au-dessus.
+function niveauAge(age){return age<=29?1:2}
+const EXCLUS={TALIS:1,LPSH:1};               // surcomplémentaire, hospitalisation seule
+const TETE="avenir";                          // Cap Évolution en tête, avec le mois offert
+const ASSUREURS={avenir:"Avenir Mutuelle", mcci:"MCCI", mverte:"La Mutuelle Verte", rema:"REMA (Révoluo)",
+                 apicil:"APICIL", april:"APRIL"};
+
+// Une ligne du moteur peut-elle entrer dans le mail ?
+function admise(r,o){
+  if(!r||r.incomplete) return false;
+  if(!(typeof r.total==="number"&&isFinite(r.total)&&r.total>0)) return false;   // jamais sans prix réel
+  if(EXCLUS[r.key]) return false;
+  if(r.resp!==true) return false;                                                 // responsables seulement
+  if(r.key==="SOLENCIA"&&!o.retraite) return false;                               // réservée aux retraités
+  if(POSTES.some(p=>r[p.champ]==="n.c.")) return false;                           // garanties non vérifiées
+  return true;
+}
+function atteint(st,cible){return POSTES.every(p=>st[p.k]>=cible[p.k])}
+function nomLisible(r){return (r.gamme+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")}
+function cle(r){return r.key==="APRIL"&&r.april?"APRIL:"+r.april+"|"+(r.fi%100):r.key+"|"+r.fi}
+
+// Documents : même règle que Tableau.documents (entrée « _TNS » pour un régime TNS), plus la section april.
+function documentsDe(G,r,reg){
+  if(!G) return [];
+  let d,idx=r.fi;
+  if(r.key==="APRIL"){d=((G.april||{}).documents||{})[r.april];idx=(r.fi%100)-1}
+  else{const D=G.documents||{};d=(/^TNS/.test(reg||"")&&D[r.key+"_TNS"]!==undefined)?D[r.key+"_TNS"]:D[r.key]}
+  if(!d) return [];
+  const out=[];
+  for(const k of Object.keys(d)){const v=d[k],url=Array.isArray(v)?v[idx]:v;if(url) out.push({libelle:k,url:url})}
+  return out;
+}
+
+function offre(r,palierNom,o){
+  const st=etoiles(r);
+  return {key:r.key, fi:r.fi, cle:cle(r), assureur:ASSUREURS[r.ins]||r.ins, ins:r.ins, gamme:r.gamme, formule:r.formule,
+    nom:nomLisible(r), prix:Math.round(r.total*100)/100, etoiles:st,
+    valeurs:{hospO:r.hospO, honoO:r.honoO, dent:r.dent, opt:r.opt},
+    palier:palierNom, enDessous:[], reco:false, offert:r.ins==="avenir", documents:documentsDe(o.G,r,o.reg)};
+}
+
+/* rows : la sortie de Moteur.calculer (tableau rows, ou l'objet {rows}).
+ * o.age (obligatoire), o.nb (sinon d'après l'âge), o.etoiles {hosp,hono,dent,opt} 0–5 ou null,
+ * o.G (garanties.json, pour les documents), o.reg (SAL | TNS | RL | TNSRL), o.retraite (SOLENCIA admise).
+ * Rend {offres, nb, cible, ciblePlus, notes} ; offres.length < nb si les lignes ne suffisent pas (notes le dit). */
+function choisir(rows,o){
+  o=o||{}; rows=Array.isArray(rows)?rows:((rows&&rows.rows)||[]);
+  const age=+o.age, nb=o.nb||nombreOffres(age), base=niveauAge(age), et=o.etoiles||{};
+  const cible={}, ciblePlus={};
+  for(const p of POSTES){
+    const c=Math.max(base,Math.min(5,Math.max(0,Math.round(+et[p.k]||0))));
+    cible[p.k]=c; ciblePlus[p.k]=Math.min(5,c+1);
+  }
+  const notes=[];
+  const cand=rows.filter(r=>admise(r,o)).map(r=>({r:r,st:etoiles(r)})).sort((a,b)=>a.r.total-b.r.total);
+  const pris=new Set(), offres=[];
+  const prendre=(c,pal)=>{pris.add(c.r.key+"|"+c.r.fi);offres.push(offre(c.r,pal,o))};
+  const libre=c=>!pris.has(c.r.key+"|"+c.r.fi);
+
+  const somme=st=>POSTES.reduce((s,p)=>s+st[p.k],0);
+  // Manque d'une offre face à la cible : étoiles qui manquent, tous postes confondus (0 = atteinte).
+  const manque=(st,cb)=>POSTES.reduce((s,p)=>s+Math.max(0,cb[p.k]-st[p.k]),0);
+
+  // 1. Une compagnie par offre, la moins chère qui atteint la cible ; Avenir Mutuelle d'abord.
+  const parCie=new Map();
+  for(const c of cand) if(atteint(c.st,cible)&&!parCie.has(c.r.ins)) parCie.set(c.r.ins,c);
+  const cies=[...parCie.values()].sort((a,b)=>(a.r.ins===TETE?-1:b.r.ins===TETE?1:a.r.total-b.r.total));
+  if(!parCie.has(TETE)) notes.push("Aucune formule Avenir Mutuelle n'atteint le niveau demandé : pas d'offre Cap Évolution en tête.");
+  const passe1=Math.min(nb,6);
+  for(const c of cies){if(offres.length>=passe1) break; prendre(c,"base")}
+  const tete=offres.length&&offres[0].ins===TETE?offres[0]:null;
+
+  // 2. Au-delà de 6 (mail à 9) : un niveau au-dessus, pour les compagnies retenues les moins chères —
+  //    la moins chère de la compagnie qui atteint la cible relevée d'une étoile et fait mieux que son offre de base.
+  if(offres.length<nb){
+    const retenues=cies.filter(c=>pris.has(c.r.key+"|"+c.r.fi)).sort((a,b)=>a.r.total-b.r.total);
+    for(const b of retenues){
+      if(offres.length>=nb) break;
+      const c=cand.find(c=>c.r.ins===b.r.ins&&libre(c)&&atteint(c.st,ciblePlus)&&somme(c.st)>somme(b.st));
+      if(c) prendre(c,"plus");
+    }
+  }
+  // 3. Encore de la place : à tour de rôle par compagnie (la moins chère d'abord), la formule suivante qui atteint la cible.
+  for(let tour=true;tour&&offres.length<nb;){
+    tour=false;
+    for(const ins of [...new Set(cand.map(c=>c.r.ins))]){
+      if(offres.length>=nb) break;
+      const c=cand.find(c=>c.r.ins===ins&&libre(c)&&atteint(c.st,cible));
+      if(c){prendre(c,"base");tour=true}
+    }
+  }
+  // 4. Toujours pas assez (étoiles du client très hautes) : les plus proches de la cible, marquées « approche »,
+  //    avec les postes en dessous ; une compagnie par offre d'abord. Jamais une offre sans prix.
+  if(offres.length<nb){
+    const proches=cand.filter(libre).sort((a,b)=>manque(a.st,cible)-manque(b.st,cible)||a.r.total-b.r.total);
+    const vus=new Set(offres.map(x=>x.ins));
+    const ordre=proches.filter(c=>!vus.has(c.r.ins)&&(vus.add(c.r.ins),true)).concat(proches);
+    const avant=offres.length;
+    for(const c of ordre){
+      if(offres.length>=nb) break; if(!libre(c)) continue;
+      prendre(c,"approche");
+      const o=offres[offres.length-1];
+      o.enDessous=POSTES.filter(p=>c.st[p.k]<cible[p.k]).map(p=>p.k);
+    }
+    if(offres.length>avant) notes.push((offres.length-avant)+" offre(s) n'atteignent pas toutes les étoiles demandées (palier « approche », postes dans enDessous).");
+  }
+  if(offres.length<nb) notes.push(offres.length+" offre(s) sur "+nb+" : pas assez de formules tarifées.");
+
+  // Ordre d'affichage : l'offre Avenir Mutuelle de la 1re passe en tête (conseillée), puis les offres qui atteignent
+  // la cible du moins cher au plus cher, puis celles qui l'approchent.
+  const rang=x=>x===tete?0:x.palier==="approche"?2:1;
+  offres.sort((a,b)=>rang(a)-rang(b)||a.prix-b.prix);
+  if(offres.length) offres[0].reco=true;
+  return {offres:offres, nb:nb, cible:cible, ciblePlus:ciblePlus, notes:notes};
+}
+
+/* Garanties APRIL pour Moteur.calculer (F.APRIL), tirées de garanties.json → april : {champ: {fi: valeur}}.
+ * Un niveau absent de la section reste « n.c. » dans le moteur, donc hors du mail. */
+function garantiesApril(G){
+  const A=(G&&G.april&&G.april.gammes)||{}, F={};
+  for(const code of Object.keys(A)){
+    const g=A[code];
+    (g.fi||[]).forEach((fi,i)=>{for(const c of ["hospO","hospN","honoO","honoN","dent","opt","aud","ch","md"])
+      if(g[c]&&g[c][i]!==undefined)(F[c]=F[c]||{})[fi]=g[c][i];});
+  }
+  return F;
+}
+
+exporter.choisir=choisir;
+exporter.etoiles=etoiles;
+exporter.etoile=etoile;
+exporter.nombreOffres=nombreOffres;
+exporter.niveauAge=niveauAge;
+exporter.garantiesApril=garantiesApril;
+exporter.SEUILS_ETOILES=SEUILS_ETOILES;
+exporter.POSTES=POSTES;
+
+})(typeof module!=="undefined"&&module.exports ? module.exports
+   : ((typeof self!=="undefined"?self:this).Vitrine={}));

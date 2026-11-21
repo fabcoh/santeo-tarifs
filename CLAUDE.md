@@ -545,6 +545,17 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   dépasse pas la demande. Hors données (`BS_HORS` : parodontie, endodontie, psychologue, pharmacie, cure) : signalé en rouge, à vérifier
   sur le document (👁). Un budget posé par une recherche est retiré par la suivante (`BS_BUDGET`), un budget saisi à la main reste. Une
   nouvelle fiche (`filtresRAZ`) vide le champ. Test : scratchpad `w/t_besoins2.js`, `w/t_bsmob.js`.
+- **Mail « vitrine » du CRM Santéo — `src/vitrine.js`** (demande de CRM Santeo, validée par Fabrice le 21/11/2026 : « ok lance la
+  construction du mail ») : `Vitrine.choisir(rows, {age, nb?, etoiles?, G?, reg?, retraite?})` sur la sortie de `Moteur.calculer` →
+  `{offres, nb, cible, ciblePlus, notes}`. 3 / 6 / 9 offres (≤ 29 ans / ≤ 50 / au-delà) ; niveau d'office 1 étoile (≤ 29 ans) ou 2 sur
+  les 4 postes, relevé poste par poste par les étoiles du client (« les deux, l'âge et les étoiles du site ») ; responsables seulement,
+  ni TALIS ni LPS, SOLENCIA seulement si `retraite`, aucun poste « n.c. », **jamais sans prix réel** ; une compagnie par offre (Avenir
+  en tête, `reco`, `offert` = « 1 mois offert »), puis palier « plus » (un niveau au-dessus), puis à tour de rôle, puis « approche »
+  (`enDessous`) si les étoiles demandées sont trop hautes. **Étoiles = la grille du site** (fabcoh/santeo-site, `maquette/template.html`,
+  08/11/2026 : seuils 125 / 175 / 275 / 350, optique en €, un « % » = 1) recopiée dans `vitrine.js` : la changer aux deux endroits.
+  `Vitrine.garantiesApril(G)` fabrique `F.APRIL` depuis `garanties.json → april`. Module à part (pas `selections.js`) pour ne pas
+  changer l'empreinte des images `docs/tg/`. Essais : `node tools/verif_vitrine.js` (25 / 40 / 60 ans à 75011, avec et sans étoiles,
+  relais absents ; APRIL / APICIL à prix fictifs), lancé par l'Action avant de publier.
 - **Toutes les garanties relevées** (Fabrice, 21/11/2026 : « oui tu relèves l'ensemble … l'ensemble des remboursements des garanties …
   créer un fichier md ») : `tools/garanties_detail.py` reprend les tableaux « ## Tableau des garanties » des fiches `docs/connaissances/`
   (chiffres déjà vérifiés sur les PDF) → `docs/connaissances/GARANTIES_TOUTES.md` (toutes les lignes, gamme par gamme) et
