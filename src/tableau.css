@@ -331,6 +331,9 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 @media print{#fbtn,#fpan{display:none}}
 .volet{width:100%;display:flex;align-items:center;gap:8px;text-align:left;padding:7px 11px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink);font:800 12.5px 'Archivo',sans-serif;cursor:pointer;margin-bottom:4px}
 .volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
+.volet .vmx{margin-left:4px;padding:2px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:700 11.5px 'IBM Plex Sans',sans-serif;cursor:pointer;white-space:nowrap}
+.volet .vmx:hover{border-color:var(--nrc);color:var(--nrc)}
+#tgbox .mdlret{display:flex;align-items:center;gap:8px;margin:2px 0 8px;font-size:12.5px;color:var(--muted)}
 .volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
 .volet.open .chev{transform:rotate(180deg)}
 #tgbox .optgrp{margin-top:12px}
