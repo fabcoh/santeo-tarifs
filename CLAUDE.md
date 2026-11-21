@@ -516,6 +516,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   commentaire ») : une carte par modèle = nom + explication + Appliquer / ✎ / 🗑 ; le résumé (compagnies, formules, seuils,
   auteur, date) est replié sous « ▸ Détail » ; « ＋ Enregistrer la sélection actuelle » est replié (`#mdlsave_d`, ouvert par ✎ ou
   quand aucun modèle n'existe). Test : scratchpad `t_mdlvue.js`.
+  **« ✕ Retirer » le modèle** (Fabrice, 21/11/2026, relayé par Comparateur Santeo : « impossible de retirer la sélection… il faut pouvoir
+  désélectionner ») : au 1er modèle appliqué, `modeleAvantGarde()` garde la sélection d'avant (compagnies, APRIL, options, seuils,
+  formules cochées, « Afficher la sélection ») dans `MODELE_AVANT` (un 2ᵉ modèle à la suite ne l'écrase pas) ; `modeleRetire()` la
+  remet, sans état gardé → compagnies par défaut (`DEFAUT`), rien d'autre. Bouton « ✕ Retirer » dans le bouton 📁 (à côté du nom du
+  modèle, pas à droite : les boutons flottants Fiche CRM / ↗ le couvraient) et sur la carte du modèle appliqué (à la place
+  d'« Appliquer ») ; ligne « Un modèle a été appliqué puis modifié » si la sélection a bougé depuis. `filtresRAZ` l'oublie. Le budget
+  n'est pas touché. Test : scratchpad `w/t_retire.js`.
   **Clic perdu corrigé au passage** : quitter le CP recalcule au `mousedown` et `render` reconstruisait les lignes, avalant le
   1ᵉʳ clic sur une case d'envoi. `render` ne touche plus aux lignes si leur HTML n'a pas changé (`RENDU_PREC`).
 - **Case « tout cocher »** en tête de la colonne des cases (Fabrice, 26/09/2026) : coche ou décoche toutes les

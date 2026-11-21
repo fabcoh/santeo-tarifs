@@ -332,6 +332,9 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 @media print{#fbtn,#fpan{display:none}}
 .volet{width:100%;display:flex;align-items:center;gap:8px;text-align:left;padding:7px 11px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--ink);font:800 12.5px 'Archivo',sans-serif;cursor:pointer;margin-bottom:4px}
 .volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
+.volet .vmx{margin-left:4px;padding:2px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:700 11.5px 'IBM Plex Sans',sans-serif;cursor:pointer;white-space:nowrap}
+.volet .vmx:hover{border-color:var(--nrc);color:var(--nrc)}
+#tgbox .mdlret{display:flex;align-items:center;gap:8px;margin:2px 0 8px;font-size:12.5px;color:var(--muted)}
 .volet .chev{margin-left:auto;transition:transform .15s;color:var(--muted)}
 .volet.open .chev{transform:rotate(180deg)}
 #tgbox .optgrp{margin-top:12px}
@@ -630,7 +633,7 @@ body:has(#cubox) #sendbar{display:none!important}
 </aside>
 <div class="rightcol">
   <button type="button" class="volet" id="vx">➕ Options par poste <span class="vsum" id="vxsum"></span></button>
-  <button type="button" class="volet" id="vm" title="Retrouver ou enregistrer une sélection : compagnies, produits, options par poste et seuils de garantie">📁 Modèles de filtre <span class="vsum" id="vmsum"></span></button>
+  <button type="button" class="volet" id="vm" title="Retrouver ou enregistrer une sélection : compagnies, produits, options par poste et seuils de garantie">📁 Modèles de filtre <span class="vsum" id="vmsum"></span><span class="vmx" id="vmx" role="button" tabindex="0" hidden title="Retirer le modèle : revenir à la sélection d'avant">✕ Retirer</span></button>
 </div>
 </div>
 
@@ -3514,7 +3517,7 @@ function fapplique(rows){
 // d'un prospect à l'autre ferait disparaître des offres sans que personne comprenne
 // pourquoi. Ils sont donc effacés dès qu'une nouvelle fiche arrive.
 function filtresRAZ(){
-  VOIRSEL=false;
+  VOIRSEL=false; MODELE_AVANT=null;
   for(const k in FILTRES) delete FILTRES[k];
   try{ localStorage.removeItem("santeo_filtres"); }catch(e){}
   selDefaut();                               // compagnies par défaut, ou aucune coche = toutes les compagnies
@@ -4409,6 +4412,7 @@ function modelesSum(){
   const c=modeleCle(modeleCourant()), m=MODELES.find(x=>modeleCle(x)===c);
   s.textContent=m?"« "+m.nom+" »":(MODELES.length?MODELES.length+" enregistré"+(MODELES.length>1?"s":""):"");
   document.getElementById("vm").classList.toggle("open",!!m);
+  const x=document.getElementById("vmx"); if(x) x.hidden=!(m||MODELE_AVANT);
 }
 // Nom d'une formule « clé|fi » (ex. « APRIL Santé Mix Proximité Niv. 2 », « M. VERTE GCI 150 »)
 function nomFormule(rk){
@@ -4431,6 +4435,22 @@ function modeleResume(m){
   if((m.formules||[]).length) lignes.push(["Formules seules",m.formules.map(nomFormule).join(" · ")]);
   if(f.length) lignes.push(["Seuils",f.map(k=>(libP[k]||k)+" ≥ "+String(m.filtres[k]).replace(/(%|€)$/," $1")).join(" · ")]);
   return lignes.map(([l,v])=>'<div class="mdl"><span>'+l+'</span>'+esc(v)+'</div>').join("");
+}
+// Retirer un modèle (Fabrice, 21/11/2026 : « quand je sélectionne un modèle de filtre c'est impossible de retirer la sélection…
+// il faut pouvoir désélectionner ») : la sélection d'avant le 1er modèle appliqué est gardée et remise par « ✕ Retirer ».
+var MODELE_AVANT=null;   // var : filtresRAZ, plus haut, peut s'exécuter avant cette ligne
+function modeleAvantGarde(){
+  if(MODELE_AVANT) return;            // un 2e modèle appliqué à la suite : on garde l'état d'avant le 1er
+  MODELE_AVANT=Object.assign(modeleCourant(),{envoi:[...SENDSEL],voir:VOIRSEL,aprilSel:APRIL_SEL.slice()});
+}
+function modeleRetire(){
+  const a=MODELE_AVANT;
+  const m=a?{sel:a.sel,april:a.aprilSel,options:a.options,filtres:a.filtres,formules:[]}
+           :{sel:DEFAUT.slice(),april:[],options:[],filtres:{},formules:[]};   // sans état gardé : compagnies par défaut, rien d'autre
+  modeleApplique(m);
+  if(a){ SENDSEL.clear(); a.envoi.forEach(x=>SENDSEL.add(x)); VOIRSEL=!!a.voir&&SENDSEL.size>0; updateSendBar(); calc(); }
+  MODELE_AVANT=null; modelesSum();
+  try{ bandeauOk(a?"Modèle retiré : sélection d'avant remise":"Modèle retiré"); }catch(_){}
 }
 function modeleApplique(m){
   for(const k in sel) sel[k]=(m.sel||[]).includes(k);
@@ -4482,17 +4502,17 @@ function ouvrirModeles(){
     ov.querySelector("#mdlsrc").textContent = MODELES_PARTAGE
       ? "Partagés entre conseillers · Appliquer remplace la sélection en cours."
       : "⚠ Relais des modèles injoignable : les modèles s'enregistrent sur cet appareil seulement.";
-    const cour=modeleCle(modeleCourant());
-    liste.innerHTML=MODELES.length?MODELES.map((m,i)=>'<div class="mdlcarte'+(modeleCle(m)===cour?' actif':'')+'">'
+    const cour=modeleCle(modeleCourant()), actif=MODELES.some(m=>modeleCle(m)===cour);
+    liste.innerHTML=((MODELE_AVANT&&!actif)?'<div class="mdlret">Un modèle a été appliqué puis modifié. <button type="button" class="tgbtn" data-ret="1">✕ Retirer le modèle</button></div>':'')+(MODELES.length?MODELES.map((m,i)=>'<div class="mdlcarte'+(modeleCle(m)===cour?' actif':'')+'">'
         +'<div class="mdltete"><b>'+esc(m.nom)+'</b>'+(m.local?' <small>(cet appareil)</small>':'')
         +(modeleCle(m)===cour?' <small class="mdlok">✓ appliqué</small>':'')
-        +'<span class="mdlbtns"><button type="button" class="tgbtn ok" data-ap="'+i+'">Appliquer</button>'
+        +'<span class="mdlbtns">'+(modeleCle(m)===cour?'<button type="button" class="tgbtn" data-ret="1" title="Revenir à la sélection d\'avant le modèle">✕ Retirer</button>':'<button type="button" class="tgbtn ok" data-ap="'+i+'">Appliquer</button>')
         +'<button type="button" class="tgbtn" data-ed="'+i+'" title="Reprendre son nom et son explication pour l\'enregistrer à nouveau avec la sélection actuelle">✎</button>'
         +'<button type="button" class="tgbtn" data-sup="'+i+'" title="Supprimer ce modèle">🗑</button></span></div>'
         +(m.explication?'<div class="mdlexp">'+esc(m.explication)+'</div>':'')
         +'<details class="mdldet"><summary>Détail</summary>'+modeleResume(m)
         +((m.par||m.maj)?'<div class="mdlpar">'+(m.par?esc(m.par):'')+(m.maj?(m.par?' · ':'')+new Date(m.maj).toLocaleDateString("fr-FR"):'')+'</div>':'')
-        +'</details></div>').join(""):'<div class="mdlvide">Aucun modèle pour l\'instant : réglez compagnies, options et seuils, puis enregistrez ci-dessous.</div>';
+        +'</details></div>').join(""):'<div class="mdlvide">Aucun modèle pour l\'instant : réglez compagnies, options et seuils, puis enregistrez ci-dessous.</div>');
     ov.querySelector("#mdlcour").innerHTML=modeleResume(modeleCourant());
     if(!MODELES.length&&MODELES_PARTAGE!==null) ov.querySelector("#mdlsave_d").open=true;   // aucun modèle : on propose d'en créer un
     // Formules cochées : retenues d'office dans le modèle (Fabrice, 06/10/2026 : « afficher la sélection quand je clique
@@ -4505,7 +4525,8 @@ function ouvrirModeles(){
   modelesCharge().then(rendu);
   liste.addEventListener("click",async e=>{
     const b=e.target.closest("button"); if(!b)return;
-    if(b.dataset.ap!=null){ const m=MODELES[+b.dataset.ap]; modeleApplique(m); ov.remove(); try{ bandeauOk("Modèle « "+m.nom+" » appliqué"); }catch(_){} return; }
+    if(b.dataset.ret!=null){ modeleRetire(); ov.remove(); return; }
+    if(b.dataset.ap!=null){ const m=MODELES[+b.dataset.ap]; modeleAvantGarde(); modeleApplique(m); ov.remove(); try{ bandeauOk("Modèle « "+m.nom+" » appliqué"); }catch(_){} return; }
     if(b.dataset.ed!=null){ const m=MODELES[+b.dataset.ed]; ov.querySelector("#mdlnom").value=m.nom; ov.querySelector("#mdlexp").value=m.explication||"";
       ov.querySelector("#mdlsave_d").open=true; ov.querySelector("#mdlnom").focus(); msg.textContent="Réglez la sélection, puis Enregistrer : le modèle sera remplacé."; return; }
     if(b.dataset.sup!=null){
@@ -4542,7 +4563,8 @@ function ouvrirModeles(){
     await modelesCharge(); rendu();
   });
 }
-document.getElementById("vm").addEventListener("click",ouvrirModeles);
+document.getElementById("vm").addEventListener("click",e=>{ if(e.target.closest("#vmx")){ e.stopPropagation(); modeleRetire(); return; } ouvrirModeles(); });
+document.getElementById("vmx").addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); e.stopPropagation(); modeleRetire(); } });
 setTimeout(()=>{ modelesCharge().catch(()=>{}); },1500);
 // ---- Préremplissage par lien (ex: #naiss=1966&dept=66&regime=SAL&cnj=1968&kids=2&nom=DUPONT%20Marie) ----
 function applyImport(raw){
