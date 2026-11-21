@@ -42,3 +42,8 @@ Pour une question de prothèse dentaire : la fiche générale pour le panier et 
 contrat rembourse au-delà.
 
 Pas encore de fiche (aucun document) : APRIL Flexi Santé, Santé Optimale, Simply Santé, Santé Pro Privilège.
+
+**Toutes les garanties en un seul fichier** (21/11/2026) : [`GARANTIES_TOUTES.md`](GARANTIES_TOUTES.md) rassemble les tableaux
+« Tableau des garanties » de toutes les fiches (1 000 lignes environ, gamme par gamme, formule par formule). Fabriqué par
+`tools/garanties_detail.py` : corriger la fiche, puis relancer l'outil, jamais le fichier à la main. Les mêmes lignes, rattachées aux
+formules du comparateur, sont dans `docs/garanties_detail.json` (lu par la recherche des besoins 🔎).

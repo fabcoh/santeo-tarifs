@@ -334,6 +334,7 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 .volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 .volet .vmx{margin-left:4px;padding:2px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:700 11.5px 'IBM Plex Sans',sans-serif;cursor:pointer;white-space:nowrap}
 .volet .vmx:hover{border-color:var(--nrc);color:var(--nrc)}
+.chip.bsd{background:var(--panel);color:var(--ink);border:1px dashed var(--accent);font-weight:600;white-space:normal;text-align:left}
 #bsform{display:flex;gap:6px;margin:0 0 4px}
 #bsq{flex:1;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);font:600 12.5px 'IBM Plex Sans',sans-serif}
 #bsform button{padding:6px 12px;border:0;border-radius:9px;background:var(--accent);color:#fff;font:800 12.5px 'Archivo',sans-serif;cursor:pointer}
@@ -3402,8 +3403,8 @@ function fseuils(cle){
 // Un montant en € sur les prothèses (garantie en % BR) = remboursement souhaité par couronne, base Sécu 120 € (Fabrice : « oui »).
 const BS_POSTES=[
   ["imp",/implant/],
-  ["orthN",/ortho\w*\s*(non\s*rembours|adulte)|aligneur|invisalign/],
-  ["orthR",/ortho/],
+  ["orthN",/orthodon\w*\s*(non\s*rembours|adulte)|aligneur|invisalign/],
+  ["orthR",/orthodon|\bortho\b/],
   ["dent",/prothes|couronne|bridge|dentier|inlay|dentaire|dents?\b/],
   ["lent",/lentille/],
   ["opt",/lunette|optique|verres?\b|monture/],
@@ -3414,9 +3415,48 @@ const BS_POSTES=[
   ["aud",/auditi|audio|oreille|appareil\s*audit|surdit/],
   ["md",/osteo|chiro|acupunct|sophro|naturo|medecines?\s*douces?|etiopa|homeopat|psychomot|dieteti/]
 ];
-const BS_HORS=[[/parodont/,"parodontie"],[/endodont|devitalis/,"endodontie"],[/psy(?!chomot)/,"psychologue"],[/pharmac/,"pharmacie"],[/cure|thermal/,"cure thermale"]];
+// Tout autre mot (parodontie, endodontie, psychologue, cure, chirurgie réfractive, vaccins…) est cherché dans le détail des
+// garanties, ligne par ligne (docs/garanties_detail.json, fabriqué par tools/garanties_detail.py depuis les fiches de connaissances).
+const BS_VIDES=new Set("avec pour dans sans plus moins besoin besoins client cliente clients mutuelle garantie garanties remboursement remboursements rembourse remboursee souhaite voudrait veut faire aussi annee annees mois euro euros chaque avoir bonne bien tres environ niveau niveaux formule formules prise charge charges frais soins soin cout couts elevee eleve important importante surtout notamment".split(" "));
+var BS_DET=[];          // critères de détail actifs : [{mot, stem, v, u}]
+var GDET=null, GDET_ERR=null;
+async function gdetCharge(){
+  if(GDET) return GDET;
+  try{ const r=await fetch("docs/garanties_detail.json",{cache:"no-cache"}); if(!r.ok) throw new Error("HTTP "+r.status); GDET=(await r.json()).lignes||{}; }
+  catch(e){ GDET_ERR=e.message; GDET=null; }
+  return GDET;
+}
+function bsCouvre(val){                 // une ligne couvre-t-elle vraiment ? (100 % BR = la Sécu seule, ne compte pas)
+  const t=bsNorm(val).trim();
+  if(!t||/^(-|—|–|non|neant|aucun|pas de)/.test(t)) return null;
+  const v=fparse(val)||{};
+  if(/frais reels/.test(t)) return {fr:true,eur:v.eur,pct:v.pct};
+  if(v.eur!=null&&v.eur>0) return v;
+  if(v.pct!=null&&(v.pct>100||/^\+/.test(t))) return v;
+  return null;
+}
+// Pour une formule : "nc" (pas de relevé), null (non couvert) ou {lib, val} (la meilleure ligne qui correspond)
+function bsDetailTest(r,c){
+  const L=GDET&&GDET[r.key]&&GDET[r.key][String(r.fi)];
+  if(!L) return "nc";
+  let best=null, bestN=-1, autre=null, memeUnite=false;
+  const re=new RegExp(c.stem);
+  for(const [sec,lib,val] of L){
+    if(!re.test(bsNorm(lib+" "))) continue;
+    const cv=bsCouvre(val); if(!cv) continue;
+    if(c.v!=null&&!cv.fr){
+      const x=c.u==="%"?cv.pct:cv.eur;
+      if(x==null){ if(!autre) autre={lib,val:val+" (autre unité, à comparer)"}; continue; }   // € demandé, garantie en % : non comparable
+      memeUnite=true;
+      if(x<c.v-1e-9) continue;
+    }
+    const n=cv.fr?1e9:(cv.eur!=null?cv.eur:cv.pct||0);
+    if(n>bestN){ bestN=n; best={lib,val}; }
+  }
+  return best||(memeUnite?null:autre);   // une ligne dans la bonne unité mais trop basse l'emporte sur une ligne non comparable
+}
 const BS_BR_COURONNE=120;
-let BS_BUDGET=null;   // budget posé par la dernière recherche : une nouvelle recherche le retire, un budget saisi à la main reste
+var BS_BUDGET=null;   // budget posé par la dernière recherche : une nouvelle recherche le retire, un budget saisi à la main reste
 function bsNorm(t){ return String(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/’/g,"'"); }
 function bsLibelle(cle){ for(const [g,ps] of FPOSTES) for(const [k,l] of ps) if(k===cle) return (k==="hospO"||k==="hospN"?"Hospitalisation — ":k==="honoO"||k==="honoN"?"Soins courants — ":"")+l; return cle; }
 // Analyse du texte : [{cle, pct?, eur?, fort?}], budget, postes hors données, mots non compris
@@ -3426,7 +3466,19 @@ function bsAnalyse(texte){
   const bm=/(?:budget|max(?:imum)?|pas plus de|moins de|par mois|\/\s*mois|mensuel)\D{0,12}(\d+(?:[.,]\d+)?)\s*(?:€|e\b|eur)?|(\d+(?:[.,]\d+)?)\s*(?:€|e|eur)?\s*(?:par mois|\/\s*mois|mensuel)/.exec(t);
   let reste=t;
   if(bm){ budget=parseFloat((bm[1]||bm[2]).replace(",",".")); reste=t.replace(bm[0]," "); }
-  for(const [re,lib] of BS_HORS) if(re.test(reste)) hors.push(lib);
+  // mots qui ne sont pas des postes du panneau ⚖ → recherche dans le détail des garanties
+  const posteRe=new RegExp(BS_POSTES.map(x=>x[1].source).join("|"));
+  const BS_ALIAS={kine:"kinesi|auxiliaire|paramedic",kines:"kinesi|auxiliaire|paramedic",kinesitherapeute:"kinesi|auxiliaire|paramedic",kinesitherapie:"kinesi|auxiliaire|paramedic",psy:"psych",psys:"psych",cure:"thermal",cures:"thermal",lasik:"refract",pilule:"contracep",tabac:"tabac",ivg:"interruption"};
+  const motsDet=[]; const wre=/[a-z]{3,}/g; let w;
+  while((w=wre.exec(reste))){
+    const mot=w[0];
+    if(!BS_ALIAS[mot]&&mot.length<5) continue;
+    if(BS_VIDES.has(mot)||posteRe.test(mot)||/^(budget|maximum|mensuel|forte?s?|grosse?|top)$/.test(mot)) continue;
+    const stem=BS_ALIAS[mot]||mot.slice(0,Math.max(5,mot.length-3));
+    if(!motsDet.some(x=>x.stem===stem)) motsDet.push({mot,stem,pos:w.index});
+  }
+  // « chirurgie réfractive » : c'est l'optique, pas l'hospitalisation
+  const refr=motsDet.some(x=>/^refract/.test(x.mot));
   // repère chaque poste et chaque montant par leur position, puis rattache le montant au poste qui le précède
   const trouves=[];
   for(const [cle,re] of BS_POSTES){
@@ -3435,9 +3487,11 @@ function bsAnalyse(texte){
       const pos=m.index;
       if(cle==="orthR"&&trouves.some(x=>x.cle==="orthN"&&Math.abs(x.pos-pos)<4)) continue;
       if(cle==="dent"&&/implant/.test(reste.slice(Math.max(0,pos-12),pos+20))&&!/prothes|couronne|bridge/.test(m[0])) continue;
+      if(cle==="hospO"&&refr&&/chirurg/.test(m[0])) continue;
       if(!trouves.some(x=>x.cle===cle)) trouves.push({cle,pos});
     }
   }
+  for(const d of motsDet) trouves.push({cle:"det",pos:d.pos,mot:d.mot,stem:d.stem});
   trouves.sort((a,b)=>a.pos-b.pos);
   const nb=/(\d+(?:[.,]\d+)?)\s*(%|€|e\b|eur|euros?)?/g; let m;
   while((m=nb.exec(reste))){
@@ -3450,8 +3504,9 @@ function bsAnalyse(texte){
   }
   const fm=/\b(fort|forte|gros|grosse|haut de gamme|max|maximum|bien couvert|top)\b/g; let f;
   while((f=fm.exec(reste))){ let c=null; for(const x of trouves) if(x.pos<f.index) c=x; if(!c) c=trouves[0]; if(c) c.fort=true; }
-  for(const x of trouves) res.push({cle:x.cle,v:x.v,u:x.u,fort:!!x.fort&&x.v==null});
-  return {postes:res,budget,hors};
+  const det=[];
+  for(const x of trouves){ if(x.cle==="det") det.push({mot:x.mot,stem:x.stem,v:x.v,u:x.u}); else res.push({cle:x.cle,v:x.v,u:x.u,fort:!!x.fort&&x.v==null}); }
+  return {postes:res,budget,hors,det};
 }
 // Seuil du panneau le plus proche de la valeur voulue, dans l'unité du poste
 function bsSeuil(cle,v,u,fort){
@@ -3473,14 +3528,23 @@ function bsSeuil(cle,v,u,fort){
   if(u==="€"&&eur.length) return {val:proche(eur,v).val};
   return {val:null,note:"montant en "+u+" non comparable (garanties exprimées en "+(pct.length?"%":"€")+")"};
 }
-function bsApplique(texte){
+async function bsApplique(texte){
   const box=document.getElementById("bsres"); if(!box) return;
   const esc=x=>String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;");
   const a=bsAnalyse(texte), poses=[], ko=[];
-  if(!a.postes.length&&a.budget==null&&!a.hors.length){
-    box.hidden=false; box.innerHTML='<span class="bsmsg bsko">Aucun besoin reconnu. Exemples : « prothèse 500 € », « implant », « lunettes 300 € », « hospitalisation », « ostéo », « budget 80 € ».</span><button type="button" data-x="1">✕</button>';
+  if(a.det.length){ box.hidden=false; box.innerHTML='<span class="bsmsg">Recherche dans le détail des garanties…</span>'; await gdetCharge(); }
+  // un mot qui ne figure dans aucune ligne de garantie n'est pas un besoin : on l'ignore (et on le dit)
+  const inconnus=[], detOk=[];
+  for(const d of a.det){
+    const re=new RegExp(d.stem); let n=0; if(GDET) for(const k in GDET) for(const fi in GDET[k]) for(const l of GDET[k][fi]) if(re.test(bsNorm(l[1]+" "))){ n++; break; }
+    if(n) detOk.push(d); else inconnus.push(d.mot);
+  }
+  if(!a.postes.length&&a.budget==null&&!detOk.length){
+    const reste=(Object.keys(FILTRES).length||BS_DET.length)?" Les filtres précédents restent en place.":"";
+    box.hidden=false; box.innerHTML='<span class="bsmsg bsko">Aucun besoin reconnu'+(inconnus.length?" (« "+esc(inconnus.join(" », « "))+" » : dans aucune ligne des tableaux de garantie)":"")+'. Exemples : « prothèse 500 € », « implant », « parodontie », « psychologue », « lunettes 300 € », « ostéo », « budget 80 € ».'+reste+'</span><button type="button" data-x="1">✕</button>';
     box.querySelector("button").onclick=()=>{box.hidden=true;}; return;
   }
+  BS_DET=detOk;
   const bud=(FILTRES.budget!=null&&FILTRES.budget!==BS_BUDGET)?FILTRES.budget:null;
   for(const k in FILTRES) delete FILTRES[k];
   if(a.budget!=null){ FILTRES.budget=String(a.budget); BS_BUDGET=FILTRES.budget; } else { BS_BUDGET=null; if(bud) FILTRES.budget=bud; }
@@ -3497,12 +3561,15 @@ function bsApplique(texte){
   if(a.budget!=null) parts.push("<b>Budget "+esc(a.budget)+" €/mois</b> (+15 % tolérés)");
   if(ko.length) parts.push('<span class="bsko">'+ko.join(" · ")+'</span>');
   try{ const t=document.querySelector(".results"); if(t&&/ne satisfait les filtres/.test(t.innerText)) parts.push('<span class="bsko">Aucune formule ne remplit tous ces besoins : retirez-en un ou baissez un montant.</span>'); }catch(e){}
-  if(a.hors.length) parts.push('<span class="bsko">'+esc(a.hors.join(", "))+" : pas dans les données du comparateur — à vérifier sur le tableau de garantie (👁)</span>");
+  if(detOk.length) parts.push("Cherché dans le détail des garanties : <b>"+detOk.map(d=>esc(d.mot)+(d.v!=null?" ≥ "+esc(d.v)+" "+esc(d.u):"")).join(", ")+"</b> — la ligne trouvée s'affiche sous chaque formule (🔎). Une formule sans relevé détaillé (APRIL Flexi, Optimale, Simply, Pro Privilège) est écartée.");
+  if(GDET_ERR&&a.det.length) parts.push('<span class="bsko">Détail des garanties illisible pour le moment ('+esc(GDET_ERR)+')</span>');
+  if(inconnus.length) parts.push('<span class="bsko">'+esc(inconnus.join(", "))+" : dans aucune ligne des tableaux de garantie — ignoré</span>");
   box.hidden=false;
   box.innerHTML='<span class="bsmsg">'+parts.join("<br>")+'</span><button type="button" title="Retirer ces filtres">✕ Effacer</button>';
   box.querySelector("button").onclick=()=>{   // retire les seuils (et le budget posé par la recherche), garde le périmètre
     for(const k in FILTRES) if(k!=="budget"||a.budget!=null) delete FILTRES[k];
     if(a.budget!=null) BS_BUDGET=null;
+    BS_DET=[];
     try{ localStorage.setItem("santeo_filtres",JSON.stringify(FILTRES)); }catch(e){}
     const c2=document.getElementById("fcorps"); if(c2&&c2.dataset.pret){ delete c2.dataset.pret; c2.innerHTML=""; fconstruit(); }
     calc(); box.hidden=true; const q=document.getElementById("bsq"); if(q)q.value=""; };
@@ -3615,6 +3682,7 @@ function ftest(r){
   let incomparable=false;
   const b=fbudget();
   if(b!=null&&r.total>b*FTOL) return {ok:false,incomparable:false};
+  for(const c of BS_DET){ const t=bsDetailTest(r,c); if(t==="nc"){ incomparable=true; continue; } if(!t) return {ok:false,incomparable:false}; }
   // APRIL : un poste « n.c. » (non vérifié) n'est pas « non couvert » — la ligne est comptée à part, comme incomparable.
   for(const cle in FILTRES){
     if(cle==="budget")continue;
@@ -3630,7 +3698,7 @@ function ftest(r){
   return {ok:!incomparable,incomparable:incomparable};
 }
 function fapplique(rows){
-  if(!Object.keys(FILTRES).length) return {rows:rows,total:rows.length,hors:0,incomp:0};
+  if(!Object.keys(FILTRES).length&&!BS_DET.length) return {rows:rows,total:rows.length,hors:0,incomp:0};
   let incomp=0;
   const gardees=rows.filter(r=>{const t=ftest(r); if(t.incomparable)incomp++; return t.ok;});
   return {rows:gardees,total:rows.length,hors:rows.length-gardees.length-incomp,incomp:incomp};
@@ -3642,7 +3710,7 @@ function fapplique(rows){
 // pourquoi. Ils sont donc effacés dès qu'une nouvelle fiche arrive.
 function filtresRAZ(){
   VOIRSEL=false; MODELE_AVANT=null;
-  { const q=document.getElementById("bsq"), r=document.getElementById("bsres"); if(q)q.value=""; if(r)r.hidden=true; }
+  { const q=document.getElementById("bsq"), r=document.getElementById("bsres"); if(q)q.value=""; if(r)r.hidden=true; } BS_DET=[];
   for(const k in FILTRES) delete FILTRES[k];
   try{ localStorage.removeItem("santeo_filtres"); }catch(e){}
   selDefaut();                               // compagnies par défaut, ou aucune coche = toutes les compagnies
@@ -4352,14 +4420,14 @@ function render(rows,warns){
       +(rows.length<SENDSEL.size?" ("+(SENDSEL.size-rows.length)+" cochée(s) hors du tableau : non proposée(s) à ce profil ou écartée(s) par un filtre)":"")
       +". Bouton « Tout afficher » en bas pour revenir à la liste complète."]);
   }
-  if(Object.keys(FILTRES).length&&!rows.length) warns=warns.concat(["Aucune offre ne satisfait les filtres de garantie — assouplissez un critère."]);
+  if((Object.keys(FILTRES).length||BS_DET.length)&&!rows.length) warns=warns.concat(["Aucune offre ne satisfait les filtres de garantie — assouplissez un critère."]);
   LASTROWS=rows;
   // Le cadre des conditions ne concerne que MCCINOVA : affiché seulement si la gamme figure dans le tableau
   try{document.getElementById("condbox").hidden=!rows.some(r=>r.key==="MCCINOVA");}catch(e){}
   const NC=buildHead();
   const tb=document.getElementById("rows");
   if(!rows.length){
-    const parFiltre=Object.keys(FILTRES).length&&finfo.total;
+    const parFiltre=(Object.keys(FILTRES).length||BS_DET.length)&&finfo.total;
     RENDU_PREC="";
     tb.innerHTML='<tr><td colspan="'+NC+'" class="empty">'
       +(parFiltre?"Aucune des "+finfo.total+" offres ne satisfait les filtres de garantie. Assouplissez un critère dans le panneau ⚖."
@@ -4370,7 +4438,8 @@ function render(rows,warns){
       const isOpen=openKeys.has(rk);
       const bud=fbudget();
       const sur=(bud!=null&&r.total>bud)?[["sur","+"+Math.round((r.total/bud-1)*100)+" % / budget"]]:[];
-      const chips=sur.concat(r.chips).map(c=>'<span class="chip '+c[0]+'">'+c[1]+"</span>").join("");
+      const det=BS_DET.map(c=>{ const t=bsDetailTest(r,c); return (t&&t!=="nc")?["bsd","🔎 "+(t.lib.length>95?t.lib.slice(0,93)+"…":t.lib).replace(/</g,"&lt;")+" : <b>"+String(t.val).replace(/</g,"&lt;")+"</b>"]:null; }).filter(Boolean);
+      const chips=sur.concat(r.chips,det).map(c=>'<span class="chip '+c[0]+'">'+c[1]+"</span>").join("");
       const isR=RECO===rk;
       let h='<tr class="offer'+(isOpen?" open":"")+(isR?" reco":"")+'" data-rk="'+rk+'">'+
       '<td><span class="caret">▶</span>'+'<input type="checkbox" class="sendchk'+(r.key==="APRIL"&&!APRIL_PROD?' sendapr':'')+'"'+(SENDSEL.has(rk)?" checked":"")+' data-rk="'+rk+'" title="'+(r.key==="APRIL"&&!APRIL_PROD?"APRIL : tarif de préproduction, à vérifier dans April-On avant de l\u2019envoyer":"Cocher pour envoyer par mail / WhatsApp")+'">'+'</td>'+

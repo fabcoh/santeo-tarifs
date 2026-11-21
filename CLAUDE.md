@@ -545,6 +545,21 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   dépasse pas la demande. Hors données (`BS_HORS` : parodontie, endodontie, psychologue, pharmacie, cure) : signalé en rouge, à vérifier
   sur le document (👁). Un budget posé par une recherche est retiré par la suivante (`BS_BUDGET`), un budget saisi à la main reste. Une
   nouvelle fiche (`filtresRAZ`) vide le champ. Test : scratchpad `w/t_besoins2.js`, `w/t_bsmob.js`.
+- **Toutes les garanties relevées** (Fabrice, 21/11/2026 : « oui tu relèves l'ensemble … l'ensemble des remboursements des garanties …
+  créer un fichier md ») : `tools/garanties_detail.py` reprend les tableaux « ## Tableau des garanties » des fiches `docs/connaissances/`
+  (chiffres déjà vérifiés sur les PDF) → `docs/connaissances/GARANTIES_TOUTES.md` (toutes les lignes, gamme par gamme) et
+  `docs/garanties_detail.json` (`lignes[clé][fi] = [[sous-titre, libellé, valeur]]`, ≈ 5 000 lignes rattachées). Colonnes rattachées
+  par en-tête (noms de formules, `E1–E6`/`S1–S5` APICIL, `N1…` APRIL → `fi` de `garanties.json.april`, `Rev n` → REV + RF50/RF100,
+  « Toutes formules » → toutes) ; sous-tableaux de renforts / packs / surcomplémentaires optionnels (`OPTION_RE`) dans le fichier
+  mais **jamais dans la recherche** (sauf les renforts Révoluo, produits du comparateur). Non relevés faute de fiche : APRIL Flexi,
+  Optimale, Simply, Pro Privilège, Protect, Cap Sérénité. **Une fiche corrigée → relancer l'outil et pousser les deux fichiers.**
+  **Recherche 🔎** : tout mot qui n'est pas un poste du panneau ⚖ (≥ 5 lettres, hors mots vides `BS_VIDES` ; alias courts `BS_ALIAS` :
+  kiné, psy, cure, lasik…) est cherché dans les libellés (`BS_DET`, `bsDetailTest`) : une formule passe si une ligne qui le contient
+  couvre vraiment (€ > 0, % > 100, « + x % », frais réels ; « 100 % BR » = la Sécu seule, ne compte pas), et atteint le montant tapé
+  dans la même unité ; une ligne dans l'autre unité est gardée « (autre unité, à comparer) » seulement s'il n'y en a aucune dans la
+  bonne. Pastille 🔎 sous chaque formule avec la ligne trouvée ; une formule sans relevé détaillé est comptée incomparable (écartée).
+  Un mot présent dans aucune ligne est ignoré et signalé. `docs/garanties_detail.json` est chargé au premier mot de détail. Test :
+  scratchpad `w/t_detail.js`.
 - **Case « tout cocher »** en tête de la colonne des cases (Fabrice, 26/09/2026) : coche ou décoche toutes les
   formules affichées — donc après filtres et périmètre. Pleine si toutes le sont, tiret si une partie
   (`syncSendAll()`). **`buildHead()` ne remplace l'en-tête que s'il a changé** : quitter un champ (CP…) recalcule
