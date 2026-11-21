@@ -525,6 +525,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   n'est pas touché. Test : scratchpad `w/t_retire.js`.
   **Clic perdu corrigé au passage** : quitter le CP recalcule au `mousedown` et `render` reconstruisait les lignes, avalant le
   1ᵉʳ clic sur une case d'envoi. `render` ne touche plus aux lignes si leur HTML n'a pas changé (`RENDU_PREC`).
+- **Arrivée d'une fiche allégée** (Fabrice, 21/11/2026, relayé par Comparateur Santeo : « trop de popup qui s'ouvre… alléger ») :
+  **plus de fenêtre « 📥 Données importées du CRM »** (`#impov`, bouton « OK — voir les tarifs ») — le bandeau bleu « Prospect : … »
+  porte déjà tout — et **le panneau ⚖ ne s'ouvre plus 6 s** à l'arrivée (`filtresApercu` n'est plus appelé par `applyImport` ; il
+  reste remis à zéro, le bouton ⚖ clignote deux fois, `#fbtn.flash`). La note utile (`window.IMPNOTE` : fiche reprise en partie, code
+  postal absent ou à préciser) s'affiche en **une ligne fermable sous le bandeau** (`#impnote`, fond `--alerte-bg`, ✕), que
+  `cpParVille` met à jour. Appliquer un modèle de filtre ouvre toujours le panneau 6 s (geste du commercial). Ce qui est écrit
+  plus haut sur la fenêtre « Données importées du CRM » ne vaut plus. Test : scratchpad `w/t_arrivee.js`.
 - **Case « tout cocher »** en tête de la colonne des cases (Fabrice, 26/09/2026) : coche ou décoche toutes les
   formules affichées — donc après filtres et périmètre. Pleine si toutes le sont, tiret si une partie
   (`syncSendAll()`). **`buildHead()` ne remplace l'en-tête que s'il a changé** : quitter un champ (CP…) recalcule
