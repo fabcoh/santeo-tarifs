@@ -532,6 +532,19 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   postal absent ou à préciser) s'affiche en **une ligne fermable sous le bandeau** (`#impnote`, fond `--alerte-bg`, ✕), que
   `cpParVille` met à jour. Appliquer un modèle de filtre ouvre toujours le panneau 6 s (geste du commercial). Ce qui est écrit
   plus haut sur la fenêtre « Données importées du CRM » ne vaut plus. Test : scratchpad `w/t_arrivee.js`.
+- **🔎 Recherche des besoins en clair** (Fabrice, 21/11/2026 : « un champ recherche pour trouver directement les besoins des clients…
+  Parodontie prothèse dentaire 500 € … il le fait intelligent ») : champ `#bsq` sous « Modèles de filtre », Entrée ou « Chercher » →
+  `bsApplique(texte)` règle les seuils du panneau ⚖ (`FILTRES`, mêmes valeurs que les listes, `fseuils`) et recalcule ; résultat en une
+  ligne `#bsres` au-dessus du bandeau Prospect (filtres posés, ce qui n'est pas dans les données, « aucune formule ne remplit tous ces
+  besoins »), « ✕ Effacer » retire ces seuils sans toucher au périmètre. `bsAnalyse` : mots-clés sans accents (`BS_POSTES` : prothèse /
+  couronne / bridge → dent, implant, ortho (adulte, non remboursée → orthN), lunettes / optique, lentilles, hospitalisation, chambre,
+  spécialiste, audio, ostéo / chiro / sophro… → md ; « budget 80 € », « 80 € par mois » → budget), chaque montant rattaché au poste qui le
+  précède, « fort / haut de gamme » = seuil haut du poste qui précède, poste sans montant = « couvert » (plus bas seuil utile).
+  **Montant en € sur les prothèses = remboursement souhaité par couronne** (choix de Fabrice, 21/11/2026) : converti en % avec une base
+  Sécu de 120 € (`BS_BR_COURONNE`) — 500 € ≈ 417 % → « Prothèses ≥ 400 % (≈ 480 € par couronne) ». Seuil retenu : le plus haut qui ne
+  dépasse pas la demande. Hors données (`BS_HORS` : parodontie, endodontie, psychologue, pharmacie, cure) : signalé en rouge, à vérifier
+  sur le document (👁). Un budget posé par une recherche est retiré par la suivante (`BS_BUDGET`), un budget saisi à la main reste. Une
+  nouvelle fiche (`filtresRAZ`) vide le champ. Test : scratchpad `w/t_besoins2.js`, `w/t_bsmob.js`.
 - **Case « tout cocher »** en tête de la colonne des cases (Fabrice, 26/09/2026) : coche ou décoche toutes les
   formules affichées — donc après filtres et périmètre. Pleine si toutes le sont, tiret si une partie
   (`syncSendAll()`). **`buildHead()` ne remplace l'en-tête que s'il a changé** : quitter un champ (CP…) recalcule
