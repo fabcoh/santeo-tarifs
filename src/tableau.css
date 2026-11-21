@@ -333,6 +333,13 @@ th.pick.reco .tglogo-txt{color:var(--warn)}
 .volet .vsum{font:600 12px 'IBM Plex Sans',sans-serif;color:var(--muted)}
 .volet .vmx{margin-left:4px;padding:2px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:700 11.5px 'IBM Plex Sans',sans-serif;cursor:pointer;white-space:nowrap}
 .volet .vmx:hover{border-color:var(--nrc);color:var(--nrc)}
+#bsform{display:flex;gap:6px;margin:0 0 4px}
+#bsq{flex:1;min-width:0;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);font:600 12.5px 'IBM Plex Sans',sans-serif}
+#bsform button{padding:6px 12px;border:0;border-radius:9px;background:var(--accent);color:#fff;font:800 12.5px 'Archivo',sans-serif;cursor:pointer}
+#bsres{display:flex;align-items:flex-start;gap:8px;margin-top:4px;padding:6px 10px;border-radius:8px;background:var(--panel);border:1px solid var(--line);color:var(--ink);font:600 12.5px 'IBM Plex Sans',sans-serif;line-height:1.45}
+#bsres .bsmsg{flex:1}
+#bsres .bsko{color:var(--nrc)}
+#bsres button{border:0;background:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0 2px;white-space:nowrap}
 #impnote{display:flex;align-items:flex-start;gap:8px;margin-top:4px;padding:5px 10px;border-radius:8px;background:var(--alerte-bg);color:var(--ink);font:600 12.5px 'IBM Plex Sans',sans-serif;line-height:1.4}
 #impnote span{flex:1}
 #impnote button{border:0;background:none;color:var(--muted);font-size:13px;cursor:pointer;padding:0 2px}
