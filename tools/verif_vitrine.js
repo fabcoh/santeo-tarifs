@@ -89,5 +89,53 @@ for(const c of CAS){
   for(let i=2;i<v.offres.length;i++) if(v.offres[i].palier===v.offres[i-1].palier&&v.offres[i].prix<v.offres[i-1].prix) faute(nom,"ordre des prix");
   v.notes.forEach(n=>console.log("   ⓘ "+n));
 }
-console.log(fautes?"\n"+fautes+" écart(s).":"\nAucun écart : "+CAS.length+" cas.");
+// --- Minimums en vraies valeurs (curseurs, 22/11/2026) ---------------------------------------------------
+// Contrôle indépendant de la règle : 1er nombre, unité du poste ; optique 1 = Essentiel.
+function tientRef(c,s,min){
+  if(!min) return true; s=String(s==null?"":s);
+  const m=s.replace(/\s/g,"").replace(",",".").match(/^(\d+(?:\.\d+)?)(%|€)/); if(!m) return false;
+  const v=+m[1], u=m[2];
+  if(c==="opt") return min<=1?v>0:(u==="€"&&v>=min);
+  return u==="%"&&v>=min;
+}
+const CASMIN=[];
+for(const age of [40,60]) for(const relais of [true,false]){
+  CASMIN.push({age,relais,mins:{hospO:0,honoO:0,dent:200,opt:300}});
+  CASMIN.push({age,relais,mins:{hospO:0,honoO:0,dent:0,opt:0}});
+  CASMIN.push({age,relais,mins:{hospO:150,honoO:130,dent:200,opt:1}});
+}
+CASMIN.push({age:40,relais:true,mins:{hospO:400,honoO:400,dent:400,opt:400},vide:true});
+for(const c of CASMIN){
+  const rows=lignes(c.age,c.relais);
+  const v=Vitrine.choisir(rows,{age:c.age, minimums:c.mins, etoiles:{hosp:5,hono:5,dent:5,opt:5}, G, reg:"SAL"});
+  const nom=c.age+" ans, minimums "+JSON.stringify(c.mins)+(c.relais?"":", relais absents");
+  console.log("● "+nom+" → "+v.offres.length+"/"+v.nb+" offres");
+  const admis=rows.filter(r=>r.resp===true&&r.total>0&&!["TALIS","LPSH","SOLENCIA"].includes(r.key)&&!["hospO","honoO","dent","opt"].some(k=>r[k]==="n.c."));
+  const passent=admis.filter(r=>["hospO","honoO","dent","opt"].every(k=>tientRef(k,r[k],c.mins[k])));
+  if(v.offres.length!==Math.min(v.nb,passent.length)) faute(nom,v.offres.length+" offres pour "+passent.length+" formules qui passent");
+  if(c.vide&&(v.offres.length||!v.notes.length)) faute(nom,"aucune ne devait passer, avec une note");
+  if(!v.minimums) faute(nom,"minimums non rendus");
+  v.offres.forEach((o,i)=>{
+    for(const k of ["hospO","honoO","dent","opt"]) if(!tientRef(k,o.valeurs[k],c.mins[k])) faute(nom,o.nom+" "+k+" « "+o.valeurs[k]+" » < "+c.mins[k]);
+    if(o.palier==="approche") faute(nom,"palier approche en mode minimums");
+    if(i===0&&!o.reco) faute(nom,"1re non conseillée");
+    console.log("   "+(o.reco?"⭐":"  ")+" "+o.prix.toFixed(2).padStart(7)+" €  "+o.nom.padEnd(34)+" H "+String(o.valeurs.hospO).padEnd(7)+" Ho "+String(o.valeurs.honoO).padEnd(7)+" D "+String(o.valeurs.dent).padEnd(10)+" O "+o.valeurs.opt+(o.palier==="plus"?"  (+1 niveau)":""));
+  });
+  // Avenir en tête dès qu'une Cap Évolution passe.
+  if(passent.some(r=>r.ins==="avenir")&&v.offres.length&&v.offres[0].ins!=="avenir") faute(nom,"Avenir passe mais n'est pas en tête");
+  // Une compagnie par offre avant d'en répéter une.
+  const ins=v.offres.map(o=>o.ins), cies=new Set(passent.map(r=>r.ins));
+  // (l'affichage est par prix : on vérifie que chaque compagnie qui passe est présente avant toute répétition)
+  if(new Set(ins).size<Math.min(cies.size,v.nb)) faute(nom,"compagnie répétée alors qu'une autre compagnie passait");
+  v.notes.forEach(n=>console.log("   ⓘ "+n));
+}
+// Sans besoin, rien n'est filtré ; avec des minimums plus hauts, l'offre la moins chère ne baisse jamais.
+{
+  const rows=lignes(40,true);
+  const p0=Vitrine.choisir(rows,{age:40,minimums:{}}).offres.map(o=>o.prix);
+  const p1=Vitrine.choisir(rows,{age:40,minimums:{dent:200,opt:300}}).offres.map(o=>o.prix);
+  if(!p0.length||!p1.length||Math.min(...p1)<Math.min(...p0)) faute("curseurs","le prix plancher baisse quand les minimums montent");
+  if(JSON.stringify(p0)===JSON.stringify(p1)) faute("curseurs","les minimums ne changent pas les offres");
+}
+console.log(fautes?"\n"+fautes+" écart(s).":"\nAucun écart : "+(CAS.length+CASMIN.length+1)+" cas.");
 process.exit(fautes?1:0);

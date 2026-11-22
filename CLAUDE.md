@@ -553,6 +553,10 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   en tête, `reco`, `offert` = « 1 mois offert »), puis palier « plus » (un niveau au-dessus), puis à tour de rôle, puis « approche »
   (`enDessous`) si les étoiles demandées sont trop hautes. **Étoiles = la grille du site** (fabcoh/santeo-site, `maquette/template.html`,
   08/11/2026 : seuils 125 / 175 / 275 / 350, optique en €, un « % » = 1) recopiée dans `vitrine.js` : la changer aux deux endroits.
+  **Curseurs = `opts.minimums`** (Fabrice, 22/11/2026, relayé par CRM Santeo : « quand je fais évoluer les curseurs tu ne changes pas les
+  tarifs… à gauche, pas de besoin… comme un filtre ») : `{hospO, honoO, dent}` en % (100 = Essentiel), `opt` 1 = Essentiel (100 % Santé
+  ou tout forfait) sinon en €, 0 = pas de besoin ; 1er nombre de la garantie, dans l'unité du poste (l'autre unité ne passe pas).
+  Donné, il remplace étoiles et niveau d'office ; pas d'« approche » ; moins d'offres que nb si peu passent (`notes`).
   `Vitrine.garantiesApril(G)` fabrique `F.APRIL` depuis `garanties.json → april`. Module à part (pas `selections.js`) pour ne pas
   changer l'empreinte des images `docs/tg/`. Essais : `node tools/verif_vitrine.js` (25 / 40 / 60 ans à 75011, avec et sans étoiles,
   relais absents ; APRIL / APICIL à prix fictifs), lancé par l'Action avant de publier.

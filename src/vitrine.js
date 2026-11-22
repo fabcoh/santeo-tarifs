@@ -69,6 +69,29 @@ function admise(r,o){
   return true;
 }
 function atteint(st,cible){return POSTES.every(p=>st[p.k]>=cible[p.k])}
+
+// --- Minimums en vraies valeurs (curseurs de la page vitrine, demande de Fabrice du 22/11/2026 : « comme un filtre ») ---
+// o.minimums = {hospO, honoO, dent : en % (100 = « Essentiel ») ; opt : 1 = « Essentiel » (100 % Santé ou tout
+// forfait), sinon en euros ; 0 ou absent = pas de besoin}. Valeur lue = 1er nombre du texte de la garantie, dans
+// l'unité du poste : un texte dans l'autre unité ne passe pas (jamais comparé à tort), sauf l'optique en % au cran
+// « Essentiel ». « — », vide ou « n.c. » ne passent que sans besoin.
+const CHAMPS_MIN=["hospO","honoO","dent","opt"];
+function minimumsDe(m){
+  if(!m||typeof m!=="object") return null;
+  const o={};for(const c of CHAMPS_MIN){const v=+m[c];o[c]=isFinite(v)&&v>0?v:0}
+  return o;
+}
+function tientMinimum(champ,s,min){
+  if(!min) return true;
+  if(vide(s)) return false;
+  const t=String(s), v=premierNombre(t); if(v==null) return false;
+  if(champ==="opt"){
+    if(min<=1) return v>0;                                    // Essentiel : couvert, en % ou en €
+    return /€/.test(t)&&!/^\s*\d+(?:[.,]\d+)?\s*%/.test(t)&&v>=min; // un forfait en euros
+  }
+  return /%/.test(t)&&!/^\s*\d+(?:[.,]\d+)?\s*€/.test(t)&&v>=min;
+}
+function tientMinimums(r,m){return CHAMPS_MIN.every(c=>tientMinimum(c,r[c],m[c]))}
 function nomLisible(r){return (r.gamme+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")}
 function cle(r){return r.key==="APRIL"&&r.april?"APRIL:"+r.april+"|"+(r.fi%100):r.key+"|"+r.fi}
 
@@ -94,11 +117,15 @@ function offre(r,palierNom,o){
 
 /* rows : la sortie de Moteur.calculer (tableau rows, ou l'objet {rows}).
  * o.age (obligatoire), o.nb (sinon d'après l'âge), o.etoiles {hosp,hono,dent,opt} 0–5 ou null,
+ * o.minimums {hospO, honoO, dent (en %), opt (1 = Essentiel, sinon en €)} : filtre en vraies valeurs (voir plus haut).
+ *   Donné (même tout à 0), il remplace étoiles et niveau d'office selon l'âge : le client choisit, rien en dessous ;
+ *   pas de palier « approche » — s'il y a moins d'offres que nb, on rend ce qui passe (notes le dit).
  * o.G (garanties.json, pour les documents), o.reg (SAL | TNS | RL | TNSRL), o.retraite (SOLENCIA admise).
- * Rend {offres, nb, cible, ciblePlus, notes} ; offres.length < nb si les lignes ne suffisent pas (notes le dit). */
+ * Rend {offres, nb, cible, ciblePlus, minimums, notes} ; offres.length < nb si les lignes ne suffisent pas (notes le dit). */
 function choisir(rows,o){
   o=o||{}; rows=Array.isArray(rows)?rows:((rows&&rows.rows)||[]);
-  const age=+o.age, nb=o.nb||nombreOffres(age), base=niveauAge(age), et=o.etoiles||{};
+  const mins=minimumsDe(o.minimums);
+  const age=+o.age, nb=o.nb||nombreOffres(age), base=mins?0:niveauAge(age), et=mins?{}:(o.etoiles||{});
   const cible={}, ciblePlus={};
   for(const p of POSTES){
     const c=Math.max(base,Math.min(5,Math.max(0,Math.round(+et[p.k]||0))));
@@ -113,12 +140,16 @@ function choisir(rows,o){
   const somme=st=>POSTES.reduce((s,p)=>s+st[p.k],0);
   // Manque d'une offre face à la cible : étoiles qui manquent, tous postes confondus (0 = atteinte).
   const manque=(st,cb)=>POSTES.reduce((s,p)=>s+Math.max(0,cb[p.k]-st[p.k]),0);
+  // Passe le niveau : minimums du client s'ils sont donnés, sinon étoiles (âge + client).
+  const passe=c=>mins?tientMinimums(c.r,mins):atteint(c.st,cible);
+  const passePlus=c=>mins?tientMinimums(c.r,mins):atteint(c.st,ciblePlus);
 
   // 1. Une compagnie par offre, la moins chère qui atteint la cible ; Avenir Mutuelle d'abord.
   const parCie=new Map();
-  for(const c of cand) if(atteint(c.st,cible)&&!parCie.has(c.r.ins)) parCie.set(c.r.ins,c);
+  for(const c of cand) if(passe(c)&&!parCie.has(c.r.ins)) parCie.set(c.r.ins,c);
   const cies=[...parCie.values()].sort((a,b)=>(a.r.ins===TETE?-1:b.r.ins===TETE?1:a.r.total-b.r.total));
-  if(!parCie.has(TETE)) notes.push("Aucune formule Avenir Mutuelle n'atteint le niveau demandé : pas d'offre Cap Évolution en tête.");
+  if(!parCie.size) notes.push(mins?"Aucune formule tarifée ne remplit tous les minimums demandés.":"Aucune formule tarifée n'atteint le niveau demandé.");
+  else if(!parCie.has(TETE)) notes.push("Aucune formule Avenir Mutuelle n'atteint le niveau demandé : pas d'offre Cap Évolution en tête.");
   const passe1=Math.min(nb,6);
   for(const c of cies){if(offres.length>=passe1) break; prendre(c,"base")}
   const tete=offres.length&&offres[0].ins===TETE?offres[0]:null;
@@ -129,7 +160,7 @@ function choisir(rows,o){
     const retenues=cies.filter(c=>pris.has(c.r.key+"|"+c.r.fi)).sort((a,b)=>a.r.total-b.r.total);
     for(const b of retenues){
       if(offres.length>=nb) break;
-      const c=cand.find(c=>c.r.ins===b.r.ins&&libre(c)&&atteint(c.st,ciblePlus)&&somme(c.st)>somme(b.st));
+      const c=cand.find(c=>c.r.ins===b.r.ins&&libre(c)&&passePlus(c)&&somme(c.st)>somme(b.st));
       if(c) prendre(c,"plus");
     }
   }
@@ -138,13 +169,13 @@ function choisir(rows,o){
     tour=false;
     for(const ins of [...new Set(cand.map(c=>c.r.ins))]){
       if(offres.length>=nb) break;
-      const c=cand.find(c=>c.r.ins===ins&&libre(c)&&atteint(c.st,cible));
+      const c=cand.find(c=>c.r.ins===ins&&libre(c)&&passe(c));
       if(c){prendre(c,"base");tour=true}
     }
   }
   // 4. Toujours pas assez (étoiles du client très hautes) : les plus proches de la cible, marquées « approche »,
   //    avec les postes en dessous ; une compagnie par offre d'abord. Jamais une offre sans prix.
-  if(offres.length<nb){
+  if(offres.length<nb&&!mins){
     const proches=cand.filter(libre).sort((a,b)=>manque(a.st,cible)-manque(b.st,cible)||a.r.total-b.r.total);
     const vus=new Set(offres.map(x=>x.ins));
     const ordre=proches.filter(c=>!vus.has(c.r.ins)&&(vus.add(c.r.ins),true)).concat(proches);
@@ -157,14 +188,14 @@ function choisir(rows,o){
     }
     if(offres.length>avant) notes.push((offres.length-avant)+" offre(s) n'atteignent pas toutes les étoiles demandées (palier « approche », postes dans enDessous).");
   }
-  if(offres.length<nb) notes.push(offres.length+" offre(s) sur "+nb+" : pas assez de formules tarifées.");
+  if(offres.length<nb&&offres.length) notes.push(offres.length+" offre(s) sur "+nb+" : pas assez de formules tarifées"+(mins?" qui remplissent les minimums demandés.":"."));
 
   // Ordre d'affichage : l'offre Avenir Mutuelle de la 1re passe en tête (conseillée), puis les offres qui atteignent
   // la cible du moins cher au plus cher, puis celles qui l'approchent.
   const rang=x=>x===tete?0:x.palier==="approche"?2:1;
   offres.sort((a,b)=>rang(a)-rang(b)||a.prix-b.prix);
   if(offres.length) offres[0].reco=true;
-  return {offres:offres, nb:nb, cible:cible, ciblePlus:ciblePlus, notes:notes};
+  return {offres:offres, nb:nb, cible:cible, ciblePlus:ciblePlus, minimums:mins, notes:notes};
 }
 
 /* Garanties APRIL pour Moteur.calculer (F.APRIL), tirées de garanties.json → april : {champ: {fi: valeur}}.
@@ -182,6 +213,8 @@ function garantiesApril(G){
 exporter.choisir=choisir;
 exporter.etoiles=etoiles;
 exporter.etoile=etoile;
+exporter.tientMinimum=tientMinimum;
+exporter.tientMinimums=tientMinimums;
 exporter.nombreOffres=nombreOffres;
 exporter.niveauAge=niveauAge;
 exporter.garantiesApril=garantiesApril;
