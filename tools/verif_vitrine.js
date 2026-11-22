@@ -148,5 +148,62 @@ for(const c of CASMIN){
     if(s0!==s1) faute("curseurs "+age+" ans","« Essentiel » partout change la sélection de départ");
   }
 }
-console.log(fautes?"\n"+fautes+" écart(s).":"\nAucun écart : "+(CAS.length+CASMIN.length+4)+" cas.");
+// --- Conversions APICIL / APRIL pour le serveur du CRM Santéo (accord de Fabrice, 22/11/2026) ----------------------
+// Réponses FICTIVES, au format des relais : on vérifie le chemin corps → réponse → Moteur.calculer → Vitrine.choisir.
+let nconv=0;
+{
+  const now=new Date(2026,10,22,8,0), D2=D, F2=F;
+  const prof={naissance:"1966",cp:"75011",reg:"SAL",conjoint:null,enfants:0,aujourdHui:now};
+  const cA=Vitrine.corpsApicil(prof), cR=Vitrine.corpsApril(prof,G);
+  const repA={Formules:Moteur.CODES_APICIL.map((c,i)=>({LibelleFormule:c,TarifFormule:String(90+i*12)}))};
+  const repR={environnement:"production",liensFamille:true,produits:cR.produits.map((c,k)=>{
+    const g=G.april.gammes[c], n={}; g.niv.forEach((v,i)=>{const kk=("0"+v).slice(-2); if(c==="SanteMix"||c==="FlexiSante"){n[kk+"|"+kk]=100+i*20+k; n[kk+"|"+(kk==="01"?"02":"01")]=1;} else n[kk]=100+i*20+k;});
+    return c==="SanteGan"?{produit:c,etat:"refus",code:422,message:"âge"}:{produit:c,etat:"ok",niveaux:n};})};
+  const essai=(nom,api,apr,attendu)=>{
+    nconv++;
+    const dept=Moteur.departement("75011");
+    const rows=Moteur.calculer({D:D2,F:F2,sel:Vitrine.selVitrine(G),age:60,cnjAge:null,hasCnj:false,kids:0,reg:"SAL",dept,zone:Moteur.zones(D2)[dept],
+      apicil:api,april:apr}).rows;
+    const nA=rows.filter(r=>r.key==="APICIL").length, nR=rows.filter(r=>r.key==="APRIL").length;
+    const v=Vitrine.choisir(rows,{age:60,G,reg:"SAL"});
+    const vA=v.offres.filter(o=>o.key==="APICIL").length, vR=v.offres.filter(o=>o.key==="APRIL").length;
+    console.log("● "+nom+" → lignes APICIL "+nA+", APRIL "+nR+" ; offres APICIL "+vA+", APRIL "+vR+" / "+v.offres.length);
+    if(attendu.A!==(nA>0)) faute(nom,"lignes APICIL "+nA);
+    if(attendu.R!==(nR>0)) faute(nom,"lignes APRIL "+nR);
+    if(!attendu.A&&vA) faute(nom,"offre APICIL sans prix");
+    if(!attendu.R&&vR) faute(nom,"offre APRIL sans prix");
+    if(rows.some(r=>r.key==="APRIL"&&r.april==="SanteGan")) faute(nom,"produit APRIL refusé tarifé");
+    if(rows.some(r=>r.key==="APRIL"&&r.total===1)) faute(nom,"niveau hors diagonale gardé");
+    v.offres.forEach(o=>{ if(!(o.prix>0)) faute(nom,o.nom+" sans prix"); });
+    if(!rows.some(r=>r.key==="CAPEVO")||!rows.some(r=>r.key==="MV")) faute(nom,"gammes locales absentes (sel)");
+  };
+  essai("APICIL en erreur (HTTP 502), APRIL ok", Vitrine.apicilPourMoteur(cA,502,null), Vitrine.aprilPourMoteur(200,repR,G), {A:false,R:true});
+  essai("APICIL ok, APRIL en erreur (pas de réponse)", Vitrine.apicilPourMoteur(cA,200,repA), Vitrine.aprilPourMoteur(0,null,G), {A:true,R:false});
+  essai("APICIL ok, APRIL ok", Vitrine.apicilPourMoteur(cA,200,repA), Vitrine.aprilPourMoteur(200,repR,G), {A:true,R:true});
+  essai("APICIL réponse sans Formules, APRIL HTTP 500", Vitrine.apicilPourMoteur(cA,200,{}), Vitrine.aprilPourMoteur(500,{erreur:"x"},G), {A:false,R:false});
+  // Corps
+  nconv++;
+  const c75=Vitrine.corpsApril({...prof,cp:"75"},G), a75=Vitrine.corpsApicil({...prof,cp:"75"});
+  if(c75.cp!=="75001") faute("corps","APRIL cp 75 → "+c75.cp);
+  if(a75.codePostalAssure!=="75000") faute("corps","APICIL cp 75 → "+a75.codePostalAssure);
+  if(Vitrine.apicilPourMoteur(a75,200,repA).cpExact!==false) faute("corps","cpExact à tort");
+  if(cR.produits.some(c=>G.april.gammes[c].tns)) faute("corps","produit TNS demandé pour un salarié");
+  if(cR.produits.includes("OnlySante")) faute("corps","OnlySante (non responsable) demandé");
+  if(!Vitrine.corpsApril({...prof,reg:"TNS"},G).produits.includes("SantePro")) faute("corps","SantePro absent en TNS");
+  const fam=Vitrine.corpsApicil({...prof,conjoint:"1968",enfants:2});
+  if(fam.beneficiaires.map(b=>b.role).join()!=="ASSUR,CONJT,ENFNT,ENFNT"||fam.beneficiaires[1].dateNaissance!=="1968-01-01") faute("corps","famille APICIL");
+  if(cA.dateEffetContrat!=="2026-12-01"||cR.effet!=="2026-12-01") faute("corps","date d'effet");
+  if(Vitrine.corpsApicil({...prof,naissance:""})!==null||Vitrine.corpsApril({...prof,cp:""},G)!==null) faute("corps","corps sans donnée utile");
+  // Cache
+  nconv++;
+  if(Vitrine.cleCache(cR)!==Vitrine.cleCache(JSON.parse(JSON.stringify(cR)))) faute("cache","clé instable");
+  if(Vitrine.cleCache(cR)===Vitrine.cleCache({...cR,cp:"75012"})) faute("cache","clé identique pour deux profils");
+  const e1=Vitrine.expireLe(cR,now), e2=Vitrine.expireLe(cR,new Date(2026,10,30,20,0)), e3=Vitrine.expireLe({effet:"2027-01-01"},new Date(2026,11,31,12,0));
+  if(e1-now!==24*3600e3) faute("cache","24 h attendues");
+  if(e2.getTime()!==new Date(2026,11,1).getTime()) faute("cache","doit expirer à la date d'effet");
+  if(e3.getTime()!==new Date(2027,0,1).getTime()) faute("cache","doit expirer au 1er janvier");
+  if(Vitrine.gardable(502)||Vitrine.gardable(0)||!Vitrine.gardable(200)) faute("cache","gardable");
+  console.log("● corps, cache : vérifiés");
+}
+console.log(fautes?"\n"+fautes+" écart(s).":"\nAucun écart : "+(CAS.length+CASMIN.length+4+nconv)+" cas.");
 process.exit(fautes?1:0);

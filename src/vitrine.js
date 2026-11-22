@@ -211,6 +211,116 @@ function garantiesApril(G){
   return F;
 }
 
+/* ---- Prix APICIL (API Santé, Veralti) et APRIL pour le serveur du CRM Santéo -----------------------------------------
+ * Accord de Fabrice du 22/11/2026, 8 h 12 (« Oui », relayé par CRM Santeo) : les prix APRIL et APICIL du mail vitrine sont
+ * demandés aux relais capisante.fr (apicil.php, april.php : POST JSON, en-tête X-Cle-Serveur, tarification seulement, rien
+ * d'enregistré chez l'assureur), gardés 24 h au plus pour un même profil ; les curseurs ne redemandent rien.
+ * Ces fonctions ne font que fabriquer le corps de l'appel et lire la réponse — mêmes règles que la page (comparateur.html :
+ * apicilProfil, apicilCharge, aprilProfil, aprilCP, aprilNiveaux, aprilPourMoteur). L'appel lui-même est fait par l'appelant.
+ *
+ * profil = {naissance:'AAAA-MM-JJ' | 'AAAA', cp:'75011' | '75', reg:'SAL'|'TNS'|'RL'|'TNSRL',
+ *           conjoint:'AAAA-MM-JJ' | 'AAAA' | null, enfants:n, aujourdHui?:Date}
+ * Une année seule devient le 1er janvier (âge atteint dans l'année, comme partout dans le comparateur) ; les enfants, sans
+ * date, partent à 10 ans (8 au plus) ; date d'effet = le 1er du mois qui suit aujourdHui. */
+const APICIL_REG={SAL:["GENERAL","SALARIE"],TNS:["SSI","ACTIF"],RL:["ALSACEMOSELLE","SALARIE"],TNSRL:["ALSACEMOSELLE","ACTIF"]};
+const APRIL_REG={SAL:"SS",TNS:"TNS",RL:"AlsaceMoselle",TNSRL:"AlsaceMoselle"};
+const deux=n=>String(n).padStart(2,"0");
+function jour(d){return d.getFullYear()+"-"+deux(d.getMonth()+1)+"-"+deux(d.getDate())}
+function effetDe(auj){const d=new Date(auj||Date.now());d.setDate(1);d.setMonth(d.getMonth()+1);return jour(d)}
+function naissanceISO(v){
+  const s=String(v==null?"":v).trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  let m=s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/); if(m) return m[3]+"-"+m[2]+"-"+m[1];
+  if(/^\d{4}$/.test(s)) return s+"-01-01";
+  return null;
+}
+const cp5=s=>/^\d{5}$/.test(String(s||"").trim())?String(s).trim():null;
+function deptDe(cp){
+  const s=String(cp||"").trim().toUpperCase();
+  if(/^\d{5}$/.test(s)) return s.startsWith("97")?s.slice(0,3):(s.startsWith("20")?(+s<=20190?"2A":"2B"):s.slice(0,2));
+  if(/^(\d{2}|2A|2B|97\d)$/.test(s)) return s;
+  return null;
+}
+function enfantsDe(p,auj){const y=new Date(auj||Date.now()).getFullYear(),n=Math.max(0,Math.min(8,+p.enfants||0)),o=[];
+  for(let i=0;i<n;i++) o.push((y-10)+"-01-01"); return o;}
+
+/* Corps de POST https://capisante.fr/apicil.php, ou null (pas de date de naissance, pas de code postal utilisable). */
+function corpsApicil(p){
+  p=p||{}; const r=APICIL_REG[p.reg]||APICIL_REG.SAL, dn=naissanceISO(p.naissance);
+  const d=deptDe(p.cp), cp=cp5(p.cp)||(/^\d{2}$/.test(d||"")?d+"000":null);
+  if(!dn||!cp) return null;
+  const b=[{role:"ASSUR",dateNaissance:dn,regimeSocial:r[0]}];
+  const dc=naissanceISO(p.conjoint); if(dc) b.push({role:"CONJT",dateNaissance:dc,regimeSocial:r[0]});
+  for(const e of enfantsDe(p,p.aujourdHui)) b.push({role:"ENFNT",dateNaissance:e,regimeSocial:r[0]});
+  return {codePostalAssure:cp,dateEffetContrat:effetDe(p.aujourdHui),situationProfessionnelle:r[1],beneficiaires:b};
+}
+/* Réponse d'apicil.php → paramètre apicil de Moteur.calculer. statut = code HTTP (0 = pas de réponse). */
+function apicilPourMoteur(corps,statut,rep){
+  if(!corps) return {etat:"erreur",message:"code postal ou date de naissance manquant"};
+  if(!(statut>=200&&statut<300)) return {profil:corps,etat:"erreur",message:(rep&&rep.erreur)||("service indisponible (HTTP "+(statut||0)+")")};
+  if(!rep||!Array.isArray(rep.Formules)) return {profil:corps,etat:"erreur",message:"réponse inattendue du service"};
+  const t={}; rep.Formules.forEach(f=>{const v=parseFloat(f.TarifFormule); if(!isNaN(v)&&v>0) t[f.LibelleFormule]=v;});
+  return {profil:corps,etat:"ok",tarifs:t,cpExact:!/000$/.test(corps.codePostalAssure)};
+}
+
+/* APRIL refuse un code postal qui n'existe pas (« 75000 ») : faute des 5 chiffres, celui du chef-lieu. */
+function aprilCP(cp){
+  const c=cp5(cp); if(c) return c;
+  const d=deptDe(cp); if(!d) return null;
+  const s={"13":"13001","69":"69001","75":"75001","2A":"20000","2B":"20200"}[d]; if(s) return s;
+  if(/^97\d$/.test(d)) return d+"00";
+  return /^\d{2}$/.test(d)?d+"000":null;
+}
+/* Produits demandés : ceux de garanties.json → april.gammes (garanties publiées), responsables ; produits TNS seulement
+ * en régime TNS / TNSRL. */
+function produitsApril(G,reg){
+  const A=(G&&G.april&&G.april.gammes)||{}, tns=/^TNS/.test(reg||"");
+  return Object.keys(A).filter(c=>A[c].resp===true&&(!A[c].tns||tns));
+}
+/* Corps de POST https://capisante.fr/april.php, ou null. */
+function corpsApril(p,G){
+  p=p||{}; const dn=naissanceISO(p.naissance), cp=aprilCP(p.cp), prod=produitsApril(G,p.reg);
+  if(!dn||!cp||!prod.length) return null;
+  const a=[{role:"AssurePrincipal",naissance:dn}];
+  const dc=naissanceISO(p.conjoint); if(dc) a.push({role:"Conjoint",naissance:dc});
+  for(const e of enfantsDe(p,p.aujourdHui)) a.push({role:"Enfant",naissance:e});
+  return {cp:cp,effet:effetDe(p.aujourdHui),regime:APRIL_REG[p.reg]||"SS",assures:a,produits:prod,remise:false};
+}
+/* Un produit modulable (Santé Mix, Flexi) rend « 03|02 » : seule la diagonale (même niveau partout) est gardée. */
+function aprilNiveaux(n){
+  const k=Object.keys(n||{}).sort(), modul=k.some(x=>x.includes("|"));
+  const garde=modul?k.filter(x=>x.includes("|")&&new Set(x.split("|")).size===1):k;
+  return garde.map(x=>({niv:parseInt(x,10),prix:+n[x]})).filter(x=>x.niv>0&&x.prix>0);
+}
+/* Réponse d'april.php → paramètre april de Moteur.calculer (appeler Moteur.calculer avec sel.APRIL = true et
+ * F = {...G.gammes, APRIL: Vitrine.garantiesApril(G)}). Un produit refusé par APRIL (âge…) est simplement absent. */
+function aprilPourMoteur(statut,rep,G){
+  if(!(statut>=200&&statut<300)||!rep||!Array.isArray(rep.produits)) return {etat:"erreur"};
+  const A=(G&&G.april&&G.april.gammes)||{};
+  const produits=rep.produits.filter(p=>p&&p.etat==="ok"&&A[p.produit]).map(p=>({code:p.produit,idx:A[p.produit].rang,
+    nom:String(A[p.produit].label||p.produit).replace(/^APRIL\s+/,""),resp:A[p.produit].resp===true,niveaux:aprilNiveaux(p.niveaux)}));
+  return {etat:"ok",famille:!!rep.famille&&!rep.liensFamille,produits:produits};
+}
+
+/* Paramètre sel de Moteur.calculer pour le mail : toutes les gammes ET APRIL. Attention : avec une seule coche
+ * (sel = {APRIL:true}), le moteur ne calcule QUE les gammes cochées — APRIL seule. */
+function selVitrine(G){const s={};Object.keys((G&&G.gammes)||{}).forEach(k=>s[k]=true);s.APRIL=true;return s}
+
+/* Cache des réponses : clé = le corps exact envoyé (clés triées, donc stable) ; à garder jusqu'à expireLe, jamais une panne. */
+function trie(v){if(Array.isArray(v)) return v.map(trie); if(v&&typeof v==="object"){const o={};Object.keys(v).sort().forEach(k=>o[k]=trie(v[k]));return o} return v}
+function cleCache(corps){return corps?JSON.stringify(trie(corps)):""}
+/* 24 h au plus, et jamais au-delà de la date d'effet du corps (le 1er du mois : la date d'effet change, et avec elle le tarif)
+ * ni du 1er janvier (nouveaux tarifs). */
+function expireLe(corps,maintenant){
+  const t=new Date(maintenant||Date.now()), lim=[t.getTime()+24*3600e3];
+  const e=corps&&(corps.dateEffetContrat||corps.effet);
+  if(/^\d{4}-\d{2}-\d{2}$/.test(e||"")){const [y,m,d]=e.split("-").map(Number);lim.push(new Date(y,m-1,d).getTime())}
+  lim.push(new Date(t.getFullYear()+1,0,1).getTime());
+  return new Date(Math.min.apply(null,lim));
+}
+/* Une réponse se garde-t-elle ? Jamais une panne (pas de réponse, 5xx, délai) ; un 2xx oui ; un 4xx non plus (corps refusé). */
+function gardable(statut){return statut>=200&&statut<300}
+
 exporter.choisir=choisir;
 exporter.etoiles=etoiles;
 exporter.etoile=etoile;
@@ -221,6 +331,15 @@ exporter.niveauAge=niveauAge;
 exporter.garantiesApril=garantiesApril;
 exporter.SEUILS_ETOILES=SEUILS_ETOILES;
 exporter.POSTES=POSTES;
+exporter.corpsApicil=corpsApicil;
+exporter.apicilPourMoteur=apicilPourMoteur;
+exporter.corpsApril=corpsApril;
+exporter.aprilPourMoteur=aprilPourMoteur;
+exporter.produitsApril=produitsApril;
+exporter.selVitrine=selVitrine;
+exporter.cleCache=cleCache;
+exporter.expireLe=expireLe;
+exporter.gardable=gardable;
 
 })(typeof module!=="undefined"&&module.exports ? module.exports
    : ((typeof self!=="undefined"?self:this).Vitrine={}));

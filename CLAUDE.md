@@ -559,6 +559,12 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Il s'ajoute au niveau d'office selon l'âge et aux étoiles** (CRM Santeo, 22/11/2026, échelle validée par Fabrice : « garde le
   niveau d'office… les minimums ne font qu'ajouter des exigences » — sinon « Essentiel » montrait des offres plus faibles que la
   sélection de départ) ; tout à 0 = sans minimums ; au moins un > 0 : pas d'« approche », moins d'offres que nb si peu passent (`notes`).
+  **Prix APICIL / APRIL côté serveur du CRM Santéo** (accord de Fabrice, 22/11/2026, 8 h 12 : « Oui ») : fonctions pures, sans réseau —
+  `corpsApicil(profil)` / `apicilPourMoteur(corps, statut, rep)`, `corpsApril(profil, G)` / `aprilPourMoteur(statut, rep, G)`
+  (profil `{naissance, cp, reg, conjoint, enfants, aujourdHui?}`, mêmes règles que la page : effet au 1er du mois suivant, année seule
+  → 1er janvier, enfants à 10 ans, chef-lieu pour APRIL, produits = `garanties.json → april` responsables, TNS seulement en TNS,
+  diagonale des modulables), `selVitrine(G)` (**toutes les gammes + APRIL** : `sel={APRIL:true}` seul ne calcule qu'APRIL),
+  `cleCache(corps)`, `expireLe(corps, maintenant)` (24 h, date d'effet, 1er janvier), `gardable(statut)`. L'appel est fait par le CRM.
   `Vitrine.garantiesApril(G)` fabrique `F.APRIL` depuis `garanties.json → april`. Module à part (pas `selections.js`) pour ne pas
   changer l'empreinte des images `docs/tg/`. Essais : `node tools/verif_vitrine.js` (25 / 40 / 60 ans à 75011, avec et sans étoiles,
   relais absents ; APRIL / APICIL à prix fictifs), lancé par l'Action avant de publier.
