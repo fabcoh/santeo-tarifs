@@ -78,8 +78,8 @@ function atteint(st,cible){return POSTES.every(p=>st[p.k]>=cible[p.k])}
 const CHAMPS_MIN=["hospO","honoO","dent","opt"];
 function minimumsDe(m){
   if(!m||typeof m!=="object") return null;
-  const o={};for(const c of CHAMPS_MIN){const v=+m[c];o[c]=isFinite(v)&&v>0?v:0}
-  return o;
+  const o={};let un=false;for(const c of CHAMPS_MIN){const v=+m[c];o[c]=isFinite(v)&&v>0?v:0;if(o[c])un=true}
+  return un?o:null;                                          // tout à 0 = pas d'exigence en plus
 }
 function tientMinimum(champ,s,min){
   if(!min) return true;
@@ -118,14 +118,15 @@ function offre(r,palierNom,o){
 /* rows : la sortie de Moteur.calculer (tableau rows, ou l'objet {rows}).
  * o.age (obligatoire), o.nb (sinon d'après l'âge), o.etoiles {hosp,hono,dent,opt} 0–5 ou null,
  * o.minimums {hospO, honoO, dent (en %), opt (1 = Essentiel, sinon en €)} : filtre en vraies valeurs (voir plus haut).
- *   Donné (même tout à 0), il remplace étoiles et niveau d'office selon l'âge : le client choisit, rien en dessous ;
- *   pas de palier « approche » — s'il y a moins d'offres que nb, on rend ce qui passe (notes le dit).
+ *   Les minimums S'AJOUTENT au niveau d'office selon l'âge et aux étoiles (CRM Santeo, 22/11/2026, échelle validée par
+ *   Fabrice : « garde le niveau d'office… les minimums ne font qu'ajouter des exigences ») : une offre doit atteindre les
+ *   deux. Au moins un minimum > 0 : pas de palier « approche » — s'il y a moins d'offres que nb, on rend ce qui passe.
  * o.G (garanties.json, pour les documents), o.reg (SAL | TNS | RL | TNSRL), o.retraite (SOLENCIA admise).
  * Rend {offres, nb, cible, ciblePlus, minimums, notes} ; offres.length < nb si les lignes ne suffisent pas (notes le dit). */
 function choisir(rows,o){
   o=o||{}; rows=Array.isArray(rows)?rows:((rows&&rows.rows)||[]);
   const mins=minimumsDe(o.minimums);
-  const age=+o.age, nb=o.nb||nombreOffres(age), base=mins?0:niveauAge(age), et=mins?{}:(o.etoiles||{});
+  const age=+o.age, nb=o.nb||nombreOffres(age), base=niveauAge(age), et=o.etoiles||{};
   const cible={}, ciblePlus={};
   for(const p of POSTES){
     const c=Math.max(base,Math.min(5,Math.max(0,Math.round(+et[p.k]||0))));
@@ -140,9 +141,9 @@ function choisir(rows,o){
   const somme=st=>POSTES.reduce((s,p)=>s+st[p.k],0);
   // Manque d'une offre face à la cible : étoiles qui manquent, tous postes confondus (0 = atteinte).
   const manque=(st,cb)=>POSTES.reduce((s,p)=>s+Math.max(0,cb[p.k]-st[p.k]),0);
-  // Passe le niveau : minimums du client s'ils sont donnés, sinon étoiles (âge + client).
-  const passe=c=>mins?tientMinimums(c.r,mins):atteint(c.st,cible);
-  const passePlus=c=>mins?tientMinimums(c.r,mins):atteint(c.st,ciblePlus);
+  // Passe le niveau : étoiles (âge + client), et en plus les minimums du client s'il en a donné.
+  const passe=c=>atteint(c.st,cible)&&(!mins||tientMinimums(c.r,mins));
+  const passePlus=c=>atteint(c.st,ciblePlus)&&(!mins||tientMinimums(c.r,mins));
 
   // 1. Une compagnie par offre, la moins chère qui atteint la cible ; Avenir Mutuelle d'abord.
   const parCie=new Map();

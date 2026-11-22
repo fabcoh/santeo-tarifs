@@ -107,17 +107,21 @@ for(const age of [40,60]) for(const relais of [true,false]){
 CASMIN.push({age:40,relais:true,mins:{hospO:400,honoO:400,dent:400,opt:400},vide:true});
 for(const c of CASMIN){
   const rows=lignes(c.age,c.relais);
-  const v=Vitrine.choisir(rows,{age:c.age, minimums:c.mins, etoiles:{hosp:5,hono:5,dent:5,opt:5}, G, reg:"SAL"});
+  const v=Vitrine.choisir(rows,{age:c.age, minimums:c.mins, G, reg:"SAL"});
   const nom=c.age+" ans, minimums "+JSON.stringify(c.mins)+(c.relais?"":", relais absents");
   console.log("● "+nom+" → "+v.offres.length+"/"+v.nb+" offres");
+  const tousZero=Object.values(c.mins).every(x=>!x);
   const admis=rows.filter(r=>r.resp===true&&r.total>0&&!["TALIS","LPSH","SOLENCIA"].includes(r.key)&&!["hospO","honoO","dent","opt"].some(k=>r[k]==="n.c."));
-  const passent=admis.filter(r=>["hospO","honoO","dent","opt"].every(k=>tientRef(k,r[k],c.mins[k])));
-  if(v.offres.length!==Math.min(v.nb,passent.length)) faute(nom,v.offres.length+" offres pour "+passent.length+" formules qui passent");
+  // Niveau d'office selon l'âge gardé (CRM Santeo, 22/11/2026) : les minimums s'y ajoutent.
+  const passent=admis.filter(r=>["hospO","honoO","dent","opt"].every(k=>tientRef(k,r[k],c.mins[k]))
+    &&Vitrine.POSTES.every(p=>Vitrine.etoiles(r)[p.k]>=v.cible[p.k]));
+  if(!tousZero&&v.offres.length!==Math.min(v.nb,passent.length)) faute(nom,v.offres.length+" offres pour "+passent.length+" formules qui passent");
   if(c.vide&&(v.offres.length||!v.notes.length)) faute(nom,"aucune ne devait passer, avec une note");
-  if(!v.minimums) faute(nom,"minimums non rendus");
+  if(tousZero!==(v.minimums===null)) faute(nom,"minimums rendus à tort");
+  if(tousZero){ const s=Vitrine.choisir(rows,{age:c.age,G,reg:"SAL"}); if(JSON.stringify(s.offres.map(o=>o.cle))!==JSON.stringify(v.offres.map(o=>o.cle))) faute(nom,"tout à 0 ≠ sans minimums"); }
   v.offres.forEach((o,i)=>{
     for(const k of ["hospO","honoO","dent","opt"]) if(!tientRef(k,o.valeurs[k],c.mins[k])) faute(nom,o.nom+" "+k+" « "+o.valeurs[k]+" » < "+c.mins[k]);
-    if(o.palier==="approche") faute(nom,"palier approche en mode minimums");
+    if(o.palier==="approche"&&!tousZero) faute(nom,"palier approche en mode minimums");
     if(i===0&&!o.reco) faute(nom,"1re non conseillée");
     console.log("   "+(o.reco?"⭐":"  ")+" "+o.prix.toFixed(2).padStart(7)+" €  "+o.nom.padEnd(34)+" H "+String(o.valeurs.hospO).padEnd(7)+" Ho "+String(o.valeurs.honoO).padEnd(7)+" D "+String(o.valeurs.dent).padEnd(10)+" O "+o.valeurs.opt+(o.palier==="plus"?"  (+1 niveau)":""));
   });
@@ -136,6 +140,13 @@ for(const c of CASMIN){
   const p1=Vitrine.choisir(rows,{age:40,minimums:{dent:200,opt:300}}).offres.map(o=>o.prix);
   if(!p0.length||!p1.length||Math.min(...p1)<Math.min(...p0)) faute("curseurs","le prix plancher baisse quand les minimums montent");
   if(JSON.stringify(p0)===JSON.stringify(p1)) faute("curseurs","les minimums ne changent pas les offres");
+  // « Essentiel » partout ne fait jamais apparaître d'offre plus faible que la sélection de départ (niveau d'office gardé).
+  for(const age of [25,40,60]){
+    const r=lignes(age,true);
+    const s0=Vitrine.choisir(r,{age}).offres.map(o=>o.cle).join();
+    const s1=Vitrine.choisir(r,{age,minimums:{hospO:100,honoO:100,dent:100,opt:1}}).offres.map(o=>o.cle).join();
+    if(s0!==s1) faute("curseurs "+age+" ans","« Essentiel » partout change la sélection de départ");
+  }
 }
-console.log(fautes?"\n"+fautes+" écart(s).":"\nAucun écart : "+(CAS.length+CASMIN.length+1)+" cas.");
+console.log(fautes?"\n"+fautes+" écart(s).":"\nAucun écart : "+(CAS.length+CASMIN.length+4)+" cas.");
 process.exit(fautes?1:0);

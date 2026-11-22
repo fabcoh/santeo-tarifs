@@ -556,7 +556,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Curseurs = `opts.minimums`** (Fabrice, 22/11/2026, relayé par CRM Santeo : « quand je fais évoluer les curseurs tu ne changes pas les
   tarifs… à gauche, pas de besoin… comme un filtre ») : `{hospO, honoO, dent}` en % (100 = Essentiel), `opt` 1 = Essentiel (100 % Santé
   ou tout forfait) sinon en €, 0 = pas de besoin ; 1er nombre de la garantie, dans l'unité du poste (l'autre unité ne passe pas).
-  Donné, il remplace étoiles et niveau d'office ; pas d'« approche » ; moins d'offres que nb si peu passent (`notes`).
+  **Il s'ajoute au niveau d'office selon l'âge et aux étoiles** (CRM Santeo, 22/11/2026, échelle validée par Fabrice : « garde le
+  niveau d'office… les minimums ne font qu'ajouter des exigences » — sinon « Essentiel » montrait des offres plus faibles que la
+  sélection de départ) ; tout à 0 = sans minimums ; au moins un > 0 : pas d'« approche », moins d'offres que nb si peu passent (`notes`).
   `Vitrine.garantiesApril(G)` fabrique `F.APRIL` depuis `garanties.json → april`. Module à part (pas `selections.js`) pour ne pas
   changer l'empreinte des images `docs/tg/`. Essais : `node tools/verif_vitrine.js` (25 / 40 / 60 ans à 75011, avec et sans étoiles,
   relais absents ; APRIL / APICIL à prix fictifs), lancé par l'Action avant de publier.
