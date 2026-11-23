@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Documents officiels — Santéo</title>
+<!-- Bibliothèque des documents officiels (Fabrice, 23/11/2026 : « ok »).
+     Lue à l'exécution dans src/garanties.json (documents + april.documents) : un PDF ajouté au comparateur
+     apparaît ici sans rien toucher. Jamais de bulletin d'adhésion. Page non indexée (noindex). -->
+<style>
+:root{--bg:#F4F6F9;--card:#FFFFFF;--txt:#1B2430;--sub:#5C6879;--line:#E1E6EE;--acc:#0F7C8C;--acc2:#E8F4F6}
+@media (prefers-color-scheme:dark){:root{--bg:#141A23;--card:#1E2633;--txt:#E8EDF4;--sub:#9AA7B8;--line:#2E3948;--acc:#4CC1CF;--acc2:#1C3540}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:14px 16px}
+.wrap{max-width:980px;margin:0 auto}
+header .wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header img{height:34px}
+h1{font-size:19px;margin:0;font-weight:650}
+.sous{color:var(--sub);font-size:13px;margin:2px 0 0}
+main{padding:16px}
+#q{width:100%;padding:11px 12px;font-size:15px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--txt);margin-bottom:14px}
+.cie{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:14px;overflow:hidden}
+.cie>h2{display:flex;align-items:center;gap:10px;margin:0;padding:10px 14px;font-size:16px;border-bottom:1px solid var(--line)}
+.cie>h2 img{height:28px;max-width:110px;object-fit:contain;background:#fff;border-radius:4px;padding:2px 4px}
+.prod{padding:10px 14px;border-top:1px solid var(--line)}
+.prod:first-of-type{border-top:0}
+.prod h3{margin:0 0 6px;font-size:14.5px;font-weight:650}
+.prod h3 small{font-weight:400;color:var(--sub)}
+.docs{display:flex;flex-wrap:wrap;gap:6px}
+.docs a{display:inline-block;text-decoration:none;color:var(--acc);background:var(--acc2);border-radius:6px;padding:5px 9px;font-size:13.5px}
+.docs a:hover{text-decoration:underline}
+.docs a span{color:var(--sub);font-size:12px}
+.vide{color:var(--sub);padding:20px;text-align:center}
+footer{color:var(--sub);font-size:12px;text-align:center;padding:10px 16px 24px}
+</style>
+</head>
+<body>
+<header><div class="wrap"><img src="docs/logo_santeobleu.png" alt="Santéo">
+<div><h1>Documents officiels des assureurs</h1><p class="sous">Tableaux de garantie, IPID et notices des produits proposés par Santéo</p></div></div></header>
+<main class="wrap">
+<input id="q" type="search" placeholder="Rechercher une compagnie, un produit ou une formule…" autocomplete="off">
+<div id="liste"><p class="vide">Chargement…</p></div>
+</main>
+<footer>Documents publiés par chaque assureur, rangés par Santéo — CAPI FINANCE, courtier, ORIAS 07001983.</footer>
+<script>
+(function(){
+var CIES=[["avenir","Avenir Mutuelle","avenir"],["mcci","MCCI","mcci"],["mverte","La Mutuelle Verte","mverte"],
+  ["rema","Révoluo (REMA)","revoluo"],["apicil","APICIL","apicil"],["april","APRIL","april"]];
+var BULLETIN=/bulletin|adh[ée]sion/i;
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+// Une pièce = adresse unique ou tableau indexé sur la formule : on regroupe les formules qui partagent un fichier.
+function pieces(docs,noms){
+  var out=[];
+  Object.keys(docs||{}).forEach(function(lib){
+    if(BULLETIN.test(lib))return;
+    var v=docs[lib];
+    if(typeof v==="string"){if(v)out.push({lib:lib,url:v,pour:""});return;}
+    if(!Array.isArray(v))return;
+    var vus={},ordre=[];
+    v.forEach(function(u,i){if(!u)return;if(!vus[u]){vus[u]=[];ordre.push(u);}vus[u].push((noms&&noms[i])||("formule "+(i+1)));});
+    ordre.forEach(function(u){out.push({lib:lib,url:u,pour:ordre.length>1?vus[u].join(", "):""});});
+  });
+  return out;
+}
+function cleDocs(p){return p.map(function(x){return x.lib+"|"+x.url;}).join(";");}
+function construire(G){
+  var parCie={};CIES.forEach(function(c){parCie[c[0]]=[];});
+  var gam=G.gammes||{},docs=G.documents||{};
+  Object.keys(gam).forEach(function(k){
+    var g=gam[k];var ins=g.ins;if(!parCie[ins])parCie[ins]=[];
+    var p=pieces(docs[k],g.names);
+    if(p.length){
+      var cle=cleDocs(p),deja=parCie[ins].filter(function(x){return x.cle===cle;})[0];
+      if(deja)deja.aussi.push(g.label);else parCie[ins].push({nom:g.label,aussi:[],formules:g.names||[],p:p,cle:cle});
+    }
+    if(docs[k+"_TNS"]){var pt=pieces(docs[k+"_TNS"],g.names);if(pt.length)parCie[ins].push({nom:g.label+" TNS",aussi:[],formules:g.names||[],p:pt,cle:cleDocs(pt)});}
+  });
+  var A=G.april||{},ag=A.gammes||{},ad=A.documents||{};
+  Object.keys(ag).forEach(function(code){
+    var g=ag[code];var p=pieces(ad[code],g.names);
+    // Un même document pour tous les niveaux : pas de détail par niveau.
+    p.forEach(function(x){x.pour="";});
+    var vus={};p=p.filter(function(x){var c=x.lib+"|"+x.url;if(vus[c])return false;vus[c]=1;return true;});
+    if(p.length)parCie.april.push({nom:g.label.replace(/^APRIL /,""),aussi:[],formules:g.names||[],p:p,cle:""});
+  });
+  return parCie;
+}
+function rendre(parCie,q){
+  var mots=(q||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").split(/\s+/).filter(Boolean);
+  var plat=function(s){return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");};
+  var h="",n=0;
+  CIES.forEach(function(c){
+    var prods=(parCie[c[0]]||[]).filter(function(pr){
+      var t=plat([c[1],pr.nom,pr.aussi.join(" "),pr.formules.join(" "),pr.p.map(function(x){return x.lib+" "+x.pour;}).join(" ")].join(" "));
+      return mots.every(function(m){return t.indexOf(m)>=0;});
+    });
+    if(!prods.length)return;
+    h+='<section class="cie"><h2><img src="docs/logo_'+c[2]+'.png" alt="" onerror="this.remove()">'+esc(c[1])+'</h2>';
+    prods.forEach(function(pr){
+      n++;
+      h+='<div class="prod"><h3>'+esc(pr.nom)+(pr.aussi.length?' <small>(+ '+esc(pr.aussi.join(", "))+')</small>':'')+'</h3><div class="docs">';
+      pr.p.forEach(function(x){h+='<a href="'+esc(x.url)+'" target="_blank" rel="noopener">'+esc(x.lib)+(x.pour?' <span>— '+esc(x.pour)+'</span>':'')+'</a>';});
+      h+='</div></div>';
+    });
+    h+='</section>';
+  });
+  document.getElementById("liste").innerHTML=n?h:'<p class="vide">Aucun document ne correspond à « '+esc(q)+' ».</p>';
+}
+fetch("src/garanties.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(G){
+  var P=construire(G);var q=document.getElementById("q");
+  rendre(P,"");q.addEventListener("input",function(){rendre(P,q.value);});
+}).catch(function(){document.getElementById("liste").innerHTML='<p class="vide">Documents indisponibles pour le moment. Réessayez dans un instant.</p>';});
+})();
+</script>
+</body>
+</html>

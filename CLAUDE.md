@@ -177,6 +177,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   VERALTI ») et pour APRIL (« April-On ou l'API ») sauf Mix et GAN qui ont le leur ; une case « sans objet » accepte quand même
   un PDF. Aperçu 👁 de `bulletin_lps_2026.pdf` ajouté à `APERCU`. Page version 14.
 
+## Bibliothèque des documents — `documents.html` (23/11/2026)
+
+- Fabrice : « ok » pour une page publique qui liste les documents officiels par compagnie puis par produit, **sans les bulletins
+  d'adhésion** et **non indexée** (`<meta name="robots" content="noindex,nofollow">`). https://fabcoh.github.io/santeo-tarifs/documents.html
+- Fichier à la racine, écrit à la main (pas produit par `build.py`) ; il lit à l'exécution `src/garanties.json` (`documents`, `_TNS`,
+  `april.documents`) : un document ajouté au comparateur y apparaît seul. Formules qui partagent un fichier regroupées (« IPID — GCI 100…300 »),
+  gammes aux mêmes documents réunies (REVOLUO + RF50, RF100). Recherche par mot. Test : scratchpad `t_docs.js`.
+
 ## Fiches de connaissances — `docs/connaissances/` (03/10/2026)
 
 - Demande de Fabrice : que le Claude du CRM réponde à tout ce qui sort des connaissances de base (sophrologie, séances d'ostéo
@@ -1504,7 +1512,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Le secret de production a été collé dans une conversation le 09/10/2026** ; Fabrice : « ce n'est pas grave, tu ne dois pas le
   répéter » — ne jamais le recopier. Premier essai raté : le gabarit vierge avait été déposé (secret = « COLLER_ICI_SECRET ») ;
   diagnostic sans secret : relire le fichier par FTP et remplacer le secret par sa longueur (`perl … length($2)`).
-  Restent ouverts : `interet.php` sans APRIL, mode automatique du CRM qui écarte APRIL, IPID Flexi Complète, kits Simply / Pro Privilège.
+  Restent ouverts : mode automatique du CRM qui écarte APRIL, IPID Flexi Complète, kits Simply / Pro Privilège.
   **↗ April-On marche en production** (09/10/2026, projet de Laura Jaouad ouvert dans April-On : Santé Mix Hospit 01 · FDS 01, 59,14 €,
   30/10, bouton « Adhérer »). Trois corrections du relais pour y arriver : niveau **« 01 » par garantie** même pour Mix / Flexi
   (« 01|01 » refusé à la création de projet) ; **`professionalCategory` de l'assuré principal obligatoire** (APRIL l'appelle
