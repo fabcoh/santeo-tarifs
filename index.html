@@ -676,7 +676,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-24T17:27:03Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-24T17:27:03Z</div>
+  <div id="buildstamp" data-build="2026-11-24T17:38:58Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-24T17:38:58Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -4001,8 +4001,8 @@ const APRIL_ORDRE_RANG=["SanteMix","SimplySante","FlexiSante","OnlySante","Sante
   "SanteSolution","SantePremium","SanteGan","SanteProtect","SanteCapSerenite","SanteGenerali","SanteApril","SanteCPS"];
 // Produits de la liste que le relais ne tarife pas encore. Cochés, ils sont annoncés comme tels au lieu de disparaître.
 // GAN Senior, Protect et Cap Sérénité branchés le 05/10/2026 (tarifés par appels réels) ; Generali et Santé APRIL fermés.
-// Cap Santé + (Fabrice, 24/11/2026 : documents April-On) : garanties lues, tarif à brancher dans april.php (code API à confirmer).
-const APRIL_A_BRANCHER={SanteCPS:1};
+// Cap Santé + branché le 24/11/2026 (Fabrice : « vas y pour les tarifs ») : le relais envoie « SanteCps » à APRIL.
+const APRIL_A_BRANCHER={};
 // Fermés à CAPI FINANCE en préproduction (« Produit non disponible », 02/10/2026) ; Hospi + ne se vend qu'en complément.
 const APRIL_FERMES={SanteBrio:"non ouvert à notre compte",SantePrimo:"non ouvert à notre compte",SanteGlobale:"non ouvert à notre compte",
   SanteMoove:"non ouvert à notre compte",SanteGenerali:"plus commercialisé (APRIL, 05/10/2026)",SanteApril:"non ouvert à notre compte",SanteSolution:"non ouvert à notre compte",SantePremium:"non ouvert à notre compte",HospiPlus:"vendu seulement en complément d'un autre produit"};
