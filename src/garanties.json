@@ -1,5 +1,5 @@
 {
- "genere": "/tmp/tmp395bj75e.js",
+ "genere": "/tmp/tmpq00vl_od.js",
  "source": "src/comparateur.html — objets F, EX, COMP, TGNOTE",
  "avertissement": "Synthese des tableaux de garantie. Seuls les documents contractuels (TG, notice, IPID) font foi.",
  "compagnies": {
@@ -3084,6 +3084,97 @@
      "120 €",
      "160 €"
     ]
+   },
+   "SanteCPS": {
+    "label": "APRIL Cap Santé +",
+    "ins": "april",
+    "resp": true,
+    "tns": false,
+    "rang": 24,
+    "niv": [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    "fi": [
+     2401,
+     2402,
+     2403,
+     2404,
+     2405
+    ],
+    "names": [
+     "Cap Santé + Niv. 1",
+     "Cap Santé + Niv. 2",
+     "Cap Santé + Niv. 3",
+     "Cap Santé + Niv. 4",
+     "Cap Santé + Niv. 5"
+    ],
+    "hospO": [
+     "125 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "hospN": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %"
+    ],
+    "honoO": [
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %",
+     "200 %"
+    ],
+    "honoN": [
+     "100 %",
+     "100 %",
+     "125 %",
+     "150 %",
+     "175 %"
+    ],
+    "dent": [
+     "100 %",
+     "150 %",
+     "200 %",
+     "250 %",
+     "300 %"
+    ],
+    "opt": [
+     "100 % BR",
+     "100 €",
+     "150 €",
+     "175 €",
+     "200 €"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR + 100 €",
+     "100 % BR + 200 €",
+     "100 % BR + 250 €",
+     "100 % BR + 300 €"
+    ],
+    "ch": [
+     "40 €/j",
+     "50 €/j",
+     "70 €/j",
+     "80 €/j",
+     "100 €/j"
+    ],
+    "md": [
+     "—",
+     "20 €",
+     "30 €",
+     "40 €",
+     "50 €"
+    ]
    }
   },
   "extras": {
@@ -3968,6 +4059,78 @@
      "2 000 €",
      "3 000 €"
     ]
+   },
+   "SanteCPS": {
+    "imp": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "orthR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "orthN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "lentA": [
+     "100 % BR",
+     "20 €",
+     "50 €",
+     "80 €",
+     "110 €"
+    ],
+    "lentR": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "aud": [
+     "100 % BR",
+     "100 % BR + 100 €",
+     "100 % BR + 200 €",
+     "100 % BR + 250 €",
+     "100 % BR + 300 €"
+    ],
+    "optC": [
+     "100 % BR",
+     "200 €",
+     "250 €",
+     "300 €",
+     "350 €"
+    ],
+    "pharR": [
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %",
+     "100 %"
+    ],
+    "pharN": [
+     "—",
+     "—",
+     "—",
+     "—",
+     "—"
+    ],
+    "plaf": [
+     "—",
+     "800 €",
+     "1 200 €",
+     "1 500 €",
+     "1 800 €"
+    ]
    }
   },
   "limites": {
@@ -4051,6 +4214,13 @@
     ""
    ],
    "SanteGan": [
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "SanteCPS": [
     "",
     "",
     "",
@@ -4243,6 +4413,22 @@
      "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_ipid_2026.pdf",
      "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_ipid_2026.pdf",
      "https://fabcoh.github.io/santeo-tarifs/docs/april_santegan_ipid_2026.pdf"
+    ]
+   },
+   "SanteCPS": {
+    "Tableau de garantie + notice": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santecps_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santecps_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santecps_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santecps_tg_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santecps_tg_2026.pdf"
+    ],
+    "IPID": [
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santecps_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santecps_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santecps_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santecps_ipid_2026.pdf",
+     "https://fabcoh.github.io/santeo-tarifs/docs/april_santecps_ipid_2026.pdf"
     ]
    }
   }
