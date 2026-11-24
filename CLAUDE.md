@@ -1512,6 +1512,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Le secret de production a été collé dans une conversation le 09/10/2026** ; Fabrice : « ce n'est pas grave, tu ne dois pas le
   répéter » — ne jamais le recopier. Premier essai raté : le gabarit vierge avait été déposé (secret = « COLLER_ICI_SECRET ») ;
   diagnostic sans secret : relire le fichier par FTP et remplacer le secret par sa longueur (`perl … length($2)`).
+  **APRIL Cap Santé + (`SanteCPS`, 24/11/2026)** : documents April-On déposés par Fabrice (« ajoute le produit et les tableau de garantie »,
+  code « santecps ») — `docs/april_santecps_tg_2026.pdf` (« Garanties APRIL Cap Santé + », 10/2026, 5 p.), `_ipid_`, `_cg_` (notice
+  d'information valant CG, CPS102026, 21 p.), `_argumentaire_` (3 p., non relié). Assureur Acheel, géré par APRIL Santé Prévoyance ;
+  responsable, 5 niveaux, dès 18 ans, sans limite d'âge, aucun délai d'attente, −10 % couple. `APRIL_GAR.SanteCPS` = **socle seul**
+  (ni bonus fidélité après 2 ans, ni Renfort Confort optionnel) ; rang 24 (fi 2401–2405), `DOCPAGE` 2, `TAMPONS` p. 1 (comptée de 0).
+  **Tarif pas encore branché** (`APRIL_A_BRANCHER`) : `april.php` ne connaît pas le produit (il l'écarte sans erreur, vérifié) et le
+  code API exact reste à confirmer (« SanteCPS » retenu par analogie). Publié dans `garanties.json → april` (page des documents, vitrine
+  sans prix tant que le relais ne le tarife pas).
   Restent ouverts : mode automatique du CRM qui écarte APRIL, IPID Flexi Complète, kits Simply / Pro Privilège.
   **↗ April-On marche en production** (09/10/2026, projet de Laura Jaouad ouvert dans April-On : Santé Mix Hospit 01 · FDS 01, 59,14 €,
   30/10, bouton « Adhérer »). Trois corrections du relais pour y arriver : niveau **« 01 » par garantie** même pour Mix / Flexi
