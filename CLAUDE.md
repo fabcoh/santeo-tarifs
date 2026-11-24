@@ -1520,7 +1520,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   **Tarif branché le 24/11/2026** (Fabrice : « vas y pour les tarifs ») : clé `SanteCPS` dans le comparateur, **code APRIL `SanteCps`**
   (lu par `GET april.php?catalogue=1`, lecture seule ajoutée ce jour ; garanties APRIL `MaladieChirurgie` + `Renfort` optionnel, non tarifé) ;
   `april.php` `2026-11-24 Cap Sante + (code APRIL SanteCps)` porte `'api' => 'SanteCps'` (source : bureau `sources-relais/april.php`).
-  Tant que cette version n'est pas déposée, APRIL répond « Produit 'SanteCPS' non disponible » (412) pour ce seul produit.
+  **Déposé et vérifié le 24/11/2026** (appels réels, Paris 11ᵉ, effet 01/12/2026) : 60 ans seul 69,04 → 144,30 € (niv. 1 → 5) ; couple 60/58 ans
+  122,71 → 256,72 € ; 40 ans seul 51,12 → 107,24 €.
   Restent ouverts : mode automatique du CRM qui écarte APRIL, IPID Flexi Complète, kits Simply / Pro Privilège.
   **↗ April-On marche en production** (09/10/2026, projet de Laura Jaouad ouvert dans April-On : Santé Mix Hospit 01 · FDS 01, 59,14 €,
   30/10, bouton « Adhérer »). Trois corrections du relais pour y arriver : niveau **« 01 » par garantie** même pour Mix / Flexi
