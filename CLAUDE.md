@@ -223,8 +223,8 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
 
 - **Conjoint non éligible = gamme non tarifée** (Fabrice, 09/10/2026, capture : SOLENCIA 62–99 ans tarifée « 99,37 € * » pour un
   assuré de 78 ans et un conjoint de 44 ans — « sortir le tarif peut nous tromper ») : `cnjHors()` dans `src/moteur.js`. Hors des âges
-  de la gamme (MCCINOVA 18–90, FLEXIA 18–84, SOLENCIA 62–99, Révoluo 18–80, Mutuelle Verte dès 18, Cap Évolution / CAP NR / LPS /
-  TALIS dès 16), aucune ligne de la gamme et une alerte « conjoint non éligible à n ans — gamme non tarifée ». Avant, MCCI sortait un
+  de la gamme (MCCINOVA 18–90, FLEXIA 18–84, SOLENCIA 62–99, Révoluo 18–80, Mutuelle Verte dès 18, Cap Évolution / CAP NR / LPS dès 16,
+  TALIS dès 18), aucune ligne de la gamme et une alerte « conjoint non éligible à n ans — gamme non tarifée ». Avant, MCCI sortait un
   total sans le conjoint (« * ») et Révoluo l'omettait sans rien dire au-delà de 80 ans. APICIL et APRIL : l'API en décide.
 - **Prothèses Mutuelle Verte à deux taux** (relecture du 21/10/2026 à la demande de Fabrice, d'après une critique ChatGPT ; « ok ») :
   le tableau distingue « dents visibles » (incisives, canines, 1res prémolaires) et « autres dents » (2es prémolaires, molaires),
@@ -241,8 +241,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   dépassé 62 ans ») : chip `alerte` posée par `moteur.js`, classe `.chip.alerte` (variable `--alerte-bg`, déclarée dans les trois thèmes).
 - **Tarifs 2027 d'Avenir Mutuelle** (Fabrice, 25/11/2026 : grille 2027 reçue en xlsx ; « case à cocher tarifs ( ) 2026 ( ) 2027… on peut
   cocher les 2 années ») : `tarifs_all.json → AN2027` (`CAPEVO`, `CAPNR`, `TALIS`, `LPSH`, `AVZ` + 973 en zone 3 ; mêmes formats que
-  2026, bloc TTC du classeur), environ +6 %. **LPS Hospi a désormais un tarif enfant** (ligne « 15 », compté par enfant) ; **TALIS sans
-  tarif conjoint à 16–17 ans** (alerte, conjoint non tarifé). `Moteur.calculer({…, annees:[2026,2027], age2027, cnjAge2027, apicil2027,
+  2026, bloc TTC du classeur), environ +6 %. **LPS Hospi a désormais un tarif enfant** (ligne « 15 », compté par enfant) ; **TALIS : règles
+  de Fabrice (25/11/2026)** — adultes seulement, **dès 18 ans** (2026 et 2027), **une TALIS par personne : le conjoint paie la colonne
+  assuré (RESP) à son âge**, **jamais d'enfant** (alerte « enfants non assurés », tarif sans eux). LPS : chaque enfant compté (« on corrigera s'il y a besoin »). `Moteur.calculer({…, annees:[2026,2027], age2027, cnjAge2027, apicil2027,
   april2027})` : sans `annees`, rien ne change (2026). Lignes 2027 : `an:2027`, gamme + « 2027 », pastille « Tarif 2027 » ; avec les deux
   années, les lignes Avenir 2026 portent « 2026 ». Âge 2027 = âge atteint en 2027. Identifiant de ligne **`Tableau.cle(r)`** = « K|fi »
   + « |2027 » (cases, étoile, tableau de garantie) ; les résumés / `lien.php` gardent « K|fi ». Page : cases **Tarifs ☐ 2026 ☐ 2027**
