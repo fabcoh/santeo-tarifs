@@ -43,6 +43,10 @@ h1{font-family:"Archivo",system-ui,sans-serif;font-weight:800;font-size:25px;mar
 .bar .row1{grid-template-columns:1fr 1fr 1.2fr 1fr .8fr;align-items:start}
 /* Les âges retenus s'inscrivent sous leur champ sans pousser la ligne suivante. */
 .bar .row1 .f{position:relative;padding-bottom:13px}
+.bar .rowan{display:flex;gap:14px;align-items:center;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+.bar .rowan label{display:inline-flex;gap:5px;align-items:center;color:var(--text,inherit);font-weight:600;cursor:pointer}
+.bar .rowan input{width:16px;height:16px;margin:0}
+.bar .rowan em{font-style:normal;font-size:11px}
 .bar .row1 .ageout{position:absolute;left:0;right:0;bottom:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:620px){
   body{padding:0 8px 40px}
@@ -636,6 +640,10 @@ body:has(#cubox) #sendbar{display:none!important}
     <div class="f"><label for="kids">Mineurs</label>
       <select id="kids"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
   </div>
+  <div class="row rowan" id="rowan"><span>Tarifs :</span>
+    <label><input type="checkbox" id="an2026"> 2026</label>
+    <label><input type="checkbox" id="an2027"> 2027</label>
+    <em id="aninfo"></em></div>
 </div>
 
 <button type="button" id="fbtn" title="Filtrer les offres par niveau de garantie">⚖ Filtres</button>
@@ -2137,10 +2145,10 @@ async function pdfsTarifs(tg){
   if(!(await relaisAcceptePdfs())) return [];
   const parUrl={};
   for(const c of tg.colonnes){
-    const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi); if(!r) continue;
+    const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi&&x.an===c.an); if(!r) continue;
     const t=(c.docs||[]).find(d=>estTableau(d.libelle)); if(!t) continue;
     const g=parUrl[t.url]=parUrl[t.url]||{marques:[],ipids:[]};
-    g.marques.push({key:c.key,fi:c.fi,total:r.total});
+    if(!g.marques.some(m=>m.key===c.key&&m.fi===c.fi)) g.marques.push({key:c.key,fi:c.fi,total:r.total});   // 2026 et 2027 : un seul prix écrit
     for(const d of c.docs) if(d.libelle==="IPID"&&!g.ipids.includes(d.url)) g.ipids.push(d.url);
   }
   const out=[];
@@ -2225,7 +2233,7 @@ function verifDocs(r){
   const stop=()=>{ clearTimeout(t); t=null; };
   const ligne=e=>{ const tr=e.target.closest&&e.target.closest("#rows tr.offer");
     if(!tr||e.target.closest("input,button,a,label")) return null; return tr; };
-  const ouvrir=tr=>{ const r=LASTROWS.find(x=>x.key+"|"+x.fi===tr.dataset.rk); if(r) verifDocs(r); };
+  const ouvrir=tr=>{ const r=LASTROWS.find(x=>Tableau.cle(x)===tr.dataset.rk); if(r) verifDocs(r); };
   document.addEventListener("pointerdown",e=>{ const tr=ligne(e); if(!tr||e.button>0) return;
     x0=e.clientX; y0=e.clientY; cible=tr; stop();
     t=setTimeout(()=>{ t=null; window.APPUI_LONG=Date.now(); ouvrir(cible); },500); });
@@ -2244,7 +2252,7 @@ function showTG(key){
 }
 // Tableau de garantie de la SÉLECTION (formules cochées, toutes gammes confondues)
 function showTGSel(){
-  const cols=LASTROWS.filter(r=>SENDSEL.has(r.key+"|"+r.fi)).map(r=>({key:r.key,fi:r.fi}));
+  const cols=LASTROWS.filter(r=>SENDSEL.has(Tableau.cle(r))).map(r=>({key:r.key,fi:r.fi,an:r.an}));
   if(!cols.length)return;
   const keys=[...new Set(cols.map(c=>c.key))];
   const notes=keys.map(k=>TGNOTE[k]?"<b>"+F[k].label+"</b> : "+TGNOTE[k]:"").filter(Boolean).join("<br>");
@@ -2569,7 +2577,7 @@ function showCumul(){
 }
 function renderTG(cols,title,sub,note,single){
   const multi=cols.some(c=>c.key!==cols[0].key);
-  const isReco=c=>RECO===(c.key+"|"+c.fi);
+  const isReco=c=>RECO===(Tableau.cle(c));
   let head=Tableau.entete(GAR,cols,RECO);
   let body=Tableau.corps(GAR,cols,RECO);
   const ov=document.createElement('div');ov.id='tgov';ov.className='tgmain';
@@ -2581,7 +2589,7 @@ function renderTG(cols,title,sub,note,single){
   function paintReco(){
     const tbl=ov.querySelector('#tgbox table');
     cols.forEach((c,ci)=>{
-      const on=RECO===(c.key+"|"+c.fi);
+      const on=RECO===(Tableau.cle(c));
       const th=tbl.querySelector('thead th.pick[data-ci="'+ci+'"]');
       if(th){
         const price=th.querySelector('.thprice');   // le tarif affiché sous le nom est conservé
@@ -2614,7 +2622,7 @@ function renderTG(cols,title,sub,note,single){
     });
   });
   ov.querySelectorAll('#tgbox thead th.pick').forEach(th=>th.addEventListener('click',()=>{
-    const c=cols[+th.dataset.ci], id=c.key+"|"+c.fi;
+    const c=cols[+th.dataset.ci], id=Tableau.cle(c);
     RECO=(RECO===id)?null:id;
     paintReco();
   }));
@@ -2631,7 +2639,7 @@ function renderTG(cols,title,sub,note,single){
   // Tarifs sous chaque formule, affichés d'office
   box.querySelectorAll('thead th').forEach((th2,ix)=>{
     if(ix===0)return;
-    const c2=cols[ix-1]; const r2=c2&&LASTROWS.find(x=>x.key===c2.key&&x.fi===c2.fi);
+    const c2=cols[ix-1]; const r2=c2&&LASTROWS.find(x=>x.key===c2.key&&x.fi===c2.fi&&x.an===c2.an);
     const d2=document.createElement('div'); d2.className='thprice';
     d2.textContent=r2?eur(r2.total)+" /mois":"—";
     d2.style.cssText="font:800 12.5px 'Archivo',sans-serif;color:var(--accent);margin-top:3px;text-transform:none";
@@ -2907,8 +2915,14 @@ const apicilDDNConjoint=()=>champ("cddn");
 let apicilApproche=false;
 function apicilEffet(){                        // 1er du mois suivant, toujours dans la plage J−30 / J+1 an
   const d=new Date(); d.setDate(1); d.setMonth(d.getMonth()+1);
-  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-01";
+  const v=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-01";
+  // « Tarifs 2027 » seul coché (Fabrice, 25/11/2026) : APICIL et APRIL sont demandés au 1er janvier 2027.
+  return (seul2027()&&v<"2027-01-01")?"2027-01-01":v;
 }
+// Années de tarif (Fabrice, 25/11/2026 : « case à cocher tarifs 2026 / 2027… on peut cocher les 2 années »).
+// Par défaut l'année en cours au 1er du mois suivant ; non retenu d'une ouverture à l'autre.
+const ANNEES=new Set([new Date(new Date().getFullYear(),new Date().getMonth()+1,1).getFullYear()>=2027?2027:2026]);
+function seul2027(){ return ANNEES.has(2027)&&!ANNEES.has(2026); }
 function apicilProfil(age,cnjAge,hasCnj,kids,reg,cpBrut,dept){
   const r=APICIL_REG[reg]||APICIL_REG.SAL;
   const brut=(cpBrut||"").trim();
@@ -3183,8 +3197,12 @@ function calc(){
             APRIL_ST.cpApproche=/^\d{5}$/.test(cpSaisi.trim())?"":pa.cp; }
     else { APRIL_ST={cle:"",etat:"erreur",res:null,message:!APRIL_SEL.filter(c=>!APRIL_FERMES[c]).length?"aucun produit ouvert parmi ceux cochés (bouton ☰ du panneau ⚖)":"département ou code postal requis"}; aprilRendu(); }
   } else if(APRIL_ST.etat!=="vide"){ APRIL_ST={cle:"",etat:"vide",res:null,message:""}; aprilRendu(); }
-  const {rows,warns}=Moteur.calculer({D,F,sel,age,cnjAge,hasCnj,kids,reg,dept,
-                                      zone:dept?ZMAP[dept]:null,apicil,april:aprilPourMoteur()});
+  const an=[...ANNEES], s27=seul2027(), apr=aprilPourMoteur();
+  const age27=Moteur.parseAge(document.getElementById("naiss").value,2027), cnj27=Moteur.parseAge(document.getElementById("cnj").value,2027);
+  if(ANNEES.has(2027)) document.getElementById("ageinfo").textContent=age==null?"":"Âge retenu : "+age+" ans"+(age27!=null&&age27!==age?" (2027 : "+age27+")":"");
+  const {rows,warns}=Moteur.calculer({D,F,sel,age,cnjAge,hasCnj,kids,reg,dept,annees:an,age2027:age27,cnjAge2027:cnj27,
+                                      zone:dept?ZMAP[dept]:null,apicil:s27?{}:apicil,april:s27?{etat:"vide"}:apr,
+                                      apicil2027:s27?apicil:null,april2027:s27?apr:null});
   render(rows,warns);
   try{ modelesSum(); }catch(e){}
   if(CUMUL&&CUMUL.maj) CUMUL.maj();          // fenêtre du cumul ouverte : ses tarifs suivent (retour d'API SANTÉ)            // libellé du bouton « Modèles » : le modèle qui correspond à la sélection
@@ -3196,10 +3214,10 @@ const SENDSEL=new Set();
 // « Afficher la sélection » (Fabrice, 06/10/2026) : le tableau ne montre plus que les formules cochées.
 // Un modèle de filtre enregistré dans cet état retient ces formules (gamme + niveau).
 let VOIRSEL=false;
-function selRows(){return LASTROWS.filter(r=>SENDSEL.has(r.key+"|"+r.fi));}
+function selRows(){return LASTROWS.filter(r=>SENDSEL.has(Tableau.cle(r)));}
 function offreTxt(r,full){
   const f=F[r.key], e=EX[r.key]||{};
-  let s=("• "+f.label+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")+" : "+eur(r.total)+" par mois";
+  let s=("• "+f.label+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")+(r.an===2027?" (tarif 2027)":"")+" : "+eur(r.total)+" par mois";
   if(full){
     const lines=[];
     for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
@@ -3222,7 +3240,7 @@ function sendIntro(){
 }
 function sendText(){
   let reco="";
-  if(RECO){const r=LASTROWS.find(x=>x.key+"|"+x.fi===RECO);
+  if(RECO){const r=LASTROWS.find(x=>Tableau.cle(x)===RECO);
     if(r)reco="\n\n\u2b50 Ma recommandation : "+(F[r.key].label+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")+" \u2014 "+eur(r.total)+" par mois.";}
   return sendIntro()+selRows().map(r=>offreTxt(r,true)).join("\n\n")+reco+"\n\nLes documents contractuels seuls font foi.";
 }
@@ -3236,7 +3254,7 @@ function resumesCRM(cols){
   return cols.slice(0,5).map(c=>{
     let cle=c.key+"|"+c.fi;
     if(c.key==="APRIL"){ const code=APRIL_ORDRE_RANG[Math.floor(c.fi/100)]; cle="APRIL:"+code+"|"+(c.fi%100); }
-    const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi);
+    const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi&&x.an===c.an);
     const prix=r&&isFinite(r.total)?Math.round(r.total*100)/100:null;
     return {cle,prix};
   });
@@ -3799,15 +3817,16 @@ function mailTableau(cols){
     lignes.push([lab,cols.map(c=>String(Tableau.affiche(GAR,c.key,c.fi,src)||"—")),LIGNES_AVANT.has(lab)?1:0,fort?"fort":""]);
   }
   const colonnes=cols.map(c=>{
-    const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi), g=F[c.key];
+    const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi&&x.an===c.an), g=F[c.key];
     const lim=Tableau.limites(GAR,c.key,c.fi);
     // La mention « non responsable » est due au prospect, mais certaines gammes la
     // portent déjà dans leurs limites : on ne l'écrit pas deux fois.
     const nr=(g&&g.resp===false&&!/non responsable/i.test(lim||""))?"Contrat NON responsable. ":"";
     // key et fi : le relais en fait le jeton signé du lien « Cette offre m'intéresse ».
-    return {key:c.key, fi:c.fi, gamme:g.label, formule:g.names[c.fi], nom:Tableau.nomComplet(GAR,c.key,c.fi),
+    const a27=c.an===2027?" 2027":"";
+    return {key:c.key, fi:c.fi, gamme:g.label+a27, formule:g.names[c.fi], nom:Tableau.nomComplet(GAR,c.key,c.fi)+a27,
             logo:(g.logo||g.ins)?("logo_"+(g.logo||g.ins)+".png"):"", compagnie:(COMP[c.key]||""),
-            prix:r?eur(r.total):"", reco:RECO===(c.key+"|"+c.fi),
+            prix:r?eur(r.total):"", reco:RECO===(Tableau.cle(c)),
             // Dans le courrier, sous chaque colonne : GARANTIES puis IPID - NOTICE, rien d'autre (Fabrice, 05/10/2026 : conditions
             // générales et demande d'adhésion APRIL retirées). La fenêtre « Vérifier » de la page les garde.
             docs:Tableau.documents(GAR,c.key,c.fi,regimeActuel()).filter(d=>!/^(Conditions générales|Demande d.adhésion)/i.test(d.libelle||d[0]||"")), limites:nr+(lim||"")};
@@ -3858,7 +3877,7 @@ function bandeauOk(texte){
 // comparatif — mêmes formules — au même destinataire dans les 10 minutes n'est pas renvoyé sans le
 // dire. Retenu sur l'appareil (l'onglet ↗ compris), et en mémoire si le navigateur refuse le stockage.
 const DOUBLON_MS=10*60*1000, ENVOIS={};
-function envoiCle(dest,tg){return String(dest).trim().toLowerCase()+"|"+tg.colonnes.map(c=>c.key+"|"+c.fi).join(",");}
+function envoiCle(dest,tg){return String(dest).trim().toLowerCase()+"|"+tg.colonnes.map(c=>Tableau.cle(c)).join(",");}
 function envoisLus(){let m={};try{m=JSON.parse(localStorage.getItem("santeo_envois")||"{}")||{};}catch(_){}
   return Object.assign(m,ENVOIS);}
 function envoiRecent(cle){const t=envoisLus()[cle];return (t&&Date.now()-t<DOUBLON_MS)?t:0;}
@@ -4418,7 +4437,7 @@ function render(rows,warns){
   const finfo=fapplique(rows);
   rows=finfo.rows; fmaj(finfo);
   if(VOIRSEL&&SENDSEL.size){
-    const n0=rows.length; rows=rows.filter(r=>SENDSEL.has(r.key+"|"+r.fi));
+    const n0=rows.length; rows=rows.filter(r=>SENDSEL.has(Tableau.cle(r)));
     warns=warns.concat(["👁 Sélection seule : "+rows.length+" formule"+(rows.length>1?"s":"")+" cochée"+(rows.length>1?"s":"")+" sur "+n0
       +(rows.length<SENDSEL.size?" ("+(SENDSEL.size-rows.length)+" cochée(s) hors du tableau : non proposée(s) à ce profil ou écartée(s) par un filtre)":"")
       +". Bouton « Tout afficher » en bas pour revenir à la liste complète."]);
@@ -4437,7 +4456,7 @@ function render(rows,warns){
                  :(parseAge(document.getElementById("naiss").value)!=null?"Aucune formule dans le périmètre choisi : cochez d'autres compagnies dans le panneau ⚖."+(sel.APRIL?" Tarifs APRIL : voir le bloc APRIL ci-dessous.":""):"Renseigne une année de naissance (ou un âge) pour lancer le calcul."))+'</td></tr>';}
   else{
     const corps=rows.map((r,i)=>{
-      const rk=r.key+"|"+r.fi;
+      const rk=Tableau.cle(r);
       const isOpen=openKeys.has(rk);
       const bud=fbudget();
       const sur=(bud!=null&&r.total>bud)?[["sur","+"+Math.round((r.total/bud-1)*100)+" % / budget"]]:[];
@@ -4495,7 +4514,7 @@ function render(rows,warns){
       });
     });
     tb.querySelectorAll(".rowvoir").forEach(b=>b.addEventListener("click",ev=>{
-      ev.stopPropagation(); const r=LASTROWS.find(x=>x.key+"|"+x.fi===b.dataset.voir); if(r) verifDocs(r); }));
+      ev.stopPropagation(); const r=LASTROWS.find(x=>Tableau.cle(x)===b.dataset.voir); if(r) verifDocs(r); }));
     tb.querySelectorAll(".rowstar").forEach(b=>b.addEventListener("click",ev=>{
       ev.stopPropagation();
       const id=b.dataset.star;
@@ -5233,6 +5252,17 @@ if(__PRIV__){
   const el=document.getElementById(id);
   el.addEventListener("input",calc); el.addEventListener("change",calc);
 });
+function anInfo(){
+  document.getElementById("an2026").checked=ANNEES.has(2026); document.getElementById("an2027").checked=ANNEES.has(2027);
+  document.getElementById("aninfo").textContent=!ANNEES.has(2027)?"":seul2027()
+    ?"2027 : Avenir Mutuelle, APICIL et APRIL (tarifs au 01/01/2027) ; les autres compagnies n'ont pas encore de grille 2027."
+    :"2027 : Avenir Mutuelle seule ; APICIL et APRIL restent en 2026 (décochez 2026 pour leur tarif 2027).";
+}
+[2026,2027].forEach(a=>document.getElementById("an"+a).addEventListener("change",ev=>{
+  if(ev.target.checked) ANNEES.add(a); else if(ANNEES.size>1) ANNEES.delete(a);
+  anInfo(); calc();
+}));
+anInfo();
 calc();
 
 // ---- IA produits (Fabrice, 03/10/2026) ----

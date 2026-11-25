@@ -126,13 +126,16 @@ function celluleEntete(G,c,o){
   return logo(G,c.key,o.base)
     +(o.reco?'<span class="recolbl">⭐ Je vous conseille</span>'
             :'<span class="star" title="Conseiller cette formule">☆</span>')
-    +(o.multi?'<span style="display:block;font-size:11px;opacity:.75">'+G.gammes[c.key].label+'</span>':'')
+    +(o.multi?'<span style="display:block;font-size:11px;opacity:.75">'+G.gammes[c.key].label+(c.an?" "+c.an:"")+'</span>':'')
     +G.gammes[c.key].names[c.fi]
+    +(c.an&&!o.multi?'<span style="display:block;font-size:11px;opacity:.75">Tarif '+c.an+'</span>':'')
     +(o.tarif!==undefined&&o.tarif!==null
         ?'<div class="thprice" style="'+PRIXSTYLE+'">'+eur(o.tarif)+' /mois</div>':'');
 }
 
-function estReco(reco,c){ return reco===(c.key+"|"+c.fi); }
+// Identifiant d'une colonne / ligne : « clé|fi », suivi de « |2027 » pour un tarif 2027 (case Tarifs 2026 / 2027, 25/11/2026).
+function cle(c){ return c.key+"|"+c.fi+(c.an===2027?"|2027":""); }
+function estReco(reco,c){ return reco===cle(c); }
 
 // Les indemnités journalières n'ont de sens que si l'une des formules en verse : en tête du bloc Hospitalisation.
 function lignes(G,cols){
@@ -145,7 +148,7 @@ function entete(G,cols,reco,o){
   const multi=cols.some(c=>c.key!==cols[0].key);
   return '<tr><th></th>'+cols.map((c,ci)=>'<th class="pick'+(estReco(reco,c)?' reco':'')+'" data-ci="'+ci+'">'
     +celluleEntete(G,c,{reco:estReco(reco,c),multi:multi,base:o.base,
-                        tarif:o.tarifs?o.tarifs[c.key+"|"+c.fi]:undefined})
+                        tarif:o.tarifs?o.tarifs[cle(c)]:undefined})
     +'</th>').join('')+'</tr>';
 }
 
@@ -781,6 +784,7 @@ exporter.baseDevisLignes=baseDevisLignes;
 exporter.celluleEntete=celluleEntete;
 exporter.lignes=lignes;
 exporter.entete=entete;
+exporter.cle=cle;
 exporter.corps=corps;
 exporter.atouts=atouts;
 exporter.nomComplet=nomComplet;

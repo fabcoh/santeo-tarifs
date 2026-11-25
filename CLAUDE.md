@@ -239,6 +239,16 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   Tarifs vérifiés le 19/11/2026 contre l'extranet MCCI (salarié et TNS, 60 ans, Paris) : identiques au centime. **Pastille rouge
   « ⚠ Retraités uniquement » sur chaque ligne SOLENCIA** (Fabrice, 19/11/2026 : « une information en rouge… dès que la personne a
   dépassé 62 ans ») : chip `alerte` posée par `moteur.js`, classe `.chip.alerte` (variable `--alerte-bg`, déclarée dans les trois thèmes).
+- **Tarifs 2027 d'Avenir Mutuelle** (Fabrice, 25/11/2026 : grille 2027 reçue en xlsx ; « case à cocher tarifs ( ) 2026 ( ) 2027… on peut
+  cocher les 2 années ») : `tarifs_all.json → AN2027` (`CAPEVO`, `CAPNR`, `TALIS`, `LPSH`, `AVZ` + 973 en zone 3 ; mêmes formats que
+  2026, bloc TTC du classeur), environ +6 %. **LPS Hospi a désormais un tarif enfant** (ligne « 15 », compté par enfant) ; **TALIS sans
+  tarif conjoint à 16–17 ans** (alerte, conjoint non tarifé). `Moteur.calculer({…, annees:[2026,2027], age2027, cnjAge2027, apicil2027,
+  april2027})` : sans `annees`, rien ne change (2026). Lignes 2027 : `an:2027`, gamme + « 2027 », pastille « Tarif 2027 » ; avec les deux
+  années, les lignes Avenir 2026 portent « 2026 ». Âge 2027 = âge atteint en 2027. Identifiant de ligne **`Tableau.cle(r)`** = « K|fi »
+  + « |2027 » (cases, étoile, tableau de garantie) ; les résumés / `lien.php` gardent « K|fi ». Page : cases **Tarifs ☐ 2026 ☐ 2027**
+  sous la ligne du haut (`ANNEES`, par défaut l'année du 1er du mois suivant, jamais aucune). **2027 seul** : Avenir 2027 + APICIL et
+  APRIL demandés au 01/01/2027 (`apicilEffet`) ; MCCI, Mutuelle Verte, Révoluo masqués (pas de grille 2027). **Les deux** : APICIL /
+  APRIL restent en 2026. Restent en 2026 : le cumul, `interet.php`, les images `docs/tg/`. Test : scratchpad `w/t_2027.js`.
 - **MCCINOVA** : mineurs au tarif 18 ans ; cadre « Conditions MCCINOVA » (âge atteint dans l'année, enfants
   jusqu'à 28 ans) affiché seulement si la gamme est dans le tableau.
 - **RÉVOLUO / RF50 / RF100** : grille × zone (75 = zone 1) × régime (TNS ×0,90 ; Alsace-Moselle ×0,65 sans zone),

@@ -51,6 +51,41 @@ function deptOf(s){
   return null;
 }
 
+// Tarifs 2027 (Fabrice, 25/11/2026 : case « Tarifs ☐ 2026 ☐ 2027 », « on peut cocher les 2 années pour avoir les 2 tarifs ») :
+// e.annees = [2026] par défaut (rien ne change pour un appelant qui l'ignore), [2027] ou [2026, 2027].
+// Seul Avenir a une grille 2027 (D.AN2027 : CAPEVO, CAPNR, TALIS, LPSH, AVZ). En 2027 seul, les autres gammes ne
+// sont pas affichées (Fabrice : « tu ne les affiches pas ») ; API SANTÉ et APRIL, si l'appelant les a tarifés à un effet
+// en 2027 (e.apicil2027 / e.april2027, même forme que apicil / april), le sont. Âges : âge atteint en 2027
+// (e.age2027 / e.cnjAge2027, sinon âge + 1). Lignes 2027 : an = 2027, gamme + « 2027 », pastille « Tarif 2027 ».
+const AVENIR=["CAPEVO","CAPNR","TALIS","LPSH"];
+function calculer(e){
+  const an=(Array.isArray(e.annees)&&e.annees.length)?e.annees.map(Number):[2026];
+  const a26=an.includes(2026), a27=an.includes(2027)&&!!(e.D&&e.D.AN2027);
+  if(a26&&!a27) return calculerUn(e);
+  const sel=e.sel||{}, coche=Object.values(sel).some(v=>v), on=k=>coche?!!sel[k]:true;
+  let rows=[],warns=[];
+  if(a26){
+    const r=calculerUn(e);
+    r.rows.forEach(x=>{ if(AVENIR.includes(x.key)){ x.an=2026; x.gamme+=" 2026"; x.chips=x.chips.concat([["info","Tarif 2026"]]); } });
+    rows=rows.concat(r.rows); warns=warns.concat(r.warns);
+  }
+  const tag=(r,pref)=>{ r.rows.forEach(x=>{ x.an=2027; x.gamme+=" 2027"; x.chips=x.chips.concat([["info","Tarif 2027"]]); });
+    rows=rows.concat(r.rows); warns=warns.concat(r.warns.map(w=>pref+w)); };
+  const age27=e.age2027!=null?e.age2027:(e.age!=null?e.age+1:null);
+  const cnj27=e.cnjAge2027!=null?e.cnjAge2027:(e.cnjAge!=null?e.cnjAge+1:null);
+  const s27={}; AVENIR.forEach(k=>{ s27[k]=k==="TALIS"?!!sel.TALIS:on(k); });
+  if(AVENIR.some(k=>s27[k])){
+    const D27=Object.assign({},e.D,e.D.AN2027);
+    tag(calculerUn(Object.assign({},e,{D:D27,sel:s27,age:age27,cnjAge:cnj27,apicil:{},april:{etat:"vide"}})),"2027 — ");
+  }
+  if(!a26&&(e.apicil2027||e.april2027)){
+    const sA={APICIL:on("APICIL"),APRIL:!!sel.APRIL};
+    if(sA.APICIL||sA.APRIL) tag(calculerUn(Object.assign({},e,{sel:sA,age:age27,cnjAge:cnj27,apicil:e.apicil2027||{},april:e.april2027||{etat:"vide"}})),"2027 — ");
+  }
+  rows.sort((x,y)=>(x.total||0)-(y.total||0));
+  return {rows,warns};
+}
+
 // Département → zone MCCI, d'après les zones de src/tarifs_all.json.
 function zones(D){
   const z={};
@@ -58,7 +93,7 @@ function zones(D){
   return z;
 }
 
-function calculer(e){
+function calculerUn(e){
   const D=e.D, F=e.F, sel=e.sel||{}, api=e.apicil||{}, apr=e.april||{};
   const age=e.age, cnjAge=e.cnjAge, hasCnj=!!e.hasCnj, kids=+e.kids||0;
   const reg=e.reg||"SAL", dept=e.dept||null, zone=e.zone||null;
@@ -218,8 +253,11 @@ function calculer(e){
       const a=String(age);
       let pC=null;
       if(hasCnj&&cnjAge!=null&&cnjAge>=16)pC=g[String(Math.min(Math.max(cnjAge,16),100))][c*2+1];
+      // Grille 2027 : un tarif enfant (ligne « 15 »), compté pour chaque enfant ; la grille 2026 n'en a pas.
+      const kpL=g["15"]?g["15"][c*2]:null;
       push("LPSH",0,"",[["nr","Non responsable"],["info","Hospitalisation seule"],["info","IJ 20 €/jour"]],
-        g[a][c*2],hasCnj?pC:null,null,kids>0?"mineurs : nous consulter":"",false);
+        g[a][c*2],hasCnj?pC:null,(kids>0&&kpL)?Math.round(kpL*kids*100)/100:null,
+        kids>0?(kpL?kids+" × "+eur(kpL):"mineurs : nous consulter"):"",false);
     }
   }
   // TALIS — surcomplémentaire : elle vient en plus d'une complémentaire, pas à la place.
@@ -232,6 +270,7 @@ function calculer(e){
       const pA=g[a][f*2];
       let pC=null;
       if(hasCnj&&cnjAge!=null&&cnjAge>=16)pC=g[String(Math.min(Math.max(cnjAge,16),100))][f*2+1];
+      if(hasCnj&&cnjAge!=null&&pC==null){ if(f===0) warns.push("TALIS : pas de tarif conjoint à "+cnjAge+" ans — gamme non tarifée."); continue; }
       const kp=g["15"][f*2];
       const pK=kids>0?kp*kids:null;
       push("TALIS",f,"",[["info","Surcomplémentaire"],["nr","Non responsable"]],pA,hasCnj?pC:null,pK,
@@ -239,7 +278,7 @@ function calculer(e){
     }
   }
   if(isRL) warns.push("Régime local Alsace-Moselle : grilles MCCI non applicables (taux spécifiques, consulter MCCI) — restent CAP EVOLUTION RL, CAP NR RL et TALIS.");
-  if(kids>0&&on("LPSH")) warns.push("LPS HOSPI : pas de tarif enfant dans la grille 2026 — total affiché hors mineurs pour cette gamme.");
+  if(kids>0&&on("LPSH")&&!(D.LPSH&&D.LPSH["15"])) warns.push("LPS HOSPI : pas de tarif enfant dans la grille 2026 — total affiché hors mineurs pour cette gamme.");
   if(kids>0&&on("MCCINOVA")&&!isRL) warns.push("MCCINOVA : les mineurs sont tarifés au tarif 18 ans, sans gratuité à partir du 3ᵉ enfant.");
   // API SANTÉ (APICIL) — tarif demandé à l'assureur, pas de grille locale à maintenir
   // API Santé est une complémentaire comme les autres : même règle de sélection.
