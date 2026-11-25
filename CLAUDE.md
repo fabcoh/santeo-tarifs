@@ -258,7 +258,7 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   WhatsApp, courrier (`colonnes[].prix2027` ; relais `santeo-mail.php` `2026-11-25 tarif 2027…`, jeton `p27`) et `interet.php`
   (page et mail « Intérêt confirmé »). Aussi (Fabrice, « ok », 25/11/2026) : **PDF joint** (« (2027 : x €/m) » gris, plus petit, au-dessus du prix tamponné, `total27`),
   **calculette Cumul** et **comparatif** (`o.tarifs27`, `.cu-p27`, `CUMUL_T27`). **Résumés CRM** : `prix2027` prêt derrière
-  `RESUMES_P27=false`, à allumer quand le CRM accepte le champ. Tests : scratchpad `w/t_p27.js`, `w/t_cu27.js`.
+  `RESUMES_P27=true` depuis le 25/11/2026 (le CRM WhatsApp l’accepte ; affichage dans le résumé à venir chez lui). Tests : scratchpad `w/t_p27.js`, `w/t_cu27.js`.
 - **MCCINOVA** : mineurs au tarif 18 ans ; cadre « Conditions MCCINOVA » (âge atteint dans l'année, enfants
   jusqu'à 28 ans) affiché seulement si la gamme est dans le tableau.
 - **RÉVOLUO / RF50 / RF100** : grille × zone (75 = zone 1) × régime (TNS ×0,90 ; Alsace-Moselle ×0,65 sans zone),

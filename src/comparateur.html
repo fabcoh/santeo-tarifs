@@ -3305,7 +3305,7 @@ function sendText(){
 const RESUMES_SEULS=true;
 // prix2027 dans les résumés (Fabrice, 25/11/2026 : tarif 2027 « sur tous les documents ») : à n'allumer qu'une fois le CRM d'accord
 // pour recevoir ce champ (demande transmise le 25/11/2026) — un champ inconnu pourrait faire refuser le lot.
-const RESUMES_P27=false;
+const RESUMES_P27=true;   // allumé le 25/11/2026 : le CRM WhatsApp accepte le champ (z.object non strict), il l’ignore tant qu’il ne l’affiche pas
 function resumesCRM(cols){
   return cols.slice(0,5).map(c=>{
     let cle=c.key+"|"+c.fi;
