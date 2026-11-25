@@ -118,6 +118,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 tr.offer{cursor:pointer;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 tr.offer:hover td{background:var(--soft)}
 .total{font-weight:700;font-size:15px}
+.p27{display:block;font-weight:600;font-size:11px;color:var(--muted);white-space:nowrap}
 .caret{display:inline-block;width:14px;color:var(--muted);transition:transform .15s;font-size:11px}
 tr.open .caret{transform:rotate(90deg)}
 .gamme{display:flex;align-items:center;gap:7px}
@@ -684,7 +685,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-25T15:55:53Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-25T15:55:53Z</div>
+  <div id="buildstamp" data-build="2026-11-25T16:24:28Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-25T16:24:28Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -751,31 +752,47 @@ function deptOf(s){
 // sont pas affichées (Fabrice : « tu ne les affiches pas ») ; API SANTÉ et APRIL, si l'appelant les a tarifés à un effet
 // en 2027 (e.apicil2027 / e.april2027, même forme que apicil / april), le sont. Âges : âge atteint en 2027
 // (e.age2027 / e.cnjAge2027, sinon âge + 1). Lignes 2027 : an = 2027, gamme + « 2027 », pastille « Tarif 2027 ».
+// Parenthèse « tarif 2027 » (Fabrice, 25/11/2026 : « tant que tu es en 2026, tu mets une petite parenthèse avec le tarif 2027,
+// systématiquement sur tous les documents ») : e.prix2027 = true avec [2026] seul → chaque ligne 2026 qui a un tarif 2027
+// (Avenir par la grille, API SANTÉ / APRIL si e.apicil2027 / e.april2027 sont fournis) porte r.prix2027 (nombre). Les lignes
+// et le tri ne changent pas.
 const AVENIR=["CAPEVO","CAPNR","TALIS","LPSH"];
+function lignes2027(e,avenir,api){
+  const sel=e.sel||{}, coche=Object.values(sel).some(v=>v), on=k=>coche?!!sel[k]:true;
+  const age27=e.age2027!=null?e.age2027:(e.age!=null?e.age+1:null);
+  const cnj27=e.cnjAge2027!=null?e.cnjAge2027:(e.cnjAge!=null?e.cnjAge+1:null);
+  const out=[];
+  const s27={}; AVENIR.forEach(k=>{ s27[k]=k==="TALIS"?!!sel.TALIS:on(k); });
+  if(avenir&&AVENIR.some(k=>s27[k]))
+    out.push(calculerUn(Object.assign({},e,{D:Object.assign({},e.D,e.D.AN2027),sel:s27,age:age27,cnjAge:cnj27,apicil:{},april:{etat:"vide"}})));
+  if(api&&(e.apicil2027||e.april2027)){
+    const sA={APICIL:on("APICIL"),APRIL:!!sel.APRIL};
+    if(sA.APICIL||sA.APRIL) out.push(calculerUn(Object.assign({},e,{sel:sA,age:age27,cnjAge:cnj27,apicil:e.apicil2027||{},april:e.april2027||{etat:"vide"}})));
+  }
+  return out;
+}
 function calculer(e){
   const an=(Array.isArray(e.annees)&&e.annees.length)?e.annees.map(Number):[2026];
   const a26=an.includes(2026), a27=an.includes(2027)&&!!(e.D&&e.D.AN2027);
-  if(a26&&!a27) return calculerUn(e);
-  const sel=e.sel||{}, coche=Object.values(sel).some(v=>v), on=k=>coche?!!sel[k]:true;
+  if(a26&&!a27){
+    const r=calculerUn(e);
+    if(e.prix2027&&e.D&&e.D.AN2027){
+      const p={};
+      lignes2027(e,true,true).forEach(x=>x.rows.forEach(y=>{ if(isFinite(y.total)) p[y.key+"|"+y.fi]=y.total; }));
+      r.rows.forEach(x=>{ const v=p[x.key+"|"+x.fi]; if(v!=null) x.prix2027=v; });
+    }
+    return r;
+  }
   let rows=[],warns=[];
   if(a26){
     const r=calculerUn(e);
     r.rows.forEach(x=>{ if(AVENIR.includes(x.key)){ x.an=2026; x.gamme+=" 2026"; x.chips=x.chips.concat([["info","Tarif 2026"]]); } });
     rows=rows.concat(r.rows); warns=warns.concat(r.warns);
   }
-  const tag=(r,pref)=>{ r.rows.forEach(x=>{ x.an=2027; x.gamme+=" 2027"; x.chips=x.chips.concat([["info","Tarif 2027"]]); });
-    rows=rows.concat(r.rows); warns=warns.concat(r.warns.map(w=>pref+w)); };
-  const age27=e.age2027!=null?e.age2027:(e.age!=null?e.age+1:null);
-  const cnj27=e.cnjAge2027!=null?e.cnjAge2027:(e.cnjAge!=null?e.cnjAge+1:null);
-  const s27={}; AVENIR.forEach(k=>{ s27[k]=k==="TALIS"?!!sel.TALIS:on(k); });
-  if(AVENIR.some(k=>s27[k])){
-    const D27=Object.assign({},e.D,e.D.AN2027);
-    tag(calculerUn(Object.assign({},e,{D:D27,sel:s27,age:age27,cnjAge:cnj27,apicil:{},april:{etat:"vide"}})),"2027 — ");
-  }
-  if(!a26&&(e.apicil2027||e.april2027)){
-    const sA={APICIL:on("APICIL"),APRIL:!!sel.APRIL};
-    if(sA.APICIL||sA.APRIL) tag(calculerUn(Object.assign({},e,{sel:sA,age:age27,cnjAge:cnj27,apicil:e.apicil2027||{},april:e.april2027||{etat:"vide"}})),"2027 — ");
-  }
+  lignes2027(e,true,!a26).forEach(r=>{
+    r.rows.forEach(x=>{ x.an=2027; x.gamme+=" 2027"; x.chips=x.chips.concat([["info","Tarif 2027"]]); });
+    rows=rows.concat(r.rows); warns=warns.concat(r.warns.map(w=>"2027 — "+w));
+  });
   rows.sort((x,y)=>(x.total||0)-(y.total||0));
   return {rows,warns};
 }
@@ -3817,6 +3834,7 @@ function renderTG(cols,title,sub,note,single){
     const c2=cols[ix-1]; const r2=c2&&LASTROWS.find(x=>x.key===c2.key&&x.fi===c2.fi&&x.an===c2.an);
     const d2=document.createElement('div'); d2.className='thprice';
     d2.textContent=r2?eur(r2.total)+" /mois":"—";
+    if(r2&&r2.prix2027!=null){ const d3=document.createElement('span'); d3.className='p27'; d3.style.cssText="font:600 10.5px 'Archivo',sans-serif;color:#5C6879"; d3.textContent="(tarif 2027 : "+eur(r2.prix2027)+")"; d2.appendChild(d3); }
     d2.style.cssText="font:800 12.5px 'Archivo',sans-serif;color:var(--accent);margin-top:3px;text-transform:none";
     th2.appendChild(d2);
   });
@@ -4138,6 +4156,32 @@ async function apicilCharge(profil,cle){
   if(APICIL.cle===cle){ APICIL=etat; calc(); }   // une réponse périmée est ignorée
 }
 
+// ---- Tarifs 2027 d'API SANTÉ et d'APRIL pour la parenthèse « (2027 : x €) » (Fabrice, 25/11/2026) ----
+// Avec « 2026 » seul coché, un second appel au 01/01/2027, à part : il ne touche ni au tableau ni au cache 2026.
+let APICIL27={cle:"",etat:"vide",tarifs:null}, APRIL27={cle:"",etat:"vide",res:null}, t27a=null, t27b=null;
+function apicil27Demande(profil,cle){
+  APICIL27={cle,etat:"attente",tarifs:null}; clearTimeout(t27a);
+  t27a=setTimeout(async()=>{
+    let etat={cle,etat:"erreur",tarifs:null};
+    try{ const rp=await fetch(APICIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(profil)});
+      const d=await rp.json().catch(()=>null);
+      if(rp.ok&&d&&Array.isArray(d.Formules)){ const t={}; d.Formules.forEach(f=>{const v=parseFloat(f.TarifFormule); if(!isNaN(v))t[f.LibelleFormule]=v;}); etat={cle,etat:"ok",tarifs:t}; }
+    }catch(e){}
+    if(APICIL27.cle===cle){ APICIL27=etat; calc(); }
+  },900);
+}
+function april27Demande(pa,cle){
+  APRIL27={cle,etat:"attente",res:null}; clearTimeout(t27b);
+  t27b=setTimeout(async()=>{
+    let etat={cle,etat:"erreur",res:null};
+    try{ const rp=await fetch(APRIL_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(pa)});
+      const d=await rp.json().catch(()=>null);
+      if(rp.ok&&d&&Array.isArray(d.produits)) etat={cle,etat:"ok",res:d.produits,famille:!!d.famille&&!d.liensFamille};
+    }catch(e){}
+    if(APRIL27.cle===cle){ APRIL27=etat; calc(); }
+  },1200);
+}
+
 // ---- APRIL : tarifs demandés à l'assureur par notre relais (capisante.fr/april.php) ----------
 // Même principe qu'API SANTÉ : la page n'appelle jamais APRIL. Les produits interrogés sont ceux
 // cochés au bouton ☰ du panneau ⚖ (APRIL_SEL). Tant que les garanties APRIL ne sont pas saisies,
@@ -4302,8 +4346,8 @@ function aprilNiveaux(n){
   const garde=k.some(x=>x.includes("|"))?diag:k;
   return garde.map(x=>({niv:parseInt(x,10),prix:n[x]}));
 }
-function aprilPourMoteur(){
-  const st=APRIL_ST;
+function aprilPourMoteur(st){
+  st=st||APRIL_ST;
   if(st.etat!=="ok"||!st.res) return {etat:st.etat};
   return {etat:"ok",famille:!!st.famille,produits:st.res.filter(p=>p.etat==="ok").map(p=>({code:p.produit,idx:APRIL_RANG[p.produit],
     nom:APRIL_NOM[p.produit]||p.produit,resp:!!(APRIL_GAR[p.produit]&&APRIL_GAR[p.produit].resp===true),niveaux:aprilNiveaux(p.niveaux)}))};
@@ -4365,7 +4409,21 @@ function calc(){
               approche:apicilApproche,cpExact:/^\d{5}$/.test(cpSaisi.trim())};
     }
   }
+  // Parenthèse 2027 : « 2026 » seul coché et effet encore en 2026 → second appel au 01/01/2027.
+  const avec27=ANNEES.has(2026)&&!ANNEES.has(2027)&&apicilEffet()<"2027-01-01";
+  let apicil27=null, april27=null;
+  if(avec27&&apicil.profil){
+    const p27=Object.assign({},apicil.profil,{dateEffetContrat:"2027-01-01"}), c27=JSON.stringify(p27);
+    if(APICIL27.cle!==c27) apicil27Demande(p27,c27);
+    if(APICIL27.etat==="ok") apicil27={profil:p27,etat:"ok",tarifs:APICIL27.tarifs};
+  }
   // APRIL : seulement si la case APRIL est cochée — son quota ne doit pas servir à chaque saisie.
+  if(avec27&&sel.APRIL&&age!=null){
+    const pa=aprilProfil(age,cnjAge,hasCnj,kids,reg,cpSaisi,dept);
+    if(pa){ const p27=Object.assign({},pa,{effet:"2027-01-01"}), c27=JSON.stringify(p27);
+      if(APRIL27.cle!==c27) april27Demande(p27,c27);
+      if(APRIL27.etat==="ok") april27=aprilPourMoteur(APRIL27); }
+  }
   if(sel.APRIL&&age!=null){
     const pa=aprilProfil(age,cnjAge,hasCnj,kids,reg,cpSaisi,dept);
     if(pa){ const cle=JSON.stringify(pa); if(APRIL_ST.cle!==cle){ aprilDemande(pa,cle); aprilRendu(); }
@@ -4377,7 +4435,7 @@ function calc(){
   if(ANNEES.has(2027)) document.getElementById("ageinfo").textContent=age==null?"":"Âge retenu : "+age+" ans"+(age27!=null&&age27!==age?" (2027 : "+age27+")":"");
   const {rows,warns}=Moteur.calculer({D,F,sel,age,cnjAge,hasCnj,kids,reg,dept,annees:an,age2027:age27,cnjAge2027:cnj27,
                                       zone:dept?ZMAP[dept]:null,apicil:s27?{}:apicil,april:s27?{etat:"vide"}:apr,
-                                      apicil2027:s27?apicil:null,april2027:s27?apr:null});
+                                      apicil2027:s27?apicil:apicil27,april2027:s27?apr:april27,prix2027:avec27});
   render(rows,warns);
   try{ modelesSum(); }catch(e){}
   if(CUMUL&&CUMUL.maj) CUMUL.maj();          // fenêtre du cumul ouverte : ses tarifs suivent (retour d'API SANTÉ)            // libellé du bouton « Modèles » : le modèle qui correspond à la sélection
@@ -4392,7 +4450,7 @@ let VOIRSEL=false;
 function selRows(){return LASTROWS.filter(r=>SENDSEL.has(Tableau.cle(r)));}
 function offreTxt(r,full){
   const f=F[r.key], e=EX[r.key]||{};
-  let s=("• "+f.label+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")+(r.an===2027?" (tarif 2027)":"")+" : "+eur(r.total)+" par mois";
+  let s=("• "+f.label+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")+(r.an===2027?" (tarif 2027)":"")+" : "+eur(r.total)+" par mois"+(r.prix2027!=null?" (tarif 2027 : "+eur(r.prix2027)+")":"");
   if(full){
     const lines=[];
     for(const [lab,src] of [["Indemnités journalières hospitalisation","ij"]].concat(TGROWS)){
@@ -4416,7 +4474,7 @@ function sendIntro(){
 function sendText(){
   let reco="";
   if(RECO){const r=LASTROWS.find(x=>Tableau.cle(x)===RECO);
-    if(r)reco="\n\n\u2b50 Ma recommandation : "+(F[r.key].label+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")+" \u2014 "+eur(r.total)+" par mois.";}
+    if(r)reco="\n\n\u2b50 Ma recommandation : "+(F[r.key].label+" "+r.formule).replace(/(^|\s)(\S+) \2(?=\s|$)/,"$1$2")+" \u2014 "+eur(r.total)+" par mois"+(r.prix2027!=null?" (tarif 2027 : "+eur(r.prix2027)+")":"")+".";}
   return sendIntro()+selRows().map(r=>offreTxt(r,true)).join("\n\n")+reco+"\n\nLes documents contractuels seuls font foi.";
 }
 // Dépôt dans la conversation du CRM (lien venu du CRM avec jeton) — rien n'est envoyé au prospect
@@ -5001,7 +5059,7 @@ function mailTableau(cols){
     const a27=c.an===2027?" 2027":"";
     return {key:c.key, fi:c.fi, gamme:g.label+a27, formule:g.names[c.fi], nom:Tableau.nomComplet(GAR,c.key,c.fi)+a27,
             logo:(g.logo||g.ins)?("logo_"+(g.logo||g.ins)+".png"):"", compagnie:(COMP[c.key]||""),
-            prix:r?eur(r.total):"", reco:RECO===(Tableau.cle(c)),
+            prix:r?eur(r.total):"", prix2027:(r&&r.prix2027!=null)?eur(r.prix2027):"", reco:RECO===(Tableau.cle(c)),
             // Dans le courrier, sous chaque colonne : GARANTIES puis IPID - NOTICE, rien d'autre (Fabrice, 05/10/2026 : conditions
             // générales et demande d'adhésion APRIL retirées). La fenêtre « Vérifier » de la page les garde.
             docs:Tableau.documents(GAR,c.key,c.fi,regimeActuel()).filter(d=>!/^(Conditions générales|Demande d.adhésion)/i.test(d.libelle||d[0]||"")), limites:nr+(lim||"")};
@@ -5643,7 +5701,7 @@ function render(rows,warns){
       '<td><div class="gamme"><span class="dot '+r.ins+'"></span><span class="gname '+(r.resp?"rp":"nrp")+'">'+r.gamme+'</span></div>'
       +'<div class="fname">'+r.formule+'<button type="button" class="rowvoir" data-voir="'+rk+'" title="Voir le tableau de garantie officiel" aria-label="Voir le document">👁</button>'+('<button class="rowstar'+(isR?" on":"")+'" data-star="'+rk+'" title="Conseiller cette formule">'+(isR?"⭐":"☆")+'</button>')+'</div>'
       +'<div class="chips">'+(isR?'<span class="chip reco">⭐ Je vous conseille</span>':"")+chips+"</div></td>"+
-      '<td class="num total">'+eur(r.total)+(r.incomplete?" *":"")+"</td>"+
+      '<td class="num total">'+eur(r.total)+(r.incomplete?" *":"")+(r.prix2027!=null?'<span class="p27">(2027 : '+eur(r.prix2027)+')</span>':"")+"</td>"+
       '<td class="g">'+r.dent+(Tableau.dentVisibles(GAR,r.key,r.fi)?'<div class="hosp">'+Tableau.dentVisibles(GAR,r.key,r.fi)+' dents visibles</div>':'')+"</td>"+
       EXD.filter(e=>exOn[e[0]]).map(e=>'<td class="g">'+exVal(r.key,e[0],r.fi)+"</td>").join("")+
       '<td class="g">'+r.hospO+(r.ch&&r.ch!=="—"?'<div class="hosp">'+r.ch.replace("/j","")+' ch. part.</div>':"")+'</td><td class="g">'+r.hospN+"</td>"+
