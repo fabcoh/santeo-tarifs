@@ -624,7 +624,7 @@ function comparatifSoins(G,o){
   const dep=o.depenses||{}, RS=cols.map(c=>cumulDepenses(G,c,null,dep));
   const ids=CU_DEP.map(L=>L[0]).filter(id=>RS.some(R=>R.lignes.some(l=>l.id===id)));
   const estAuto=id=>RS.some(R=>R.lignes.some(l=>l.id===id&&l.auto));
-  const px=cols.map(c=>tar[c.key+"|"+c.fi]), prix=px.every(x=>x!=null);
+  const px=cols.map(c=>tar[c.key+"|"+c.fi]), prix=px.every(x=>x!=null), t27=o.tarifs27||{};
   const nom=c=>nomComplet(G,c.key,c.fi);
   const C=(cls,x)=>'<div class="'+cls+'"><span>'+x+'</span></div>';
   // Ce que la mutuelle revient à l'année = cotisations annuelles − remboursements de la mutuelle seule ; la Sécurité sociale n'en est
@@ -653,7 +653,8 @@ function comparatifSoins(G,o){
   // (Fabrice, 20/10/2026 : « mettre en avant le tarif du dessus et tout bien aligner les logos et textes »).
   h+=row('',cols.map((c,i)=>'<div class="cu-lg">'+logoEgal(G,c.key,o.base,40,36)+'</div><b>'+nom(c)+'</b>'
     // Le prix annuel n'est plus dans l'en-tête : le bilan, juste dessous, le donne (Fabrice, 21/10/2026 : « retire le 888 € / an »).
-    +(px[i]!=null?'<span class="cu-cpx"><em>'+eur(px[i])+'</em> / mois</span>':'')),'cu-ch');
+    +(px[i]!=null?'<span class="cu-cpx"><em>'+eur(px[i])+'</em> / mois</span>':'')
+    +(t27[cols[i].key+"|"+cols[i].fi]!=null?'<small class="cu-p27">(2027 : '+eur(t27[cols[i].key+"|"+cols[i].fi])+')</small>':'')),'cu-ch');
   // Ordre (Fabrice, 21/10/2026 : « fais au mieux mais garde tout sur la même page ») : le bilan juste sous les cotisations — le message
   // principal se lit sans faire défiler —, puis les soins qui le justifient, puis la grille complète des garanties. Rien n'est retiré.
   let hg='', hs='', hb='';
@@ -750,10 +751,13 @@ function cumul(G,o){
   h+=ligne("","","","","cu-fin");
   // Cotisation juste sous le tableau, puis le bandeau TALIS, puis les explications (Fabrice, 20/10/2026 : « remonte les
   // tarifs au dessous du tableau avant les explications »).
+  // Tarif 2027 entre parenthèses (Fabrice, 25/11/2026 : « sur tous les documents ») : o.tarifs27, mêmes clés que o.tarifs.
+  const q1=(o.tarifs27||{})[M.key+"|"+M.fi], q2=(o.tarifs27||{})[S.key+"|"+S.fi];
+  const p27=v=>v!=null?'<small class="cu-p27">(2027 : '+eur(v)+')</small>':'';
   if(prix) h+='<div class="cu-r cu-prix">'+cell("cu-l",'Cotisation<small>par mois</small>')
-    +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>')
-    +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
-    +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')+'</div>';
+    +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>'+p27(q1!=null&&q2!=null?q1+q2:null))
+    +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>'+p27(q1))
+    +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>'+p27(q2))+'</div>';
   h+=gain;
   if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
   const gM=G.gammes[M.key], nr=gM&&(gM.resp===false||/^\s*Contrat NON responsable/i.test(String(limites(G,M.key,M.fi)||"")));

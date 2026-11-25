@@ -256,7 +256,9 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   `apicil2027` / `april2027`). La page (2026 seul, effet avant 2027) refait un appel APICIL et APRIL au 01/01/2027 (`APICIL27`,
   `APRIL27`, à part du cache 2026). Affiché : tableau des résultats (`.p27`), en-tête du tableau de garantie donc l'image, texte
   WhatsApp, courrier (`colonnes[].prix2027` ; relais `santeo-mail.php` `2026-11-25 tarif 2027…`, jeton `p27`) et `interet.php`
-  (page et mail « Intérêt confirmé »). Pas encore : cumul, résumés CRM, tampon du PDF joint. Test : scratchpad `w/t_p27.js`.
+  (page et mail « Intérêt confirmé »). Aussi (Fabrice, « ok », 25/11/2026) : **PDF joint** (« (2027 : x €/m) » gris, plus petit, au-dessus du prix tamponné, `total27`),
+  **calculette Cumul** et **comparatif** (`o.tarifs27`, `.cu-p27`, `CUMUL_T27`). **Résumés CRM** : `prix2027` prêt derrière
+  `RESUMES_P27=false`, à allumer quand le CRM accepte le champ. Tests : scratchpad `w/t_p27.js`, `w/t_cu27.js`.
 - **MCCINOVA** : mineurs au tarif 18 ans ; cadre « Conditions MCCINOVA » (âge atteint dans l'année, enfants
   jusqu'à 28 ans) affiché seulement si la gamme est dans le tableau.
 - **RÉVOLUO / RF50 / RF100** : grille × zone (75 = zone 1) × régime (TNS ×0,90 ; Alsace-Moselle ×0,65 sans zone),
