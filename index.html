@@ -467,6 +467,7 @@ body:has(#cubox) #sendbar{display:none!important}
 .cumul .cu-prix small{display:block;font:400 9.5px 'IBM Plex Sans',sans-serif;color:var(--m)}
 .cumul .cu-n{display:block;font:800 15px 'Archivo',sans-serif;white-space:nowrap}
 .cumul .cu-prix .cu-t .cu-n{font-size:18px}
+.cumul .cu-p27{display:block;font:600 10.5px 'Archivo',sans-serif;color:#5C6879;white-space:nowrap}
 .cumul .cu-gain{border-left:3px solid var(--b);padding:4px 0 4px 10px;margin:12px 0 0;font-size:11.5px}
 .cumul .cu-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .cumul .cu-chips span{border:1px solid var(--l);border-radius:12px;padding:1px 8px;font-weight:700;color:var(--b);font-size:11px;white-space:nowrap}
@@ -685,7 +686,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-25T16:24:28Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-25T16:24:28Z</div>
+  <div id="buildstamp" data-build="2026-11-25T17:13:51Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-25T17:13:51Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -1679,7 +1680,7 @@ function comparatifSoins(G,o){
   const dep=o.depenses||{}, RS=cols.map(c=>cumulDepenses(G,c,null,dep));
   const ids=CU_DEP.map(L=>L[0]).filter(id=>RS.some(R=>R.lignes.some(l=>l.id===id)));
   const estAuto=id=>RS.some(R=>R.lignes.some(l=>l.id===id&&l.auto));
-  const px=cols.map(c=>tar[c.key+"|"+c.fi]), prix=px.every(x=>x!=null);
+  const px=cols.map(c=>tar[c.key+"|"+c.fi]), prix=px.every(x=>x!=null), t27=o.tarifs27||{};
   const nom=c=>nomComplet(G,c.key,c.fi);
   const C=(cls,x)=>'<div class="'+cls+'"><span>'+x+'</span></div>';
   // Ce que la mutuelle revient à l'année = cotisations annuelles − remboursements de la mutuelle seule ; la Sécurité sociale n'en est
@@ -1708,7 +1709,8 @@ function comparatifSoins(G,o){
   // (Fabrice, 20/10/2026 : « mettre en avant le tarif du dessus et tout bien aligner les logos et textes »).
   h+=row('',cols.map((c,i)=>'<div class="cu-lg">'+logoEgal(G,c.key,o.base,40,36)+'</div><b>'+nom(c)+'</b>'
     // Le prix annuel n'est plus dans l'en-tête : le bilan, juste dessous, le donne (Fabrice, 21/10/2026 : « retire le 888 € / an »).
-    +(px[i]!=null?'<span class="cu-cpx"><em>'+eur(px[i])+'</em> / mois</span>':'')),'cu-ch');
+    +(px[i]!=null?'<span class="cu-cpx"><em>'+eur(px[i])+'</em> / mois</span>':'')
+    +(t27[cols[i].key+"|"+cols[i].fi]!=null?'<small class="cu-p27">(2027 : '+eur(t27[cols[i].key+"|"+cols[i].fi])+')</small>':'')),'cu-ch');
   // Ordre (Fabrice, 21/10/2026 : « fais au mieux mais garde tout sur la même page ») : le bilan juste sous les cotisations — le message
   // principal se lit sans faire défiler —, puis les soins qui le justifient, puis la grille complète des garanties. Rien n'est retiré.
   let hg='', hs='', hb='';
@@ -1805,10 +1807,13 @@ function cumul(G,o){
   h+=ligne("","","","","cu-fin");
   // Cotisation juste sous le tableau, puis le bandeau TALIS, puis les explications (Fabrice, 20/10/2026 : « remonte les
   // tarifs au dessous du tableau avant les explications »).
+  // Tarif 2027 entre parenthèses (Fabrice, 25/11/2026 : « sur tous les documents ») : o.tarifs27, mêmes clés que o.tarifs.
+  const q1=(o.tarifs27||{})[M.key+"|"+M.fi], q2=(o.tarifs27||{})[S.key+"|"+S.fi];
+  const p27=v=>v!=null?'<small class="cu-p27">(2027 : '+eur(v)+')</small>':'';
   if(prix) h+='<div class="cu-r cu-prix">'+cell("cu-l",'Cotisation<small>par mois</small>')
-    +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>')
-    +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>')
-    +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>')+'</div>';
+    +cell("cu-t",'<span class="cu-n">'+eur(p1+p2)+'</span><small>total / mois</small>'+p27(q1!=null&&q2!=null?q1+q2:null))
+    +cell("cu-a",'<span class="cu-n">'+eur(p1)+'</span><small>'+G.gammes[M.key].names[M.fi]+'</small>'+p27(q1))
+    +cell("cu-b",'<span class="cu-n">+ '+eur(p2)+'</span><small>'+nS+'</small>'+p27(q2))+'</div>';
   h+=gain;
   if(notes.length) h+='<div class="cu-nb">'+notes.join('<br>')+'</div>';
   const gM=G.gammes[M.key], nr=gM&&(gM.resp===false||/^\s*Contrat NON responsable/i.test(String(limites(G,M.key,M.fi)||"")));
@@ -3313,13 +3318,16 @@ async function pdfAvecTarifs(url,marques){
   const pos=[];
   for(const m of marques){ if(m.total==null) continue;
     // Rev N seul et Rev N + renfort tombent au même endroit : le premier prix reste, l'autre n'est pas écrit par-dessus.
-    const k=cleTampon(m.key,m.fi).find(c=>T[c]); if(k&&!pos.some(([t])=>t===T[k]||(t.page===T[k].page&&t.x===T[k].x&&t.y===T[k].y))) pos.push([T[k],prixTampon(m.total)]); }
+    const k=cleTampon(m.key,m.fi).find(c=>T[c]); if(k&&!pos.some(([t])=>t===T[k]||(t.page===T[k].page&&t.x===T[k].x&&t.y===T[k].y))) pos.push([T[k],prixTampon(m.total),m.total27]); }
   if(!pos.length) return {octets,poses:0};
   const pdf=await PDFLib.PDFDocument.load(octets,{ignoreEncryption:true});
   const fnt=await pdf.embedFont(PDFLib.StandardFonts.HelveticaBold);
-  for(const [t,txt] of pos){
+  for(const [t,txt,p27] of pos){
     const pg=pdf.getPage(t.page), w=fnt.widthOfTextAtSize(txt,t.taille);
     pg.drawText(txt,{x:t.x-w/2,y:t.y,size:t.taille,font:fnt,color:PDFLib.rgb(0,0,0)});
+    // Tarif 2027 au-dessus, plus petit et gris (Fabrice, 25/11/2026 : « sur tous les documents »).
+    if(p27!=null){ const t2="(2027 : "+prixTampon(p27)+")", s2=t.taille*0.8, w2=fnt.widthOfTextAtSize(t2,s2);
+      pg.drawText(t2,{x:t.x-w2/2,y:t.y+t.taille*1.1,size:s2,font:fnt,color:PDFLib.rgb(0.35,0.4,0.47)}); }
   }
   return {octets:await pdf.save(),poses:pos.length};
 }
@@ -3340,7 +3348,7 @@ async function pdfsTarifs(tg){
     const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi&&x.an===c.an); if(!r) continue;
     const t=(c.docs||[]).find(d=>estTableau(d.libelle)); if(!t) continue;
     const g=parUrl[t.url]=parUrl[t.url]||{marques:[],ipids:[]};
-    if(!g.marques.some(m=>m.key===c.key&&m.fi===c.fi)) g.marques.push({key:c.key,fi:c.fi,total:r.total});   // 2026 et 2027 : un seul prix écrit
+    if(!g.marques.some(m=>m.key===c.key&&m.fi===c.fi)) g.marques.push({key:c.key,fi:c.fi,total:r.total,total27:r.prix2027});   // 2026 et 2027 : un seul prix écrit
     for(const d of c.docs) if(d.libelle==="IPID"&&!g.ipids.includes(d.url)) g.ipids.push(d.url);
   }
   const out=[];
@@ -3512,6 +3520,7 @@ function cumulFormules(v){
 }
 // Tarifs pour la fenêtre, toutes gammes : le moteur pour les gammes locales et API SANTÉ (si sa réponse porte sur ce
 // profil, sinon la demande part et la fenêtre se redessine à son retour), le relais APRIL produit par produit.
+let CUMUL_T27={};
 function cumulTarifs(){
   const p=profilPage(), T={}; if(p.age==null) return T;
   const tout={}; for(const k of Object.keys(F)) tout[k]=true; tout.APRIL=false;
@@ -3521,9 +3530,13 @@ function cumulTarifs(){
     if(CUMUL&&(CUMUL.v==="APICIL"||CUMUL.v==="*")&&APICIL.cle!==cle&&APICIL.etat!=="attente") apicilDemande(prof,cle);
     const a=(APICIL.cle===cle)?APICIL:{etat:""};
     apicil={profil:prof,etat:a.etat,tarifs:a.tarifs,message:a.message,approche:apicilApproche,cpExact:/^\d{5}$/.test(p.cpSaisi.trim())}; }
+  const avec27=ANNEES.has(2026)&&!ANNEES.has(2027)&&apicilEffet()<"2027-01-01";
   const {rows}=Moteur.calculer({D,F,sel:tout,age:p.age,cnjAge:p.cnjAge,hasCnj:p.hasCnj,kids:p.kids,reg:p.reg,dept:p.dept,
-                               zone:p.dept?ZMAP[p.dept]:null,apicil,april:{etat:""}});
-  for(const r of rows) T[r.key+"|"+r.fi]=r.total;
+                               zone:p.dept?ZMAP[p.dept]:null,apicil,april:{etat:""},prix2027:avec27});
+  // Tarifs 2027 pour la parenthèse de la vignette (Avenir par la grille ; APICIL / APRIL repris du tableau).
+  CUMUL_T27={};
+  for(const r of rows){ T[r.key+"|"+r.fi]=r.total; if(r.prix2027!=null) CUMUL_T27[r.key+"|"+r.fi]=r.prix2027; }
+  if(avec27) for(const r of LASTROWS) if(r.prix2027!=null&&CUMUL_T27[r.key+"|"+r.fi]==null) CUMUL_T27[r.key+"|"+r.fi]=r.prix2027;
   for(const r of LASTROWS) if(r.key==="APRIL"&&aprilRegimeOk(APRIL_ORDRE_RANG[Math.floor(r.fi/100)],p.reg)) T["APRIL|"+r.fi]=r.total;   // APRIL déjà tarifé dans le tableau
   return T;
 }
@@ -3627,13 +3640,14 @@ function showCumul(){
     if(cmp){
       // Comparatif : les formules cochées (TALIS exclu), 4 au plus, avec leur tarif du tableau ; mêmes soins prévus.
       const cols=CUMUL.cochees.slice(0,4), tarifs={};
-      for(const r of LASTROWS) if(cols.some(c=>c.key===r.key&&c.fi===r.fi)) tarifs[r.key+"|"+r.fi]=r.total;
+      const tarifs27={};
+      for(const r of LASTROWS) if(cols.some(c=>c.key===r.key&&c.fi===r.fi)){ tarifs[r.key+"|"+r.fi]=r.total; if(r.prix2027!=null) tarifs27[r.key+"|"+r.fi]=r.prix2027; }
       const depA=Object.keys(CUMUL.dep).length?CUMUL.dep:null;
       box.querySelector('#cuDSum').textContent=depA?Object.keys(depA).length+" soin"+(Object.keys(depA).length>1?"s":""):"aucune";
       box.querySelector('#cuH').innerHTML=cols.length<2
         ?'<span class="w">Cochez au moins 2 mutuelles dans le comparateur (4 au plus) pour les comparer.</span>'
         :'→ '+cols.length+' formules comparées'+(CUMUL.cochees.length>4?' (les 4 premières cochées)':'')+' ; les dépenses du volet « Dépenses » valent pour toutes.';
-      box.querySelector('#cuV').innerHTML=cols.length?Tableau.comparatifSoins(GAR,{cols,tarifs,prospect:txt,date,depenses:depA}):"";
+      box.querySelector('#cuV').innerHTML=cols.length?Tableau.comparatifSoins(GAR,{cols,tarifs,tarifs27,prospect:txt,date,depenses:depA}):"";
       P=[{cmp:cols}];
       return;
     }
@@ -3692,7 +3706,8 @@ function showCumul(){
     // Deux vignettes : la mutuelle + surcomplémentaire, puis les remboursements (seulement si des besoins sont renseignés).
     // La 2e vignette (remboursements) ne s'ouvre que si des besoins sont renseignés dans le panneau Besoins.
     const besoinsOk=Object.keys(CUMUL.fil||{}).length>0;
-    box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:depA})+Tableau.remboursements(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:besoinsOk?depA:null});
+    const tarifs27={}; for(const z of [c,s]){ const v=CUMUL_T27[z.key+"|"+z.fi]; if(v!=null) tarifs27[z.key+"|"+z.fi]=v; }
+    box.querySelector('#cuV').innerHTML=Tableau.cumul(GAR,{mut:c,sur:s,tarifs,tarifs27,prospect:txt,date,depenses:depA})+Tableau.remboursements(GAR,{mut:c,sur:s,tarifs,prospect:txt,date,depenses:besoinsOk?depA:null});
     P=[{mut:c,sur:s}];
   }
   CUMUL.maj=rendre;
@@ -4483,12 +4498,16 @@ function sendText(){
 // prix = tarif mensuel affiché (nombre), null s'il manque — le CRM n'envoie alors pas ce résumé.
 // Bouton « Résumés seuls » (dépôt kind "resumes", sans image) : activé le 17/11/2026, CRM en ligne (PR #606 du CRM).
 const RESUMES_SEULS=true;
+// prix2027 dans les résumés (Fabrice, 25/11/2026 : tarif 2027 « sur tous les documents ») : à n'allumer qu'une fois le CRM d'accord
+// pour recevoir ce champ (demande transmise le 25/11/2026) — un champ inconnu pourrait faire refuser le lot.
+const RESUMES_P27=false;
 function resumesCRM(cols){
   return cols.slice(0,5).map(c=>{
     let cle=c.key+"|"+c.fi;
     if(c.key==="APRIL"){ const code=APRIL_ORDRE_RANG[Math.floor(c.fi/100)]; cle="APRIL:"+code+"|"+(c.fi%100); }
     const r=LASTROWS.find(x=>x.key===c.key&&x.fi===c.fi&&x.an===c.an);
     const prix=r&&isFinite(r.total)?Math.round(r.total*100)/100:null;
+    if(RESUMES_P27&&r&&r.prix2027!=null) return {cle,prix,prix2027:Math.round(r.prix2027*100)/100};
     return {cle,prix};
   });
 }
