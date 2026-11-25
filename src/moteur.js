@@ -57,31 +57,47 @@ function deptOf(s){
 // sont pas affichées (Fabrice : « tu ne les affiches pas ») ; API SANTÉ et APRIL, si l'appelant les a tarifés à un effet
 // en 2027 (e.apicil2027 / e.april2027, même forme que apicil / april), le sont. Âges : âge atteint en 2027
 // (e.age2027 / e.cnjAge2027, sinon âge + 1). Lignes 2027 : an = 2027, gamme + « 2027 », pastille « Tarif 2027 ».
+// Parenthèse « tarif 2027 » (Fabrice, 25/11/2026 : « tant que tu es en 2026, tu mets une petite parenthèse avec le tarif 2027,
+// systématiquement sur tous les documents ») : e.prix2027 = true avec [2026] seul → chaque ligne 2026 qui a un tarif 2027
+// (Avenir par la grille, API SANTÉ / APRIL si e.apicil2027 / e.april2027 sont fournis) porte r.prix2027 (nombre). Les lignes
+// et le tri ne changent pas.
 const AVENIR=["CAPEVO","CAPNR","TALIS","LPSH"];
+function lignes2027(e,avenir,api){
+  const sel=e.sel||{}, coche=Object.values(sel).some(v=>v), on=k=>coche?!!sel[k]:true;
+  const age27=e.age2027!=null?e.age2027:(e.age!=null?e.age+1:null);
+  const cnj27=e.cnjAge2027!=null?e.cnjAge2027:(e.cnjAge!=null?e.cnjAge+1:null);
+  const out=[];
+  const s27={}; AVENIR.forEach(k=>{ s27[k]=k==="TALIS"?!!sel.TALIS:on(k); });
+  if(avenir&&AVENIR.some(k=>s27[k]))
+    out.push(calculerUn(Object.assign({},e,{D:Object.assign({},e.D,e.D.AN2027),sel:s27,age:age27,cnjAge:cnj27,apicil:{},april:{etat:"vide"}})));
+  if(api&&(e.apicil2027||e.april2027)){
+    const sA={APICIL:on("APICIL"),APRIL:!!sel.APRIL};
+    if(sA.APICIL||sA.APRIL) out.push(calculerUn(Object.assign({},e,{sel:sA,age:age27,cnjAge:cnj27,apicil:e.apicil2027||{},april:e.april2027||{etat:"vide"}})));
+  }
+  return out;
+}
 function calculer(e){
   const an=(Array.isArray(e.annees)&&e.annees.length)?e.annees.map(Number):[2026];
   const a26=an.includes(2026), a27=an.includes(2027)&&!!(e.D&&e.D.AN2027);
-  if(a26&&!a27) return calculerUn(e);
-  const sel=e.sel||{}, coche=Object.values(sel).some(v=>v), on=k=>coche?!!sel[k]:true;
+  if(a26&&!a27){
+    const r=calculerUn(e);
+    if(e.prix2027&&e.D&&e.D.AN2027){
+      const p={};
+      lignes2027(e,true,true).forEach(x=>x.rows.forEach(y=>{ if(isFinite(y.total)) p[y.key+"|"+y.fi]=y.total; }));
+      r.rows.forEach(x=>{ const v=p[x.key+"|"+x.fi]; if(v!=null) x.prix2027=v; });
+    }
+    return r;
+  }
   let rows=[],warns=[];
   if(a26){
     const r=calculerUn(e);
     r.rows.forEach(x=>{ if(AVENIR.includes(x.key)){ x.an=2026; x.gamme+=" 2026"; x.chips=x.chips.concat([["info","Tarif 2026"]]); } });
     rows=rows.concat(r.rows); warns=warns.concat(r.warns);
   }
-  const tag=(r,pref)=>{ r.rows.forEach(x=>{ x.an=2027; x.gamme+=" 2027"; x.chips=x.chips.concat([["info","Tarif 2027"]]); });
-    rows=rows.concat(r.rows); warns=warns.concat(r.warns.map(w=>pref+w)); };
-  const age27=e.age2027!=null?e.age2027:(e.age!=null?e.age+1:null);
-  const cnj27=e.cnjAge2027!=null?e.cnjAge2027:(e.cnjAge!=null?e.cnjAge+1:null);
-  const s27={}; AVENIR.forEach(k=>{ s27[k]=k==="TALIS"?!!sel.TALIS:on(k); });
-  if(AVENIR.some(k=>s27[k])){
-    const D27=Object.assign({},e.D,e.D.AN2027);
-    tag(calculerUn(Object.assign({},e,{D:D27,sel:s27,age:age27,cnjAge:cnj27,apicil:{},april:{etat:"vide"}})),"2027 — ");
-  }
-  if(!a26&&(e.apicil2027||e.april2027)){
-    const sA={APICIL:on("APICIL"),APRIL:!!sel.APRIL};
-    if(sA.APICIL||sA.APRIL) tag(calculerUn(Object.assign({},e,{sel:sA,age:age27,cnjAge:cnj27,apicil:e.apicil2027||{},april:e.april2027||{etat:"vide"}})),"2027 — ");
-  }
+  lignes2027(e,true,!a26).forEach(r=>{
+    r.rows.forEach(x=>{ x.an=2027; x.gamme+=" 2027"; x.chips=x.chips.concat([["info","Tarif 2027"]]); });
+    rows=rows.concat(r.rows); warns=warns.concat(r.warns.map(w=>"2027 — "+w));
+  });
   rows.sort((x,y)=>(x.total||0)-(y.total||0));
   return {rows,warns};
 }

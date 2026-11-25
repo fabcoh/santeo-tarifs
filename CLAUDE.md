@@ -250,6 +250,13 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   sous la ligne du haut (`ANNEES`, par défaut l'année du 1er du mois suivant, jamais aucune). **2027 seul** : Avenir 2027 + APICIL et
   APRIL demandés au 01/01/2027 (`apicilEffet`) ; MCCI, Mutuelle Verte, Révoluo masqués (pas de grille 2027). **Les deux** : APICIL /
   APRIL restent en 2026. Restent en 2026 : le cumul, `interet.php`, les images `docs/tg/`. Test : scratchpad `w/t_2027.js`.
+  **Parenthèse « (tarif 2027 : x €) » partout tant qu'on est en 2026** (Fabrice, 25/11/2026 : « une petite parenthèse avec le tarif
+  2027… systématiquement sur tous les documents, les mails envoyés » ; cases gardées, APICIL / APRIL compris) : `Moteur.calculer({…,
+  prix2027:true})` avec [2026] seul pose `r.prix2027` sur chaque ligne qui a un tarif 2027 (Avenir par la grille, APICIL / APRIL par
+  `apicil2027` / `april2027`). La page (2026 seul, effet avant 2027) refait un appel APICIL et APRIL au 01/01/2027 (`APICIL27`,
+  `APRIL27`, à part du cache 2026). Affiché : tableau des résultats (`.p27`), en-tête du tableau de garantie donc l'image, texte
+  WhatsApp, courrier (`colonnes[].prix2027` ; relais `santeo-mail.php` `2026-11-25 tarif 2027…`, jeton `p27`) et `interet.php`
+  (page et mail « Intérêt confirmé »). Pas encore : cumul, résumés CRM, tampon du PDF joint. Test : scratchpad `w/t_p27.js`.
 - **MCCINOVA** : mineurs au tarif 18 ans ; cadre « Conditions MCCINOVA » (âge atteint dans l'année, enfants
   jusqu'à 28 ans) affiché seulement si la gamme est dans le tableau.
 - **RÉVOLUO / RF50 / RF100** : grille × zone (75 = zone 1) × régime (TNS ×0,90 ; Alsace-Moselle ×0,65 sans zone),
