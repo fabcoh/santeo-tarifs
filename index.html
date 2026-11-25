@@ -686,7 +686,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-25T17:13:51Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-25T17:13:51Z</div>
+  <div id="buildstamp" data-build="2026-11-25T17:23:03Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-25T17:23:03Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -4500,7 +4500,7 @@ function sendText(){
 const RESUMES_SEULS=true;
 // prix2027 dans les résumés (Fabrice, 25/11/2026 : tarif 2027 « sur tous les documents ») : à n'allumer qu'une fois le CRM d'accord
 // pour recevoir ce champ (demande transmise le 25/11/2026) — un champ inconnu pourrait faire refuser le lot.
-const RESUMES_P27=false;
+const RESUMES_P27=true;   // allumé le 25/11/2026 : le CRM WhatsApp accepte le champ (z.object non strict), il l’ignore tant qu’il ne l’affiche pas
 function resumesCRM(cols){
   return cols.slice(0,5).map(c=>{
     let cle=c.key+"|"+c.fi;
