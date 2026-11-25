@@ -684,7 +684,7 @@ body:has(#cubox) #sendbar{display:none!important}
     <div><b>*</b> Âge atteint dans l’année (année en cours − année de naissance).</div>
     <div><b>**</b> Les enfants peuvent rester bénéficiaires jusqu’à 28 ans, sous conditions : étudiants, apprentis, ou revenus inférieurs ou égaux au SMIC.</div>
   </div>
-  <div id="buildstamp" data-build="2026-11-25T12:06:50Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-25T12:06:50Z</div>
+  <div id="buildstamp" data-build="2026-11-25T15:55:53Z" style="text-align:right;font-size:10px;color:var(--muted);margin-top:14px">version 2026-11-25T15:55:53Z</div>
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -957,18 +957,17 @@ function calculerUn(e){
   // TALIS — surcomplémentaire : elle vient en plus d'une complémentaire, pas à la place.
   // La mêler au comparatif fausserait la lecture, son tarif ne couvrant qu'un complément :
   // elle n'apparaît donc que si le conseiller la demande.
-  if(sel.TALIS&&age>=16&&!cnjHors("TALIS",16,100)){
+  // Règles de Fabrice (25/11/2026) : TALIS est pour les adultes seulement, dès 18 ans ; une TALIS par personne, donc le
+  // conjoint paie le tarif de l'assuré à son âge (colonne RESP) ; jamais d'enfant.
+  if(sel.TALIS&&age!=null&&age<18) warns.push("TALIS : adultes seulement, dès 18 ans — non tarifée à "+age+" ans.");
+  if(sel.TALIS&&age>=18&&!cnjHors("TALIS",18,100)){
     const g=D.TALIS;
-    const a=String(Math.min(Math.max(age,16),100));
+    const a=String(Math.min(age,100));
+    if(kids>0) warns.push("TALIS : adultes seulement — les enfants ne sont pas assurés (tarif sans les "+kids+" enfant"+(kids>1?"s":"")+").");
     for(let f=0;f<2;f++){
       const pA=g[a][f*2];
-      let pC=null;
-      if(hasCnj&&cnjAge!=null&&cnjAge>=16)pC=g[String(Math.min(Math.max(cnjAge,16),100))][f*2+1];
-      if(hasCnj&&cnjAge!=null&&pC==null){ if(f===0) warns.push("TALIS : pas de tarif conjoint à "+cnjAge+" ans — gamme non tarifée."); continue; }
-      const kp=g["15"][f*2];
-      const pK=kids>0?kp*kids:null;
-      push("TALIS",f,"",[["info","Surcomplémentaire"],["nr","Non responsable"]],pA,hasCnj?pC:null,pK,
-        kids>0?(kids+" × "+eur(kp)):"",false);
+      const pC=(hasCnj&&cnjAge!=null)?g[String(Math.min(cnjAge,100))][f*2]:null;
+      push("TALIS",f,"",[["info","Surcomplémentaire"],["nr","Non responsable"]],pA,hasCnj?pC:null,null,"",false);
     }
   }
   if(isRL) warns.push("Régime local Alsace-Moselle : grilles MCCI non applicables (taux spécifiques, consulter MCCI) — restent CAP EVOLUTION RL, CAP NR RL et TALIS.");
