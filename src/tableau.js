@@ -82,7 +82,7 @@ function valeur(G,key,fi,src){
   const f=G.gammes[key], e=(G.extras||{})[key]||{};
   if(src.startsWith("x:")){const k=src.slice(2);return (e[k]&&e[k][fi]!==undefined)?e[k][fi]:"—";}
   const arr=f&&f[src];
-  // Généralistes : relevés pour CAP NR seulement ; ailleurs « n.c. » (non relevé), jamais « — » (pas couvert).
+  // Généralistes : relevés partout depuis le 28/11/2026 ; une valeur absente reste « n.c. » (non relevé), jamais « — » (pas couvert).
   if(src==="honoG") return (arr&&arr[fi]!==undefined)?arr[fi]:"n.c.";
   return (arr&&arr[fi]!==undefined)?arr[fi]:"—";
 }

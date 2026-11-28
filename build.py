@@ -92,7 +92,7 @@ for (const code of APRIL_ORDRE_RANG) {
   const fis = g.niv.map(n => APRIL_RANG[code] * 100 + n), pick = a => fis.map(fi => (a && a[fi] != null) ? a[fi] : null);
   const gam = {label: "APRIL " + (APRIL_NOM_[code] || code), ins: "april", resp: g.resp === true,
     tns: APRIL_TNS.has(code), rang: APRIL_RANG[code], niv: g.niv, fi: fis, names: pick(F.APRIL.names)};
-  for (const k of ["hospO","hospN","honoO","honoN","dent","opt","aud","ch","md"]) gam[k] = pick(F.APRIL[k]);
+  for (const k of ["hospO","hospN","honoG","honoO","honoN","dent","opt","aud","ch","md"]) gam[k] = pick(F.APRIL[k]);
   aprilOut.gammes[code] = gam;
   const ex = {}; for (const k of Object.keys(EX.APRIL)) if (k !== "cumCode") ex[k] = pick(EX.APRIL[k]);
   aprilOut.extras[code] = ex;

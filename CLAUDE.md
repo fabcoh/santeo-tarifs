@@ -30,6 +30,14 @@ Reliée au CRM WhatsApp développé par « Manus » (serveur `https://whatsappcr
   (`APRIL_GAR` → `F.APRIL`…) puis retire APRIL de `gammes` : les autres sections et les images `docs/tg/` ne bougent pas. Seuls les
   11 produits ouverts dont les garanties sont lues dans un document APRIL ; Simply, Pro Privilège, Protect, Cap Sérénité (tout
   « n.c. ») ne sont pas publiés. Documents : tableau de garantie + IPID seulement.
+- **Soins dentaires et généralistes dans `garanties.json`** (28/11/2026, demande de la conversation du site www.santeo.net pour Fabrice :
+  « ajoute la ligne généraliste et remb des soins dentaires ») : **`extras.<gamme>.dentS`** (soins dentaires remboursés : soins, inlays-onlays,
+  hors prothèses ; MV = « consultations, soins dentaires remboursés », APICIL = « soins ») et **`gammes.<gamme>.honoG`** (consultations de
+  généralistes OPTAM / DPTAM) pour toutes les gammes ; idem `april.extras.<code>.dentS` / `april.gammes.<code>.honoG`. Relevés dans
+  `docs/garanties_detail.json` (fiches), Flexi / Optimale / Cap Santé + sur le PDF. Une ligne commune « généralistes et spécialistes »
+  donne honoG = honoO ; MCCINOVA a une ligne propre (honoG ≠ honoO). LPS = « — » (hospitalisation seule), TALIS = « n.c. » (pas de ligne).
+  Valeurs dans la page : `EX.*.dentS`, `F.*.honoG`, `APRIL_GAR.*.dentS|honoG`. La ligne « Consult. généralistes Optam » du tableau de
+  garantie (jusque-là « n.c. » hors CAP NR) porte donc les valeurs.
 - **Le comparateur vert (`comparateur2.santeo.net`, conversation « Comparateur Santeo ») lit en direct** (17/11/2026) sur
   fabcoh.github.io/santeo-tarifs : `src/moteur.js` (`Moteur.calculer`, `Moteur.departement`, `Moteur.zones`), `src/tarifs_all.json`,
   `src/garanties.json` (`gammes`, `extras`, `documents`) et les PDF de `docs/`. **Garder ces noms ou le prévenir avant d'y toucher.**
